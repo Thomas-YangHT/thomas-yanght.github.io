@@ -1,0 +1,115 @@
+<html>
+<head>
+  <title>Evernote Export</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/307027 (zh-CN, DDL); Windows/10.0.0 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+<a name="2993"/>
+
+<div><span>
+  <div>
+<div style="font-size: 16px; display: inline-block; min-width: 100%;position: relative;"><div style="outline:0px;box-sizing:border-box;"><div style="box-sizing:inherit;outline:0px;font-family:&quot;SF Pro Display&quot;, Roboto, Noto, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, sans-serif;font-size:14px;line-height:1.57143;background-color:rgb(245, 246, 247);color:rgb(51, 51, 51);"><div style="outline:0px;box-sizing:border-box;"><span style="box-sizing:inherit;outline:0px;"><div style="box-sizing:inherit;outline:0px;background:rgb(255, 255, 255);box-shadow:rgba(0, 0, 0, 0.05) 0px 2px 4px 0px;">
+	<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;margin-bottom:16px;">
+			<span style="border-radius:50%;display:inline-block;width:26px;height:26px;line-height:26px;text-align:center;font-size:12px;outline:0px;box-sizing:inherit;border:1px solid rgb(244, 206, 208);color:rgb(202, 12, 22);margin-right:8px;margin-top:4px;float:left;">原</span>		<h1 style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;font-size:24px;word-break:break-all;">基础邮件原理（MUA,MTA,MDA）</h1>
+	</div>
+	<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;padding-bottom:14px;border-bottom:1px solid rgb(227, 227, 227);">
+		<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;color:rgb(133, 133, 133);display:flex;">
+												<span style="box-sizing:inherit;outline:0px;margin-right:14px;">2017年06月05日 21:19:58</span>
+			<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;margin-left:auto;float:right;">
+				<span style="box-sizing:inherit;outline:0px;margin-right:14px;">阅读数：1148</span>
+											</div>
+		</div>
+	</div>
+	<div style="box-sizing:inherit;outline:0px;display:block;position:relative;padding-top:16px;">
+		<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;word-break:break-all;">
+                    
+						<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;font-family:-apple-system, &quot;SF UI Text&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro Hei&quot;, sans-serif, SimHei, SimSun;word-break:break-all;">
+                
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+<img src="mailmta_files/SouthEast" type="image/jpeg" data-filename="SouthEast" height="396" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;border:0px;" width="584"/><br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ </p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+ </p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+ </p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+ </p>
+<p align="left" style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+电子邮件基本概念：</p>
+<p align="left" style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+<span style="outline:0px;box-sizing:border-box;word-break:break-all;color:rgb(51,102,255);">MUA（Mail User Agent）</span>接收邮件所使用的邮件客户端，使用IMAP或POP3协议与服务器通信；</p>
+<p align="left" style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+<span style="outline:0px;box-sizing:border-box;word-break:break-all;color:rgb(51,102,255);">MTA（Mail Transfer Agent）</span> 通过SMTP协议发送、转发邮件；</p>
+<p align="left" style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+<span style="outline:0px;box-sizing:border-box;word-break:break-all;color:rgb(51,102,255);">MDA（Mail Deliver Agent）</span>将MTA接收到的邮件保存到磁盘或指定地方，通常会进行垃圾邮件及病毒扫描；</p>
+<p align="left" style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+<span style="outline:0px;box-sizing:border-box;word-break:break-all;color:rgb(51,102,255);">MRA（Mail Receive Agent）</span>负责实现IMAP与POP3协议，与MUA进行交互；</p>
+<p align="left" style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+<span style="outline:0px;box-sizing:border-box;word-break:break-all;color:rgb(51,102,255);">SMTP（Simple Mail Transfer Protocol）</span>传输发送邮件所使用的标准协议；</p>
+<p align="left" style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+<span style="outline:0px;box-sizing:border-box;word-break:break-all;color:rgb(51,102,255);">IMAP（Internet Message Access Protocol）</span>接收邮件使用的标准协议之一；</p>
+<p align="left" style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+<span style="outline:0px;box-sizing:border-box;word-break:break-all;color:rgb(51,102,255);">POP3（Post Office Protocol 3）</span> 接收邮件使用的标准协议之一。</p>
+<p align="left" style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+ </p>
+<p align="left" style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+邮件服务器基本都有<span style="outline:0px;box-sizing:border-box;word-break:break-all;color:rgb(51,102,255);">MTA，MDA，MRA</span> 组成。</p>
+<p align="left" style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+ </p>
+<p align="left" style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+常用的MUA有：outlook、thunderbird、Mac Mail、mutt；</p>
+<p align="left" style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+常用的MTA服务有：sendmail、postfix；</p>
+<p align="left" style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+常用的MDA有：procmail、dropmail；</p>
+<p align="left" style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+常用的MRA有：dovecot。</p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+ </p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////</p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+ </p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+架构图中还有个DNS （域名解析服务），架构中存在DNS原因是，邮件格式，通常情况下有两种：</p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+1、abc@xyz.com(用户名@域名)，2abc@mail.xyz.com(用户名@主机名)而1是最创建的格式，2是最为确切的位置。域并不代表一个特定的主机，所以还不知道邮件服务器的主机名是那个，而在dns中可以记录一个域的邮件服务器地址（称为mx记录）。所以在发送邮件时候还要通过dns去查找该域下的邮件服务器的地址。</p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+我们还是先跟随一个典型的从发送邮件到接收邮件的过程，借此来观察Dovecot起到了什么作用。</p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:400;line-height:23.3333px;text-align:justify;">
+   开始，某个人用邮件用户代理(MUA)创建了一封电子邮件，典型的MUA包括Mozilla Thunderbird和Microsoft Outlook Express。无论是用哪种MUA，邮件创建后被送到了该用户的邮件传输代理(MTA)——传送过程使用的是SMTP协议。然后MTA检查该邮件的收信人（在这里我们假设是您），向DNS服务器查询接收方MTA对应的域名，然后将邮件发送至接收方MTA——使用的仍然是SMTP协议。这时，邮件已经从远程的用户工作站发送到了他的ISP的邮件服务器，并且转发到了您的域中。接下来会发生什么呢？<br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+考虑到不同的网络配置，邮件在传输过程中很有可能被转移到另外一个MTA，但是最终会有某个MTA接管这封邮件，并且负责投递。这时，MTA会将邮件传递给某个邮件投递代理(MDA)，MDA的主要作用就是将邮件保存到本地磁盘，有些MDA也可以完成其他功能，比如邮件过滤或将邮件直接投递到子文件夹。需要注意的是，完成将邮件存放在服务器上这个功能的是MDA。<br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+   现在，您该查收邮件了。运行MUA，您可以使用IMAP协议或POP3协议来向邮件服务器查询您的邮件。邮件服务器会先确认您的身份，然后从邮件存储区检索邮件列表，并将列表返回给MUA。现在您就可以阅读邮件了。现在我们就可以解释第一段了：将邮件投递给您的邮件服务器就是Dovecot。<br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+作为IMAP和POP3服务器，Dovecot为邮件用户代理(MUA)提供了一种访问服务器上存储的邮件的方法。但是，Dovecot并不负责从其他邮件服务器接收邮件。Dovecot只是将已经存储在邮件服务器上的邮件通过MUA显示出来。<br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+   IMAP和POP3是用于连接MUA与邮件存储服务器的两种常见的协议。POP3通常用于网络连接较慢的用户连接至邮件服务器。POP3的一条基本原则是，MUA从服务器上下载邮件并保存在本地磁盘上，然后将服务器上的邮件删除。IMAP通常用于局域网(LAN)或网络连接较快的用户，使用 IMAP的目的就是只在每次有未读消息时才连接服务器（而不是使用类似于MUA的缓存）。Dovecot为使用IMAP协议的连接做了很多优化，这样 IMAP客户端在连接Dovecot服务器时会表现出更好的性能。<br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+Dovecot并不关心邮件的接收、投递和存储，这些功能都是由MTA（比如Postfix）提供的。MTA决定邮件是如何存放的，以及存放在哪里，Dovecot必须根据MTA的配置来进行相应的配置。而且很明显的是，在安装Dovecot之前，必须保证MTA正常工作。<br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+   在*NIX环境下主要有两种邮件存储格式——mbox和Maildir。Mbox将大量的邮件——有时可以达到几千封——存放在一个文件中。 Maildir则是将每封邮件都存放在单独的文件当中。可能由于文件系统较老等原因，您会选择使用mbox，但对于大多数的全新安装，Maildir提供了更强壮的存储实现和文件之间的相对平等。当然，还有一些其他的存储格式，比如dbmail，并不被Dovecot所支持（至少现在不支持）。<br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+   还需要重复一遍的是：Dovecot并不负责邮件的投递或存储，这两方面出现了问题应该考虑MTA或MDA是否正常工作。如果没有，知道该怎么办了吧？ <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+Dovecot的主要配置包括邮件存储类型，邮件存储位置，用户列表和密码列表。Dovecot以支持多种用户名/密码格式，包括*NIX密码、shadow、PAM、LDAP、SQL和vpopmail。通常，您应该选择一种邮件服务全局都可以接受的用户名/密码格式，其中包括您的MTA、 MDA和Dovecot。</p>
+            </div>
+                <span style="display:block;clear:both;"></span></div>
+				
+        	</div>
+	
+	
+	
+			<div style="outline:0px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;margin:0px;box-sizing:inherit;padding:0px;line-height:28px;display:inline-block;width:48%;margin-top:18px;margin-right:16px;">
+		<a href="https://blog.csdn.net/z59d8m6e40/article/details/72871478" style="box-sizing:inherit;outline:0px;color:rgb(51, 51, 51);text-decoration:none;cursor:pointer;">
+			<span style="box-sizing:inherit;outline:0px;margin-right:8px;padding:6px 8px;font-size:12px;border:1px solid rgb(227, 227, 227);color:rgb(77, 77, 77);">上一篇</span>实现私有地址访问互联网		</a>
+	</div>
+				<div style="outline:0px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;margin:0px;box-sizing:inherit;padding:0px;line-height:28px;display:inline-block;width:48%;margin-bottom:0px;margin-top:0px;">
+		<a href="https://blog.csdn.net/z59d8m6e40/article/details/72871494" style="box-sizing:inherit;outline:0px;color:rgb(51, 51, 51);text-decoration:none;cursor:pointer;">
+			<span style="box-sizing:inherit;outline:0px;margin-right:8px;padding:6px 8px;font-size:12px;border:1px solid rgb(227, 227, 227);color:rgb(77, 77, 77);">下一篇</span>Linux中最受欢迎的邮件传输代理（MTA）		</a>
+	</div>
+	</div></span></div></div></div></div>
+</div>
+</span>
+</div></body></html> 

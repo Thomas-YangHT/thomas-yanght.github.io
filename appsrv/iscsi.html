@@ -1,0 +1,190 @@
+<html>
+<head>
+  <title>Evernote Export</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/307027 (zh-CN, DDL); Windows/10.0.0 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+<a name="3321"/>
+
+<div>
+<span><div style="-evernote-webclip:true"><br/><div><div><div><div><h1>于CentOS7.2配置ISCSI-targetcli---Linux</h1><div><div></div></div></div>
+	<div>
+		<div>
+												2017年06月01日 10:20:43
+			
+		</div>
+	</div>
+	<div>
+		<div>
+                    
+						<div>
+                
+<p><strong>ISCSI</strong></p>
+
+<h1>一、准备工作</h1>
+<p>1.1、(服务端和客户端都需要设置)</p>
+<p>系统使用的是CentOS7.2</p>
+<p>禁用防火墙：</p>
+<p>查看状态：# systemctl status firewalld或者 firewall-cmd--state</p>
+<p>停止：# systemctl stop firewalld</p>
+<p>开机不启动：# systemctl disable firewalld</p>
+<p>SELINUX禁用：</p>
+<p>vi /etc/selinux/config</p>
+<p>SELINUX=disabled</p>
+<p>1.2、说明：</p>
+<p>服务器：</p>
+<p>主机名--- servermwd；IP--- 192.168.13.30</p>
+<p>客户机：</p>
+<p>主机名--- mwdinit；IP--- 192.168.13.31</p>
+<p>注：# vi /etc/hostname</p>
+
+<h1>二、iSCSI Target（服务器端）</h1>
+<p>修改主机名和IP</p>
+<p># vi /etc/hostname</p>
+<p># vi /etc/sysconfig/network-scripts/ifcfg-eth0</p>
+<p>安装targetcli</p>
+<p># yum -y install targetcli</p>
+<p>启动target服务</p>
+<p># systemctl start target</p>
+<p>设置开机启动服务</p>
+<p># systemctl enable target</p>
+<p>新建分区</p>
+<p>注意：（/dev/sdb1）第二块硬盘（可自定义任何磁盘）,fdisk -l查看磁盘信息，分区大小可自定义如在Last扇区后输入【+7G】表示该分区分配大小为7G，注意不要格式化分区。</p>
+<p># fdisk /dev/sdb</p>
+<p>n --- p --- 1 --- 回车几次 ---p --- w</p>
+<p>开始创建</p>
+<p>进入targetcli</p>
+<p>#targetcli</p>
+<p>步骤1：建立一个块存储</p>
+<p>注意：server1.disk（名称server1可自定义），/dev/sdb1为上面新建的分区名称。</p>
+<p>/&gt; /backstores/block create ib_vol1 /dev/sdb1</p>
+<p>步骤2：配置ISCSITarget命名</p>
+<p>注意：命名在同一子网内确保是唯一的，命名格式为：iqn.yyyy-mm.&lt;主机名反写&gt;:自定义名称（自定义名称内不能有下划线）</p>
+<p>/&gt; /iscsi create iqn.2017-05.com.mwdserver:iscsimwd1</p>
+<p>步骤3：创建ACL允许ISCSI客户机连接</p>
+<p>注意：iqn.2017-03.com.example:client1为客户机ISCSI名称。</p>
+<p>/&gt;/iscsi/iqn.2017-05.com.mwdserver:iscsimwd1/tpg1/acls createiqn.2017-05.com.mwdinit:initmwd1</p>
+<p>步骤4：创建lun（target块设备的逻辑单元）</p>
+<p>/&gt;/iscsi/iqn.2017-05.com.mwdserver:iscsimwd1/tpg1/luns create/backstores/block/ib_vol1</p>
+<p>步骤5：创建ip与端口</p>
+<p>/&gt;/iscsi/iqn.2017-05.com.mwdserver:iscsimwd1/tpg1/portals create192.168.13.30</p>
+<p>或</p>
+<p>/&gt;cd /iscsi/iqn.2017-05.com.mwdserver:iscsimwd1/tpg1/portals</p>
+<p>/&gt;create 192.168.13.30:3260</p>
+<p>注：192.18.13.30为服务器IP；不指定端口默认为3260</p>
+<p>步骤6：配置验证用户名和密码（这里可以省略）</p>
+<p>/&gt;cd </p>
+<p>/iscsi/iqn.2017-05.com.mwdserver:iscsimwd1/tpg1/acls/iqn.2017-05.com.mwdinit:initmwd1</p>
+<p>/&gt;set auth userid=test</p>
+<p>/&gt;set auth password=test</p>
+<p>步骤7：配置完成后查看配置信息，并退出。</p>
+<p>/&gt;cd /</p>
+<p>/&gt;ls</p>
+<p>/&gt;exit</p>
+
+<h1>三、iSCSI Initiator（客户端）</h1>
+<p>步骤1：安装ISCSIInitiator</p>
+<p># yum -y install iscsi-initiator-utils</p>
+<p>启动iscsi服务</p>
+<p># systemctl start iscsi</p>
+<p>设置开机启动服务</p>
+<p># systemctl enable iscsi</p>
+<p>步骤2：配置ISCSIInitiator名称</p>
+<p>注：此处InitiatorName必须与服务端配置的ACL允许ISCSI客户机连接的名称一致。</p>
+<p># vi /etc/iscsi/initiatorname.iscsi</p>
+<p>iqn.2017-05.com.mwdinit:initmwd1</p>
+<p>步骤3：修改ISCSIInitiator配置文件（上面服务端如果没有设置有用户和密码这里不需要操作）</p>
+<p>注意：</p>
+<p>#node.session.auth.authmethod = CHAP---去掉注释</p>
+<p>node.session.auth.username为存储服务端</p>
+<p>set auth userid=username配置的username，</p>
+<p>node.session.auth.password= password为存储服务器端</p>
+<p>set auth password=password配置的password。</p>
+<p># vi /etc/iscsi/iscsid.conf</p>
+<p>步骤4：查找ISCSI设备</p>
+<p>iscsiadm -m discovery -t sendtargets -p 192.168.13.30</p>
+<p>步骤5：连接ISCSI设备</p>
+<p># iscsiadm -m node --login</p>
+<p>步骤6：查看系统磁盘信息</p>
+<p>lsblk</p>
+<p>或   fdisk -l</p>
+<p>步骤7：将共享磁盘挂载到指定目录</p>
+<p>将sdb1分区挂载到/mnt/iscsi目录，使用df -hT命令可查看到/dev/sdb1已经挂载上并显示其容量信息。</p>
+<p># mount /dev/sdb1 /home/test</p>
+<p>步骤8：设置开机自动连接ISCSI设备</p>
+<p>注意：iqn.2017-03.com.example:disk1为存储服务端ISCSI名称，192.168.**.**:3260为存储服务端IP及端口号。</p>
+<p># iscsiadm -m node -T iqn.2017-05.com.mwdserver:iscsimwd1 -p192.168.13.30:3260 -o update -n node.startup -v automatic</p>
+<p>步骤9：设置开机挂载网络磁盘</p>
+<p>开机挂载：采用写入fstab方式开启启动挂载磁盘</p>
+<p>获取磁盘UUID：# blkid/dev/sdb1</p>
+<p>编辑fstab：# vi/etc/fstab</p>
+<p>添加配置：UUID=9f122014-071a-4416-b40f-ece882285b2b    /mnt/iscsi    ext4  defaults,_netdev   0 0</p>
+<p>说明：</p>
+<p>UUID=ba7925cc-9bfb-4238-984d-999e18d592e8：磁盘UUID，代表磁盘。   </p>
+<p>/mnt/iscs：代表挂载路径,根据实际灵活变动。   </p>
+<p>ext4：代表文件系统，根据实际灵活变动。   </p>
+<p>_netdev：代表该挂载的磁盘分区为网络磁盘分区。</p>
+
+<h1>四、备忘录</h1>
+<p><strong>4.1、客户端查找不到服务端的ISCSI设备</strong></p>
+<p>报错如下：</p>
+<p>[root@mwdinit ~]# iscsiadm -m discovery -t sendtargets -p192.168.13.30</p>
+<p>iscsiadm: cannot make connection to 192.168.13.30: Connectionrefused</p>
+<p>iscsiadm: cannot make connection to 192.168.13.30: Connectionrefused</p>
+<p>iscsiadm: cannot make connection to 192.168.13.30: Connectionrefused</p>
+<p>iscsiadm: cannot make connection to 192.168.13.30: Connectionrefused</p>
+<p>iscsiadm: cannot make connection to 192.168.13.30: Connectionrefused</p>
+<p>iscsiadm: cannot make connection to 192.168.13.30: Connectionrefused</p>
+<p>iscsiadm: connection login retries (reopen_max) 5 exceeded</p>
+<p>iscsiadm: Could not perform SendTargets discovery: encounteredconnection failure</p>
+<p>解决：因服务端未指定ip和端口</p>
+<p>o- portals ..................................................................................[Portals: 1]</p>
+<p>  |       o- 192.168.13.30:3260</p>
+<p><strong>4.2、客户端查找不到服务端的ISCSI设备2</strong></p>
+<p>iscsiadm: Could not perform SendTargets discovery: encounteredconnection login failure</p>
+<p>解决：</p>
+<p>lsof -i:3260发现tgtd服务也启动了，这样与target服务共用了端口，把tgtd服务关掉并设置为开机不启动</p>
+<p>停止：# systemctl stop tgtd</p>
+<p>开机不启动：# systemctl disable tgtd</p>
+<p><strong>4.3、Could not create NetworkPortal in configFS</strong></p>
+<p>原因：发现</p>
+<p>portals..................................................................................[Portals: 1]</p>
+<p>  |       o- 0.0.0.0:3260</p>
+<p>已经存在了一个IP和端口，需要删除</p>
+<p>解决：/&gt;cd /iscsi/iqn.2017-05.com.mwdserver:iscsimwd1/tpg1/portals</p>
+<p>/&gt;/iscsi/iqn.20.../tpg1/portals&gt; delete 0.0.0.0 3260</p>
+<p>注：ip和端口之间有一个空格</p>
+</div>
+                </div>
+				
+        	</div>
+	
+		<div>
+				<div>
+			版权声明：本文为博主原创文章，未经博主允许不得转载。			https://blog.csdn.net/debimeng/article/details/72828780		</div>
+						
+						<div>
+			个人分类：
+						<a href="https://blog.csdn.net/debimeng/article/category/6913813" target="_blank">Linux						</a>
+		</div>
+							</div>
+	
+	
+			<div>
+		<a href="https://blog.csdn.net/debimeng/article/details/72778646" target="_blank">
+			上一篇CentOS7图形化关闭屏幕保护		</a>
+	</div>
+				<div>
+		<a href="https://blog.csdn.net/debimeng/article/details/72833107" target="_blank">
+			下一篇LVM---Linux		</a>
+	</div>
+	</div></div></div><br/></div></span>
+</div></body></html> 

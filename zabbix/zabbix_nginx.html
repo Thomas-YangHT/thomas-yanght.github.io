@@ -1,0 +1,175 @@
+<html>
+<head>
+  <title>Evernote Export</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/307027 (zh-CN, DDL); Windows/10.0.0 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+<a name="2642"/>
+
+<div>
+<span><div style="-evernote-webclip:true"><br/><div style="font-size: 16px; display: inline-block;"><div style="outline:currentcolor none 0px;box-sizing:border-box;"><div style="box-sizing:inherit;outline:currentcolor none 0px;font-family:&quot;SF Pro Display&quot;, Roboto, Noto, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, sans-serif;font-size:14px;line-height:1.57143;background-color:rgb(245, 246, 247);color:rgb(51, 51, 51);"><div style="outline:currentcolor none 0px;box-sizing:border-box;"><span style="box-sizing:inherit;outline:currentcolor none 0px;"><div style="box-sizing:inherit;outline:currentcolor none 0px;background:rgb(255, 255, 255) none repeat scroll 0% 0%;box-shadow:rgba(0, 0, 0, 0.05) 0px 2px 4px 0px;">
+	<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;margin-bottom:16px;">
+			<span style="box-sizing:inherit;outline:currentcolor none 0px;display:inline-block;width:26px;height:26px;line-height:26px;text-align:center;font-size:12px;border-radius:50%;color:rgb(202, 12, 22);border:1px solid rgb(244, 206, 208);margin-top:4px;margin-right:8px;float:left;">原</span>		<h1 style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;font-size:24px;word-break:break-all;">[Zabbix] Nginx 监控</h1>
+	</div>
+	<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;padding-bottom:14px;border-bottom:1px solid rgb(227, 227, 227);">
+		<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;color:rgb(133, 133, 133);display:flex;">
+												<span style="box-sizing:inherit;outline:currentcolor none 0px;margin-right:14px;">2017年08月02日 17:01:28</span>
+			<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;margin-left:auto;float:right;">
+				<span style="box-sizing:inherit;outline:currentcolor none 0px;margin-right:14px;">阅读数：165</span>
+											</div>
+		</div>
+	</div>
+	<div style="box-sizing:inherit;outline:currentcolor none 0px;display:block;position:relative;padding-top:16px;">
+		<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;word-break:break-all;">
+                    
+						<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;font-family:-apple-system, SF UI Text, Arial, PingFang SC, Hiragino Sans GB, Microsoft YaHei, WenQuanYi Micro Hei, sans-serif, SimHei, SimSun;word-break:break-all;">
+                
+1.启用nginx status配置<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/><br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+在默认主机里面加上location或者你希望能访问到的主机里面。<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+# vi /usr/local/nginx/conf/nginx.conf<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+    server {<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+        listen       80;<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+        server_name  localhost;<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+ <br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+        #charset koi8-r;<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+ <br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+        #access_log  logs/host.access.log  main;<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+ <br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+        location / {<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+            root   html;<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+            index  index.html index.htm;<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+        }<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+        location /ngx_status {<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+            stub_status on;<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+            access_log off;<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+            allow 127.0.0.1;<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+            deny all;<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/><p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;">        }</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/></p>
+2.重启nginx<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/><br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+请依照你的环境重启你的nginx<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+#ps -ef | grep nginx | grep -v grep | awk'{print $2}' | xargs kill -9<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+# /usr/local/nginx/sbin/nginx<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/><p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;">1</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/></p>
+3.打开status页面<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/><br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+# curl http://127.0.0.1/ngx_status<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/><br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/><br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+Active connections: 1<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+server accepts handled requests<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+ 12826 12826 12832<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+Reading: 0 Writing: 1 Waiting: 0<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/><p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"> </p>
+4.nginx status详解<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/><br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+activeconnections – 活跃的连接数量<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+server acceptshandled requests — 总共处理了11989个连接 , 成功创建11989次握手, 总共处理了11991个请求<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+reading —读取客户端的连接数.<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+writing —响应数据到客户端的数量<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+waiting — 开启keep-alive 的情况下,这个值等于 active – (reading+writing), 意思就是 Nginx已经处理完正在等候下一次请求指令的驻留连接.<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/><p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;">5. agent端配置</p>
+<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+#vi /etc/zabbix/zabbix_agentd.conf<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+PidFile=/var/run/zabbix/zabbix_agentd.pid<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+LogFile=/var/log/zabbix/zabbix_agentd.log<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+LogFileSize=0<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+Server=192.168.1.208<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+Hostname=192.168.1.208<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+Include=/etc/zabbix/zabbix_agentd.d/*.conf<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+UnsafeUserParameters=1<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+ <br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+#vi /etc/zabbix/zabbix_agentd.d/userparameter_nginx.conf<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+UserParameter=nginx.status[*],/etc/zabbix/shell/ngx_status.sh $1<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+ <br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+# vi /etc/zabbix/shell/ngx_status.sh      # nginx监控脚本<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+#!/bin/bash<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+# Description：zabbix监控nginx性能以及进程状态<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+# Note：此脚本需要配置在被监控端，否则ping检测将会得到不符合预期的结果<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+ <br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+HOST=&quot;127.0.0.1&quot;<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+PORT=&quot;80&quot;<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+ <br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+#检测nginx进程是否存在<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+function ping {<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+    /sbin/pidof nginx | wc -l<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+}<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+#检测nginx性能<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+function active {<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+    /usr/bin/curl &quot;http://$HOST:$PORT/ngx_status/&quot; 2&gt;/dev/null| grep 'Active' | awk '{print $NF}'<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+}<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+function reading {<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+    /usr/bin/curl &quot;http://$HOST:$PORT/ngx_status/&quot; 2&gt;/dev/null| grep 'Reading' | awk '{print $2}'<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+}<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+function writing {<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+    /usr/bin/curl &quot;http://$HOST:$PORT/ngx_status/&quot; 2&gt;/dev/null| grep 'Writing' | awk '{print $4}'<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+}<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+function waiting {<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+    /usr/bin/curl &quot;http://$HOST:$PORT/ngx_status/&quot; 2&gt;/dev/null| grep 'Waiting' | awk '{print $6}'<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+}<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+function accepts {<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+    /usr/bin/curl &quot;http://$HOST:$PORT/ngx_status/&quot; 2&gt;/dev/null| awk NR==3 | awk '{print $1}'<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+}<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+function handled {<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+    /usr/bin/curl &quot;http://$HOST:$PORT/ngx_status/&quot; 2&gt;/dev/null| awk NR==3 | awk '{print $2}'<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+}<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+function requests {<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+    /usr/bin/curl &quot;http://$HOST:$PORT/ngx_status/&quot; 2&gt;/dev/null| awk NR==3 | awk '{print $3}'<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+}<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+#执行function<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+$1<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+ <br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+# chown zabbix -R /etc/zabbix/shell<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+ <br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+#systemctl restart zabbix-agent<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+ <br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+ <br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+#手动测试<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+#zabbix_get -s 192.168.1.208 -p 10050 -k 'nginx.status[ping]'<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+1<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+ <br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/><p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;">6.WEB端导入模板</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;">下载页地址：<a href="http://download.csdn.net/detail/m0_37313242/9919137" rel="nofollow" style="outline:currentcolor none 0px;cursor:pointer;box-sizing:border-box;color:rgb(78, 161, 219);text-decoration:none;word-break:break-all;" target="_blank">点击打开链接</a></p>
+<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/><br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/><br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>            </div>
+                <span style="display:block;clear:both;"></span></div>
+				
+        	</div>
+	
+		<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;padding-bottom:16px;margin-top:16px;border-bottom:1px solid rgb(227, 227, 227);">
+				<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;font-size:12px;color:rgb(153, 153, 153);">
+			版权声明：本文为博主原创文章，未经博主允许不得转载。若一定要转载，请注明出处！			https://blog.csdn.net/m0_37313242/article/details/76585832		</div>
+						<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;margin-bottom:8px;font-size:12px;margin-top:8px;">
+			<span style="box-sizing:inherit;outline:currentcolor none 0px;color:rgb(77, 77, 77);">文章标签：</span>
+						<a href="http://so.csdn.net/so/search/s.do?q=Zabbix&amp;t=blog" style="box-sizing:inherit;outline:currentcolor none 0px;text-decoration:none;cursor:pointer;display:inline-block;word-break:break-all;margin-right:8px;padding:0px 8px;height:24px;min-width:24px;line-height:24px;border:1px solid rgb(204, 204, 204);border-radius:100px;color:rgb(77, 77, 77);text-align:center;" target="_blank">Zabbix						</a><a href="http://so.csdn.net/so/search/s.do?q=shell%E8%84%9A%E6%9C%AC&amp;t=blog" style="box-sizing:inherit;outline:currentcolor none 0px;text-decoration:none;cursor:pointer;display:inline-block;word-break:break-all;margin-right:8px;padding:0px 8px;height:24px;min-width:24px;line-height:24px;border:1px solid rgb(204, 204, 204);border-radius:100px;color:rgb(77, 77, 77);text-align:center;" target="_blank">shell脚本						</a><a href="http://so.csdn.net/so/search/s.do?q=nginx&amp;t=blog" style="box-sizing:inherit;outline:currentcolor none 0px;text-decoration:none;cursor:pointer;display:inline-block;word-break:break-all;margin-right:8px;padding:0px 8px;height:24px;min-width:24px;line-height:24px;border:1px solid rgb(204, 204, 204);border-radius:100px;color:rgb(77, 77, 77);text-align:center;" target="_blank">nginx						</a><a href="http://so.csdn.net/so/search/s.do?q=%E7%9B%91%E6%8E%A7&amp;t=blog" style="box-sizing:inherit;outline:currentcolor none 0px;text-decoration:none;cursor:pointer;display:inline-block;word-break:break-all;margin-right:8px;padding:0px 8px;height:24px;min-width:24px;line-height:24px;border:1px solid rgb(204, 204, 204);border-radius:100px;color:rgb(77, 77, 77);text-align:center;" target="_blank">监控						</a>
+		</div>
+						<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;margin-bottom:8px;font-size:12px;">
+			<span style="box-sizing:inherit;outline:currentcolor none 0px;color:rgb(77, 77, 77);">个人分类：</span>
+						<a href="https://blog.csdn.net/m0_37313242/article/category/7070986" style="box-sizing:inherit;outline:currentcolor none 0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(121, 165, 229);word-break:break-all;" target="_blank">【监控平台】						</a><a href="https://blog.csdn.net/m0_37313242/article/category/7262172" style="box-sizing:inherit;outline:currentcolor none 0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(121, 165, 229);word-break:break-all;" target="_blank">---- Zabbix						</a>
+		</div>
+								<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;font-size:12px;margin-bottom:0px;">
+			<span style="box-sizing:inherit;outline:currentcolor none 0px;color:rgb(77, 77, 77);">相关热词：</span>
+						<a href="https://blog.csdn.net/Wk_yyy/article/details/80489738" style="box-sizing:inherit;outline:currentcolor none 0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(121, 165, 229);word-break:break-all;" target="_blank">
+			zabbix			</a>
+						<a href="https://blog.csdn.net/debimeng/article/details/78130838" style="box-sizing:inherit;outline:currentcolor none 0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(121, 165, 229);word-break:break-all;" target="_blank">
+			zabbix框框			</a>
+						<a href="https://blog.csdn.net/u012062455/article/details/62221703" style="box-sizing:inherit;outline:currentcolor none 0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(121, 165, 229);word-break:break-all;" target="_blank">
+			zabbix附件			</a>
+						<a href="https://blog.csdn.net/zhuangzi123456/article/details/80655525" style="box-sizing:inherit;outline:currentcolor none 0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(121, 165, 229);word-break:break-all;" target="_blank">
+			zabbix导出			</a>
+						<a href="https://blog.csdn.net/wanglei_storage/article/details/48326125" style="box-sizing:inherit;outline:currentcolor none 0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(121, 165, 229);word-break:break-all;" target="_blank">
+			zabbix翻译			</a>
+					</div>
+			</div>
+	
+	
+			<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:18px;line-height:28px;width:48%;display:inline-block;margin-right:16px;">
+		<a href="https://blog.csdn.net/m0_37313242/article/details/76582072" style="box-sizing:inherit;outline:currentcolor none 0px;color:rgb(51, 51, 51);text-decoration:none;cursor:pointer;">
+			<span style="box-sizing:inherit;outline:currentcolor none 0px;margin-right:8px;padding:6px 8px;font-size:12px;border:1px solid rgb(227, 227, 227);color:rgb(77, 77, 77);">上一篇</span>[Zabbix] Apache 监控		</a>
+	</div>
+				<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:28px;width:48%;display:inline-block;margin-bottom:0px;margin-top:0px;">
+		<a href="https://blog.csdn.net/m0_37313242/article/details/76587824" style="box-sizing:inherit;outline:currentcolor none 0px;color:rgb(51, 51, 51);text-decoration:none;cursor:pointer;">
+			<span style="box-sizing:inherit;outline:currentcolor none 0px;margin-right:8px;padding:6px 8px;font-size:12px;border:1px solid rgb(227, 227, 227);color:rgb(77, 77, 77);">下一篇</span>[Zabbix] Redis 监控		</a>
+	</div>
+	</div></span></div></div></div></div><br/></div></span>
+</div></body></html> 

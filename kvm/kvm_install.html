@@ -1,0 +1,231 @@
+<html>
+<head>
+  <title>Evernote Export</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/307027 (zh-CN, DDL); Windows/10.0.0 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+<a name="3342"/>
+
+<div>
+<span><div style="-evernote-webclip:true"><br/><div><div><div><div><h1>CentOS7.2部署KVM虚拟机</h1><div><div></div></div></div>
+			
+			
+
+			<p>学习了关于PostGis、OSM数据以及Mapnik相关内容，接下来将利用假期重点学习PostgreSQL-XL和瓦片服务器集群技术，因此先把环境搭好。计划采用KVM来充分利用家里不太宽裕的“服务器”资源，以便实现弹性计算:)</p>
+<p><a href="https://www.linuxidc.com/topicnews.aspx?tid=14" target="_blank" title="CentOS">CentOS</a>版本：64位 7.2  1511 </p>
+<h2>一、安装KVM</h2>
+<p>1. 验证CPU是否支持KVM；如果结果中有vmx（Intel）或svm(AMD)字样，就说明CPU的支持的。</p>
+<div>
+<pre>egrep '(vmx|svm)' /proc/cpuinfo</pre>
+</div>
+<p></p><div><img src="kvm_install_files/170127153733741.png" type="image/png" data-filename="170127153733741.png" height="164" width="576"/></div><p></p>
+<p>2. 关闭SELinux，将 /etc/sysconfig/selinux 中的 SELinux=enforcing 修改为 SELinux=disabled </p>
+<p></p><div><img src="kvm_install_files/170127153733742.png" type="image/png" data-filename="170127153733742.png" height="155" width="576"/></div><p></p>
+<p>3. 最小安装的CentOS安装一些最基本的包（可选项，因为我是刚安装好的CentOS，所以为了下面方便点，先把一些必要的工具安装下）</p>
+<div>
+<pre>yum install epel-release net-tools vim unzip zip wget ftp -y</pre>
+</div>
+<p>4. 安装KVM及其依赖项</p>
+<div>
+<pre>yum install qemu-kvm libvirt virt-install bridge-utils -y</pre>
+</div>
+<p>5. 验证安装结果，下图说明已经成功安装了</p>
+<div>
+<pre>lsmod | grep kvm</pre>
+</div>
+<p><img src="kvm_install_files/170127153733743.png" type="image/png" data-filename="170127153733743.png" height="51" width="359"/></p>
+<p>6. 开启kvm服务，并且设置其开机自动启动</p>
+<div>
+<pre>systemctl start libvirtd
+
+systemctl enable libvirtd</pre>
+</div>
+<p>7. 查看状态操作结果,如下图所示，说明运行情况良好</p>
+<div>
+<pre>systemctl status libvirtd
+
+systemctl is-enabled libvirtd</pre>
+</div>
+<p></p><div><img src="kvm_install_files/170127153733744.png" type="image/png" data-filename="170127153733744.png" height="241" width="576"/></div><p></p>
+<p>8. 配置网桥模式，先将 /etc/sysconfig/network-scripts/ 目录下的网卡配置文件备份一份(<strong>不要备在当前目录以及子目录下，其他目录随意</strong>)</p>
+<p>a. 创建 ifcfg-br0 文件，内容如下：</p>
+<div>
+<pre>BOOTPROTO=static
+DEVICE=br0
+TYPE=Bridge
+NM_CONTROLLED=no
+IPADDR=192.168.1.95
+NETMASK=255.255.255.0
+GATEWAY=192.168.1.1
+DNS1=61.177.7.1
+DNS2=8.8.8.8</pre>
+</div>
+<p>b. 移除掉原来的 ifcfg-enp0s25 ,重新创建该文件，内容如下：</p>
+<div>
+<pre>BOOTPROTO=none
+DEVICE=enp0s25
+NM_CONTROLLED=no
+ONBOOT=yes
+BRIDGE=br0</pre>
+</div>
+<p>c. 重启网络服务</p>
+<div>
+<pre>systemctl restart network</pre>
+</div>
+<p>使用 ifconfig 验证操作结果,多了一块网卡br0，现在访问 think8848-srv02 使用 192.168.1.95 就可以了。</p>
+<p></p><div><img src="kvm_install_files/170127153733746.png" type="image/png" data-filename="170127153733746.png" height="518" width="576"/></div><p></p>
+<p>二、安装虚拟机 </p>
+<p>1. 准备操作系统安装镜像文件，在本文中将使用和宿主环境一样的CentOS7.2，把该文件放到 /home/iso 目录下</p>
+<p><img src="kvm_install_files/170127153733745.png" type="image/png" data-filename="170127153733745.png" height="84" width="266"/></p>
+<p>2. 创建虚拟机文件存放的目录</p>
+<div>
+<pre>mkdir -p /home/kvm-bak</pre>
+</div>
+<p>3. 使用 virt-install 创建虚拟机</p>
+<div>
+<pre>virt-install -n think8848-kvmbase -r 2048 --disk /home/kvm-bak/think8848-kvmbase.img,format=qcow2,size=20 --network bridge=br0 --os-type=linux --os-variant=rhel7.2 --cdrom /home/iso/CentOS-7-x86_64-DVD-1511.iso --vnc --vncport=5910 --vnclisten=0.0.0.0</pre>
+</div>
+<p> 操作结果显示：</p>
+<p></p><div><img src="kvm_install_files/170127153733747.png" type="image/png" data-filename="170127153733747.png" height="149" width="576"/></div><p></p>
+<p>不要理会里面提示的错误，接着往下走</p>
+<p>4. 打开防火墙上的5910端口</p>
+<div>
+<pre>firewall-cmd --zone=public --add-port=5910/tcp --permanent
+
+firewall-cmd --reload</pre>
+</div>
+<p><img src="kvm_install_files/170127153733748.png" type="image/png" data-filename="170127153733748.png" height="61" width="706"/></p>
+<p>5. 使用VNC连接该虚拟机，进行虚拟机操作系统的安装，直接到VNC<a href="https://www.realvnc.com/download/vnc/" target="_blank">官网上下载</a>最新版的VNC Viewer即可</p>
+<p>a. VNC Viewer</p>
+<p></p><div><img src="kvm_install_files/170127153733749.png" type="image/png" data-filename="170127153733749.png" height="412" width="576"/></div><p></p>
+<p>b. 新建连接，提供宿主IP、端口号(在virt-install创建过程中指定的)，以及名称</p>
+<p></p><div><img src="kvm_install_files/1701271537337410.png" type="image/png" data-filename="1701271537337410.png" height="633" width="466"/></div><p></p>
+<p>c. 在Expert页签中，将ColorLevel的值由原来的 pal8 修改为 rgb222 ，点击OK按钮保存</p>
+<p></p><div><img src="kvm_install_files/1701271537337411.png" type="image/png" data-filename="1701271537337411.png" height="633" width="466"/></div><p></p>
+<p>d. 如果你像我一样，边操作边还在做笔记，等你双击连接的名称后，安装界面都准备好了</p>
+<p></p><div><img src="kvm_install_files/1701271537337412.png" type="image/png" data-filename="1701271537337412.png" height="379" width="576"/></div><p></p>
+<p>接下来就安装CentOS吧，过程略。</p>
+<p>6. 安装完CentOS，系统要求重启，这时候虚拟机没有重启(也不知是因为什么问题)，VNC也连不上，先在宿主机上查看虚拟机状态，显示think8848-kvmbase为关闭状态</p>
+<div>
+<pre>virsh list --all</pre>
+</div>
+<p></p><div><img src="kvm_install_files/1701271537337413.png" type="image/png" data-filename="1701271537337413.png" height="75" width="459"/></div><p></p>
+<p>7. 手动启动虚拟机</p>
+<div>
+<pre>virsh start think8848-kvmbase</pre>
+</div>
+<p><img src="kvm_install_files/1701271537337414.png" type="image/png" data-filename="1701271537337414.png" height="54" width="564"/></p>
+<p>再次使用VNC连接，发现已经可以连进去了</p>
+<p></p><div><img src="kvm_install_files/1701271537337415.png" type="image/png" data-filename="1701271537337415.png" height="143" width="405"/></div><p></p>
+<h2>三、简单配置KVM虚拟机</h2>
+<p>1. 网桥配置，这里值得一提的是，如果你在虚拟机中安装CentOS过程中，配置了合适的网格参数，那么这时虚拟机里应该就可以使用网络了。如果当时就采用系统安装包的默认参数，未启用网卡，那么此时你需要启动虚拟机的网卡，先看下虚拟机网卡的配置文件列表，貌似和普通电脑安装没啥区别，网卡的配置文件是 ifcfg-eth0 </p>
+<p></p><div><img src="kvm_install_files/1701271537337416.png" type="image/png" data-filename="1701271537337416.png" height="72" width="576"/></div><p></p>
+<p>再查看 ifcfg-eth0配置文件，和普通电脑安装的也没啥区别，按照要求呢，貌似在一些文章中介绍，说需要添加一行配置 NM_CONTROLLED=no ，我没添加也没发现有什么问题。</p>
+<p></p><div><img src="kvm_install_files/1701271537337417.png" type="image/png" data-filename="1701271537337417.png" height="354" width="472"/></div><p></p>
+<p>2. 配置在宿主端登录虚拟机shell。当然在宿主端也是可以通过SSH登录，但是直接登录貌似也是一个不错的方式。这个配置主要有两个步骤：</p>
+<p>a. 编辑 /etc/default/grub 文件，对照如下：</p>
+<p>编辑前：</p>
+<p></p><div><img src="kvm_install_files/1701271537337418.png" type="image/png" data-filename="1701271537337418.png" height="96" width="576"/></div><p></p>
+<p>编辑后：</p>
+<p></p><div><img src="kvm_install_files/1701271537337419.png" type="image/png" data-filename="1701271537337419.png" height="134" width="576"/></div><p></p>
+<p>文本内容：</p>
+<div>
+<pre>GRUB_DISTRIBUTOR=&quot;$(sed 's, release .*$,,g' /etc/system-release)&quot;
+GRUB_DEFAULT=saved
+GRUB_DISABLE_SUBMENU=true
+GRUB_TERMINAL=&quot;console serial&quot;
+GRUB_SERIAL_COMMAND=&quot;serial --speed=115200 --unit=0 --word=8 --parity=no --stop=1&quot;
+GRUB_CMDLINE_LINUX=&quot;rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb&quot;
+GRUB_CMDLINE_LINUX_DEFAULT=&quot;console=tty1 console=ttyS0,115200&quot;
+GRUB_DISABLE_RECOVERY=&quot;true&quot;</pre>
+</div>
+<p>b. 运行下面一行的代码</p>
+<div>
+<pre>grub2-mkconfig -o /boot/grub2/grub.cfg</pre>
+</div>
+<p></p><div><img src="kvm_install_files/1701271537337420.png" type="image/png" data-filename="1701271537337420.png" height="114" width="576"/></div><p></p>
+<p>c. 重启虚拟机 reboot </p>
+<p>d. 在宿主机上进入虚拟机控制台，想退出时使用 Ctrl 键+ ]  （左方括号）键退出。</p>
+<div>
+<pre>virsh console think8848-kvmbase</pre>
+</div>
+<p></p><div><img src="kvm_install_files/1701271537337421.png" type="image/png" data-filename="1701271537337421.png" height="246" width="576"/></div><p></p>
+<h2>四、迁移虚拟机 </h2>
+<p>虚拟机建好后，最大的好处就是任由我们折腾，而不用担心重装系统的麻烦。所以一定要知道虚拟机怎么复制迁移，这里有两种情况，一种是本机上镜像复制，另一种是将本机镜像迁移到其他服务器上，本节参考自<a href="http://koumm.blog.51cto.com/703525/1291793" target="_blank">这里</a>，感谢koumm。</p>
+<p>1. 本机复制</p>
+<p>a. 先关闭虚拟机</p>
+<div>
+<pre>virsh shutdown think8848-kvmbase</pre>
+</div>
+<p></p><div><img src="kvm_install_files/1701271537337422.png" type="image/png" data-filename="1701271537337422.png" height="280" width="576"/></div><p></p>
+<p>b. 在 /home 下新建文件夹 /home/kvm-img </p>
+<div>
+<pre>mkdir -p /home/kvm-img</pre>
+</div>
+<p>c. 使用 virt-clone 克隆think8848-kvmbase为新的虚拟机</p>
+<div>
+<pre>virt-clone -o think8848-kvmbase -n think8848-kvm01 -f /home/kvm-img/think8848-kvm01.img</pre>
+</div>
+<p><img src="kvm_install_files/1701271537337423.png" type="image/png" data-filename="1701271537337423.png" height="37" width="706"/></p>
+<p>克隆完成</p>
+<p></p><div><img src="kvm_install_files/1701271537337424.png" type="image/png" data-filename="1701271537337424.png" height="60" width="576"/></div><p></p>
+<p>使用 virsh list --all 查看</p>
+<p></p><div><img src="kvm_install_files/1701271537337425.png" type="image/png" data-filename="1701271537337425.png" height="91" width="430"/></div><p></p>
+<p>d. 开启think8848-kvm01，然后修改IP地址、主机名</p>
+<div>
+<pre>virsh start think8848-kvm01
+
+virsh console think8848-kvm01
+
+#等虚拟机启动好后，用root登录
+
+hostname think8848-kvm01
+
+#编辑/etc/hostname文件，修改主机名为think8848-kvm01
+vi /etc/hostname
+
+#编辑/etc/sysconfig/network-scripts/ifcfg-eth0，修改IPADDR</pre>
+</div>
+<p>e.  reboot 重启虚拟机，重启后刚才修改的内容已经生效了。</p>
+<p>2. 将虚拟机镜像迁移到其他服务器上</p>
+<p> a. 先将虚拟机的配置文件和镜像文件放到合适的位置(我搭了一台FTP服务器，方便测试时所有的文件传输，如下图所示)</p>
+<p></p><div><img src="kvm_install_files/1701271537337427.png" type="image/png" data-filename="1701271537337427.png" height="479" width="576"/></div><p></p>
+<p>b. 现在到服务器转战到think8848-srv01(IP:192.168.1.96)，刚才虚拟机是在think8848-srv02（IP:192.168.1.95）上创建的。<strong>以下所有操作均是在think8848-srv01上进行的</strong></p>
+<p>c. 将ftp上的think8848-kvm01.img放到/home/kvm-img目录，将think8848-kvm01.xml放到/etc/libvirt/qemu目录中</p>
+<p></p><div><img src="kvm_install_files/1701271537337428.png" type="image/png" data-filename="1701271537337428.png" height="88" width="576"/></div><p></p>
+<p>d. 编辑think8848-kvm02.xml，将里面所有think8848-kvm01替换为think8848-kvm02，然后把UUID换为新的(直接使用<a href="https://www.guidgen.com/" target="_blank">这个</a>在线工具生成吧)</p>
+<p></p><div><img src="kvm_install_files/1701271537337429.png" type="image/png" data-filename="1701271537337429.png" height="587" width="576"/></div><p></p>
+<p>e. 定义新虚拟机</p>
+<div>
+<pre>virsh define /etc/libvirt/qemu/think8848-kvm02.xml</pre>
+</div>
+<p></p><div><img src="kvm_install_files/1701271537337430.png" type="image/png" data-filename="1701271537337430.png" height="335" width="576"/></div><p></p>
+<p>图中think8848-kvm01是我之前在宿主机中配置的虚拟机，恰好名称与之前的重复了。我在think8848-kvm01上没有安装ftp客户端，在新迁移的虚拟机里面安装了ftp，可以利用这个包验证虚拟机是否正确</p>
+<p><img src="kvm_install_files/1701271537337431.png" type="image/png" data-filename="1701271537337431.png" height="34" width="358"/></p>
+<p>OK,说明没有问题</p>
+<p>f. 现在是时候再给新的虚拟机指定新主机名和IP了。刚才是我们重启生效的，这次我们不要重启了，先使用 systemctl restart network 使新IP生效，然后再 exit 注销用户使主机名生效，就可以了。</p>
+<p></p><div><img src="kvm_install_files/1701271537337432.png" type="image/png" data-filename="1701271537337432.png" height="473" width="576"/></div><p></p>
+<p>最后一个问题，如果在克隆或迁移后想使用VNC连接，那就需要重新指定VNC的端口号，将 /etc/libvirt/qemu/think8848-kvm02.xml 中的VNC端口号修改你需要的值即可。</p>
+<p><img src="kvm_install_files/1701271537337434.png" type="image/png" data-filename="1701271537337434.png" height="49" width="545"/> </p>
+<p><img src="kvm_install_files/1701271537337433.png" type="image/png" data-filename="1701271537337433.png" height="54" width="551"/></p>
+<h2> 五、KVM管理</h2>
+<p>可以参考：虚拟化之KVM virsh常用命令篇  <a href="https://www.linuxidc.com/Linux/2017-01/139993.htm" target="_blank">http://www.linuxidc.com/Linux/2017-01/139993.htm</a></p>
+<p>在<a href="https://www.linuxidc.com/topicnews.aspx?tid=2" target="_blank" title="Ubuntu">Ubuntu</a>上安装KVM并搭建虚拟环境 <a href="https://www.linuxidc.com/Linux/2015-10/123788.htm" target="_blank">http://www.linuxidc.com/Linux/2015-10/123788.htm</a></p>
+<p>KVM中Linux虚拟机的硬盘添加方法 <a href="https://www.linuxidc.com/Linux/2013-02/80067.htm" target="_blank">http://www.linuxidc.com/Linux/2013-02/80067.htm</a></p>
+<p>Linux入门学习教程：虚拟机体验之KVM篇  <a href="https://www.linuxidc.com/Linux/2015-03/114462.htm" target="_blank">http://www.linuxidc.com/Linux/2015-03/114462.htm</a> </p>
+<p>RHEL6 KVM虚拟化创建桥接网卡-网桥 <a href="https://www.linuxidc.com/Linux/2013-08/88517.htm" target="_blank">http://www.linuxidc.com/Linux/2013-08/88517.htm</a></p>
+<p><a href="https://www.linuxidc.com/topicnews.aspx?tid=10" target="_blank" title="RedHat">RedHat</a> Linux KVM虚拟机桥接 <a href="https://www.linuxidc.com/Linux/2013-02/79934.htmCentOS" target="_blank">http://www.linuxidc.com/Linux/2013-02/79934.htm</a></p>
+<p>CentOS 5.6下KVM的安装/桥接设置/虚拟机创建及运行 <a href="https://www.linuxidc.com/Linux/2012-12/76883.htm" target="_blank">http://www.linuxidc.com/Linux/2012-12/76883.htm</a></p>
+<p>Ubuntu下用libvirt安装KVM虚拟机时找不到/bin/qemu-kvm问题解决 <a href="https://www.linuxidc.com/Linux/2013-08/88985.htm" target="_blank">http://www.linuxidc.com/Linux/2013-08/88985.htm</a></p>
+<p>RedHat6.5下安装配置KVM虚拟机 <a href="https://www.linuxidc.com/Linux/2014-10/107972.htm" target="_blank">http://www.linuxidc.com/Linux/2014-10/107972.htm</a></p>
+<p>KVM虚拟化平台部署  <a href="https://www.linuxidc.com/Linux/2016-10/136164.htm" target="_blank">http://www.linuxidc.com/Linux/2016-10/136164.htm</a></p>
+<p><strong>本文永久更新链接地址</strong>：<a href="https://www.linuxidc.com/Linux/2017-01/140007.htm" target="_blank">http://www.linuxidc.com/Linux/2017-01/140007.htm</a></p></div></div></div><br/></div></span>
+</div></body></html> 

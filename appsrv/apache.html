@@ -1,0 +1,347 @@
+<html>
+<head>
+  <title>Evernote Export</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/307027 (zh-CN, DDL); Windows/10.0.0 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+<a name="2873"/>
+
+<div><span>
+  <div>
+<div style="font-size: 16px; display: inline-block; min-width: 100%;position: relative;"><div style="outline:0px;box-sizing:border-box;"><div style="box-sizing:inherit;outline:0px;background:url(https://csdnimg.cn/release/phoenix/themes/skin-blackboard/images/bg.jpg) repeat;font-family:&quot;SF Pro Display&quot;, Roboto, Noto, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, sans-serif;font-size:14px;line-height:1.57143;color:rgb(51, 51, 51);"><div style="outline:0px;box-sizing:border-box;"><span style="box-sizing:inherit;outline:0px;"><div style="box-sizing:inherit;outline:0px;background:rgb(255, 255, 255);box-shadow:rgba(0, 0, 0, 0.05) 0px 2px 4px 0px;">
+	<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;margin-bottom:16px;">
+			<span style="border-radius:50%;display:inline-block;width:26px;height:26px;line-height:26px;text-align:center;font-size:12px;outline:0px;box-sizing:inherit;border:1px solid rgb(244, 206, 208);color:rgb(202, 12, 22);margin-right:8px;margin-top:4px;float:left;">原</span>		<h1 style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;font-size:24px;word-break:break-all;">apache高级配置</h1>
+	</div>
+	<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;padding-bottom:14px;border-bottom:1px solid rgb(227, 227, 227);">
+		<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;color:rgb(133, 133, 133);display:flex;">
+												<span style="box-sizing:inherit;outline:0px;margin-right:14px;">2018年05月31日 14:02:24</span>
+			<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;margin-left:auto;float:right;">
+				<span style="box-sizing:inherit;outline:0px;margin-right:14px;">阅读数：170</span>
+											</div>
+		</div>
+	</div>
+	<div style="box-sizing:inherit;outline:0px;display:block;position:relative;padding-top:16px;">
+		<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;word-break:break-all;">
+                    
+						<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;font-family:-apple-system, &quot;SF UI Text&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro Hei&quot;, sans-serif, SimHei, SimSun;word-break:break-all;">
+                <h3 style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 16px;font-size:22px;color:rgb(79, 79, 79);font-weight:700;line-height:30px;word-break:break-all;"><a name="t0" style="outline:0px;cursor:pointer;box-sizing:border-box;color:rgb(78, 161, 219);text-decoration:none;word-break:break-all;"></a><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">一、安装</strong></h3>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"> </p>
+
+<ul style="outline:0px;list-style:none;box-sizing:border-box;padding:0px;margin:0px 0px 24px;word-break:break-all;"><li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">yum install httpd -y     ##安装</strong></li>
+	<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">firewall-cmd --permanent --add-service=http    ##防火墙配置</strong></li>
+	<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">systemctl restart firewalld     ##重启防火墙</strong></li>
+</ul><h3 style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 16px;font-size:22px;color:rgb(79, 79, 79);font-weight:700;line-height:30px;word-break:break-all;"><a name="t1" style="outline:0px;cursor:pointer;box-sizing:border-box;color:rgb(78, 161, 219);text-decoration:none;word-break:break-all;"></a>二、配置文件/etc/httpd/conf/httpd.conf</h3>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">实验过程中要注意安全上下文的一致，</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">DocumentRoot &quot;/var/www/html&quot;    ##默认发布目录</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">DirectoryIndex index.html        ##默认发布文件</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">默认打开</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">更改默认发布目录为/var/www/</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><img src="apache_files/20180531001235940" type="image/png" data-filename="20180531001235940" height="76" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="310"/></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">更改默认发布文件为text</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531000212615" type="image/png" data-filename="20180531000212615" height="82" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="240"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">编辑文件text写上内容</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531000425225" type="image/png" data-filename="20180531000425225" height="63" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="269"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">默认打开文件变为我们设置的text</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/2018053100135283" type="image/png" data-filename="2018053100135283" height="232" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="555"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"> </p>
+
+<h3 style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 16px;font-size:22px;color:rgb(79, 79, 79);font-weight:700;line-height:30px;word-break:break-all;"><a name="t2" style="outline:0px;cursor:pointer;box-sizing:border-box;color:rgb(78, 161, 219);text-decoration:none;word-break:break-all;"></a><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">三、虚拟主机</strong></h3>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"> </p>
+
+<ul style="outline:0px;list-style:none;box-sizing:border-box;padding:0px;margin:0px 0px 24px;word-break:break-all;"><li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;color:#333333;">通常一个父域下由许多子域，每个子域由不同的功能，所以访问每个子域时，都应该访问子域的文件，所以虚拟主机允许您从一个httpd服务器同时为多个网站提供服务。在本节中,我们将了解基于名称的虚拟主机其中多个主机名都指向同一个IP地址,但是Web服务器根据用于到达站点的主机名提供具有不同内容的不同网站</span></strong></li>
+</ul><p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">还原上一步的更改后。</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">创建目录,不同子域的发布目录。</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531001930808" type="image/png" data-filename="20180531001930808" height="267" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="687"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">配置/etc/hosts</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531002141522" type="image/png" data-filename="20180531002141522" height="118" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="716"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">编辑http配置文件</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531004737475" type="image/png" data-filename="20180531004737475" height="108" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="413"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">default.conf</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531003402416" type="image/png" data-filename="20180531003402416" height="122" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="482"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">music.conf</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531003420517" type="image/png" data-filename="20180531003420517" height="194" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="451"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">news.conf</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531003438488" type="image/png" data-filename="20180531003438488" height="183" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="445"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">重启服务，访问不同的域名时，会访问到不同的文件。</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">-------------------------------------------------</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531004904592" type="image/png" data-filename="20180531004904592" height="208" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="468"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">-------------------------------------------------</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531004925143" type="image/png" data-filename="20180531004925143" height="201" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="352"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">--------------------------------------------</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531004951841" type="image/png" data-filename="20180531004951841" height="170" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="397"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">------------------------------------------------</strong></p>
+
+<h3 style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 16px;font-size:22px;color:rgb(79, 79, 79);font-weight:700;line-height:30px;word-break:break-all;"><a name="t3" style="outline:0px;cursor:pointer;box-sizing:border-box;color:rgb(78, 161, 219);text-decoration:none;word-break:break-all;"></a>四、身份验证</h3>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">设置172.25.254.11不允许访问</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">先读allow，后读deny，deny会覆盖部分allow的权限</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531094313209" type="image/png" data-filename="20180531094313209" height="102" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="393"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">效果</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531094535739" type="image/png" data-filename="20180531094535739" height="246" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="600"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">---------------------------------------------------</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">2、虚拟用户访问控制</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">1、在/etc/httpd/目录下创建用户，生成用户文件。</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531095224543" type="image/png" data-filename="20180531095224543" height="235" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="713"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">可以看出文件有两个用户。</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">2、配置httpd配置文件，关联用户文件，</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">require user lee 只允许lee用户登陆。</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531100054364" type="image/png" data-filename="20180531100054364" height="128" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="504"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">测试</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">用户lee能正常登陆，而haha这个用户是登不上的。</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531100313290" type="image/png" data-filename="20180531100313290" height="396" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="852"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><img src="apache_files/20180531100322313" type="image/png" data-filename="20180531100322313" height="173" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="438"/></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;">-----------------------------------------------</p>
+
+<h3 style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 16px;font-size:22px;color:rgb(79, 79, 79);font-weight:700;line-height:30px;word-break:break-all;"><a name="t4" style="outline:0px;cursor:pointer;box-sizing:border-box;color:rgb(78, 161, 219);text-decoration:none;word-break:break-all;"></a>五、Https</h3>
+
+<ul style="outline:0px;list-style:none;box-sizing:border-box;padding:0px;margin:0px 0px 24px;word-break:break-all;"><li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">Https访问时自动对数据加密，为了网络数据传输的安全</strong></li>
+	<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">对Https访问，需要安装mod_ssl</strong></li>
+</ul><p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">yum install mod_ssl</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"> </p>
+
+<ul style="outline:0px;list-style:none;box-sizing:border-box;padding:0px;margin:0px 0px 24px;word-break:break-all;"><li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">此时配置目录自动生成ssl.conf配置文件</strong></li>
+</ul><p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><img src="apache_files/20180531103117418" type="image/png" data-filename="20180531103117418" height="92" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="593"/></p>
+
+<ul style="outline:0px;list-style:none;box-sizing:border-box;padding:0px;margin:0px 0px 24px;word-break:break-all;"><li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">访问时说网站证书不可信。</strong></li>
+</ul><p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><img src="apache_files/20180531104606777" type="image/png" data-filename="20180531104606777" height="476" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="852"/></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"> </p>
+
+<ul style="outline:0px;list-style:none;box-sizing:border-box;padding:0px;margin:0px 0px 24px;word-break:break-all;"><li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">生成证书。</strong></li>
+	<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">首先安装软件crypto-utils.x86_64</strong></li>
+	<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">yum install crypto-utils.x86_64 </strong></li>
+	<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">证书制作</strong></li>
+</ul><p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531105027425" type="image/png" data-filename="20180531105027425" height="22" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="532"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">告诉我们生成的路径</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><img src="apache_files/20180531105119298" type="image/png" data-filename="20180531105119298" height="430" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="723"/></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">然后就是秘史多少位，选择快的1024位</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><img src="apache_files/20180531105234716" type="image/png" data-filename="20180531105234716" height="429" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="719"/></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">然后就是生成的过程，可能需要等一会。</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531105419832" type="image/png" data-filename="20180531105419832" height="433" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="723"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">完事后就到这一步了。是否发送到ca认证，选择否。</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531105635265" type="image/png" data-filename="20180531105635265" height="435" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="717"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">是否加密私钥，next。</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531110000626" type="image/png" data-filename="20180531110000626" height="431" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="718"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">填写信息，next，就ok</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531110121837" type="image/png" data-filename="20180531110121837" height="432" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="718"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"> </p>
+
+<ul style="outline:0px;list-style:none;box-sizing:border-box;padding:0px;margin:0px 0px 24px;word-break:break-all;"><li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">生成了两个文件</strong></li>
+</ul><p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">/etc/pki/tls/certs/www.westos.com.crt<br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+/etc/pki/tls/private/www.westos.com.key</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">配置ssl.conf</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531114705798" type="image/png" data-filename="20180531114705798" height="319" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="718"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">给网站添加证书，点add execption</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531114740585" type="image/png" data-filename="20180531114740585" height="466" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="852"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">点get certificate,然后点confirm security exception</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531115016125" type="image/png" data-filename="20180531115016125" height="586" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="852"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">就ok了，网站证书为我们刚才生成的。</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531115240979" type="image/png" data-filename="20180531115240979" height="449" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="852"/></strong></p>
+
+<h3 style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 16px;font-size:22px;color:rgb(79, 79, 79);font-weight:700;line-height:30px;word-break:break-all;"><a name="t5" style="outline:0px;cursor:pointer;box-sizing:border-box;color:rgb(78, 161, 219);text-decoration:none;word-break:break-all;"></a><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">六、Https地址转换</strong></h3>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">1、配置/etc/httpd/conf.d/login.conf的http配置文件</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531123338751" type="image/png" data-filename="20180531123338751" height="356" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="704"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">建立/var/www/html/login 建立默认发布文件<strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">/var/www/html/login/index.html</strong></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531121500360" type="image/png" data-filename="20180531121500360" height="93" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="601"/></strong></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">修改/etc/hosts</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531121557869" type="image/png" data-filename="20180531121557869" height="116" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="485"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">然后重启服务，给网页login.westos.com刚才的证书，</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">然后登陆http://login.westos.com 会自动跳转到https://login.westos.com页面。</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"> <img src="apache_files/20180531123737345" type="image/png" data-filename="20180531123737345" height="225" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="359"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">--------------------------------------------------</strong></p>
+
+<h3 style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 16px;font-size:22px;color:rgb(79, 79, 79);font-weight:700;line-height:30px;word-break:break-all;"><a name="t6" style="outline:0px;cursor:pointer;box-sizing:border-box;color:rgb(78, 161, 219);text-decoration:none;word-break:break-all;"></a><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">七、代理服务器 Squid</strong></h3>
+
+<ul style="outline:0px;list-style:none;box-sizing:border-box;padding:0px;margin:0px 0px 24px;word-break:break-all;"><li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">正向代理</strong></li>
+	<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">yum install squid</strong></li>
+	<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">vim /etc/squid/squid.conf</strong></li>
+</ul><p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531124805975" type="image/png" data-filename="20180531124805975" height="336" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="671"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">然后其他主机就能设置代理为squid服务器ip:3128端口，来通过squid服务器上网了，一般用于翻墙。</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"> </p>
+
+<ul style="outline:0px;list-style:none;box-sizing:border-box;padding:0px;margin:0px 0px 24px;word-break:break-all;"><li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">反向代理，（相当于代理apache服务器）</strong></li>
+	<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">配置/etc/squid/squid.conf</strong></li>
+	<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">注意要配置防火墙能通过http服务</strong></li>
+</ul><p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531132637821" type="image/png" data-filename="20180531132637821" height="424" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="718"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">然后172.25.254.111浏览器访问squid服务器地址，会得到apache的172.25.254.11上发布的内容。</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531132845263" type="image/png" data-filename="20180531132845263" height="253" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="542"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">----------------------------------------------------------------------</strong></p>
+
+<h3 style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 16px;font-size:22px;color:rgb(79, 79, 79);font-weight:700;line-height:30px;word-break:break-all;"><a name="t7" style="outline:0px;cursor:pointer;box-sizing:border-box;color:rgb(78, 161, 219);text-decoration:none;word-break:break-all;"></a><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">八、搭建论坛</strong></h3>
+
+<ul style="outline:0px;list-style:none;box-sizing:border-box;padding:0px;margin:0px 0px 24px;word-break:break-all;"><li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">安装php、mod_ssl、http、php-mysql、mariadb-server</strong></li>
+	<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">把论坛数据包放在httpd默认发不目录，解压。Discuz_X3.2_SC_UTF8.zip（这是我下载好的）</strong></li>
+	<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">chmod 777 upload/ -R    #添加权限</strong></li>
+	<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">systemctl restart httpd.service</strong></li>
+	<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">访问http://172.25.254.108/upload进行网页安装</strong></li>
+</ul><p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">解压后生成upload文件夹</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><img src="apache_files/20180531133650654" type="image/png" data-filename="20180531133650654" height="92" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="710"/></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">登陆网页172.25.254.11/upload</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531133852683" type="image/png" data-filename="20180531133852683" height="475" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="852"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">然后检测各种软件情况，当全部通过点击下一步，</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531135055366" type="image/png" data-filename="20180531135055366" height="447" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="852"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">点下一步</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531135201836" type="image/png" data-filename="20180531135201836" height="421" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="852"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">配置mysql信息。</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531135252210" type="image/png" data-filename="20180531135252210" height="509" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="852"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">正在安装</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531135609231" type="image/png" data-filename="20180531135609231" height="537" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="852"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;">安装后就能访问了。</strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><strong style="outline:0px;box-sizing:border-box;font-weight:700;word-break:break-all;"><img src="apache_files/20180531135654533" type="image/png" data-filename="20180531135654533" height="468" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="852"/></strong></p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"> </p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"> </p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"> </p>            </div>
+                <span style="display:block;clear:both;"></span></div>
+				
+        	</div>
+	
+		<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;padding-bottom:16px;margin-top:16px;border-bottom:1px solid rgb(227, 227, 227);">
+						<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;margin-bottom:8px;font-size:12px;">
+			<span style="box-sizing:inherit;outline:0px;color:rgb(77, 77, 77);">文章标签：</span>
+						<a href="http://so.csdn.net/so/search/s.do?q=apache&amp;t=blog" style="color:rgb(77, 77, 77);cursor:pointer;text-decoration:none;outline:0px;box-sizing:inherit;display:inline-block;word-break:break-all;border:1px solid rgb(204, 204, 204);border-radius:100px;padding:0px 8px;text-align:center;line-height:24px;min-width:24px;height:24px;margin-right:8px;" target="_blank">apache						</a><a href="http://so.csdn.net/so/search/s.do?q=linux&amp;t=blog" style="color:rgb(77, 77, 77);cursor:pointer;text-decoration:none;outline:0px;box-sizing:inherit;display:inline-block;word-break:break-all;border:1px solid rgb(204, 204, 204);border-radius:100px;padding:0px 8px;text-align:center;line-height:24px;min-width:24px;height:24px;margin-right:8px;" target="_blank">linux						</a>
+		</div>
+						<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;margin-bottom:8px;font-size:12px;">
+			<span style="box-sizing:inherit;outline:0px;color:rgb(77, 77, 77);">个人分类：</span>
+						<a href="https://blog.csdn.net/su_use/article/category/7820013" style="box-sizing:inherit;outline:0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(255, 162, 0);word-break:break-all;" target="_blank">RHCE						</a><a href="https://blog.csdn.net/su_use/article/category/7819943" style="box-sizing:inherit;outline:0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(255, 162, 0);word-break:break-all;" target="_blank">linux						</a>
+		</div>
+								<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;font-size:12px;margin-bottom:0px;">
+			<span style="box-sizing:inherit;outline:0px;color:rgb(77, 77, 77);">相关热词：</span>
+						<a href="https://blog.csdn.net/zwc2xm/article/details/52578348" style="box-sizing:inherit;outline:0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(255, 162, 0);word-break:break-all;" target="_blank">
+			apache			</a>
+						<a href="https://blog.csdn.net/quincuntial/article/details/72783761" style="box-sizing:inherit;outline:0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(255, 162, 0);word-break:break-all;" target="_blank">
+			关掉apache			</a>
+						<a href="https://blog.csdn.net/u011239443/article/details/52015680" style="box-sizing:inherit;outline:0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(255, 162, 0);word-break:break-all;" target="_blank">
+			华为apache			</a>
+						<a href="https://blog.csdn.net/lmalds/article/details/60575205" style="box-sizing:inherit;outline:0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(255, 162, 0);word-break:break-all;" target="_blank">
+			精通apache			</a>
+						<a href="https://blog.csdn.net/greenqingqingws/article/details/51890884" style="box-sizing:inherit;outline:0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(255, 162, 0);word-break:break-all;" target="_blank">
+			查看apache			</a>
+					</div>
+			</div>
+	
+	
+			<div style="outline:0px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;margin:0px;box-sizing:inherit;padding:0px;line-height:28px;display:inline-block;width:48%;margin-top:18px;margin-right:16px;">
+		<a href="https://blog.csdn.net/su_use/article/details/80502596" style="box-sizing:inherit;outline:0px;color:rgb(51, 51, 51);text-decoration:none;cursor:pointer;">
+			<span style="box-sizing:inherit;outline:0px;margin-right:8px;padding:6px 8px;font-size:12px;border:1px solid rgb(227, 227, 227);color:rgb(77, 77, 77);">上一篇</span>mariadb数据库管理（linux）		</a>
+	</div>
+				<div style="outline:0px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;margin:0px;box-sizing:inherit;padding:0px;line-height:28px;display:inline-block;width:48%;margin-bottom:0px;margin-top:0px;">
+		<a href="https://blog.csdn.net/su_use/article/details/80570269" style="box-sizing:inherit;outline:0px;color:rgb(51, 51, 51);text-decoration:none;cursor:pointer;">
+			<span style="box-sizing:inherit;outline:0px;margin-right:8px;padding:6px 8px;font-size:12px;border:1px solid rgb(227, 227, 227);color:rgb(77, 77, 77);">下一篇</span>cifs文件系统，samba服务		</a>
+	</div>
+	</div></span></div></div></div></div>
+</div>
+</span>
+</div></body></html> 

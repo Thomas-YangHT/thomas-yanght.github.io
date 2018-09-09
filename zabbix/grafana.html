@@ -1,0 +1,389 @@
+<html>
+<head>
+  <title>Evernote Export</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/307027 (zh-CN, DDL); Windows/10.0.0 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+<a name="2705"/>
+
+<div><span>
+  <div>
+<div style="font-size: 16px; display: inline-block; min-width: 100%;position: relative;"><div><div style="font-family:&quot;PingFang SC&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;color:rgb(0, 0, 0);background:rgb(210, 216, 222);font-size:14px;"><div><div style="text-align:left;overflow:hidden;min-width:auto;"><div style="text-overflow:ellipsis;overflow:hidden;word-break:break-all;"><div><div><div style="text-overflow:ellipsis;overflow:hidden;word-break:break-all;background:rgb(255, 255, 255);border-radius:7px;box-shadow:rgb(167, 168, 173) 1px 1px 2px;"><div><div style="line-height:1.5;color:rgb(0, 0, 0);"><div style="word-break:break-word;"><h1 style="padding:0px;font-size:28px;font-weight:bold;line-height:1.5;margin:10px 0px;">Grafana 安装使用</h1>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">官方网址：<a href="https://grafana.com/" style="margin:0px;padding:0px;color:black;text-decoration:underline;">https://grafana.com/</a></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">官方文档：<a href="http://docs.grafana.org/" style="margin:0px;padding:0px;color:black;text-decoration:underline;">http://docs.grafana.org/</a></p>
+<h2 style="padding:0px;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">安装 grafana</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">基于 RPM 的系统（CentOS,Fedora,OpenSuse,RedHat）</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">最新稳定版 CentOS / Fedora / OpenSuse / Redhat Linux<br style="margin:0px;padding:0px;"/>
+grafana-4.4.3 (x86-64 rpm) ：<a href="https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-4.4.3-1.x86_64.rpm" style="margin:0px;padding:0px;color:black;text-decoration:underline;">https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-4.4.3-1.x86_64.rpm</a></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">直接使用 yum 安装:</p>
+<pre style="margin:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;margin-top:10px;margin-bottom:10px;"><code style="vertical-align:middle;height:auto;margin:auto;font-family:&quot;Courier New&quot;, sans-serif;background:rgb(255, 255, 255);color:rgb(0, 0, 0);overflow-x:auto;display:block;background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);border-radius:3px;padding:5px;line-height:1.5;font-size:12px;">yum install <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">https:</span><span style="margin:0px;padding:0px;color:green;">//s3-us-west-2.amazonaws.com/grafana-releases/release/grafana-4.4.3-1.x86_64.rpm</span></code></pre>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">或者使用 rpm 方式安装：（ CentOS / Fedora / Redhat）</p>
+<pre style="margin:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;margin-top:10px;margin-bottom:10px;"><code style="vertical-align:middle;height:auto;margin:auto;font-family:&quot;Courier New&quot;, sans-serif;background:rgb(255, 255, 255);color:rgb(0, 0, 0);overflow-x:auto;display:block;background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);border-radius:3px;padding:5px;line-height:1.5;font-size:12px;">$ wget <span style="margin:0px;padding:0px;color:rgb(0, 176, 232);">https:</span>/<span style="margin:0px;padding:0px;">/s3-us-west-2.amazonaws.com/grafana</span>-releases/release/grafana-<span style="margin:0px;padding:0px;">4.4</span>.<span style="margin:0px;padding:0px;">3</span>-<span style="margin:0px;padding:0px;">1</span>.x86_64.rpm
+$ sudo yum install initscripts fontconfig
+$ sudo rpm -Uvh grafana-<span style="margin:0px;padding:0px;">4.4</span>.<span style="margin:0px;padding:0px;">3</span>-<span style="margin:0px;padding:0px;">1</span>.x86_64.rpm</code></pre>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">通过yum源方式安装：</p>
+<pre style="margin:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;margin-top:10px;margin-bottom:10px;"><code style="vertical-align:middle;height:auto;margin:auto;font-family:&quot;Courier New&quot;, sans-serif;background:rgb(255, 255, 255);color:rgb(0, 0, 0);overflow-x:auto;display:block;background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);border-radius:3px;padding:5px;line-height:1.5;font-size:12px;">vim /etc/yum.repos.d/grafana.repo
+
+[grafana]
+name=grafana
+baseurl=https://packagecloud.io/grafana/stable/el/6/$basearch
+repo_gpgcheck=1
+enabled=1
+gpgcheck=1
+gpgkey=https://packagecloud.io/gpg.key https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana
+sslverify=1
+sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+
+yum install grafana</code></pre>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">安装包信息：</p>
+<blockquote style="margin:0px;background:none;border:2px solid rgb(239, 239, 239);padding:5px 10px;margin-top:10px;margin-bottom:10px;line-height:1.6;color:rgb(51, 51, 51);">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">二进制文件： /usr/sbin/grafana-server<br style="margin:0px;padding:0px;"/>
+init.d 脚本： /etc/init.d/grafana-server<br style="margin:0px;padding:0px;"/>
+环境变量文件： /etc/sysconfig/grafana-server<br style="margin:0px;padding:0px;"/>
+配置文件： /etc/grafana/grafana.ini<br style="margin:0px;padding:0px;"/>
+启动项： grafana-server.service<br style="margin:0px;padding:0px;"/>
+日志文件：/var/log/grafana/grafana.log<br style="margin:0px;padding:0px;"/>
+默认配置的sqlite3数据库：/var/lib/grafana/grafana.db</p>
+</blockquote>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">启动方式：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">脚本启动</p>
+<pre style="margin:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;margin-top:10px;margin-bottom:10px;"><code style="vertical-align:middle;height:auto;margin:auto;font-family:&quot;Courier New&quot;, sans-serif;background:rgb(255, 255, 255);color:rgb(0, 0, 0);overflow-x:auto;display:block;background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);border-radius:3px;padding:5px;line-height:1.5;font-size:12px;">service grafana-server <span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">start</span></code></pre>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">以 grafana 用户启动 grafana 进程，grafana 用户是在安装过程中自动创建的。默认http端口：3000，默认用户和用户组是 admin</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">通过 systemd 启动</p>
+<pre style="margin:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;margin-top:10px;margin-bottom:10px;"><code style="vertical-align:middle;height:auto;margin:auto;font-family:&quot;Courier New&quot;, sans-serif;background:rgb(255, 255, 255);color:rgb(0, 0, 0);overflow-x:auto;display:block;background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);border-radius:3px;padding:5px;line-height:1.5;font-size:12px;">systemctl daemon-reload
+systemctl <span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">start</span> grafana-<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">server</span>
+systemctl <span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">status</span> grafana-<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">server</span>
+
+systemctl <span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">enable</span> grafana-<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">server</span>.service</code></pre>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">环境配置文件：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">systemd 和 init.d 脚本启动都是加载的 /etc/sysconfig/grafana-server 文件。<br style="margin:0px;padding:0px;"/>
+可以在 /etc/sysconfig/grafana-server 文件中修改日志目录，数据目录和其他一些环境变量。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">日志记录：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">默认情况日志记录到 /var/log/grafana 文件。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">数据库：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">默认配置指定的数据库 sqlite3 在 /var/lib/grafana/grafana.db 。升级之前记得备份。<br style="margin:0px;padding:0px;"/>
+也可以用 mysql 或者 postgres，详细配置参考：<a href="http://docs.grafana.org/installation/configuration/#database" style="margin:0px;padding:0px;color:black;text-decoration:underline;">http://docs.grafana.org/installation/configuration/#database</a> 或者后面的介绍的配置方法。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">配置文件：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">配置文件存放在 /etc/grafana/grafana.ini ，详细的配置选项参考：<a href="http://docs.grafana.org/installation/configuration/" style="margin:0px;padding:0px;color:black;text-decoration:underline;">http://docs.grafana.org/installation/configuration/</a></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">添加数据源：</p>
+<blockquote style="margin:0px;background:none;border:2px solid rgb(239, 239, 239);padding:5px 10px;margin-top:10px;margin-bottom:10px;line-height:1.6;color:rgb(51, 51, 51);">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Graphite<br style="margin:0px;padding:0px;"/>
+InfluxDB<br style="margin:0px;padding:0px;"/>
+OpenTSDB<br style="margin:0px;padding:0px;"/>
+Prometheus</p>
+</blockquote>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">服务器端图形渲染：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">服务器端映像(png)呈现是一个可选的特性，但在共享可视化时非常有用，例如在警报通知中。<br style="margin:0px;padding:0px;"/>
+如果图像缺少文本，请确保已经安装了字体包</p>
+<pre style="margin:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;margin-top:10px;margin-bottom:10px;"><code style="vertical-align:middle;height:auto;margin:auto;font-family:&quot;Courier New&quot;, sans-serif;background:rgb(255, 255, 255);color:rgb(0, 0, 0);overflow-x:auto;display:block;background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);border-radius:3px;padding:5px;line-height:1.5;font-size:12px;">yum <span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">install</span> fontconfig
+yum <span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">install</span> freetype*
+yum <span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">install</span> urw-fonts</code></pre>
+<h2 style="padding:0px;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">管理</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">配置：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">grafana 后端有许多配置选项，可以在一个配置文件或环境变量中指定。<br style="margin:0px;padding:0px;"/>
+ini 配置文件以分号为注释 ；<br style="margin:0px;padding:0px;"/>
+默认配置文件路径：$WORKING_DIR/conf/defaults.ini<br style="margin:0px;padding:0px;"/>
+自定义配置文件：$WORKING/conf/custom.ini<br style="margin:0px;padding:0px;"/>
+自定义配置文件路径可以使用 --config 参数覆盖</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">注意：使用 rpm或者 deb 方式安装的，配置文件默认在 /etc/grafana/grafana.ini<br style="margin:0px;padding:0px;"/>
+这个路径是由 init.d 脚本 --config 参数指定的。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">使用环境变量</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">下面列出的配置文件中的选项都可以被环境变量覆盖，语法：</p>
+<pre style="margin:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;margin-top:10px;margin-bottom:10px;"><code style="vertical-align:middle;height:auto;margin:auto;font-family:&quot;Courier New&quot;, sans-serif;background:rgb(255, 255, 255);color:rgb(0, 0, 0);overflow-x:auto;display:block;background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);border-radius:3px;padding:5px;line-height:1.5;font-size:12px;">GF_&lt;SectionName&gt;_&lt;KeyName&gt;
+
+配置文件选项：
+<span style="margin:0px;padding:0px;color:green;"># default section</span>
+instance_name = <span style="margin:0px;padding:0px;color:green;">${HOSTNAME}</span>
+
+[security]
+admin_user = admin
+
+[auth.google]
+client_secret = <span style="margin:0px;padding:0px;">0</span>ldS3cretKey
+
+环境变量替换：
+<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">export</span> GF_DEFAULT_INSTANCE_NAME=my-instance
+<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">export</span> GF_SECURITY_ADMIN_USER=<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">true</span>
+<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">export</span> GF_AUTH_GOOGLE_CLIENT_SECRET=newS3cretKey</code></pre>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">[paths] 选项</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">数据，日志等文件的保存路径</p>
+<h2 style="padding:0px;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">使用</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">基本概念</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">本文件“自下而上”介绍Grafana的基本概念，可以作为熟悉核心功能的起点。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">数据源</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Grafana支持许多不同的时间序列数据（数据源）存储后端。每个数据源都有一个特定的查询编辑器，该特定的查询编辑器是针对特定数据源公开的功能和功能而定制的。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">正式支持以下数据源：Graphite，InfluxDB，OpenTSDB，Prometheus，Elasticsearch，CloudWatch。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">每个数据源的查询语言和功能显然是非常不同的。您可以将来自多个数据源的数据合并到单个仪表板上，但每个面板都与属于特定组织的特定数据源相关联。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">组织</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Grafana支持多个组织，以支持各种部署模式，包括使用单个Grafana实例为多个潜在的不受信任的组织提供服务。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">在很多情况下，Grafana将部署在一个单一的组织中。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">每个组织都可以有一个或多个数据源。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">所有仪表板由特定组织拥有。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">注意：请务必记住，大多数度量数据库不提供任何类型的个人用户系列身份验证。因此，在Grafana中，数据源和仪表板可用于特定组织中的所有用户。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">用户</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">用户是Grafana的命名帐户。用户可以属于一个或多个组织，并可以通过角色分配不同级别的权限。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Grafana支持各种各样的内部和外部方式供用户验证自己。这些包括从其自己的集成数据库，外部SQL服务器或外部LDAP服务器。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">行</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">行是仪表板内的逻辑分隔符，用于将面板组合在一起。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">行总是12“单位”宽。这些单位根据浏览器的水平分辨率自动缩放。您可以通过设置自己的宽度来控制一行中面板的相对宽度。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">使用抽象单位，使Grafana在所有的屏幕上看起来都很棒，而且体积很小。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">注意：使用MaxDataPoint功能，无论您的分辨率还是时间范围，Grafana都可以为您显示完美的数据点数量。<br style="margin:0px;padding:0px;"/>
+根据所选的模板变量，利用重复行功能动态创建或删除整个行（可以填充面板）。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">可以通过单击行标题来折叠行。如果您保存了一个折叠的行的仪表板，它将保存在该状态，并且不会预加载这些图，直到该行被展开。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">面板</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">面板是Grafana的基本可视化构建块。每个面板提供一个查询编辑器（取决于面板中选择的数据源），允许您通过使用查询编辑器提取完美的可视化以在Panel上显示<br style="margin:0px;padding:0px;"/>
+每个Panel都有各种各样的造型和格式化选项，让您创建完美的图片。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">面板可以在仪表板上拖放并重新排列。他们也可以调整大小。<br style="margin:0px;padding:0px;"/>
+目前有四种面板类型：Graph，Singlestat，Dashlist，Table和Text。<br style="margin:0px;padding:0px;"/>
+像“ 图形”面板的面板允许您根据需要绘制出许多指标和系列。像Singlestat这样的其他面板需要将单个查询减少到单个数字。Dashlist和Text是不连接到任何数据源的特殊面板。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">通过在面板配置中使用Dashboard Templating变量字符串（包括通过查询编辑器配置的数据源的查询），可以使面板更具动态性。<br style="margin:0px;padding:0px;"/>
+利用重复面板功能，根据所选择的模板化变量动态创建或删除面板。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">面板上的时间范围通常是仪表板时间选择器中设置的时间范围，但可以通过使用面板特定时间覆盖来覆盖。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">面板（或整个仪表板）可以通过各种方式轻松共享。您可以发送链接到有谁登录您的Grafana的人。您可以使用快照功能将当前正在查看的所有数据编码为静态和交互式JSON文档; 它比通过电子邮件屏幕截图好得多！</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">查询编辑器</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">查询编辑器公开了数据源的功能，并允许您查询其包含的指标。<br style="margin:0px;padding:0px;"/>
+使用查询编辑器在时间序列数据库中构建一个或多个查询（一个或多个系列）。该面板将立即更新，允许您实时有效地探索数据，并为该特定面板构建完美的查询。<br style="margin:0px;padding:0px;"/>
+您可以在查询本身的查询编辑器中使用模板变量。这提供了一种基于“仪表板”上选择的“模板化”变量动态探索数据的强大方法。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Grafana允许您在查询编辑器中按照它们所在的行来引用查询。如果您向图形添加第二个查询，则可以通过键入#A来引用第一个查询。这提供了一种简单而方便的方法来构建复合查询。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">仪表板</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">仪表板是所有在一起的地方。仪表板可以被认为是由一组或多组组成并排列成一行或多行的组件。<br style="margin:0px;padding:0px;"/>
+仪表板的时间段可以由仪表板右上方的仪表板时间选择器控制。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">仪表板可以利用模板来使它们更具动态性和交互性。<br style="margin:0px;padding:0px;"/>
+仪表板可以使用注释来显示面板上的事件数据。这可以帮助将Panel中的时间序列数据与其他事件相关联。<br style="margin:0px;padding:0px;"/>
+仪表板（或特定面板）可以通过各种方式轻松共享。您可以发送链接到有谁登录您的Grafana的人。您可以使用快照功能将当前正在查看的所有数据编码为静态和交互式JSON文档; 它比通过电子邮件屏幕截图好得多！</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">仪表板可以被标记，仪表板选择器可以快速，可搜索访问特定机构中的所有仪表板。</p>
+<h2 style="padding:0px;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">新变化</h2>
+<h2 style="padding:0px;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">特性</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">图形面板</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Grafana的主板简单地命名为Graph。它提供了非常丰富的图形选项</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">单击面板的标题会显示一个菜单。该edit选项为面板打开其他配置选项。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">常规选项卡允许自定义面板的外观和菜单选项。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">一般选项</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Title - 仪表板上的面板标题<br style="margin:0px;padding:0px;"/>
+Span - 列中的面板宽度<br style="margin:0px;padding:0px;"/>
+Height - 面板内容高度（以像素为单位）</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Drilldown / detail link 部分允许添加可以链接到其他仪表板或URL的面板的动态链接。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">每个链接都有一个标题，一个类型和参数。链接可以是链接dashboard或absolute链接。如果是仪表板链接，则该dashboard值必须是仪表板的名称。如果是absolute链接，则URL是链接的URL。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">params允许在链接中添加其他URL参数。格式是由name=value多个参数分隔的&amp;。可以使用模板变量作为值添加$myvar。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">当链接到使用模板变量的另一个仪表板时，可以使用var-myvar=value该模板变量将链接填充到所需的值。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">度量</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">“度量”标签定义要呈现的系列数据和源。每个数据源提供不同的选项。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">“轴”和“网格”选项卡控制轴，网格和图例的显示。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">轴</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">该Left Y和Right Y可以使用自定义的：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Unit - Y值的显示单位<br style="margin:0px;padding:0px;"/>
+Grid Max - 最大Y值。（默认为自动）<br style="margin:0px;padding:0px;"/>
+Grid Min - 最小Y值。（默认为自动）<br style="margin:0px;padding:0px;"/>
+Label - Y轴标签（默认为“”）<br style="margin:0px;padding:0px;"/>
+也可以通过取消选中相应的框来隐藏轴Show Axis。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">X轴模式</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">有三个选项：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">默认选项是Time，表示x轴表示时间，数据按时间分组（例如，按小时或分钟）。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">该Series选项意味着数据按序列分组，而不是按时间分组。y轴仍然表示该值。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">该Histogram选项将图形转换为直方图。直方图是一种将数字分成范围的条形图，通常称为桶或仓。较高的酒吧显示更多数据在该范围内。这里更详细地描述了直方图和水桶。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">图例</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">通过选中Show复选框来隐藏图例。如果显示，可以通过选中Table复选框将其显示为值列表。使用Hide empty复选框可以从图例中隐藏没有值的系列。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">图例值</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">附加值可以沿着图例名称显示： - Total- 从度量查询返回的所有值的总和- - 从度量查询Current返回的最后一个值 - Min- 从度量查询返回的所有值的最小值- - 从Max最大值返回的所有值度量查询 - Avg- 从度量查询返回的所有值的平均值 - Decimals- 控制为图例值显示的小数位数（以及图形悬停工具提示）</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">图例值由Grafana根据客户端计算，取决于您的度量标准查询使用的聚合或点合并类型。所有上述图例值都不能同时进行。例如，如果您绘制像请求/秒的速率，这可能是使用平均值作为聚合器，则图例中的总计不会代表请求的总数。这只是Grafana收到的所有数据点的总和。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">阈值</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">阈值允许您向图形添加任意行或部分，以便更容易查看图表何时跨越特定阈值。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">图表选项</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Bar - 将值显示为条形图<br style="margin:0px;padding:0px;"/>
+Lines - 以线图显示值<br style="margin:0px;padding:0px;"/>
+Points - 显示值的点</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">单体组</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Singlestat面板允许您显示SINGLE系列的一个主要摘要统计信息。它将系列减少为单个数字（通过查看系列中的最大值，最小值，平均值或值）。Singlestat还提供了对状态或面板背景进行着色的阈值。它也可以将单个数字转换为文本值，并显示该系列的sparkline摘要。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Singlestat面板配置</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">singlestat面板有一个普通的查询编辑器，可以让您定义精确的指标查询，如许多其他面板。通过“选项”选项卡，您可以访问特定于Singlestat的功能。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">脚本化仪表板</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">如果您有许多公制名称以定义的模式更改（新服务器等），则不断创建新的仪表板是令人烦恼的。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">使用脚本化的仪表板，您可以使用javascript动态创建仪表板。在文件夹grafana安装文件夹下public/dashboards/有一个名为的文件scripted.js。此文件包含脚本化仪表板的示例。您可以使用url访问它：<a href="http://grafana_url/dashboard/script/scripted.js?rows=3&amp;name=myName" style="margin:0px;padding:0px;color:black;text-decoration:underline;">http://grafana_url/dashboard/script/scripted.js?rows=3&amp;name=myName</a></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">如果您打开scripted.js，您可以看到它如何从ARGS变量读取url参数，然后添加行和面板。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">示例</p>
+<pre style="margin:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;margin-top:10px;margin-bottom:10px;"><code style="vertical-align:middle;height:auto;margin:auto;font-family:&quot;Courier New&quot;, sans-serif;background:rgb(255, 255, 255);color:rgb(0, 0, 0);overflow-x:auto;display:block;background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);border-radius:3px;padding:5px;line-height:1.5;font-size:12px;"><span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">var</span> rows = <span style="margin:0px;padding:0px;">1</span>;
+<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">var</span> seriesName = <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">'argName'</span>;
+
+<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">if</span>(!_.isUndefined(ARGS.rows)) {
+  rows = <span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">parseInt</span>(ARGS.rows, <span style="margin:0px;padding:0px;">10</span>);
+}
+
+<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">if</span>(!_.isUndefined(ARGS.name)) {
+  seriesName = ARGS.name;
+}
+
+<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">for</span> (<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">var</span> i = <span style="margin:0px;padding:0px;">0</span>; i &lt; rows; i++) {
+
+  dashboard.rows.push({
+    title: <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">'Scripted Graph '</span> + i,
+    height: <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">'300px'</span>,
+    panels: [
+      {
+        title: <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">'Events'</span>,
+        <span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">type</span>: <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">'graph'</span>,
+        span: <span style="margin:0px;padding:0px;">12</span>,
+        fill: <span style="margin:0px;padding:0px;">1</span>,
+        linewidth: <span style="margin:0px;padding:0px;">2</span>,
+        targets: [
+          {
+            <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">'target'</span>: <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">&quot;randomWalk('&quot;</span> + seriesName + <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">&quot;')&quot;</span>
+          },
+          {
+            <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">'target'</span>: <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">&quot;randomWalk('random walk2')&quot;</span>
+          }
+        ],
+      }
+    ]
+  });
+
+}
+
+<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">return</span> dashboard;</code></pre>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">更多例子</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">您可以在public/dashboards/grafana安装目录中找到更多示例。</p>
+<h2 style="padding:0px;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">警报引擎和规则指南</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">警报仅在Grafana v4.0及更高版本中可用。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">条件</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">目前唯一存在的条件类型是Query允许您指定查询字母，时间范围和聚合功能的条件。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">查询条件示例</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">avg() OF query(A, 5m, now) IS BELOW 14</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">avg()控制每个系列的值如何减少到可与阈值进行比较的值。单击该功能将其更改为另一个聚合功能。<br style="margin:0px;padding:0px;"/>
+query(A, 5m, now)该字母定义要从“ 度量标准”选项卡执行什么查询。第二个参数定义了时间范围，5m, now意味着从现在到现在5分钟。您还10m, now-2m可以定义从现在开始的10分钟到现在的2分钟的时间范围。如果您想忽略最近2分钟的数据，这将非常有用。<br style="margin:0px;padding:0px;"/>
+IS BELOW 14定义阈值的类型和阈值。您可以点击IS BELOW更改阈值类型。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">在警报规则中使用的查询不能包含任何模板变量。目前我们只支持AND和OR操作条件之间的连续执行。例如，我们按以下顺序有3个条件：condition：A（评估为：TRUE）OR条件：B（计算结果为：FALSE）AND条件：C（计算结果为：TRUE），结果将计算为（（ TRUE或FALSE）AND TRUE）= TRUE。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">我们计划在将来添加其他条件类型，例如Other Alert，您可以在其中包括另一个警报在您的条件下的状态，以及Time Of Day。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">故障排除</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">测试规则<br style="margin:0px;padding:0px;"/>
+您可以做的第一级故障排除是按测试规则按钮。您将获得结果，您可以扩展到可以查看从查询返回的原始数据。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">还可以通过检查grafana-server日志进行进一步的故障排除。如果它不是错误或由于某些原因，日志不会说任何您可以启用某些相关组件的调试日志记录。这是在Grafana的ini配置文件中完成的。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">显示故障排除警报时可能相关的记录器的示例。</p>
+<pre style="margin:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;margin-top:10px;margin-bottom:10px;"><code style="vertical-align:middle;height:auto;margin:auto;font-family:&quot;Courier New&quot;, sans-serif;background:rgb(255, 255, 255);color:rgb(0, 0, 0);overflow-x:auto;display:block;background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);border-radius:3px;padding:5px;line-height:1.5;font-size:12px;">[log]
+filters = alerting.scheduler:<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">debug</span> \
+          alerting.engine:<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">debug</span> \
+          alerting.resultHandler:<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">debug</span> \
+          alerting.evalHandler:<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">debug</span> \
+          alerting.evalContext:<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">debug</span> \
+          alerting.extractor:<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">debug</span> \
+          alerting.notifier:<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">debug</span> \
+          alerting.notifier.slack:<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">debug</span> \
+          alerting.notifier.pagerduty:<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">debug</span> \
+          alerting.notifier.email:<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">debug</span> \
+          alerting.notifier.webhook:<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">debug</span> \
+          tsdb.graphite:<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">debug</span> \
+          tsdb.prometheus:<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">debug</span> \
+          tsdb.opentsdb:<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">debug</span> \
+          tsdb.influxdb:<span style="margin:0px;padding:0px;color:rgb(0, 0, 255);">debug</span> \</code></pre>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">警报通知</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">警报仅在Grafana v4.0及更高版本中可用。<br style="margin:0px;padding:0px;"/>
+当警报更改状态时，会发出通知。每个警报规则都可以有多个通知。但为了向警报规则添加通知，您首先需要添加和配置notification通道（可以是电子邮件，Pagerduty或其他集成）。这通过“通知通道”页面完成。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">通知通道设置</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">警报通知通道<br style="margin:0px;padding:0px;"/>
+在“通知通道”页面上，点击New Channel按钮进入可以配置和设置新通知通道的页面。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">您指定名称和类型，并键入特定选项。您还可以测试通知，以确保其正常工作和设置。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">键盘快捷键</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Grafana v4引入了一些功能强大的键盘快捷键。您现在可以通过鼠标悬停在面板上来对焦。专注于面板，您可以轻松点击e切换面板编辑模式，或v切换全屏模式。p r移除面板。p s打开共享模态。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">点击?你的键盘打开快捷键帮助模态。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">全球</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">g h 转到首页仪表板<br style="margin:0px;padding:0px;"/>
+g p 转到个人资料<br style="margin:0px;padding:0px;"/>
+s o 打开搜索<br style="margin:0px;padding:0px;"/>
+s s 用加星标过滤器打开搜索<br style="margin:0px;padding:0px;"/>
+s t 在标签视图中打开搜索<br style="margin:0px;padding:0px;"/>
+esc 退出编辑/设置视图<br style="margin:0px;padding:0px;"/>
+仪表板</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">mod+s 保存仪表板<br style="margin:0px;padding:0px;"/>
+mod+h 隐藏行控件<br style="margin:0px;padding:0px;"/>
+d r 刷新所有面板<br style="margin:0px;padding:0px;"/>
+d s 仪表板设置<br style="margin:0px;padding:0px;"/>
+d v 切换主动/查看模式<br style="margin:0px;padding:0px;"/>
+d k 切换报亭模式（隐藏顶部导航）<br style="margin:0px;padding:0px;"/>
+mod+o 切换共享图形十字准线<br style="margin:0px;padding:0px;"/>
+专注面板</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">e 切换面板编辑视图<br style="margin:0px;padding:0px;"/>
+v 切换面板全屏视图<br style="margin:0px;padding:0px;"/>
+p s 打开面板共享模态<br style="margin:0px;padding:0px;"/>
+p r 删除面板<br style="margin:0px;padding:0px;"/>
+聚焦行</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">r c 折叠行<br style="margin:0px;padding:0px;"/>
+r r 删除行<br style="margin:0px;padding:0px;"/>
+时间范围</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">t z 缩短时间范围<br style="margin:0px;padding:0px;"/>
+t 移动时间范围<br style="margin:0px;padding:0px;"/>
+t 向前移动时间范围</p>
+<h2 style="padding:0px;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">教程</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">在反向代理之后运行Grafana</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">应该直接让Grafana在逆向代理之后运行。但这里有一些您可能遇到的事情。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">链接和重定向将不会正确呈现，除非您设置了server.domain设置。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">[server]<br style="margin:0px;padding:0px;"/>
+domain = foo.bar<br style="margin:0px;padding:0px;"/>
+要使用子路径前http://foo.bar/grafana一定要包括/grafana在root_url结束。否则Grafana将无法正常运行。参见下面的例子</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">例子</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">以下是在反向代理之后运行Grafana的一些示例配置。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Grafana配置（ex <a href="http://foo.bar.com/" style="margin:0px;padding:0px;color:black;text-decoration:underline;">http://foo.bar.com</a>）</p>
+<pre style="margin:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;margin-top:10px;margin-bottom:10px;"><code style="vertical-align:middle;height:auto;margin:auto;font-family:&quot;Courier New&quot;, sans-serif;background:rgb(255, 255, 255);color:rgb(0, 0, 0);overflow-x:auto;display:block;background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);border-radius:3px;padding:5px;line-height:1.5;font-size:12px;"><span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">[server]</span>
+<span style="margin:0px;padding:0px;color:red;">domain</span> = foo.bar</code></pre>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Nginx配置</p>
+<pre style="margin:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;margin-top:10px;margin-bottom:10px;"><code style="vertical-align:middle;height:auto;margin:auto;font-family:&quot;Courier New&quot;, sans-serif;background:rgb(255, 255, 255);color:rgb(0, 0, 0);overflow-x:auto;display:block;background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);border-radius:3px;padding:5px;line-height:1.5;font-size:12px;"><span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">server</span> {
+  <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">listen</span> <span style="margin:0px;padding:0px;">80</span>;
+  <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">root</span> /usr/share/nginx/www;
+  <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">index</span> index.html index.htm;
+
+  <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">location</span> / {
+   <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">proxy_pass</span> http://localhost:3000/;
+  }
+}</code></pre>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">子路径示例（<a href="http://foo.bar.com/grafana" style="margin:0px;padding:0px;color:black;text-decoration:underline;">http://foo.bar.com/grafana</a>）</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Grafana配置与子路径</p>
+<pre style="margin:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;margin-top:10px;margin-bottom:10px;"><code style="vertical-align:middle;height:auto;margin:auto;font-family:&quot;Courier New&quot;, sans-serif;background:rgb(255, 255, 255);color:rgb(0, 0, 0);overflow-x:auto;display:block;background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);border-radius:3px;padding:5px;line-height:1.5;font-size:12px;"><span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">[server]</span>
+<span style="margin:0px;padding:0px;color:red;">domain</span> = foo.bar
+<span style="margin:0px;padding:0px;color:red;">root_url</span> = %(protocol)s://%(domain)s:/grafana</code></pre>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Nginx配置与子路径</p>
+<pre style="margin:0px;padding:0px;white-space:pre-wrap;word-wrap:break-word;margin-top:10px;margin-bottom:10px;"><code style="vertical-align:middle;height:auto;margin:auto;font-family:&quot;Courier New&quot;, sans-serif;background:rgb(255, 255, 255);color:rgb(0, 0, 0);overflow-x:auto;display:block;background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);border-radius:3px;padding:5px;line-height:1.5;font-size:12px;"><span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">server</span> {
+  <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">listen</span> <span style="margin:0px;padding:0px;">80</span>;
+  <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">root</span> /usr/share/nginx/www;
+  <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">index</span> index.html index.htm;
+
+  <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">location</span> /grafana/ {
+   <span style="margin:0px;padding:0px;color:rgb(163, 21, 21);">proxy_pass</span> http://localhost:3000/;
+  }
+}</code></pre>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">如何设置Grafana的高可用性</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">警报不支持高可用性。<br style="margin:0px;padding:0px;"/>
+设置Grafana的高可用性是相当简单的。归结为两件事：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">对多个grafana实例使用共享数据库。<br style="margin:0px;padding:0px;"/>
+考虑如何存储用户会话。<br style="margin:0px;padding:0px;"/>
+配置多个服务器以使用相同的数据库</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">首先，您需要做的是在其他服务器上设置mysql或postgres，并配置Grafana以使用该数据库。您可以在grafana配置的[数据库]部分中找到这样做的配置。Grafana现在将把数据库中的所有长期数据都保留下来。还值得考虑如何设置数据库以实现高可用性，但不在本指南的范围之内。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">用户会话</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">要考虑的第二件事是如何处理用户会话以及如何平衡服务器之间的负载。默认情况下，Grafana将用户会话存储在磁盘上，如果您sticky sessions在负载均衡器中使用，则可以正常工作。Grafana还支持将会话数据存储在数据库中，redis或memcache可以在您的负载平衡器中使用循环。如果您使用mysql / postgres进行会话存储，则首先需要一个表来存储会话数据。有关[sessions]的详细信息</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">对于Grafana本身，如果将会话存储在磁盘或数据库/ redis / memcache上，这并不重要。但是我们建议您将会话存储在redis / memcache中，因为它可以更容易地从组中添加/远程实例。</p>
+<h2 style="padding:0px;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">插件</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">安装插件</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">安装插件的最简单方法是使用与grafana捆绑在一起的CLI工具grafana-cli。在修改插件后进行任何修改之前，需要重新启动grafana-server。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Grafana插件目录</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">在Linux系统上，grafana-cli会假设grafana插件目录是/var/lib/grafana/plugins。可以通过指定-pluginsDir标志来覆盖grafana-cli将要操作的目录。在Windows系统上，必须为每个呼叫指定此参数。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Grafana-cli命令</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">列出可用的插件</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">grafana-cli plugins list-remote<br style="margin:0px;padding:0px;"/>
+安装最新版本的插件</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">grafana-cli plugins install </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">grafana-cli plugins install </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">grafana-cli plugins ls</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">更新所有安装的插件</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">grafana-cli plugins update-all<br style="margin:0px;padding:0px;"/>
+更新一个插件</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">grafana-cli plugins update </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">grafana-cli plugins remove </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">2017-9-1</p>
+</div></div></div></div></div></div></div></div></div></div></div></div>
+</div>
+</span>
+</div></body></html> 

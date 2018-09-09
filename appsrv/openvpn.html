@@ -1,0 +1,283 @@
+<html>
+<head>
+  <title>Evernote Export</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/307027 (zh-CN, DDL); Windows/10.0.0 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+<a name="2952"/>
+
+<div><span>
+  <div>
+<div style="font-size: 16px; display: inline-block; min-width: 100%;position: relative;"><div><div style="font-family:&quot;PingFang SC&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;background-color:rgb(217, 214, 203);font-size:14px;"><div><div><div><div style="background-color:rgb(255, 255, 255);"><div><div style="border-image:initial;font-size:14px;line-height:1.8;">
+		<h2 style="margin:0px 0px 4px;font-size:16px;">
+			<a href="https://www.cnblogs.com/fuyanwen/p/8195956.html" style="color:rgb(34, 51, 85);text-decoration:none;">centos7 搭建openvpn服务器</a>
+		</h2>
+		<div>
+		<div style="margin-bottom:20px;word-break:break-word;"><h3 style="border-bottom:1px solid rgb(170, 170, 170);font-size:18px;font-weight:bold;line-height:1.5;margin:10px 0px;padding-left:10px;margin-left:10px;margin-right:10px;">Introduction</h3>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;"><strong>　　</strong>OpenVPN是一个开源代码的VPN应用程序，可让您在公共互联网上安全地创建和加入专用网络。相比pptp，openvpn更稳定、安全。</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　本篇博客主要介绍下面两点：<strong><br/></strong></p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　1. Centos 7下安装与配置OpenVPN；</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　2. 客户端连接OpenVPN服务器(window 、Ubuntu、 Ios、 Android)</p>
+<h3 style="border-bottom:1px solid rgb(170, 170, 170);font-size:18px;font-weight:bold;line-height:1.5;margin:10px 0px;padding-left:10px;margin-left:10px;margin-right:10px;"><strong>Prerequisites</strong></h3>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;"><strong>　　</strong>1. 公网服务器IP或者国外VPS及root权限；</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　2. 由于OpenVPN在默认的CentOS软件库中不可用，需要安装EPEL；</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;"><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">　　yum</span> <span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">install</span> epel-release</pre>
+</div>
+<h3 style="border-bottom:1px solid rgb(170, 170, 170);font-size:18px;font-weight:bold;line-height:1.5;margin:10px 0px;padding-left:10px;margin-left:10px;margin-right:10px;"><strong>OpenVPN Server Install</strong></h3>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;"><strong>　　</strong>1. 安装OpenVPN</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;"><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">　　yum</span> <span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">install</span> openvpn easy-rsa -y</pre>
+</div>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　2. 配置OpenVPN</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　OpenVPN在其文档目录中有示例配置文件，拷贝该示例配置文件到配置目录</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;"><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">　　cp</span> /usr/share/doc/openvpn-*/sample/sample-config-files/server.conf /etc/openvpn</pre>
+</div>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　修改该示例配置文件。</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;"><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">　　vi</span> /etc/openvpn/server.conf</pre>
+</div>
+<pre style="white-space:pre-wrap;word-wrap:break-word;margin:0px 0px 0px 22px;font-size:1em;">　稍后我们生成密钥时，Easy RSA的默认Diffie-<span>Hellman加密长度将为2048字节，因此我们需要将dh文件名更改为dh2048.pem。取消下面行注释；</span></pre>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;"><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">　　dh dh2048.pem</span></pre>
+</div>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　告诉客户所有流量将通过我们的OpenVPN进行重定向， 取消注释下面 “redirect-gateway def1 bypass-dhcp”行</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">　　push <span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">redirect-gateway def1 bypass-dhcp</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span></pre>
+</div>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　修改DNS服务器为google公共DNS服务器，取消注释并修改行“push &quot;dhcp-option”</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">　　push <span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">dhcp-option DNS 8.8.8.8</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">
+　　push </span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">dhcp-option DNS 8.8.4.4</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span>v</pre>
+</div>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　取消下面行，以便OpenVPN运行时权限正常</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;"><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">    user nobody
+    group nobody</span></pre>
+</div>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　取消注释“comp-lzo”行，以便兼容老的客户端平台，(客户端配置时也必须打开此选项)</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">　　comp-lzo</pre>
+</div>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　保存并退出配置文件。</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;"> </p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　3. 生成密钥和证书</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　服务器配置完成后需要生成密钥和证书，通过Easy RSA安装的一些脚本，方便快速产生密钥和证书；</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　创建keys文件夹，并且拷贝Easy RSA密钥和证书生成脚本到目录下(到easy-rsa目录)</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;"><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">　　mkdir</span> -p /etc/openvpn/easy-rsa/keys<br/>　　cp -rf /usr/share/easy-rsa/2.0/* /etc/openvpn/easy-rsa</pre>
+</div>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;"> 　　为方便后续使用，修改vars文件中的默认信息, 其中KEY_CN=x.x.x.x修改成你自己的IP或者域名， 其他的地方可以自定义。</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;"><div style="margin-top:5px;background-color:rgb(245, 245, 245);"><span style="padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="text-decoration:none;color:rgb(29, 88, 209);background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="openvpn_files/copycode.gif" type="image/gif" data-filename="copycode.gif" height="20" style="height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div>
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">    <span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">vi</span> /etc/openvpn/easy-rsa/<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">vars
+
+    . . .
+
+    # These are the default values </span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">for</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;"> fields
+    # </span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">which</span> will be placed <span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">in</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;"> the certificate.
+    # Don</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">t leave any of these fields blank.</span>
+    export KEY_COUNTRY=<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">US</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">
+    export KEY_PROVINCE</span>=<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">NY</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">
+    export KEY_CITY</span>=<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">New York</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">
+    export KEY_ORG</span>=<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">DigitalOcean</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">
+    export KEY_EMAIL</span>=<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">sammy@example.com</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">
+    export KEY_OU</span>=<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">Community</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">
+
+    # X509 Subject Field
+    export KEY_NAME</span>=<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">server</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">
+
+    . . .
+
+    export KEY_CN</span>=<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">x.x.x.x
+
+    . . .</span></pre>
+<div style="margin-top:5px;background-color:rgb(245, 245, 245);"><span style="padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="text-decoration:none;color:rgb(29, 88, 209);background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="openvpn_files/copycode [1].gif" type="image/gif" data-filename="copycode.gif" height="20" style="height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div></div>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　修改openssl配置文件名版本号，防止检测出错问题</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">    <span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">cp</span> /etc/openvpn/easy-rsa/openssl-<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">1.0</span>.<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">0</span>.cnf /etc/openvpn/easy-rsa/openssl.cnf</pre>
+</div>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　开始生成证书</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;"><div style="margin-top:5px;background-color:rgb(245, 245, 245);"><span style="padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="text-decoration:none;color:rgb(29, 88, 209);background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="openvpn_files/copycode [2].gif" type="image/gif" data-filename="copycode.gif" height="20" style="height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div>
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;"><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">    
+    cd </span>/etc/openvpn/easy-<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">rsa
+    </span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">让修改的变量起作用， 每次生成客户端证书的时候都执行一次。</span>
+    source ./<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">vars    
+    
+    </span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">删除以前的密钥和证书</span>
+    ./clean-<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">all
+
+    </span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">执行过程中需要你输入配置信息，这些信息我们已经在vars中修改，只需要按ENTER键默认即可。</span>
+    ./build-<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">ca
+    
+    </span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">产生服务器密钥和证书，与上述步骤类似，但是在最后需要输入Y提交更改。</span>
+    ./build-key-<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">server server
+
+    </span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">生成Diffie-Hellman密钥交换文件。</span>
+    ./build-<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">dh
+
+    </span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">服务器相关密钥和证书生成完成，拷贝到相关路径</span>
+    cd /etc/openvpn/easy-rsa/<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">keys
+    </span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">cp</span> dh2048.pem ca.crt server.crt server.key /etc/openvpn</pre>
+<div style="margin-top:5px;background-color:rgb(245, 245, 245);"><span style="padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="text-decoration:none;color:rgb(29, 88, 209);background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="openvpn_files/copycode [3].gif" type="image/gif" data-filename="copycode.gif" height="20" style="height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div></div>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　生成客户端配置密钥和证书</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">    cd /etc/openvpn/easy-<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">rsa
+
+    </span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">生成密钥和证书，如果未生成成功，先source ./vars一下. 客户端密钥和证书可以共用，也可以给不同的客户端生成不同的client。生成的client会在keys目录下。</span>
+    ./build-key client</pre>
+</div>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　4. 路由</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　为了方便，使用iptables代替firewalld。</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　   首先，安装和打开iptables </p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;"><div style="margin-top:5px;background-color:rgb(245, 245, 245);"><span style="padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="text-decoration:none;color:rgb(29, 88, 209);background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="openvpn_files/copycode [4].gif" type="image/gif" data-filename="copycode.gif" height="20" style="height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div>
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">    <span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">yum</span> <span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">install</span> iptables-services -<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">y
+    systemctl mask firewalld
+    systemctl enable iptables
+    systemctl stop firewalld
+    systemctl start iptables
+    iptables </span>--<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">flush
+    
+    </span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">增加防火墙规则转发数据</span>
+    iptables -t nat -A POSTROUTING -s <span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">10.8</span>.<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">0.0</span>/<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">24</span> -o eth0 -<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">j MASQUERADE
+    iptables</span>-save &gt; /etc/sysconfig/<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">iptables
+
+    </span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">打开IP转发</span>
+    <span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">vi</span> /etc/<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">sysctl.conf
+    </span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">增加下行到文件中</span>
+    net.ipv4.ip_forward = <span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">1</span>
+
+    <span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">重启生效</span>
+    systemctl restart network.service</pre>
+<div style="margin-top:5px;background-color:rgb(245, 245, 245);"><span style="padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="text-decoration:none;color:rgb(29, 88, 209);background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="openvpn_files/copycode [5].gif" type="image/gif" data-filename="copycode.gif" height="20" style="height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div></div>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　5. 开启OpenVPN服务器</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">    systemctl -<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">f enable openvpn@server.service
+    systemctl start openvpn@server.service</span></pre>
+</div>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;"> 　　6. 生成ta.key密钥</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">    openvpn --genkey --secret /etc/openvpn/ta.key</pre>
+</div>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　至此服务器相关配置已完成，下面将介绍客户端的配置与连接</p>
+<h2 style="margin-top:10px;font-size:16px;font-weight:bold;line-height:1.5;margin:10px 0px;">Configuring a Client</h2>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　1. 首先从服务器拷贝下列文件到客户端设备。可以通过secure crt客户端，使用rz、sz命令传输文件，sz、rz是Linux/Unix同<strong><a href="http://space.itpub.net/16754036/viewspace-677564" style="text-decoration:none;color:rgb(29, 88, 209);" target="_self"><strong>Windows</strong></a></strong>进行ZModem文件传输的命令行工具，具体使用可以另行百度。</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">　　/etc/openvpn/easy-rsa/keys/<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">ca.crt
+　　</span>/etc/openvpn/easy-rsa/keys/<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">client.crt
+　　</span>/etc/openvpn/easy-rsa/keys/<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">client.key
+　　</span>/etc/openvpn/ta.key</pre>
+</div>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　2. 客户端设备上创建client.opvn文件，这是OpenVPN 客户端配置文件。</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　配置文件如下所示，大部分地方需要与服务器配置匹配。</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;"><div style="margin-top:5px;background-color:rgb(245, 245, 245);"><span style="padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="text-decoration:none;color:rgb(29, 88, 209);background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="openvpn_files/copycode [6].gif" type="image/gif" data-filename="copycode.gif" height="20" style="height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div>
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;"><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">　　client
+　　dev tun
+　　proto udp
+　　remote </span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">X.X</span>.<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">X.X</span> <span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">8798　　; X.X.X.X为服务器IP地址，或者域名 此处端口号必须与服务器中的端口号保持一致　　</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">
+　　resolv</span>-<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">retry infinite
+　　nobind
+　　persist</span>-<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">key
+　　persist</span>-<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">tun
+　　comp</span>-<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">lzo
+　　verb </span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">3</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">
+　　ca ca.crt
+　　cert client.crt　　;ubuntu上时必须使用绝对路径例如 /etc/openvpn/client/config/client.crt　
+　　key client.key　　;与上面一样，ubuntu上需要绝对路径
+　　tls</span>-auth ta.key <span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">1　　 ; 服务器需要设置为0， 客户端需要配置为1.</span><span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">
+　　cipher AES</span>-<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">256</span>-CBC　　; ubuntu和os x上面必须指定，否则会出现错误。<br/><br/></pre>
+<div style="margin-top:5px;background-color:rgb(245, 245, 245);"><span style="padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="text-decoration:none;color:rgb(29, 88, 209);background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="openvpn_files/copycode [7].gif" type="image/gif" data-filename="copycode.gif" height="20" style="height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div></div>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　3. 所有的配置文件已经准备好，接下来是在不同的平台上连接OpenVPN服务器。</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　<strong>Windows：</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　　　a. 下载OpenVPN Gui（官网下载）安装。</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　　　b. 拷贝上面5个文件（ca.crt、client.crt、client.key、ta.key、client.opvn）到 C:\Users\<span style="color:#ff0000;"><strong>User</strong></span>\OpenVPN\config目录下面。 User是你当前登录用户。</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　　　c. 打开OpenVPN Gui(<span style="color:#ff0000;">必须要使用管理员权限打开</span>)，右击连接后即可。</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　<strong>Ubuntu:</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　　　a. 安装openvpn</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">　　　　apt-<span style="font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">get</span> install openvpn</pre>
+</div>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　　　b. 开启openvpn</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px 0px 0px 22px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">　　　　sudo openvpn --config ~/path/to/client.ovpn</pre>
+</div>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　<strong>OS X：</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;"><strong>　　　　</strong>a. 下载<a href="https://code.google.com/p/tunnelblick/" style="text-decoration:none;color:rgb(29, 88, 209);">Tunnelblick</a> 软件。安装</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　　　b. 复制配置文件到~/Library/Application <em>Support/Tunnelblick/Configurations </em>目录</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;"><em>　　　　c. </em>如果连接后不能FQ上外网时，详情里面设置DNS服务器为不指定。</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　<strong>Android: </strong></p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;"><strong>　　　　</strong>a. google play中下载openvpn connect安装，（国内无法下载，可网上查找相关的apk安装）</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　　　b. 安卓手机连接电脑拷贝配置文件到手机存储中</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　　　c. 打开openvpn connect选择手机中查找配置文件，选中client.opvn后即可，点击connect后连接OpenVPN。</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　<strong>IOS：</strong></p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　　　a. 由于国内的appid在app store中不能下载openvpn connect。所以需要先另外注册一个国外的apple id，例如新西兰。</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　　　b. 注册好后登录app store中下载openvpn connect。下载安装好后可以再使用国内apple id。</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　　　c. 通过PC端的ITools软件，找到OpenVPN Connect软件，打开共享文件，会看到document文件，进入document文件夹后，把配置文件拖入此文件夹。</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　　　d. 打开openvpn connect会自动检测配置文件，并通过滑动条连接，会弹出提示框确认是否使用VPN，点击是以后会连接VPN。</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　</p>
+<h3 style="border-bottom:1px solid rgb(170, 170, 170);font-size:18px;font-weight:bold;line-height:1.5;margin:10px 0px;padding-left:10px;margin-left:10px;margin-right:10px;">Conclusion</h3>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　至此，OpenVPN服务器端和客户端都安装完成。</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;">　　</p>
+<p style="margin-top:0px;margin-bottom:0px;margin:10px auto;text-indent:0px;"><strong>　　</strong></p></div>
+<div style="clear:both;"></div>
+<div style="margin-top:20px;">
+<div style="margin-bottom:10px;">分类: <a href="http://www.cnblogs.com/fuyanwen/category/796442.html" style="text-decoration:none;color:rgb(29, 88, 209);" target="_blank">Centos</a></div>
+<div style="margin-top:0px;"></div>
+<div><div style="padding:10px 0px;margin-bottom:10px;margin-top:10px;border:1px dashed silver;font-size:12px;width:320px;text-align:center;">
+        <a href="#" style="margin-right:10px;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAkCAYAAABIdFAMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHhJREFUeNo8zjsOxCAMBFB/KEAUFFR0Cbng3nQPw68ArZdAlOZppPFIBhH5EAB8b+Tlt9MYQ6i1BuqFaq1CKSVcxZ2Acs6406KUgpt5/LCKuVgz5BDCSb13ZO99ZOdcZGvt4mJjzMVKqcha68iIePB86GAiOv8CDADlIUQBs7MD3wAAAABJRU5ErkJggg%3D%3D) repeat-x;padding:3px 8px;vertical-align:middle;text-decoration:none;font-weight:bold;cursor:pointer;display:inline-block;border-radius:10px;box-shadow:rgba(0, 0, 0, 0.5) 0px 1px 3px;text-shadow:rgba(0, 0, 0, 0.25) 0px -1px 1px;background-color:rgb(45, 174, 191);color:rgb(255, 255, 255);border:none;">好文要顶</a>
+            <a href="#" style="margin-right:10px;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAkCAYAAABIdFAMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHhJREFUeNo8zjsOxCAMBFB/KEAUFFR0Cbng3nQPw68ArZdAlOZppPFIBhH5EAB8b+Tlt9MYQ6i1BuqFaq1CKSVcxZ2Acs6406KUgpt5/LCKuVgz5BDCSb13ZO99ZOdcZGvt4mJjzMVKqcha68iIePB86GAiOv8CDADlIUQBs7MD3wAAAABJRU5ErkJggg%3D%3D) repeat-x;padding:3px 8px;vertical-align:middle;text-decoration:none;font-weight:bold;cursor:pointer;display:inline-block;border-radius:10px;box-shadow:rgba(0, 0, 0, 0.5) 0px 1px 3px;text-shadow:rgba(0, 0, 0, 0.25) 0px -1px 1px;background-color:rgb(227, 49, 0);color:rgb(255, 255, 255);border:none;">关注我</a>
+    <a href="#" style="margin-right:10px;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAkCAYAAABIdFAMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHhJREFUeNo8zjsOxCAMBFB/KEAUFFR0Cbng3nQPw68ArZdAlOZppPFIBhH5EAB8b+Tlt9MYQ6i1BuqFaq1CKSVcxZ2Acs6406KUgpt5/LCKuVgz5BDCSb13ZO99ZOdcZGvt4mJjzMVKqcha68iIePB86GAiOv8CDADlIUQBs7MD3wAAAABJRU5ErkJggg%3D%3D) repeat-x;padding:3px 8px;vertical-align:middle;text-decoration:none;font-weight:bold;cursor:pointer;display:inline-block;border-radius:10px;box-shadow:rgba(0, 0, 0, 0.5) 0px 1px 3px;text-shadow:rgba(0, 0, 0, 0.25) 0px -1px 1px;background-color:rgb(255, 181, 21);color:rgb(255, 255, 255);border:none;">收藏该文</a>
+    <a href="#" style="cursor:pointer;background:none;padding:3px 2px;vertical-align:middle;text-decoration:none;font-weight:bold;display:inline-block;margin-right:10px;border-radius:10px;box-shadow:none;text-shadow:none;color:rgb(255, 255, 255);border:none;" title="分享至新浪微博"><img src="openvpn_files/icon_weibo_24.png" type="image/png" data-filename="icon_weibo_24.png" height="24" style="height:auto;border:none;vertical-align:middle;margin-left:5px;box-shadow:none;max-width:300px;" width="24"/></a>
+    <a href="#" style="cursor:pointer;background:none;padding:3px 2px;vertical-align:middle;text-decoration:none;font-weight:bold;display:inline-block;margin-right:10px;border-radius:10px;box-shadow:none;text-shadow:none;color:rgb(255, 255, 255);border:none;" title="分享至微信"><img src="openvpn_files/wechat.png" type="image/png" data-filename="wechat.png" height="24" style="border:medium none;width:24px;height:24px;box-shadow:none;margin-left:5px;vertical-align:middle;max-width:300px;" width="24"/></a>
+</div>
+<div style="float:left;width:280px;margin-top:0px;margin-bottom:10px;color:rgb(0, 0, 0);margin-left:0px;font-size:12px;">
+    <div style="float:left;line-height:18px;">
+            <a href="http://home.cnblogs.com/u/fuyanwen/" style="text-decoration:none;color:rgb(29, 88, 209);" target="_blank"><img src="openvpn_files/20130801133457.png" type="image/jpeg" data-filename="20130801133457.png" height="48" style="height:auto;border:0px;vertical-align:top;float:left;margin-right:5px;padding-top:5px;padding-left:2px;max-width:300px;" width="48"/></a>
+        <div style="float:left;line-height:18px;">
+            <a href="http://home.cnblogs.com/u/fuyanwen/" style="text-decoration:none;color:rgb(29, 88, 209);">涛涛宝贝</a><br/>
+            <a href="http://home.cnblogs.com/u/fuyanwen/followees" style="text-decoration:none;color:rgb(29, 88, 209);">关注 - 3</a><br/>
+            <a href="http://home.cnblogs.com/u/fuyanwen/followers" style="text-decoration:none;color:rgb(29, 88, 209);">粉丝 - 4</a>
+        </div>
+    </div>
+    <div style="clear:both;"></div>
+    <div></div>
+    <div>
+                <a href="#" style="text-decoration:none;color:rgb(29, 88, 209);">+加关注</a>
+    </div>
+</div>
+<div style="float:right;margin-bottom:10px;margin-right:30px;font-size:12px;width:125px;text-align:center;margin-top:10px;">
+    <div style="float:left;width:46px;height:52px;background:url(//static.cnblogs.com/images/upup.gif) no-repeat;text-align:center;cursor:pointer;margin-top:2px;padding-top:5px;">
+        <span style="font-size:14px;color:rgb(7, 93, 179);font-family:Verdana;line-height:1.5em;">0</span>
+    </div>
+    <div style="float:right;margin-left:20px;width:46px;height:52px;background:url(//static.cnblogs.com/images/downdown.gif) no-repeat;text-align:center;cursor:pointer;margin-top:2px;padding-top:5px;">
+        <span style="font-size:14px;color:rgb(7, 93, 179);font-family:Verdana;line-height:1.5em;">0</span>
+    </div>
+    <div style="clear:both;"></div>
+    <div style="margin-top:5px;margin-left:0px;font-size:12px;color:gray;">
+    </div>
+</div>
+</div>
+<div style="clear:both;"></div>
+<div style="line-height:1.8;font-size:12px;"><a href="http://www.cnblogs.com/fuyanwen/p/7290068.html" style="color:rgb(29, 88, 209);text-decoration:none;">« </a> 上一篇：<a href="http://www.cnblogs.com/fuyanwen/p/7290068.html" style="text-decoration:none;color:rgb(29, 88, 209);" title="发布于2017-08-05 13:55">VS2017试用期到期后登录微软账户出现错误解决方法</a><br/></div>
+</div>
+
+
+		</div>
+		<p style="margin-top:0px;margin-bottom:0px;margin:14px 0px 0px;color:rgb(170, 170, 170);border-top:1px solid rgb(221, 221, 221);font-size:12px;">
+			posted on <span>2018-01-05 09:55</span> <a href="http://www.cnblogs.com/fuyanwen/" style="color:rgb(34, 51, 85);text-decoration:none;">涛涛宝贝</a> 阅读(<span>6838</span>) 评论(<span>0</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=8195956" rel="nofollow" style="color:rgb(34, 51, 85);text-decoration:none;">编辑</a> <a href="https://www.cnblogs.com/fuyanwen/p/8195956.html#" style="color:rgb(34, 51, 85);text-decoration:none;">收藏</a>
+		</p>
+	</div></div></div></div></div></div></div></div></div>
+</div>
+</span>
+</div></body></html> 
