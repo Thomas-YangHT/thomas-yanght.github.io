@@ -1,0 +1,903 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: New, updated, and deprecated options in Ocata for Compute</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="../../_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="../../_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="../../_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="../../_static/css/combined.css" rel="stylesheet">
+<link href="../../_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" href="../../_static/sphinxmark.css" type="text/css" />
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>New, updated, and deprecated options in Ocata for Compute</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="../../compute/config-options.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: nova.conf - configuration options"></i></a>
+    
+    
+    <a href="../../compute/nova-conf.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Overview of nova.conf"></i></a>
+    
+    <a id="logABugLink1" href="nova.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:41</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="../../index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="nova.html#">New, updated, and deprecated options in Ocata for Compute</a></li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="new-updated-and-deprecated-options-in-ocata-for-compute">
+<h1>New, updated, and deprecated options in Ocata for Compute<a class="headerlink" href="nova.html#new-updated-and-deprecated-options-in-ocata-for-compute" title="Permalink to this headline">¶</a></h1>
+<table border="1" class="config-ref-table docutils" id="id1">
+<caption><span class="caption-text">New options</span><a class="headerlink" href="nova.html#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option = default value</th>
+<th class="head">(Type) Help string</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">allow_instance_snapshots</span> <span class="pre">=</span> <span class="pre">True</span></code></td>
+<td>(BoolOpt) Operators can turn off the ability for a user to take snapshots of their instances by setting this option to False. When disabled, any attempt to take a snapshot will result in a HTTP 400 response (&#8220;Bad Request&#8221;).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">auth_strategy</span> <span class="pre">=</span> <span class="pre">keystone</span></code></td>
+<td>(StrOpt) This determines the strategy to use for authentication: keystone or noauth2. &#8216;noauth2&#8217; is designed for testing only, as it does no actual credential checking. &#8216;noauth2&#8217; provides administrative credentials only if &#8216;admin&#8217; is specified as the username.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">compute_link_prefix</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) This string is prepended to the normal URL that is returned in links to the OpenStack Compute API. If it is empty (the default), the URLs are returned unchanged. Possible values: * Any string, including an empty string (the default).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">config_drive_skip_versions</span> <span class="pre">=</span> <span class="pre">1.0</span> <span class="pre">2007-01-19</span> <span class="pre">2007-03-01</span> <span class="pre">2007-08-29</span> <span class="pre">2007-10-10</span> <span class="pre">2007-12-15</span> <span class="pre">2008-02-01</span> <span class="pre">2008-09-01</span></code></td>
+<td>(StrOpt) When gathering the existing metadata for a config drive, the EC2-style metadata is returned for all versions that don&#8217;t appear in this option. As of the Liberty release, the available versions are: * 1.0 * 2007-01-19 * 2007-03-01 * 2007-08-29 * 2007-10-10 * 2007-12-15 * 2008-02-01 * 2008-09-01 * 2009-04-04 The option is in the format of a single string, with each version separated by a space. Possible values: * Any string that represents zero or more versions, separated by spaces.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">enable_instance_password</span> <span class="pre">=</span> <span class="pre">True</span></code></td>
+<td>(BoolOpt) Enables returning of the instance password by the relevant server API calls such as create, rebuild, evacuate, or rescue. If the hypervisor does not support password injection, then the password returned will not be correct, so if your hypervisor does not support password injection, set this to False.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">fping_path</span> <span class="pre">=</span> <span class="pre">/usr/sbin/fping</span></code></td>
+<td>(StrOpt) The full path to the fping binary.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">glance_link_prefix</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) This string is prepended to the normal URL that is returned in links to Glance resources. If it is empty (the default), the URLs are returned unchanged. Possible values: * Any string, including an empty string (the default).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">hide_server_address_states</span> <span class="pre">=</span> <span class="pre">building</span></code></td>
+<td>(ListOpt) This option is a list of all instance states for which network address information should not be returned from the API. Possible values: A list of strings, where each string is a valid VM state, as defined in nova/compute/vm_states.py. As of the Newton release, they are: * &#8220;active&#8221; * &#8220;building&#8221; * &#8220;paused&#8221; * &#8220;suspended&#8221; * &#8220;stopped&#8221; * &#8220;rescued&#8221; * &#8220;resized&#8221; * &#8220;soft-delete&#8221; * &#8220;deleted&#8221; * &#8220;error&#8221; * &#8220;shelved&#8221; * &#8220;shelved_offloaded&#8221;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">max_limit</span> <span class="pre">=</span> <span class="pre">1000</span></code></td>
+<td>(IntOpt) As a query can potentially return many thousands of items, you can limit the maximum number of items in a single response by setting this option.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">metadata_cache_expiration</span> <span class="pre">=</span> <span class="pre">15</span></code></td>
+<td>(IntOpt) This option is the time (in seconds) to cache metadata. When set to 0, metadata caching is disabled entirely; this is generally not recommended for performance reasons. Increasing this setting should improve response times of the metadata API when under heavy load. Higher values may increase memory usage, and result in longer times for host metadata changes to take effect.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">neutron_default_tenant_id</span> <span class="pre">=</span> <span class="pre">default</span></code></td>
+<td>(StrOpt) Tenant ID for getting the default network from Neutron API (also referred in some places as the &#8216;project ID&#8217;) to use. Related options: * use_neutron_default_nets</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">use_forwarded_for</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) When True, the &#8216;X-Forwarded-For&#8217; header is treated as the canonical remote address. When False (the default), the &#8216;remote_address&#8217; header is used. You should only enable this if you have an HTML sanitizing proxy.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">use_neutron_default_nets</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) When True, the TenantNetworkController will query the Neutron API to get the default networks to use. Related options: * neutron_default_tenant_id</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">vendordata_dynamic_connect_timeout</span> <span class="pre">=</span> <span class="pre">5</span></code></td>
+<td>(IntOpt) Maximum wait time for an external REST service to connect. Possible values: * Any integer with a value greater than three (the TCP packet retransmission timeout). Note that instance start may be blocked during this wait time, so this value should be kept small. Related options: * vendordata_providers * vendordata_dynamic_targets * vendordata_dynamic_ssl_certfile * vendordata_dynamic_read_timeout * vendordata_dynamic_failure_fatal</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">vendordata_dynamic_failure_fatal</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Should failures to fetch dynamic vendordata be fatal to instance boot? Related options: * vendordata_providers * vendordata_dynamic_targets * vendordata_dynamic_ssl_certfile * vendordata_dynamic_connect_timeout * vendordata_dynamic_read_timeout</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">vendordata_dynamic_read_timeout</span> <span class="pre">=</span> <span class="pre">5</span></code></td>
+<td>(IntOpt) Maximum wait time for an external REST service to return data once connected. Possible values: * Any integer. Note that instance start is blocked during this wait time, so this value should be kept small. Related options: * vendordata_providers * vendordata_dynamic_targets * vendordata_dynamic_ssl_certfile * vendordata_dynamic_connect_timeout * vendordata_dynamic_failure_fatal</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">vendordata_dynamic_ssl_certfile</span> <span class="pre">=</span></code></td>
+<td>(StrOpt) Path to an optional certificate file or CA bundle to verify dynamic vendordata REST services ssl certificates against. Possible values: * An empty string, or a path to a valid certificate file Related options: * vendordata_providers * vendordata_dynamic_targets * vendordata_dynamic_connect_timeout * vendordata_dynamic_read_timeout * vendordata_dynamic_failure_fatal</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">vendordata_dynamic_targets</span> <span class="pre">=</span></code></td>
+<td>(ListOpt) A list of targets for the dynamic vendordata provider. These targets are of the form &lt;name&gt;&#64;&lt;url&gt;. The dynamic vendordata provider collects metadata by contacting external REST services and querying them for information about the instance. This behaviour is documented in the vendordata.rst file in the nova developer reference.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">vendordata_jsonfile_path</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) Cloud providers may store custom data in vendor data file that will then be available to the instances via the metadata service, and to the rendering of config-drive. The default class for this, JsonFileVendorData, loads this information from a JSON file, whose path is configured by this option. If there is no path set by this option, the class returns an empty dictionary. Possible values: * Any string representing the path to the data file, or an empty string (default).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">vendordata_providers</span> <span class="pre">=</span></code></td>
+<td>(ListOpt) A list of vendordata providers. vendordata providers are how deployers can provide metadata via configdrive and metadata that is specific to their deployment. There are currently two supported providers: StaticJSON and DynamicJSON. StaticJSON reads a JSON file configured by the flag vendordata_jsonfile_path and places the JSON from that file into vendor_data.json and vendor_data2.json. DynamicJSON is configured via the vendordata_dynamic_targets flag, which is documented separately. For each of the endpoints specified in that flag, a section is added to the vendor_data2.json. For more information on the requirements for implementing a vendordata dynamic endpoint, please see the vendordata.rst file in the nova developer reference. Possible values: * A list of vendordata providers, with StaticJSON and DynamicJSON being current options. Related options: * vendordata_dynamic_targets * vendordata_dynamic_ssl_certfile * vendordata_dynamic_connect_timeout * vendordata_dynamic_read_timeout * vendordata_dynamic_failure_fatal</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[console]</span> <span class="pre">allowed_origins</span> <span class="pre">=</span></code></td>
+<td>(ListOpt) Adds list of allowed origins to the console websocket proxy to allow connections from other origin hostnames. Websocket proxy matches the host header with the origin header to prevent cross-site requests. This list specifies if any there are values other than host are allowed in the origin header. Possible values: * A list where each element is an allowed origin hostnames, else an empty list</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[consoleauth]</span> <span class="pre">token_ttl</span> <span class="pre">=</span> <span class="pre">600</span></code></td>
+<td>(IntOpt) The lifetime of a console auth token. A console auth token is used in authorizing console access for a user. Once the auth token time to live count has elapsed, the token is considered expired. Expired tokens are then deleted.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">aggregate_image_properties_isolation_namespace</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) Image property namespace for use in the host aggregate. Images and hosts can be configured so that certain images can only be scheduled to hosts in a particular aggregate. This is done with metadata values set on the host aggregate that are identified by beginning with the value of this option. If the host is part of an aggregate with such a metadata key, the image in the request spec must have the value of that metadata in its properties in order for the scheduler to consider the host as acceptable. This option is only used by the FilterScheduler and its subclasses; if you use a different scheduler, this option has no effect. Also note that this setting only affects scheduling if the &#8216;aggregate_image_properties_isolation&#8217; filter is enabled. Possible values: * A string, where the string corresponds to an image property namespace Related options: * aggregate_image_properties_isolation_separator</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">aggregate_image_properties_isolation_separator</span> <span class="pre">=</span> <span class="pre">.</span></code></td>
+<td>(StrOpt) Separator character(s) for image property namespace and name. When using the aggregate_image_properties_isolation filter, the relevant metadata keys are prefixed with the namespace defined in the aggregate_image_properties_isolation_namespace configuration option plus a separator. This option defines the separator to be used. This option is only used by the FilterScheduler and its subclasses; if you use a different scheduler, this option has no effect. Also note that this setting only affects scheduling if the &#8216;aggregate_image_properties_isolation&#8217; filter is enabled. Possible values: * A string, where the string corresponds to an image property namespace separator character Related options: * aggregate_image_properties_isolation_namespace</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">available_filters</span> <span class="pre">=</span> <span class="pre">['nova.scheduler.filters.all_filters']</span></code></td>
+<td>(MultiStrOpt) Filters that the scheduler can use. An unordered list of the filter classes the nova scheduler may apply. Only the filters specified in the &#8216;scheduler_enabled_filters&#8217; option will be used, but any filter appearing in that option must also be included in this list. By default, this is set to all filters that are included with nova. This option is only used by the FilterScheduler and its subclasses; if you use a different scheduler, this option has no effect. Possible values: * A list of zero or more strings, where each string corresponds to the name of a filter that may be used for selecting a host Related options: * scheduler_enabled_filters</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">baremetal_enabled_filters</span> <span class="pre">=</span> <span class="pre">RetryFilter,</span> <span class="pre">AvailabilityZoneFilter,</span> <span class="pre">ComputeFilter,</span> <span class="pre">ComputeCapabilitiesFilter,</span> <span class="pre">ImagePropertiesFilter,</span> <span class="pre">ExactRamFilter,</span> <span class="pre">ExactDiskFilter,</span> <span class="pre">ExactCoreFilter</span></code></td>
+<td>(ListOpt) Filters used for filtering baremetal hosts. Filters are applied in order, so place your most restrictive filters first to make the filtering process more efficient. This option is only used by the FilterScheduler and its subclasses; if you use a different scheduler, this option has no effect. Possible values: * A list of zero or more strings, where each string corresponds to the name of a filter to be used for selecting a baremetal host Related options: * If the &#8216;scheduler_use_baremetal_filters&#8217; option is False, this option has no effect.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">disk_weight_multiplier</span> <span class="pre">=</span> <span class="pre">1.0</span></code></td>
+<td>(FloatOpt) Disk weight multipler ratio. Multiplier used for weighing free disk space. Negative numbers mean to stack vs spread. This option is only used by the FilterScheduler and its subclasses; if you use a different scheduler, this option has no effect. Also note that this setting only affects scheduling if the &#8216;ram&#8217; weigher is enabled. Possible values: * An integer or float value, where the value corresponds to the multipler ratio for this weigher.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">enabled_filters</span> <span class="pre">=</span> <span class="pre">RetryFilter,</span> <span class="pre">AvailabilityZoneFilter,</span> <span class="pre">RamFilter,</span> <span class="pre">DiskFilter,</span> <span class="pre">ComputeFilter,</span> <span class="pre">ComputeCapabilitiesFilter,</span> <span class="pre">ImagePropertiesFilter,</span> <span class="pre">ServerGroupAntiAffinityFilter,</span> <span class="pre">ServerGroupAffinityFilter</span></code></td>
+<td>(ListOpt) Filters that the scheduler will use. An ordered list of filter class names that will be used for filtering hosts. Ignore the word &#8216;default&#8217; in the name of this option: these filters will <em>always</em> be applied, and they will be applied in the order they are listed so place your most restrictive filters first to make the filtering process more efficient. This option is only used by the FilterScheduler and its subclasses; if you use a different scheduler, this option has no effect. Possible values: * A list of zero or more strings, where each string corresponds to the name of a filter to be used for selecting a host Related options: * All of the filters in this option <em>must</em> be present in the &#8216;scheduler_available_filters&#8217; option, or a SchedulerHostFilterNotFound exception will be raised.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">host_subset_size</span> <span class="pre">=</span> <span class="pre">1</span></code></td>
+<td>(IntOpt) Size of subset of best hosts selected by scheduler. New instances will be scheduled on a host chosen randomly from a subset of the N best hosts, where N is the value set by this option. Setting this to a value greater than 1 will reduce the chance that multiple scheduler processes handling similar requests will select the same host, creating a potential race condition. By selecting a host randomly from the N hosts that best fit the request, the chance of a conflict is reduced. However, the higher you set this value, the less optimal the chosen host may be for a given request. This option is only used by the FilterScheduler and its subclasses; if you use a different scheduler, this option has no effect. Possible values: * An integer, where the integer corresponds to the size of a host subset. Any integer is valid, although any value less than 1 will be treated as 1</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">io_ops_weight_multiplier</span> <span class="pre">=</span> <span class="pre">-1.0</span></code></td>
+<td>(FloatOpt) IO operations weight multipler ratio. This option determines how hosts with differing workloads are weighed. Negative values, such as the default, will result in the scheduler preferring hosts with lighter workloads whereas positive values will prefer hosts with heavier workloads. Another way to look at it is that positive values for this option will tend to schedule instances onto hosts that are already busy, while negative values will tend to distribute the workload across more hosts. The absolute value, whether positive or negative, controls how strong the io_ops weigher is relative to other weighers. This option is only used by the FilterScheduler and its subclasses; if you use a different scheduler, this option has no effect. Also note that this setting only affects scheduling if the &#8216;io_ops&#8217; weigher is enabled. Possible values: * An integer or float value, where the value corresponds to the multipler ratio for this weigher.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">isolated_hosts</span> <span class="pre">=</span></code></td>
+<td>(ListOpt) List of hosts that can only run certain images. If there is a need to restrict some images to only run on certain designated hosts, list those host names here. This option is only used by the FilterScheduler and its subclasses; if you use a different scheduler, this option has no effect. Also note that this setting only affects scheduling if the &#8216;IsolatedHostsFilter&#8217; filter is enabled. Possible values: * A list of strings, where each string corresponds to the name of a host Related options: * scheduler/isolated_images * scheduler/restrict_isolated_hosts_to_isolated_images</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">isolated_images</span> <span class="pre">=</span></code></td>
+<td>(ListOpt) List of UUIDs for images that can only be run on certain hosts. If there is a need to restrict some images to only run on certain designated hosts, list those image UUIDs here. This option is only used by the FilterScheduler and its subclasses; if you use a different scheduler, this option has no effect. Also note that this setting only affects scheduling if the &#8216;IsolatedHostsFilter&#8217; filter is enabled. Possible values: * A list of UUID strings, where each string corresponds to the UUID of an image Related options: * scheduler/isolated_hosts * scheduler/restrict_isolated_hosts_to_isolated_images</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">max_instances_per_host</span> <span class="pre">=</span> <span class="pre">50</span></code></td>
+<td>(IntOpt) Maximum number of instances that be active on a host. If you need to limit the number of instances on any given host, set this option to the maximum number of instances you want to allow. The num_instances_filter will reject any host that has at least as many instances as this option&#8217;s value. This option is only used by the FilterScheduler and its subclasses; if you use a different scheduler, this option has no effect. Also note that this setting only affects scheduling if the &#8216;num_instances_filter&#8217; filter is enabled. Possible values: * An integer, where the integer corresponds to the max instances that can be scheduled on a host.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">max_io_ops_per_host</span> <span class="pre">=</span> <span class="pre">8</span></code></td>
+<td>(IntOpt) The number of instances that can be actively performing IO on a host. Instances performing IO includes those in the following states: build, resize, snapshot, migrate, rescue, unshelve. This option is only used by the FilterScheduler and its subclasses; if you use a different scheduler, this option has no effect. Also note that this setting only affects scheduling if the &#8216;io_ops_filter&#8217; filter is enabled. Possible values: * An integer, where the integer corresponds to the max number of instances that can be actively performing IO on any given host.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">ram_weight_multiplier</span> <span class="pre">=</span> <span class="pre">1.0</span></code></td>
+<td>(FloatOpt) Ram weight multipler ratio. This option determines how hosts with more or less available RAM are weighed. A positive value will result in the scheduler preferring hosts with more available RAM, and a negative number will result in the scheduler preferring hosts with less available RAM. Another way to look at it is that positive values for this option will tend to spread instances across many hosts, while negative values will tend to fill up (stack) hosts as much as possible before scheduling to a less-used host. The absolute value, whether positive or negative, controls how strong the RAM weigher is relative to other weighers. This option is only used by the FilterScheduler and its subclasses; if you use a different scheduler, this option has no effect. Also note that this setting only affects scheduling if the &#8216;ram&#8217; weigher is enabled. Possible values: * An integer or float value, where the value corresponds to the multipler ratio for this weigher.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">restrict_isolated_hosts_to_isolated_images</span> <span class="pre">=</span> <span class="pre">True</span></code></td>
+<td>(BoolOpt) Prevent non-isolated images from being built on isolated hosts. This option is only used by the FilterScheduler and its subclasses; if you use a different scheduler, this option has no effect. Also note that this setting only affects scheduling if the &#8216;IsolatedHostsFilter&#8217; filter is enabled. Even then, this option doesn&#8217;t affect the behavior of requests for isolated images, which will <em>always</em> be restricted to isolated hosts. Related options: * scheduler/isolated_images * scheduler/isolated_hosts</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">soft_affinity_weight_multiplier</span> <span class="pre">=</span> <span class="pre">1.0</span></code></td>
+<td>(FloatOpt) Multiplier used for weighing hosts for group soft-affinity. Possible values: * An integer or float value, where the value corresponds to weight multiplier for hosts with group soft affinity. Only a positive value are meaningful, as negative values would make this behave as a soft anti-affinity weigher.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">soft_anti_affinity_weight_multiplier</span> <span class="pre">=</span> <span class="pre">1.0</span></code></td>
+<td>(FloatOpt) Multiplier used for weighing hosts for group soft-anti-affinity. Possible values: * An integer or float value, where the value corresponds to weight multiplier for hosts with group soft anti-affinity. Only a positive value are meaningful, as negative values would make this behave as a soft affinity weigher.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">track_instance_changes</span> <span class="pre">=</span> <span class="pre">True</span></code></td>
+<td>(BoolOpt) Enable querying of individual hosts for instance information. The scheduler may need information about the instances on a host in order to evaluate its filters and weighers. The most common need for this information is for the (anti-)affinity filters, which need to choose a host based on the instances already running on a host. If the configured filters and weighers do not need this information, disabling this option will improve performance. It may also be disabled when the tracking overhead proves too heavy, although this will cause classes requiring host usage data to query the database on each request instead. This option is only used by the FilterScheduler and its subclasses; if you use a different scheduler, this option has no effect.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">use_baremetal_filters</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Enable baremetal filters. Set this to True to tell the nova scheduler that it should use the filters specified in the &#8216;baremetal_scheduler_enabled_filters&#8217; option. If you are not scheduling baremetal nodes, leave this at the default setting of False. This option is only used by the FilterScheduler and its subclasses; if you use a different scheduler, this option has no effect. Related options: * If this option is set to True, then the filters specified in the &#8216;baremetal_scheduler_enabled_filters&#8217; are used instead of the filters specified in &#8216;scheduler_enabled_filters&#8217;.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">weight_classes</span> <span class="pre">=</span> <span class="pre">nova.scheduler.weights.all_weighers</span></code></td>
+<td>(ListOpt) Weighers that the scheduler will use. Only hosts which pass the filters are weighed. The weight for any host starts at 0, and the weighers order these hosts by adding to or subtracting from the weight assigned by the previous weigher. Weights may become negative. An instance will be scheduled to one of the N most-weighted hosts, where N is &#8216;scheduler_host_subset_size&#8217;. By default, this is set to all weighers that are included with Nova. This option is only used by the FilterScheduler and its subclasses; if you use a different scheduler, this option has no effect. Possible values: * A list of zero or more strings, where each string corresponds to the name of a weigher that will be used for selecting a host</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[hyperv]</span> <span class="pre">iscsi_initiator_list</span> <span class="pre">=</span></code></td>
+<td>(ListOpt) List of iSCSI initiators that will be used for estabilishing iSCSI sessions. If none are specified, the Microsoft iSCSI initiator service will choose the initiator.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[hyperv]</span> <span class="pre">use_multipath_io</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Use multipath connections when attaching iSCSI or FC disks. This requires the Multipath IO Windows feature to be enabled. MPIO must be configured to claim such devices.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[ironic]</span> <span class="pre">serial_console_state_timeout</span> <span class="pre">=</span> <span class="pre">10</span></code></td>
+<td>(IntOpt) Timeout (seconds) to wait for node serial console state changed. Set to 0 to disable timeout.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[libvirt]</span> <span class="pre">live_migration_scheme</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) Schema used for live migration. Override the default libvirt live migration scheme (which is dependant on virt_type). If this option is set to None, nova will automatically choose a sensible default based on the hypervisor. It is not recommended that you change this unless you are very sure that hypervisor supports a particular scheme. Related options: * <code class="docutils literal"><span class="pre">virt_type</span></code>: This option is meaningful only when <code class="docutils literal"><span class="pre">virt_type</span></code> is set to <cite>kvm</cite> or <cite>qemu</cite>. * <code class="docutils literal"><span class="pre">live_migration_uri</span></code>: If <code class="docutils literal"><span class="pre">live_migration_uri</span></code> value is not None, the scheme used for live migration is taken from <code class="docutils literal"><span class="pre">live_migration_uri</span></code> instead.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[notifications]</span> <span class="pre">default_level</span> <span class="pre">=</span> <span class="pre">INFO</span></code></td>
+<td>(StrOpt) Default notification level for outgoing notifications.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[notifications]</span> <span class="pre">default_publisher_id</span> <span class="pre">=</span> <span class="pre">$my_ip</span></code></td>
+<td>(StrOpt) Default publisher_id for outgoing notifications. If you consider routing notifications using different publisher, change this value accordingly. Possible values: * Defaults to the IPv4 address of this host, but it can be any valid oslo.messaging publisher_id Related options: * my_ip - IP address of this host</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[notifications]</span> <span class="pre">notification_format</span> <span class="pre">=</span> <span class="pre">both</span></code></td>
+<td>(StrOpt) Specifies which notification format shall be used by nova. The default value is fine for most deployments and rarely needs to be changed. This value can be set to &#8216;versioned&#8217; once the infrastructure moves closer to consuming the newer format of notifications. After this occurs, this option will be removed (possibly in the &#8220;P&#8221; release). Possible values: * unversioned: Only the legacy unversioned notifications are emitted. * versioned: Only the new versioned notifications are emitted. * both: Both the legacy unversioned and the new versioned notifications are emitted. (Default) The list of versioned notifications is visible in <a class="reference external" href="http://docs.openstack.org/developer/nova/notifications.html">http://docs.openstack.org/developer/nova/notifications.html</a></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[notifications]</span> <span class="pre">notify_on_api_faults</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) If enabled, send api.fault notifications on caught exceptions in the API service.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[notifications]</span> <span class="pre">notify_on_state_change</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) If set, send compute.instance.update notifications on instance state changes. Please refer to <a class="reference external" href="https://wiki.openstack.org/wiki/SystemUsageData">https://wiki.openstack.org/wiki/SystemUsageData</a> for additional information on notifications. Possible values: * None - no notifications * &#8220;vm_state&#8221; - notifications on VM state changes * &#8220;vm_and_task_state&#8221; - notifications on VM and task state changes</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[pci]</span> <span class="pre">alias</span> <span class="pre">=</span> <span class="pre">[]</span></code></td>
+<td>(MultiStrOpt) An alias for a PCI passthrough device requirement. This allows users to specify the alias in the extra_spec for a flavor, without needing to repeat all the PCI property requirements. Possible Values: * A list of JSON values which describe the aliases. For example: alias = { &#8220;name&#8221;: &#8220;QuickAssist&#8221;, &#8220;product_id&#8221;: &#8220;0443&#8221;, &#8220;vendor_id&#8221;: &#8220;8086&#8221;, &#8220;device_type&#8221;: &#8220;type-PCI&#8221; } defines an alias for the Intel QuickAssist card. (multi valued). Valid key values are : * &#8220;name&#8221;: Name of the PCI alias. * &#8220;product_id&#8221;: Product ID of the device in hexadecimal. * &#8220;vendor_id&#8221;: Vendor ID of the device in hexadecimal. * &#8220;device_type&#8221;: Type of PCI device. Valid values are: &#8220;type-PCI&#8221;, &#8220;type-PF&#8221; and &#8220;type-VF&#8221;.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[pci]</span> <span class="pre">passthrough_whitelist</span> <span class="pre">=</span> <span class="pre">[]</span></code></td>
+<td>(MultiStrOpt) White list of PCI devices available to VMs. Possible values: * A JSON dictionary which describe a whitelisted PCI device. It should take the following format: [&#8220;vendor_id&#8221;: &#8220;&lt;id&gt;&#8221;,] [&#8220;product_id&#8221;: &#8220;&lt;id&gt;&#8221;,] [&#8220;address&#8221;: &#8220;[[[[&lt;domain&gt;]:]&lt;bus&gt;]:][&lt;slot&gt;][.[&lt;function&gt;]]&#8221; | &#8220;devname&#8221;: &#8220;&lt;name&gt;&#8221;,] {&#8220;&lt;tag&gt;&#8221;: &#8220;&lt;tag_value&gt;&#8221;,} Where &#8216;[&#8216; indicates zero or one occurrences, &#8216;{&#8216; indicates zero or multiple occurrences, and &#8216;|&#8217; mutually exclusive options. Note that any missing fields are automatically wildcarded. Valid key values are : * &#8220;vendor_id&#8221;: Vendor ID of the device in hexadecimal. * &#8220;product_id&#8221;: Product ID of the device in hexadecimal. * &#8220;address&#8221;: PCI address of the device. * &#8220;devname&#8221;: Device name of the device (for e.g. interface name). Not all PCI devices have a name. * &#8220;&lt;tag&gt;&#8221;: Additional &lt;tag&gt; and &lt;tag_value&gt; used for matching PCI devices. Supported &lt;tag&gt;: &#8220;physical_network&#8221;. The address key supports traditional glob style and regular expression syntax. Valid examples are: passthrough_whitelist = {&#8220;devname&#8221;:&#8221;eth0&#8221;, &#8220;physical_network&#8221;:&#8221;physnet&#8221;} passthrough_whitelist = {&#8220;address&#8221;:&#8221;<em>:0a:00.</em>&#8220;} passthrough_whitelist = {&#8220;address&#8221;:&#8221;:0a:00.&#8221;, &#8220;physical_network&#8221;:&#8221;physnet1&#8221;} passthrough_whitelist = {&#8220;vendor_id&#8221;:&#8221;1137&#8221;, &#8220;product_id&#8221;:&#8221;0071&#8221;} passthrough_whitelist = {&#8220;vendor_id&#8221;:&#8221;1137&#8221;, &#8220;product_id&#8221;:&#8221;0071&#8221;, &#8220;address&#8221;: &#8220;0000:0a:00.1&#8221;, &#8220;physical_network&#8221;:&#8221;physnet1&#8221;} passthrough_whitelist = {&#8220;address&#8221;:{&#8220;domain&#8221;: &#8221;.*&#8221;, &#8220;bus&#8221;: &#8220;02&#8221;, &#8220;slot&#8221;: &#8220;01&#8221;, &#8220;function&#8221;: &#8220;[2-7]&#8221;}, &#8220;physical_network&#8221;:&#8221;physnet1&#8221;} passthrough_whitelist = {&#8220;address&#8221;:{&#8220;domain&#8221;: &#8221;.*&#8221;, &#8220;bus&#8221;: &#8220;02&#8221;, &#8220;slot&#8221;: &#8220;0[1-2]&#8221;, &#8220;function&#8221;: &#8221;.*&#8221;}, &#8220;physical_network&#8221;:&#8221;physnet1&#8221;} The following are invalid, as they specify mutually exclusive options: passthrough_whitelist = {&#8220;devname&#8221;:&#8221;eth0&#8221;, &#8220;physical_network&#8221;:&#8221;physnet&#8221;, &#8220;address&#8221;:&#8221;<em>:0a:00.</em>&#8220;} * A JSON list of JSON dictionaries corresponding to the above format. For example: passthrough_whitelist = [{&#8220;product_id&#8221;:&#8221;0001&#8221;, &#8220;vendor_id&#8221;:&#8221;8086&#8221;}, {&#8220;product_id&#8221;:&#8221;0002&#8221;, &#8220;vendor_id&#8221;:&#8221;8086&#8221;}]</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[placement]</span> <span class="pre">os_interface</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) Endpoint interface for this node. This is used when picking the URL in the service catalog.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">connection_string</span> <span class="pre">=</span> <span class="pre">messaging://</span></code></td>
+<td>(StrOpt) Connection string for a notifier backend. Default value is messaging:// which sets the notifier to oslo_messaging. Examples of possible values: * messaging://: use oslo_messaging driver for sending notifications. * mongodb://127.0.0.1:27017 : use mongodb driver for sending notifications. * elasticsearch://127.0.0.1:9200 : use elasticsearch driver for sending notifications.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">enabled</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Enables the profiling for all services on this node. Default value is False (fully disable the profiling feature). Possible values: * True: Enables the feature * False: Disables the feature. The profiling cannot be started via this project operations. If the profiling is triggered by another project, this project part will be empty.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">es_doc_type</span> <span class="pre">=</span> <span class="pre">notification</span></code></td>
+<td>(StrOpt) Document type for notification indexing in elasticsearch.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">es_scroll_size</span> <span class="pre">=</span> <span class="pre">10000</span></code></td>
+<td>(IntOpt) Elasticsearch splits large requests in batches. This parameter defines maximum size of each batch (for example: es_scroll_size=10000).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">es_scroll_time</span> <span class="pre">=</span> <span class="pre">2m</span></code></td>
+<td>(StrOpt) This parameter is a time value parameter (for example: es_scroll_time=2m), indicating for how long the nodes that participate in the search will maintain relevant resources in order to continue and support it.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">hmac_keys</span> <span class="pre">=</span> <span class="pre">SECRET_KEY</span></code></td>
+<td>(StrOpt) Secret key(s) to use for encrypting context data for performance profiling. This string value should have the following format: &lt;key1&gt;[,&lt;key2&gt;,...&lt;keyn&gt;], where each key is some random string. A user who triggers the profiling via the REST API has to set one of these keys in the headers of the REST API call to include profiling results of this node for this particular project. Both &#8220;enabled&#8221; flag and &#8220;hmac_keys&#8221; config options should be set to enable profiling. Also, to generate correct profiling information across all services at least one key needs to be consistent between OpenStack projects. This ensures it can be used from client side to generate the trace, containing information from all possible resources.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">sentinel_service_name</span> <span class="pre">=</span> <span class="pre">mymaster</span></code></td>
+<td>(StrOpt) Redissentinel uses a service name to identify a master redis service. This parameter defines the name (for example: sentinal_service_name=mymaster).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">socket_timeout</span> <span class="pre">=</span> <span class="pre">0.1</span></code></td>
+<td>(FloatOpt) Redissentinel provides a timeout option on the connections. This parameter defines that timeout (for example: socket_timeout=0.1).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">trace_sqlalchemy</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Enables SQL requests profiling in services. Default value is False (SQL requests won&#8217;t be traced). Possible values: * True: Enables SQL requests profiling. Each SQL query will be part of the trace and can the be analyzed by how much time was spent for that. * False: Disables SQL requests profiling. The spent time is only shown on a higher level of operations. Single SQL queries cannot be analyzed this way.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">cores</span> <span class="pre">=</span> <span class="pre">20</span></code></td>
+<td>(IntOpt) The number of instance cores or vCPUs allowed per project. Possible values: * A positive integer or 0. * -1 to disable the quota.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">driver</span> <span class="pre">=</span> <span class="pre">nova.quota.DbQuotaDriver</span></code></td>
+<td>(StrOpt) The quota enforcer driver. Provides abstraction for quota checks. Users can configure a specific driver to use for quota checks. Possible values: * nova.quota.DbQuotaDriver (default) or any string representing fully qualified class name.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">fixed_ips</span> <span class="pre">=</span> <span class="pre">-1</span></code></td>
+<td>(IntOpt) The number of fixed IPs allowed per project. Unlike floating IPs, fixed IPs are allocated dynamically by the network component when instances boot up. This quota value should be at least the number of instances allowed Possible values: * A positive integer or 0. * -1 to disable the quota.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">floating_ips</span> <span class="pre">=</span> <span class="pre">10</span></code></td>
+<td>(IntOpt) The number of floating IPs allowed per project. Floating IPs are not allocated to instances by default. Users need to select them from the pool configured by the OpenStack administrator to attach to their instances. Possible values: * A positive integer or 0. * -1 to disable the quota.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">injected_file_content_bytes</span> <span class="pre">=</span> <span class="pre">10240</span></code></td>
+<td>(IntOpt) The number of bytes allowed per injected file. Possible values: * A positive integer or 0. * -1 to disable the quota.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">injected_file_path_length</span> <span class="pre">=</span> <span class="pre">255</span></code></td>
+<td>(IntOpt) The maximum allowed injected file path length. Possible values: * A positive integer or 0. * -1 to disable the quota.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">injected_files</span> <span class="pre">=</span> <span class="pre">5</span></code></td>
+<td>(IntOpt) The number of injected files allowed. File injection allows users to customize the personality of an instance by injecting data into it upon boot. Only text file injection is permitted: binary or ZIP files are not accepted. During file injection, any existing files that match specified files are renamed to include <code class="docutils literal"><span class="pre">.bak</span></code> extension appended with a timestamp. Possible values: * A positive integer or 0. * -1 to disable the quota.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">instances</span> <span class="pre">=</span> <span class="pre">10</span></code></td>
+<td>(IntOpt) The number of instances allowed per project. Possible Values * A positive integer or 0. * -1 to disable the quota.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">key_pairs</span> <span class="pre">=</span> <span class="pre">100</span></code></td>
+<td>(IntOpt) The maximum number of key pairs allowed per user. Users can create at least one key pair for each project and use the key pair for multiple instances that belong to that project. Possible values: * A positive integer or 0. * -1 to disable the quota.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">max_age</span> <span class="pre">=</span> <span class="pre">0</span></code></td>
+<td>(IntOpt) The number of seconds between subsequent usage refreshes. This defaults to 0 (off) to avoid additional load but it is useful to turn on to help keep quota usage up-to-date and reduce the impact of out of sync usage issues. Note that quotas are not updated on a periodic task, they will update on a new reservation if max_age has passed since the last reservation.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">metadata_items</span> <span class="pre">=</span> <span class="pre">128</span></code></td>
+<td>(IntOpt) The number of metadata items allowed per instance. Users can associate metadata with an instance during instance creation. This metadata takes the form of key-value pairs. Possible values: * A positive integer or 0. * -1 to disable the quota.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">ram</span> <span class="pre">=</span> <span class="pre">51200</span></code></td>
+<td>(IntOpt) The number of megabytes of instance RAM allowed per project. Possible values: * A positive integer or 0. * -1 to disable the quota.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">reservation_expire</span> <span class="pre">=</span> <span class="pre">86400</span></code></td>
+<td>(IntOpt) The number of seconds until a reservation expires. This quota represents the time period for invalidating quota reservations.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">security_group_rules</span> <span class="pre">=</span> <span class="pre">20</span></code></td>
+<td>(IntOpt) The number of security rules per security group. The associated rules in each security group control the traffic to instances in the group. Possible values: * A positive integer or 0. * -1 to disable the quota.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">security_groups</span> <span class="pre">=</span> <span class="pre">10</span></code></td>
+<td>(IntOpt) The number of security groups per project. Possible values: * A positive integer or 0. * -1 to disable the quota.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">server_group_members</span> <span class="pre">=</span> <span class="pre">10</span></code></td>
+<td>(IntOpt) The maximum number of servers per server group. Possible values: * A positive integer or 0. * -1 to disable the quota.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">server_groups</span> <span class="pre">=</span> <span class="pre">10</span></code></td>
+<td>(IntOpt) The maxiumum number of server groups per project. Server groups are used to control the affinity and anti-affinity scheduling policy for a group of servers or instances. Reducing the quota will not affect any existing group, but new servers will not be allowed into groups that have become over quota. Possible values: * A positive integer or 0. * -1 to disable the quota.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">until_refresh</span> <span class="pre">=</span> <span class="pre">0</span></code></td>
+<td>(IntOpt) The count of reservations until usage is refreshed. This defaults to 0 (off) to avoid additional load but it is useful to turn on to help keep quota usage up-to-date and reduce the impact of out of sync usage issues.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[scheduler]</span> <span class="pre">discover_hosts_in_cells_interval</span> <span class="pre">=</span> <span class="pre">-1</span></code></td>
+<td>(IntOpt) Periodic task interval. This value controls how often (in seconds) the scheduler should attempt to discover new hosts that have been added to cells. If negative (the default), no automatic discovery will occur. Small deployments may want this periodic task enabled, as surveying the cells for new hosts is likely to be lightweight enough to not cause undue burdon to the scheduler. However, larger clouds (and those that are not adding hosts regularly) will likely want to disable this automatic behavior and instead use the <cite>nova-manage cell_v2 discover_hosts</cite> command when hosts have been added to a cell.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[scheduler]</span> <span class="pre">driver</span> <span class="pre">=</span> <span class="pre">filter_scheduler</span></code></td>
+<td>(StrOpt) The class of the driver used by the scheduler. The options are chosen from the entry points under the namespace &#8216;nova.scheduler.driver&#8217; in &#8216;setup.cfg&#8217;. Possible values: * A string, where the string corresponds to the class name of a scheduler driver. There are a number of options available: ** &#8216;caching_scheduler&#8217;, which aggressively caches the system state for better individual scheduler performance at the risk of more retries when running multiple schedulers ** &#8216;chance_scheduler&#8217;, which simply picks a host at random ** &#8216;fake_scheduler&#8217;, which is used for testing ** A custom scheduler driver. In this case, you will be responsible for creating and maintaining the entry point in your &#8216;setup.cfg&#8217; file</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[scheduler]</span> <span class="pre">host_manager</span> <span class="pre">=</span> <span class="pre">host_manager</span></code></td>
+<td>(StrOpt) The scheduler host manager to use. The host manager manages the in-memory picture of the hosts that the scheduler uses. The options values are chosen from the entry points under the namespace &#8216;nova.scheduler.host_manager&#8217; in &#8216;setup.cfg&#8217;.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[scheduler]</span> <span class="pre">max_attempts</span> <span class="pre">=</span> <span class="pre">3</span></code></td>
+<td>(IntOpt) Maximum number of schedule attempts for a chosen host. This is the maximum number of attempts that will be made to schedule an instance before it is assumed that the failures aren&#8217;t due to normal occasional race conflicts, but rather some other problem. When this is reached a MaxRetriesExceeded exception is raised, and the instance is set to an error state. Possible values: * A positive integer, where the integer corresponds to the max number of attempts that can be made when scheduling an instance.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[scheduler]</span> <span class="pre">periodic_task_interval</span> <span class="pre">=</span> <span class="pre">60</span></code></td>
+<td>(IntOpt) Periodic task interval. This value controls how often (in seconds) to run periodic tasks in the scheduler. The specific tasks that are run for each period are determined by the particular scheduler being used. If this is larger than the nova-service &#8216;service_down_time&#8217; setting, Nova may report the scheduler service as down. This is because the scheduler driver is responsible for sending a heartbeat and it will only do that as often as this option allows. As each scheduler can work a little differently than the others, be sure to test this with your selected scheduler. Possible values: * An integer, where the integer corresponds to periodic task interval in seconds. 0 uses the default interval (60 seconds). A negative value disables periodic tasks. Related options: * <code class="docutils literal"><span class="pre">nova-service</span> <span class="pre">service_down_time</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[service_user]</span> <span class="pre">auth_section</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(Opt) Config Section from which to load plugin specific options</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[service_user]</span> <span class="pre">auth_type</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(Opt) Authentication type to load</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[service_user]</span> <span class="pre">cafile</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) PEM encoded Certificate Authority to use when verifying HTTPs connections.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[service_user]</span> <span class="pre">certfile</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) PEM encoded client certificate cert file</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[service_user]</span> <span class="pre">insecure</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Verify HTTPS connections.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[service_user]</span> <span class="pre">keyfile</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) PEM encoded client certificate key file</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[service_user]</span> <span class="pre">send_service_user_token</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) When True, if sending a user token to an REST API, also send a service token. Nova often reuses the user token provided to the nova-api to talk to other REST APIs, such as Cinder and Neutron. It is possible that while the user token was valid when the request was made to Nova, the token may expire before it reaches the other service. To avoid any failures, and to make it clear it is Nova calling the service on the users behalf, we include a server token along with the user token. Should the user&#8217;s token have expired, a valid service token ensures the REST API request will still be accepted by the keystone middleware. This feature is currently experimental, and as such is turned off by default while full testing and performance tuning of this feature is completed.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[service_user]</span> <span class="pre">timeout</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(IntOpt) Timeout value for http requests</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[vendordata_dynamic_auth]</span> <span class="pre">auth_section</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(Opt) Config Section from which to load plugin specific options</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[vendordata_dynamic_auth]</span> <span class="pre">auth_type</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(Opt) Authentication type to load</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[vendordata_dynamic_auth]</span> <span class="pre">cafile</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) PEM encoded Certificate Authority to use when verifying HTTPs connections.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[vendordata_dynamic_auth]</span> <span class="pre">certfile</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) PEM encoded client certificate cert file</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[vendordata_dynamic_auth]</span> <span class="pre">insecure</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Verify HTTPS connections.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[vendordata_dynamic_auth]</span> <span class="pre">keyfile</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) PEM encoded client certificate key file</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[vendordata_dynamic_auth]</span> <span class="pre">timeout</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(IntOpt) Timeout value for http requests</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[xenserver]</span> <span class="pre">console_public_hostname</span> <span class="pre">=</span> <span class="pre">localhost</span></code></td>
+<td>(StrOpt) Publicly visible name for this console host. Possible values: * A string representing a valid hostname</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="config-ref-table docutils" id="id2">
+<caption><span class="caption-text">New default values</span><a class="headerlink" href="nova.html#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Previous default value</th>
+<th class="head">New default value</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">use_neutron</span></code></td>
+<td><code class="docutils literal"><span class="pre">False</span></code></td>
+<td><code class="docutils literal"><span class="pre">True</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[libvirt]</span> <span class="pre">live_migration_progress_timeout</span></code></td>
+<td><code class="docutils literal"><span class="pre">150</span></code></td>
+<td><code class="docutils literal"><span class="pre">0</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[xenserver]</span> <span class="pre">ovs_integration_bridge</span></code></td>
+<td><code class="docutils literal"><span class="pre">xapi1</span></code></td>
+<td><code class="docutils literal"><span class="pre">None</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[xenserver]</span> <span class="pre">vif_driver</span></code></td>
+<td><code class="docutils literal"><span class="pre">nova.virt.xenapi.vif.XenAPIBridgeDriver</span></code></td>
+<td><code class="docutils literal"><span class="pre">nova.virt.xenapi.vif.XenAPIOpenVswitchDriver</span></code></td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="config-ref-table docutils" id="id3">
+<caption><span class="caption-text">Deprecated options</span><a class="headerlink" href="nova.html#id3" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Deprecated option</th>
+<th class="head">New Option</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">baremetal_scheduler_default_filters</span></code></td>
+<td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">baremetal_enabled_filters</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">console_allowed_origins</span></code></td>
+<td><code class="docutils literal"><span class="pre">[console]</span> <span class="pre">allowed_origins</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">console_token_ttl</span></code></td>
+<td><code class="docutils literal"><span class="pre">[consoleauth]</span> <span class="pre">token_ttl</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">default_notification_level</span></code></td>
+<td><code class="docutils literal"><span class="pre">[notifications]</span> <span class="pre">default_level</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">notify_api_faults</span></code></td>
+<td><code class="docutils literal"><span class="pre">[notifications]</span> <span class="pre">notify_on_api_faults</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">osapi_compute_link_prefix</span></code></td>
+<td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">compute_link_prefix</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">osapi_glance_link_prefix</span></code></td>
+<td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">glance_link_prefix</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">osapi_hide_server_address_states</span></code></td>
+<td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">hide_server_address_states</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">osapi_max_limit</span></code></td>
+<td><code class="docutils literal"><span class="pre">[api]</span> <span class="pre">max_limit</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">pci_alias</span></code></td>
+<td><code class="docutils literal"><span class="pre">[pci]</span> <span class="pre">alias</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">pci_passthrough_whitelist</span></code></td>
+<td><code class="docutils literal"><span class="pre">[pci]</span> <span class="pre">passthrough_whitelist</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">quota_cores</span></code></td>
+<td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">cores</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">quota_driver</span></code></td>
+<td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">driver</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">quota_fixed_ips</span></code></td>
+<td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">fixed_ips</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">quota_floating_ips</span></code></td>
+<td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">floating_ips</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">quota_injected_file_content_bytes</span></code></td>
+<td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">injected_file_content_bytes</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">quota_injected_file_path_length</span></code></td>
+<td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">injected_file_path_length</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">quota_injected_files</span></code></td>
+<td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">injected_files</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">quota_instances</span></code></td>
+<td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">instances</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">quota_key_pairs</span></code></td>
+<td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">key_pairs</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">quota_metadata_items</span></code></td>
+<td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">metadata_items</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">quota_ram</span></code></td>
+<td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">ram</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">quota_security_group_rules</span></code></td>
+<td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">security_group_rules</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">quota_security_groups</span></code></td>
+<td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">security_groups</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">quota_server_group_members</span></code></td>
+<td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">server_group_members</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">quota_server_groups</span></code></td>
+<td><code class="docutils literal"><span class="pre">[quota]</span> <span class="pre">server_groups</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_thread_pool_size</span></code></td>
+<td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">executor_thread_pool_size</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">scheduler_available_filters</span></code></td>
+<td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">available_filters</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">scheduler_default_filters</span></code></td>
+<td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">enabled_filters</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">scheduler_driver</span></code></td>
+<td><code class="docutils literal"><span class="pre">[scheduler]</span> <span class="pre">driver</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">scheduler_driver_task_period</span></code></td>
+<td><code class="docutils literal"><span class="pre">[scheduler]</span> <span class="pre">periodic_task_interval</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">scheduler_host_manager</span></code></td>
+<td><code class="docutils literal"><span class="pre">[scheduler]</span> <span class="pre">host_manager</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">scheduler_host_subset_size</span></code></td>
+<td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">host_subset_size</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">scheduler_max_attempts</span></code></td>
+<td><code class="docutils literal"><span class="pre">[scheduler]</span> <span class="pre">max_attempts</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">scheduler_tracks_instance_changes</span></code></td>
+<td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">track_instance_changes</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">scheduler_use_baremetal_filters</span></code></td>
+<td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">use_baremetal_filters</span></code></td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">scheduler_weight_classes</span></code></td>
+<td><code class="docutils literal"><span class="pre">[filter_scheduler]</span> <span class="pre">weight_classes</span></code></td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">use_syslog</span></code></td>
+<td><code class="docutils literal"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="../../compute/config-options.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: nova.conf - configuration options"></i></a>
+          
+          
+            <a href="../../compute/nova-conf.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Overview of nova.conf"></i></a>
+          
+            <a id="logABugLink3" href="nova.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:41</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="../../_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="nova.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="../../index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../config-overview.html">OpenStack configuration overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../common-configurations.html">Common configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../application-catalog.html">Application Catalog service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bare-metal.html">Bare Metal service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../block-storage.html">Block Storage service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../clustering.html">Clustering service</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../compute.html">Compute service</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../compute/config-options.html">The full set of available options</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="nova.html#">New, updated, and deprecated options in Ocata for Compute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../compute/nova-conf.html">Overview of nova.conf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../compute/api.html">Compute API configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../compute/resize.html">Configure resize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../compute/database-connections.html">Database configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../compute/fibre-channel.html">Fibre Channel support in Compute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../compute/iscsi-offload.html">iSCSI interface and offload support in Compute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../compute/hypervisors.html">Hypervisors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../compute/schedulers.html">Compute schedulers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../compute/cells.html">Cells (v1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../compute/logs.html">Compute log files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../compute/nova-conf-samples.html">Example nova.conf configuration files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../compute/samples/index.html">Compute service sample configuration files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../dashboard.html">Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data-processing.html">Data Processing service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../database.html">Database service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../identity.html">Identity service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image.html">Image service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../message.html">Message service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking.html">Networking service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../object-storage.html">Object Storage service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../orchestration.html">Orchestration service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared-file-systems.html">Shared File Systems service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../telemetry.html">Telemetry service</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../policy-yaml-file.html">The policy.yaml file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../policy-json-file.html">The policy.json file</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="../../_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="../../_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="../../_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="../../_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="../../_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "tables/conf-changes/nova" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/config-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "New, updated, and deprecated options in Ocata for Compute in Configuration Reference";
+    var fieldTags = "config-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:41";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

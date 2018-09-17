@@ -1,0 +1,2190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: Telemetry Data Collection service (ceilometer) command-line client</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>Telemetry Data Collection service (ceilometer) command-line client</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="aodh.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Telemetry Alarming service (aodh) command-line client"></i></a>
+    
+    
+    <a href="gnocchi.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: A time series storage and resources index service (gnocchi) command-line client"></i></a>
+    
+    <a id="logABugLink1" href="ceilometer.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="ceilometer.html#">Telemetry Data Collection service (ceilometer) command-line client</a><ul>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-usage">ceilometer usage</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-optional-arguments">ceilometer optional arguments</a><ul>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-alarm-combination-create">ceilometer alarm-combination-create</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-alarm-combination-update">ceilometer alarm-combination-update</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-alarm-delete">ceilometer alarm-delete</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-alarm-event-create">ceilometer alarm-event-create</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-alarm-event-update">ceilometer alarm-event-update</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-alarm-gnocchi-aggregation-by-metrics-threshold-create">ceilometer alarm-gnocchi-aggregation-by-metrics-threshold-create</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-alarm-gnocchi-aggregation-by-metrics-threshold-update">ceilometer alarm-gnocchi-aggregation-by-metrics-threshold-update</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-alarm-gnocchi-aggregation-by-resources-threshold-create">ceilometer alarm-gnocchi-aggregation-by-resources-threshold-create</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-alarm-gnocchi-aggregation-by-resources-threshold-update">ceilometer alarm-gnocchi-aggregation-by-resources-threshold-update</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-alarm-gnocchi-resources-threshold-create">ceilometer alarm-gnocchi-resources-threshold-create</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-alarm-gnocchi-resources-threshold-update">ceilometer alarm-gnocchi-resources-threshold-update</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-alarm-history">ceilometer alarm-history</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-alarm-list">ceilometer alarm-list</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-alarm-show">ceilometer alarm-show</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-alarm-state-get">ceilometer alarm-state-get</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-alarm-state-set">ceilometer alarm-state-set</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-alarm-threshold-create">ceilometer alarm-threshold-create</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-alarm-threshold-update">ceilometer alarm-threshold-update</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-capabilities">ceilometer capabilities</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-event-list">ceilometer event-list</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-event-show">ceilometer event-show</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-event-type-list">ceilometer event-type-list</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-meter-list">ceilometer meter-list</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-query-alarm-history">ceilometer query-alarm-history</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-query-alarms">ceilometer query-alarms</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-query-samples">ceilometer query-samples</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-resource-list">ceilometer resource-list</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-resource-show">ceilometer resource-show</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-sample-create">ceilometer sample-create</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-sample-create-list">ceilometer sample-create-list</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-sample-list">ceilometer sample-list</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-sample-show">ceilometer sample-show</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-statistics">ceilometer statistics</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-trait-description-list">ceilometer trait-description-list</a></li>
+<li><a class="reference internal" href="ceilometer.html#ceilometer-trait-list">ceilometer trait-list</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="telemetry-data-collection-service-ceilometer-command-line-client">
+<h1>Telemetry Data Collection service (ceilometer) command-line client<a class="headerlink" href="ceilometer.html#telemetry-data-collection-service-ceilometer-command-line-client" title="Permalink to this headline">¶</a></h1>
+<p>The ceilometer client is the command-line interface (CLI) for
+the Telemetry Data Collection service (ceilometer) API and its extensions.</p>
+<p>This chapter documents <strong class="command">ceilometer</strong> version <code class="docutils literal"><span class="pre">2.8.0</span></code>.</p>
+<p>For help on a specific <strong class="command">ceilometer</strong> command, enter:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> ceilometer <span class="nb">help</span> COMMAND
+</pre></div>
+</div>
+<div class="section" id="ceilometer-usage">
+<span id="ceilometer-command-usage"></span><h2>ceilometer usage<a class="headerlink" href="ceilometer.html#ceilometer-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer [--version] [-d] [-v] [--timeout TIMEOUT]</span>
+<span class="go">                  [--ceilometer-url &lt;CEILOMETER_URL&gt;]</span>
+<span class="go">                  [--ceilometer-api-version CEILOMETER_API_VERSION]</span>
+<span class="go">                  [--os-tenant-id &lt;tenant-id&gt;]</span>
+<span class="go">                  [--os-region-name &lt;region-name&gt;]</span>
+<span class="go">                  [--os-auth-token &lt;auth-token&gt;]</span>
+<span class="go">                  [--os-service-type &lt;service-type&gt;]</span>
+<span class="go">                  [--os-endpoint-type &lt;endpoint-type&gt;] [--os-cacert &lt;cacert&gt;]</span>
+<span class="go">                  [--os-insecure &lt;insecure&gt;] [--os-cert-file &lt;cert-file&gt;]</span>
+<span class="go">                  [--os-key-file &lt;key-file&gt;] [--os-cert &lt;cert&gt;]</span>
+<span class="go">                  [--os-key &lt;key&gt;] [--os-project-name &lt;project-name&gt;]</span>
+<span class="go">                  [--os-project-id &lt;project-id&gt;]</span>
+<span class="go">                  [--os-project-domain-id &lt;project-domain-id&gt;]</span>
+<span class="go">                  [--os-project-domain-name &lt;project-domain-name&gt;]</span>
+<span class="go">                  [--os-user-id &lt;user-id&gt;]</span>
+<span class="go">                  [--os-user-domain-id &lt;user-domain-id&gt;]</span>
+<span class="go">                  [--os-user-domain-name &lt;user-domain-name&gt;]</span>
+<span class="go">                  [--os-endpoint &lt;endpoint&gt;] [--os-auth-system &lt;auth-system&gt;]</span>
+<span class="go">                  [--os-username &lt;username&gt;] [--os-password &lt;password&gt;]</span>
+<span class="go">                  [--os-tenant-name &lt;tenant-name&gt;] [--os-token &lt;token&gt;]</span>
+<span class="go">                  [--os-auth-url &lt;auth-url&gt;]</span>
+<span class="go">                  &lt;subcommand&gt; ...</span>
+</pre></div>
+</div>
+<p><strong>Subcommands:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">alarm-combination-create</span></code></dt>
+<dd>Create a new alarm based on state of other
+alarms.</dd>
+<dt><code class="docutils literal"><span class="pre">alarm-combination-update</span></code></dt>
+<dd>Update an existing alarm based on state of
+other alarms.</dd>
+<dt><code class="docutils literal"><span class="pre">alarm-create</span></code></dt>
+<dd>Create a new alarm (Deprecated). Use alarm-threshold-create instead.</dd>
+<dt><code class="docutils literal"><span class="pre">alarm-delete</span></code></dt>
+<dd>Delete an alarm.</dd>
+<dt><code class="docutils literal"><span class="pre">alarm-event-create</span></code></dt>
+<dd>Create a new alarm based on events.</dd>
+<dt><code class="docutils literal"><span class="pre">alarm-event-update</span></code></dt>
+<dd>Update an existing alarm based on events.</dd>
+<dt><code class="docutils literal"><span class="pre">alarm-gnocchi-aggregation-by-metrics-threshold-create</span></code></dt>
+<dd>Create a new alarm based on computed
+statistics.</dd>
+<dt><code class="docutils literal"><span class="pre">alarm-gnocchi-aggregation-by-metrics-threshold-update</span></code></dt>
+<dd>Update an existing alarm based on computed
+statistics.</dd>
+<dt><code class="docutils literal"><span class="pre">alarm-gnocchi-aggregation-by-resources-threshold-create</span></code></dt>
+<dd>Create a new alarm based on computed
+statistics.</dd>
+<dt><code class="docutils literal"><span class="pre">alarm-gnocchi-aggregation-by-resources-threshold-update</span></code></dt>
+<dd>Update an existing alarm based on computed
+statistics.</dd>
+<dt><code class="docutils literal"><span class="pre">alarm-gnocchi-resources-threshold-create</span></code></dt>
+<dd>Create a new alarm based on computed
+statistics.</dd>
+<dt><code class="docutils literal"><span class="pre">alarm-gnocchi-resources-threshold-update</span></code></dt>
+<dd>Update an existing alarm based on computed
+statistics.</dd>
+<dt><code class="docutils literal"><span class="pre">alarm-history</span></code></dt>
+<dd>Display the change history of an alarm.</dd>
+<dt><code class="docutils literal"><span class="pre">alarm-list</span></code></dt>
+<dd>List the user's alarms.</dd>
+<dt><code class="docutils literal"><span class="pre">alarm-show</span></code></dt>
+<dd>Show an alarm.</dd>
+<dt><code class="docutils literal"><span class="pre">alarm-state-get</span></code></dt>
+<dd>Get the state of an alarm.</dd>
+<dt><code class="docutils literal"><span class="pre">alarm-state-set</span></code></dt>
+<dd>Set the state of an alarm.</dd>
+<dt><code class="docutils literal"><span class="pre">alarm-threshold-create</span></code></dt>
+<dd>Create a new alarm based on computed
+statistics.</dd>
+<dt><code class="docutils literal"><span class="pre">alarm-threshold-update</span></code></dt>
+<dd>Update an existing alarm based on computed
+statistics.</dd>
+<dt><code class="docutils literal"><span class="pre">alarm-update</span></code></dt>
+<dd>Update an existing alarm (Deprecated).</dd>
+<dt><code class="docutils literal"><span class="pre">capabilities</span></code></dt>
+<dd>Print Ceilometer capabilities.</dd>
+<dt><code class="docutils literal"><span class="pre">event-list</span></code></dt>
+<dd>List events.</dd>
+<dt><code class="docutils literal"><span class="pre">event-show</span></code></dt>
+<dd>Show a particular event.</dd>
+<dt><code class="docutils literal"><span class="pre">event-type-list</span></code></dt>
+<dd>List event types.</dd>
+<dt><code class="docutils literal"><span class="pre">meter-list</span></code></dt>
+<dd>List the user's meters.</dd>
+<dt><code class="docutils literal"><span class="pre">query-alarm-history</span></code></dt>
+<dd>Query Alarm History.</dd>
+<dt><code class="docutils literal"><span class="pre">query-alarms</span></code></dt>
+<dd>Query Alarms.</dd>
+<dt><code class="docutils literal"><span class="pre">query-samples</span></code></dt>
+<dd>Query samples.</dd>
+<dt><code class="docutils literal"><span class="pre">resource-list</span></code></dt>
+<dd>List the resources.</dd>
+<dt><code class="docutils literal"><span class="pre">resource-show</span></code></dt>
+<dd>Show the resource.</dd>
+<dt><code class="docutils literal"><span class="pre">sample-create</span></code></dt>
+<dd>Create a sample.</dd>
+<dt><code class="docutils literal"><span class="pre">sample-create-list</span></code></dt>
+<dd>Create a sample list.</dd>
+<dt><code class="docutils literal"><span class="pre">sample-list</span></code></dt>
+<dd>List the samples (return OldSample objects if
+-m/--meter is set).</dd>
+<dt><code class="docutils literal"><span class="pre">sample-show</span></code></dt>
+<dd>Show a sample.</dd>
+<dt><code class="docutils literal"><span class="pre">statistics</span></code></dt>
+<dd>List the statistics for a meter.</dd>
+<dt><code class="docutils literal"><span class="pre">trait-description-list</span></code></dt>
+<dd>List trait info for an event type.</dd>
+<dt><code class="docutils literal"><span class="pre">trait-list</span></code></dt>
+<dd>List all traits with name &lt;trait_name&gt; for
+Event Type &lt;event_type&gt;.</dd>
+<dt><code class="docutils literal"><span class="pre">bash-completion</span></code></dt>
+<dd>Prints all of the commands and options to
+stdout.</dd>
+<dt><code class="docutils literal"><span class="pre">help</span></code></dt>
+<dd>Display help about this program or one of its
+subcommands.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-optional-arguments">
+<span id="ceilometer-command-options"></span><h2>ceilometer optional arguments<a class="headerlink" href="ceilometer.html#ceilometer-optional-arguments" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--version</span></code></dt>
+<dd>show program's version number and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-d,</span> <span class="pre">--debug</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[CEILOMETERCLIENT_DEBUG]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></dt>
+<dd>Print more verbose output.</dd>
+<dt><code class="docutils literal"><span class="pre">--timeout</span> <span class="pre">TIMEOUT</span></code></dt>
+<dd>Number of seconds to wait for a response.</dd>
+<dt><code class="docutils literal"><span class="pre">--ceilometer-url</span> <span class="pre">&lt;CEILOMETER_URL&gt;</span></code></dt>
+<dd><strong>DEPRECATED</strong>, use --os-endpoint instead.
+Defaults to <code class="docutils literal"><span class="pre">env[CEILOMETER_URL]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--ceilometer-api-version</span> <span class="pre">CEILOMETER_API_VERSION</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[CEILOMETER_API_VERSION]</span></code> or 2.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-id</span> <span class="pre">&lt;tenant-id&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TENANT_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-region-name</span> <span class="pre">&lt;region-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_REGION_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-token</span> <span class="pre">&lt;auth-token&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_AUTH_TOKEN]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-service-type</span> <span class="pre">&lt;service-type&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_SERVICE_TYPE]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-endpoint-type</span> <span class="pre">&lt;endpoint-type&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_ENDPOINT_TYPE]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-cacert</span> <span class="pre">&lt;cacert&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_CACERT]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-insecure</span> <span class="pre">&lt;insecure&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_INSECURE]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-cert-file</span> <span class="pre">&lt;cert-file&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_CERT_FILE]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-key-file</span> <span class="pre">&lt;key-file&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_KEY_FILE]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-cert</span> <span class="pre">&lt;cert&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_CERT]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-key</span> <span class="pre">&lt;key&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_KEY]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-name</span> <span class="pre">&lt;project-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-id</span> <span class="pre">&lt;project-id&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-id</span> <span class="pre">&lt;project-domain-id&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_DOMAIN_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-name</span> <span class="pre">&lt;project-domain-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_DOMAIN_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-id</span> <span class="pre">&lt;user-id&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USER_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-id</span> <span class="pre">&lt;user-domain-id&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USER_DOMAIN_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-name</span> <span class="pre">&lt;user-domain-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USER_DOMAIN_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-endpoint</span> <span class="pre">&lt;endpoint&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_ENDPOINT]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-system</span> <span class="pre">&lt;auth-system&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_AUTH_SYSTEM]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-username</span> <span class="pre">&lt;username&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USERNAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-password</span> <span class="pre">&lt;password&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PASSWORD]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-name</span> <span class="pre">&lt;tenant-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TENANT_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-token</span> <span class="pre">&lt;token&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TOKEN]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-url</span> <span class="pre">&lt;auth-url&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_AUTH_URL]</span></code>.</dd>
+</dl>
+<div class="section" id="ceilometer-alarm-combination-create">
+<span id="id1"></span><h3>ceilometer alarm-combination-create<a class="headerlink" href="ceilometer.html#ceilometer-alarm-combination-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer alarm-combination-create --name &lt;NAME&gt;</span>
+<span class="go">                                           [--project-id &lt;ALARM_PROJECT_ID&gt;]</span>
+<span class="go">                                           [--user-id &lt;ALARM_USER_ID&gt;]</span>
+<span class="go">                                           [--description &lt;DESCRIPTION&gt;]</span>
+<span class="go">                                           [--state &lt;STATE&gt;]</span>
+<span class="go">                                           [--severity &lt;SEVERITY&gt;]</span>
+<span class="go">                                           [--enabled {True|False}]</span>
+<span class="go">                                           [--alarm-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                           [--ok-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                           [--insufficient-data-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                           [--time-constraint &lt;Time Constraint&gt;]</span>
+<span class="go">                                           [--repeat-actions {True|False}]</span>
+<span class="go">                                           --alarm_ids &lt;ALARM IDS&gt;</span>
+<span class="go">                                           [--operator &lt;OPERATOR&gt;]</span>
+</pre></div>
+</div>
+<p>Create a new alarm based on state of other alarms.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Name of the alarm (must be unique per tenant).
+Required.</dd>
+<dt><code class="docutils literal"><span class="pre">--project-id</span> <span class="pre">&lt;ALARM_PROJECT_ID&gt;</span></code></dt>
+<dd>Tenant to associate with alarm (configurable
+by admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--user-id</span> <span class="pre">&lt;ALARM_USER_ID&gt;</span></code></dt>
+<dd>User to associate with alarm (configurable by
+admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;DESCRIPTION&gt;</span></code></dt>
+<dd>Free text description of the alarm.</dd>
+<dt><code class="docutils literal"><span class="pre">--state</span> <span class="pre">&lt;STATE&gt;</span></code></dt>
+<dd>State of the alarm, one of: ['ok', 'alarm',
+'insufficient data']</dd>
+<dt><code class="docutils literal"><span class="pre">--severity</span> <span class="pre">&lt;SEVERITY&gt;</span></code></dt>
+<dd>Severity of the alarm, one of: ['low',
+'moderate', 'critical']</dd>
+<dt><code class="docutils literal"><span class="pre">--enabled</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if alarm evaluation/actioning is enabled.</dd>
+<dt><code class="docutils literal"><span class="pre">--alarm-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to alarm.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--ok-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to OK.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--insufficient-data-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to
+insufficient data. May be used multiple times.
+Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--time-constraint</span> <span class="pre">&lt;Time</span> <span class="pre">Constraint&gt;</span></code></dt>
+<dd>Only evaluate the alarm if the time at
+evaluation is within this time constraint.
+Start point(s) of the constraint are specified
+with a cron expression, whereas its duration
+is given in seconds. Can be specified multiple
+times for multiple time constraints, format
+is: name=&lt;CONSTRAINT_NAME&gt;;start=&lt;CRON&gt;;durati
+on=&lt;SECONDS&gt;;[description=&lt;DESCRIPTION&gt;;[timez
+one=&lt;IANA Timezone&gt;]] Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--repeat-actions</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if actions should be repeatedly notified
+while alarm remains in target state.</dd>
+<dt><code class="docutils literal"><span class="pre">--alarm_ids</span> <span class="pre">&lt;ALARM</span> <span class="pre">IDS&gt;</span></code></dt>
+<dd>List of alarm IDs. Required.</dd>
+<dt><code class="docutils literal"><span class="pre">--operator</span> <span class="pre">&lt;OPERATOR&gt;</span></code></dt>
+<dd>Operator to compare with, one of: ['and',
+'or'].</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-alarm-combination-update">
+<span id="id2"></span><h3>ceilometer alarm-combination-update<a class="headerlink" href="ceilometer.html#ceilometer-alarm-combination-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer alarm-combination-update [--name &lt;NAME&gt;]</span>
+<span class="go">                                           [--project-id &lt;ALARM_PROJECT_ID&gt;]</span>
+<span class="go">                                           [--user-id &lt;ALARM_USER_ID&gt;]</span>
+<span class="go">                                           [--description &lt;DESCRIPTION&gt;]</span>
+<span class="go">                                           [--state &lt;STATE&gt;]</span>
+<span class="go">                                           [--severity &lt;SEVERITY&gt;]</span>
+<span class="go">                                           [--enabled {True|False}]</span>
+<span class="go">                                           [--alarm-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                           [--ok-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                           [--insufficient-data-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                           [--time-constraint &lt;Time Constraint&gt;]</span>
+<span class="go">                                           [--repeat-actions {True|False}]</span>
+<span class="go">                                           [--remove-time-constraint &lt;Constraint names&gt;]</span>
+<span class="go">                                           [--alarm_ids &lt;ALARM IDS&gt;]</span>
+<span class="go">                                           [--operator &lt;OPERATOR&gt;]</span>
+<span class="go">                                           [&lt;ALARM_ID&gt;]</span>
+</pre></div>
+</div>
+<p>Update an existing alarm based on state of other alarms.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ALARM_ID&gt;</span></code></dt>
+<dd>ID of the alarm to update.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Name of the alarm (must be unique per tenant).</dd>
+<dt><code class="docutils literal"><span class="pre">--project-id</span> <span class="pre">&lt;ALARM_PROJECT_ID&gt;</span></code></dt>
+<dd>Tenant to associate with alarm (configurable
+by admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--user-id</span> <span class="pre">&lt;ALARM_USER_ID&gt;</span></code></dt>
+<dd>User to associate with alarm (configurable by
+admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;DESCRIPTION&gt;</span></code></dt>
+<dd>Free text description of the alarm.</dd>
+<dt><code class="docutils literal"><span class="pre">--state</span> <span class="pre">&lt;STATE&gt;</span></code></dt>
+<dd>State of the alarm, one of: ['ok', 'alarm',
+'insufficient data']</dd>
+<dt><code class="docutils literal"><span class="pre">--severity</span> <span class="pre">&lt;SEVERITY&gt;</span></code></dt>
+<dd>Severity of the alarm, one of: ['low',
+'moderate', 'critical']</dd>
+<dt><code class="docutils literal"><span class="pre">--enabled</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if alarm evaluation/actioning is enabled.</dd>
+<dt><code class="docutils literal"><span class="pre">--alarm-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to alarm.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--ok-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to OK.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--insufficient-data-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to
+insufficient data. May be used multiple times.
+Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--time-constraint</span> <span class="pre">&lt;Time</span> <span class="pre">Constraint&gt;</span></code></dt>
+<dd>Only evaluate the alarm if the time at
+evaluation is within this time constraint.
+Start point(s) of the constraint are specified
+with a cron expression, whereas its duration
+is given in seconds. Can be specified multiple
+times for multiple time constraints, format
+is: name=&lt;CONSTRAINT_NAME&gt;;start=&lt;CRON&gt;;durati
+on=&lt;SECONDS&gt;;[description=&lt;DESCRIPTION&gt;;[timez
+one=&lt;IANA Timezone&gt;]] Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--repeat-actions</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if actions should be repeatedly notified
+while alarm remains in target state.</dd>
+<dt><code class="docutils literal"><span class="pre">--remove-time-constraint</span> <span class="pre">&lt;Constraint</span> <span class="pre">names&gt;</span></code></dt>
+<dd>Name or list of names of the time constraints
+to remove.</dd>
+<dt><code class="docutils literal"><span class="pre">--alarm_ids</span> <span class="pre">&lt;ALARM</span> <span class="pre">IDS&gt;</span></code></dt>
+<dd>List of alarm IDs.</dd>
+<dt><code class="docutils literal"><span class="pre">--operator</span> <span class="pre">&lt;OPERATOR&gt;</span></code></dt>
+<dd>Operator to compare with, one of: ['and',
+'or'].</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-alarm-delete">
+<span id="id3"></span><h3>ceilometer alarm-delete<a class="headerlink" href="ceilometer.html#ceilometer-alarm-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer alarm-delete [&lt;ALARM_ID&gt;]</span>
+</pre></div>
+</div>
+<p>Delete an alarm.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ALARM_ID&gt;</span></code></dt>
+<dd>ID of the alarm to delete.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-alarm-event-create">
+<span id="id4"></span><h3>ceilometer alarm-event-create<a class="headerlink" href="ceilometer.html#ceilometer-alarm-event-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer alarm-event-create --name &lt;NAME&gt;</span>
+<span class="go">                                     [--project-id &lt;ALARM_PROJECT_ID&gt;]</span>
+<span class="go">                                     [--user-id &lt;ALARM_USER_ID&gt;]</span>
+<span class="go">                                     [--description &lt;DESCRIPTION&gt;]</span>
+<span class="go">                                     [--state &lt;STATE&gt;] [--severity &lt;SEVERITY&gt;]</span>
+<span class="go">                                     [--enabled {True|False}]</span>
+<span class="go">                                     [--alarm-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                     [--ok-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                     [--insufficient-data-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                     [--time-constraint &lt;Time Constraint&gt;]</span>
+<span class="go">                                     [--repeat-actions {True|False}]</span>
+<span class="go">                                     [--event-type &lt;EVENT_TYPE&gt;] [-q &lt;QUERY&gt;]</span>
+</pre></div>
+</div>
+<p>Create a new alarm based on events.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Name of the alarm (must be unique per tenant).
+Required.</dd>
+<dt><code class="docutils literal"><span class="pre">--project-id</span> <span class="pre">&lt;ALARM_PROJECT_ID&gt;</span></code></dt>
+<dd>Tenant to associate with alarm (configurable
+by admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--user-id</span> <span class="pre">&lt;ALARM_USER_ID&gt;</span></code></dt>
+<dd>User to associate with alarm (configurable by
+admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;DESCRIPTION&gt;</span></code></dt>
+<dd>Free text description of the alarm.</dd>
+<dt><code class="docutils literal"><span class="pre">--state</span> <span class="pre">&lt;STATE&gt;</span></code></dt>
+<dd>State of the alarm, one of: ['ok', 'alarm',
+'insufficient data']</dd>
+<dt><code class="docutils literal"><span class="pre">--severity</span> <span class="pre">&lt;SEVERITY&gt;</span></code></dt>
+<dd>Severity of the alarm, one of: ['low',
+'moderate', 'critical']</dd>
+<dt><code class="docutils literal"><span class="pre">--enabled</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if alarm evaluation/actioning is enabled.</dd>
+<dt><code class="docutils literal"><span class="pre">--alarm-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to alarm.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--ok-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to OK.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--insufficient-data-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to
+insufficient data. May be used multiple times.
+Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--time-constraint</span> <span class="pre">&lt;Time</span> <span class="pre">Constraint&gt;</span></code></dt>
+<dd>Only evaluate the alarm if the time at
+evaluation is within this time constraint.
+Start point(s) of the constraint are specified
+with a cron expression, whereas its duration
+is given in seconds. Can be specified multiple
+times for multiple time constraints, format
+is: name=&lt;CONSTRAINT_NAME&gt;;start=&lt;CRON&gt;;durati
+on=&lt;SECONDS&gt;;[description=&lt;DESCRIPTION&gt;;[timez
+one=&lt;IANA Timezone&gt;]] Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--repeat-actions</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if actions should be repeatedly notified
+while alarm remains in target state.</dd>
+<dt><code class="docutils literal"><span class="pre">--event-type</span> <span class="pre">&lt;EVENT_TYPE&gt;</span></code></dt>
+<dd>Event type for event alarm.</dd>
+<dt><code class="docutils literal"><span class="pre">-q</span> <span class="pre">&lt;QUERY&gt;,</span> <span class="pre">--query</span> <span class="pre">&lt;QUERY&gt;</span></code></dt>
+<dd>key[op]data_type::value; list for filtering
+events. data_type is optional, but if supplied
+must be string, integer, float or datetime.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-alarm-event-update">
+<span id="id5"></span><h3>ceilometer alarm-event-update<a class="headerlink" href="ceilometer.html#ceilometer-alarm-event-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer alarm-event-update [--name &lt;NAME&gt;]</span>
+<span class="go">                                     [--project-id &lt;ALARM_PROJECT_ID&gt;]</span>
+<span class="go">                                     [--user-id &lt;ALARM_USER_ID&gt;]</span>
+<span class="go">                                     [--description &lt;DESCRIPTION&gt;]</span>
+<span class="go">                                     [--state &lt;STATE&gt;] [--severity &lt;SEVERITY&gt;]</span>
+<span class="go">                                     [--enabled {True|False}]</span>
+<span class="go">                                     [--alarm-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                     [--ok-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                     [--insufficient-data-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                     [--time-constraint &lt;Time Constraint&gt;]</span>
+<span class="go">                                     [--repeat-actions {True|False}]</span>
+<span class="go">                                     [--event-type &lt;EVENT_TYPE&gt;] [-q &lt;QUERY&gt;]</span>
+<span class="go">                                     [&lt;ALARM_ID&gt;]</span>
+</pre></div>
+</div>
+<p>Update an existing alarm based on events.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ALARM_ID&gt;</span></code></dt>
+<dd>ID of the alarm to update.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Name of the alarm (must be unique per tenant).</dd>
+<dt><code class="docutils literal"><span class="pre">--project-id</span> <span class="pre">&lt;ALARM_PROJECT_ID&gt;</span></code></dt>
+<dd>Tenant to associate with alarm (configurable
+by admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--user-id</span> <span class="pre">&lt;ALARM_USER_ID&gt;</span></code></dt>
+<dd>User to associate with alarm (configurable by
+admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;DESCRIPTION&gt;</span></code></dt>
+<dd>Free text description of the alarm.</dd>
+<dt><code class="docutils literal"><span class="pre">--state</span> <span class="pre">&lt;STATE&gt;</span></code></dt>
+<dd>State of the alarm, one of: ['ok', 'alarm',
+'insufficient data']</dd>
+<dt><code class="docutils literal"><span class="pre">--severity</span> <span class="pre">&lt;SEVERITY&gt;</span></code></dt>
+<dd>Severity of the alarm, one of: ['low',
+'moderate', 'critical']</dd>
+<dt><code class="docutils literal"><span class="pre">--enabled</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if alarm evaluation/actioning is enabled.</dd>
+<dt><code class="docutils literal"><span class="pre">--alarm-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to alarm.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--ok-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to OK.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--insufficient-data-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to
+insufficient data. May be used multiple times.
+Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--time-constraint</span> <span class="pre">&lt;Time</span> <span class="pre">Constraint&gt;</span></code></dt>
+<dd>Only evaluate the alarm if the time at
+evaluation is within this time constraint.
+Start point(s) of the constraint are specified
+with a cron expression, whereas its duration
+is given in seconds. Can be specified multiple
+times for multiple time constraints, format
+is: name=&lt;CONSTRAINT_NAME&gt;;start=&lt;CRON&gt;;durati
+on=&lt;SECONDS&gt;;[description=&lt;DESCRIPTION&gt;;[timez
+one=&lt;IANA Timezone&gt;]] Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--repeat-actions</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if actions should be repeatedly notified
+while alarm remains in target state.</dd>
+<dt><code class="docutils literal"><span class="pre">--event-type</span> <span class="pre">&lt;EVENT_TYPE&gt;</span></code></dt>
+<dd>Event type for event alarm.</dd>
+<dt><code class="docutils literal"><span class="pre">-q</span> <span class="pre">&lt;QUERY&gt;,</span> <span class="pre">--query</span> <span class="pre">&lt;QUERY&gt;</span></code></dt>
+<dd>key[op]data_type::value; list for filtering
+events. data_type is optional, but if supplied
+must be string, integer, float or datetime.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-alarm-gnocchi-aggregation-by-metrics-threshold-create">
+<span id="id6"></span><h3>ceilometer alarm-gnocchi-aggregation-by-metrics-threshold-create<a class="headerlink" href="ceilometer.html#ceilometer-alarm-gnocchi-aggregation-by-metrics-threshold-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer alarm-gnocchi-aggregation-by-metrics-threshold-create</span>
+<span class="go">       --name &lt;NAME&gt; [--project-id &lt;ALARM_PROJECT_ID&gt;]</span>
+<span class="go">       [--user-id &lt;ALARM_USER_ID&gt;] [--description &lt;DESCRIPTION&gt;]</span>
+<span class="go">       [--state &lt;STATE&gt;] [--severity &lt;SEVERITY&gt;] [--enabled {True|False}]</span>
+<span class="go">       [--alarm-action &lt;Webhook URL&gt;] [--ok-action &lt;Webhook URL&gt;]</span>
+<span class="go">       [--insufficient-data-action &lt;Webhook URL&gt;]</span>
+<span class="go">       [--time-constraint &lt;Time Constraint&gt;] [--repeat-actions {True|False}]</span>
+<span class="go">       [--granularity &lt;GRANULARITY&gt;] [--evaluation-periods &lt;COUNT&gt;]</span>
+<span class="go">       --aggregation-method &lt;AGGREATION&gt; [--comparison-operator &lt;OPERATOR&gt;]</span>
+<span class="go">       --threshold &lt;THRESHOLD&gt; -m &lt;METRICS&gt;</span>
+</pre></div>
+</div>
+<p>Create a new alarm based on computed statistics.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Name of the alarm (must be unique per tenant).
+Required.</dd>
+<dt><code class="docutils literal"><span class="pre">--project-id</span> <span class="pre">&lt;ALARM_PROJECT_ID&gt;</span></code></dt>
+<dd>Tenant to associate with alarm (configurable
+by admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--user-id</span> <span class="pre">&lt;ALARM_USER_ID&gt;</span></code></dt>
+<dd>User to associate with alarm (configurable by
+admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;DESCRIPTION&gt;</span></code></dt>
+<dd>Free text description of the alarm.</dd>
+<dt><code class="docutils literal"><span class="pre">--state</span> <span class="pre">&lt;STATE&gt;</span></code></dt>
+<dd>State of the alarm, one of: ['ok', 'alarm',
+'insufficient data']</dd>
+<dt><code class="docutils literal"><span class="pre">--severity</span> <span class="pre">&lt;SEVERITY&gt;</span></code></dt>
+<dd>Severity of the alarm, one of: ['low',
+'moderate', 'critical']</dd>
+<dt><code class="docutils literal"><span class="pre">--enabled</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if alarm evaluation/actioning is enabled.</dd>
+<dt><code class="docutils literal"><span class="pre">--alarm-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to alarm.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--ok-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to OK.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--insufficient-data-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to
+insufficient data. May be used multiple times.
+Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--time-constraint</span> <span class="pre">&lt;Time</span> <span class="pre">Constraint&gt;</span></code></dt>
+<dd>Only evaluate the alarm if the time at
+evaluation is within this time constraint.
+Start point(s) of the constraint are specified
+with a cron expression, whereas its duration
+is given in seconds. Can be specified multiple
+times for multiple time constraints, format
+is: name=&lt;CONSTRAINT_NAME&gt;;start=&lt;CRON&gt;;durati
+on=&lt;SECONDS&gt;;[description=&lt;DESCRIPTION&gt;;[timez
+one=&lt;IANA Timezone&gt;]] Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--repeat-actions</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if actions should be repeatedly notified
+while alarm remains in target state.</dd>
+<dt><code class="docutils literal"><span class="pre">--granularity</span> <span class="pre">&lt;GRANULARITY&gt;</span></code></dt>
+<dd>Length of each period (seconds) to evaluate
+over.</dd>
+<dt><code class="docutils literal"><span class="pre">--evaluation-periods</span> <span class="pre">&lt;COUNT&gt;</span></code></dt>
+<dd>Number of periods to evaluate over.</dd>
+<dt><code class="docutils literal"><span class="pre">--aggregation-method</span> <span class="pre">&lt;AGGREATION&gt;</span></code></dt>
+<dd>Aggregation method to use, one of: ['last',
+'min', 'median', 'sum', 'std', 'first',
+'mean', 'count', 'moving-average', 'max',
+'1pct', '2pct', '3pct', '4pct', '5pct',
+'6pct', '7pct', '8pct', '9pct', '10pct',
+'11pct', '12pct', '13pct', '14pct', '15pct',
+'16pct', '17pct', '18pct', '19pct', '20pct',
+'21pct', '22pct', '23pct', '24pct', '25pct',
+'26pct', '27pct', '28pct', '29pct', '30pct',
+'31pct', '32pct', '33pct', '34pct', '35pct',
+'36pct', '37pct', '38pct', '39pct', '40pct',
+'41pct', '42pct', '43pct', '44pct', '45pct',
+'46pct', '47pct', '48pct', '49pct', '50pct',
+'51pct', '52pct', '53pct', '54pct', '55pct',
+'56pct', '57pct', '58pct', '59pct', '60pct',
+'61pct', '62pct', '63pct', '64pct', '65pct',
+'66pct', '67pct', '68pct', '69pct', '70pct',
+'71pct', '72pct', '73pct', '74pct', '75pct',
+'76pct', '77pct', '78pct', '79pct', '80pct',
+'81pct', '82pct', '83pct', '84pct', '85pct',
+'86pct', '87pct', '88pct', '89pct', '90pct',
+'91pct', '92pct', '93pct', '94pct', '95pct',
+'96pct', '97pct', '98pct', '99pct']. Required.</dd>
+<dt><code class="docutils literal"><span class="pre">--comparison-operator</span> <span class="pre">&lt;OPERATOR&gt;</span></code></dt>
+<dd>Operator to compare with, one of: ['lt', 'le',
+'eq', 'ne', 'ge', 'gt'].</dd>
+<dt><code class="docutils literal"><span class="pre">--threshold</span> <span class="pre">&lt;THRESHOLD&gt;</span></code></dt>
+<dd>Threshold to evaluate against. Required.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;METRICS&gt;,</span> <span class="pre">--metrics</span> <span class="pre">&lt;METRICS&gt;</span></code></dt>
+<dd>Metric to evaluate against. Required.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-alarm-gnocchi-aggregation-by-metrics-threshold-update">
+<span id="id7"></span><h3>ceilometer alarm-gnocchi-aggregation-by-metrics-threshold-update<a class="headerlink" href="ceilometer.html#ceilometer-alarm-gnocchi-aggregation-by-metrics-threshold-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer alarm-gnocchi-aggregation-by-metrics-threshold-update</span>
+<span class="go">       [--name &lt;NAME&gt;] [--project-id &lt;ALARM_PROJECT_ID&gt;]</span>
+<span class="go">       [--user-id &lt;ALARM_USER_ID&gt;] [--description &lt;DESCRIPTION&gt;]</span>
+<span class="go">       [--state &lt;STATE&gt;] [--severity &lt;SEVERITY&gt;] [--enabled {True|False}]</span>
+<span class="go">       [--alarm-action &lt;Webhook URL&gt;] [--ok-action &lt;Webhook URL&gt;]</span>
+<span class="go">       [--insufficient-data-action &lt;Webhook URL&gt;]</span>
+<span class="go">       [--time-constraint &lt;Time Constraint&gt;] [--repeat-actions {True|False}]</span>
+<span class="go">       [--granularity &lt;GRANULARITY&gt;] [--evaluation-periods &lt;COUNT&gt;]</span>
+<span class="go">       [--aggregation-method &lt;AGGREATION&gt;] [--comparison-operator &lt;OPERATOR&gt;]</span>
+<span class="go">       [--threshold &lt;THRESHOLD&gt;] [-m &lt;METRICS&gt;]</span>
+<span class="go">       [--remove-time-constraint &lt;Constraint names&gt;]</span>
+<span class="go">       [&lt;ALARM_ID&gt;]</span>
+</pre></div>
+</div>
+<p>Update an existing alarm based on computed statistics.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ALARM_ID&gt;</span></code></dt>
+<dd>ID of the alarm to update.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Name of the alarm (must be unique per tenant).</dd>
+<dt><code class="docutils literal"><span class="pre">--project-id</span> <span class="pre">&lt;ALARM_PROJECT_ID&gt;</span></code></dt>
+<dd>Tenant to associate with alarm (configurable
+by admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--user-id</span> <span class="pre">&lt;ALARM_USER_ID&gt;</span></code></dt>
+<dd>User to associate with alarm (configurable by
+admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;DESCRIPTION&gt;</span></code></dt>
+<dd>Free text description of the alarm.</dd>
+<dt><code class="docutils literal"><span class="pre">--state</span> <span class="pre">&lt;STATE&gt;</span></code></dt>
+<dd>State of the alarm, one of: ['ok', 'alarm',
+'insufficient data']</dd>
+<dt><code class="docutils literal"><span class="pre">--severity</span> <span class="pre">&lt;SEVERITY&gt;</span></code></dt>
+<dd>Severity of the alarm, one of: ['low',
+'moderate', 'critical']</dd>
+<dt><code class="docutils literal"><span class="pre">--enabled</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if alarm evaluation/actioning is enabled.</dd>
+<dt><code class="docutils literal"><span class="pre">--alarm-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to alarm.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--ok-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to OK.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--insufficient-data-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to
+insufficient data. May be used multiple times.
+Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--time-constraint</span> <span class="pre">&lt;Time</span> <span class="pre">Constraint&gt;</span></code></dt>
+<dd>Only evaluate the alarm if the time at
+evaluation is within this time constraint.
+Start point(s) of the constraint are specified
+with a cron expression, whereas its duration
+is given in seconds. Can be specified multiple
+times for multiple time constraints, format
+is: name=&lt;CONSTRAINT_NAME&gt;;start=&lt;CRON&gt;;durati
+on=&lt;SECONDS&gt;;[description=&lt;DESCRIPTION&gt;;[timez
+one=&lt;IANA Timezone&gt;]] Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--repeat-actions</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if actions should be repeatedly notified
+while alarm remains in target state.</dd>
+<dt><code class="docutils literal"><span class="pre">--granularity</span> <span class="pre">&lt;GRANULARITY&gt;</span></code></dt>
+<dd>Length of each period (seconds) to evaluate
+over.</dd>
+<dt><code class="docutils literal"><span class="pre">--evaluation-periods</span> <span class="pre">&lt;COUNT&gt;</span></code></dt>
+<dd>Number of periods to evaluate over.</dd>
+<dt><code class="docutils literal"><span class="pre">--aggregation-method</span> <span class="pre">&lt;AGGREATION&gt;</span></code></dt>
+<dd>Aggregation method to use, one of: ['last',
+'min', 'median', 'sum', 'std', 'first',
+'mean', 'count', 'moving-average', 'max',
+'1pct', '2pct', '3pct', '4pct', '5pct',
+'6pct', '7pct', '8pct', '9pct', '10pct',
+'11pct', '12pct', '13pct', '14pct', '15pct',
+'16pct', '17pct', '18pct', '19pct', '20pct',
+'21pct', '22pct', '23pct', '24pct', '25pct',
+'26pct', '27pct', '28pct', '29pct', '30pct',
+'31pct', '32pct', '33pct', '34pct', '35pct',
+'36pct', '37pct', '38pct', '39pct', '40pct',
+'41pct', '42pct', '43pct', '44pct', '45pct',
+'46pct', '47pct', '48pct', '49pct', '50pct',
+'51pct', '52pct', '53pct', '54pct', '55pct',
+'56pct', '57pct', '58pct', '59pct', '60pct',
+'61pct', '62pct', '63pct', '64pct', '65pct',
+'66pct', '67pct', '68pct', '69pct', '70pct',
+'71pct', '72pct', '73pct', '74pct', '75pct',
+'76pct', '77pct', '78pct', '79pct', '80pct',
+'81pct', '82pct', '83pct', '84pct', '85pct',
+'86pct', '87pct', '88pct', '89pct', '90pct',
+'91pct', '92pct', '93pct', '94pct', '95pct',
+'96pct', '97pct', '98pct', '99pct'].</dd>
+<dt><code class="docutils literal"><span class="pre">--comparison-operator</span> <span class="pre">&lt;OPERATOR&gt;</span></code></dt>
+<dd>Operator to compare with, one of: ['lt', 'le',
+'eq', 'ne', 'ge', 'gt'].</dd>
+<dt><code class="docutils literal"><span class="pre">--threshold</span> <span class="pre">&lt;THRESHOLD&gt;</span></code></dt>
+<dd>Threshold to evaluate against.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;METRICS&gt;,</span> <span class="pre">--metrics</span> <span class="pre">&lt;METRICS&gt;</span></code></dt>
+<dd>Metric to evaluate against.</dd>
+<dt><code class="docutils literal"><span class="pre">--remove-time-constraint</span> <span class="pre">&lt;Constraint</span> <span class="pre">names&gt;</span></code></dt>
+<dd>Name or list of names of the time constraints
+to remove.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-alarm-gnocchi-aggregation-by-resources-threshold-create">
+<span id="id8"></span><h3>ceilometer alarm-gnocchi-aggregation-by-resources-threshold-create<a class="headerlink" href="ceilometer.html#ceilometer-alarm-gnocchi-aggregation-by-resources-threshold-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer alarm-gnocchi-aggregation-by-resources-threshold-create</span>
+<span class="go">       --name &lt;NAME&gt; [--project-id &lt;ALARM_PROJECT_ID&gt;]</span>
+<span class="go">       [--user-id &lt;ALARM_USER_ID&gt;] [--description &lt;DESCRIPTION&gt;]</span>
+<span class="go">       [--state &lt;STATE&gt;] [--severity &lt;SEVERITY&gt;] [--enabled {True|False}]</span>
+<span class="go">       [--alarm-action &lt;Webhook URL&gt;] [--ok-action &lt;Webhook URL&gt;]</span>
+<span class="go">       [--insufficient-data-action &lt;Webhook URL&gt;]</span>
+<span class="go">       [--time-constraint &lt;Time Constraint&gt;] [--repeat-actions {True|False}]</span>
+<span class="go">       [--granularity &lt;GRANULARITY&gt;] [--evaluation-periods &lt;COUNT&gt;]</span>
+<span class="go">       --aggregation-method &lt;AGGREATION&gt; [--comparison-operator &lt;OPERATOR&gt;]</span>
+<span class="go">       --threshold &lt;THRESHOLD&gt; -m &lt;METRIC&gt; --resource-type &lt;RESOURCE_TYPE&gt;</span>
+<span class="go">       --query &lt;QUERY&gt;</span>
+</pre></div>
+</div>
+<p>Create a new alarm based on computed statistics.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Name of the alarm (must be unique per tenant).
+Required.</dd>
+<dt><code class="docutils literal"><span class="pre">--project-id</span> <span class="pre">&lt;ALARM_PROJECT_ID&gt;</span></code></dt>
+<dd>Tenant to associate with alarm (configurable
+by admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--user-id</span> <span class="pre">&lt;ALARM_USER_ID&gt;</span></code></dt>
+<dd>User to associate with alarm (configurable by
+admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;DESCRIPTION&gt;</span></code></dt>
+<dd>Free text description of the alarm.</dd>
+<dt><code class="docutils literal"><span class="pre">--state</span> <span class="pre">&lt;STATE&gt;</span></code></dt>
+<dd>State of the alarm, one of: ['ok', 'alarm',
+'insufficient data']</dd>
+<dt><code class="docutils literal"><span class="pre">--severity</span> <span class="pre">&lt;SEVERITY&gt;</span></code></dt>
+<dd>Severity of the alarm, one of: ['low',
+'moderate', 'critical']</dd>
+<dt><code class="docutils literal"><span class="pre">--enabled</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if alarm evaluation/actioning is enabled.</dd>
+<dt><code class="docutils literal"><span class="pre">--alarm-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to alarm.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--ok-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to OK.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--insufficient-data-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to
+insufficient data. May be used multiple times.
+Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--time-constraint</span> <span class="pre">&lt;Time</span> <span class="pre">Constraint&gt;</span></code></dt>
+<dd>Only evaluate the alarm if the time at
+evaluation is within this time constraint.
+Start point(s) of the constraint are specified
+with a cron expression, whereas its duration
+is given in seconds. Can be specified multiple
+times for multiple time constraints, format
+is: name=&lt;CONSTRAINT_NAME&gt;;start=&lt;CRON&gt;;durati
+on=&lt;SECONDS&gt;;[description=&lt;DESCRIPTION&gt;;[timez
+one=&lt;IANA Timezone&gt;]] Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--repeat-actions</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if actions should be repeatedly notified
+while alarm remains in target state.</dd>
+<dt><code class="docutils literal"><span class="pre">--granularity</span> <span class="pre">&lt;GRANULARITY&gt;</span></code></dt>
+<dd>Length of each period (seconds) to evaluate
+over.</dd>
+<dt><code class="docutils literal"><span class="pre">--evaluation-periods</span> <span class="pre">&lt;COUNT&gt;</span></code></dt>
+<dd>Number of periods to evaluate over.</dd>
+<dt><code class="docutils literal"><span class="pre">--aggregation-method</span> <span class="pre">&lt;AGGREATION&gt;</span></code></dt>
+<dd>Aggregation method to use, one of: ['last',
+'min', 'median', 'sum', 'std', 'first',
+'mean', 'count', 'moving-average', 'max',
+'1pct', '2pct', '3pct', '4pct', '5pct',
+'6pct', '7pct', '8pct', '9pct', '10pct',
+'11pct', '12pct', '13pct', '14pct', '15pct',
+'16pct', '17pct', '18pct', '19pct', '20pct',
+'21pct', '22pct', '23pct', '24pct', '25pct',
+'26pct', '27pct', '28pct', '29pct', '30pct',
+'31pct', '32pct', '33pct', '34pct', '35pct',
+'36pct', '37pct', '38pct', '39pct', '40pct',
+'41pct', '42pct', '43pct', '44pct', '45pct',
+'46pct', '47pct', '48pct', '49pct', '50pct',
+'51pct', '52pct', '53pct', '54pct', '55pct',
+'56pct', '57pct', '58pct', '59pct', '60pct',
+'61pct', '62pct', '63pct', '64pct', '65pct',
+'66pct', '67pct', '68pct', '69pct', '70pct',
+'71pct', '72pct', '73pct', '74pct', '75pct',
+'76pct', '77pct', '78pct', '79pct', '80pct',
+'81pct', '82pct', '83pct', '84pct', '85pct',
+'86pct', '87pct', '88pct', '89pct', '90pct',
+'91pct', '92pct', '93pct', '94pct', '95pct',
+'96pct', '97pct', '98pct', '99pct']. Required.</dd>
+<dt><code class="docutils literal"><span class="pre">--comparison-operator</span> <span class="pre">&lt;OPERATOR&gt;</span></code></dt>
+<dd>Operator to compare with, one of: ['lt', 'le',
+'eq', 'ne', 'ge', 'gt'].</dd>
+<dt><code class="docutils literal"><span class="pre">--threshold</span> <span class="pre">&lt;THRESHOLD&gt;</span></code></dt>
+<dd>Threshold to evaluate against. Required.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;METRIC&gt;,</span> <span class="pre">--metric</span> <span class="pre">&lt;METRIC&gt;</span></code></dt>
+<dd>Metric to evaluate against. Required.</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-type</span> <span class="pre">&lt;RESOURCE_TYPE&gt;</span></code></dt>
+<dd>Resource_type to evaluate against. Required.</dd>
+<dt><code class="docutils literal"><span class="pre">--query</span> <span class="pre">&lt;QUERY&gt;</span></code></dt>
+<dd>Gnocchi resources search query filter
+Required.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-alarm-gnocchi-aggregation-by-resources-threshold-update">
+<span id="id9"></span><h3>ceilometer alarm-gnocchi-aggregation-by-resources-threshold-update<a class="headerlink" href="ceilometer.html#ceilometer-alarm-gnocchi-aggregation-by-resources-threshold-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer alarm-gnocchi-aggregation-by-resources-threshold-update</span>
+<span class="go">       [--name &lt;NAME&gt;] [--project-id &lt;ALARM_PROJECT_ID&gt;]</span>
+<span class="go">       [--user-id &lt;ALARM_USER_ID&gt;] [--description &lt;DESCRIPTION&gt;]</span>
+<span class="go">       [--state &lt;STATE&gt;] [--severity &lt;SEVERITY&gt;] [--enabled {True|False}]</span>
+<span class="go">       [--alarm-action &lt;Webhook URL&gt;] [--ok-action &lt;Webhook URL&gt;]</span>
+<span class="go">       [--insufficient-data-action &lt;Webhook URL&gt;]</span>
+<span class="go">       [--time-constraint &lt;Time Constraint&gt;] [--repeat-actions {True|False}]</span>
+<span class="go">       [--granularity &lt;GRANULARITY&gt;] [--evaluation-periods &lt;COUNT&gt;]</span>
+<span class="go">       [--aggregation-method &lt;AGGREATION&gt;] [--comparison-operator &lt;OPERATOR&gt;]</span>
+<span class="go">       [--threshold &lt;THRESHOLD&gt;] [-m &lt;METRIC&gt;]</span>
+<span class="go">       [--resource-type &lt;RESOURCE_TYPE&gt;] [--query &lt;QUERY&gt;]</span>
+<span class="go">       [--remove-time-constraint &lt;Constraint names&gt;]</span>
+<span class="go">       [&lt;ALARM_ID&gt;]</span>
+</pre></div>
+</div>
+<p>Update an existing alarm based on computed statistics.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ALARM_ID&gt;</span></code></dt>
+<dd>ID of the alarm to update.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Name of the alarm (must be unique per tenant).</dd>
+<dt><code class="docutils literal"><span class="pre">--project-id</span> <span class="pre">&lt;ALARM_PROJECT_ID&gt;</span></code></dt>
+<dd>Tenant to associate with alarm (configurable
+by admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--user-id</span> <span class="pre">&lt;ALARM_USER_ID&gt;</span></code></dt>
+<dd>User to associate with alarm (configurable by
+admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;DESCRIPTION&gt;</span></code></dt>
+<dd>Free text description of the alarm.</dd>
+<dt><code class="docutils literal"><span class="pre">--state</span> <span class="pre">&lt;STATE&gt;</span></code></dt>
+<dd>State of the alarm, one of: ['ok', 'alarm',
+'insufficient data']</dd>
+<dt><code class="docutils literal"><span class="pre">--severity</span> <span class="pre">&lt;SEVERITY&gt;</span></code></dt>
+<dd>Severity of the alarm, one of: ['low',
+'moderate', 'critical']</dd>
+<dt><code class="docutils literal"><span class="pre">--enabled</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if alarm evaluation/actioning is enabled.</dd>
+<dt><code class="docutils literal"><span class="pre">--alarm-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to alarm.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--ok-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to OK.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--insufficient-data-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to
+insufficient data. May be used multiple times.
+Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--time-constraint</span> <span class="pre">&lt;Time</span> <span class="pre">Constraint&gt;</span></code></dt>
+<dd>Only evaluate the alarm if the time at
+evaluation is within this time constraint.
+Start point(s) of the constraint are specified
+with a cron expression, whereas its duration
+is given in seconds. Can be specified multiple
+times for multiple time constraints, format
+is: name=&lt;CONSTRAINT_NAME&gt;;start=&lt;CRON&gt;;durati
+on=&lt;SECONDS&gt;;[description=&lt;DESCRIPTION&gt;;[timez
+one=&lt;IANA Timezone&gt;]] Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--repeat-actions</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if actions should be repeatedly notified
+while alarm remains in target state.</dd>
+<dt><code class="docutils literal"><span class="pre">--granularity</span> <span class="pre">&lt;GRANULARITY&gt;</span></code></dt>
+<dd>Length of each period (seconds) to evaluate
+over.</dd>
+<dt><code class="docutils literal"><span class="pre">--evaluation-periods</span> <span class="pre">&lt;COUNT&gt;</span></code></dt>
+<dd>Number of periods to evaluate over.</dd>
+<dt><code class="docutils literal"><span class="pre">--aggregation-method</span> <span class="pre">&lt;AGGREATION&gt;</span></code></dt>
+<dd>Aggregation method to use, one of: ['last',
+'min', 'median', 'sum', 'std', 'first',
+'mean', 'count', 'moving-average', 'max',
+'1pct', '2pct', '3pct', '4pct', '5pct',
+'6pct', '7pct', '8pct', '9pct', '10pct',
+'11pct', '12pct', '13pct', '14pct', '15pct',
+'16pct', '17pct', '18pct', '19pct', '20pct',
+'21pct', '22pct', '23pct', '24pct', '25pct',
+'26pct', '27pct', '28pct', '29pct', '30pct',
+'31pct', '32pct', '33pct', '34pct', '35pct',
+'36pct', '37pct', '38pct', '39pct', '40pct',
+'41pct', '42pct', '43pct', '44pct', '45pct',
+'46pct', '47pct', '48pct', '49pct', '50pct',
+'51pct', '52pct', '53pct', '54pct', '55pct',
+'56pct', '57pct', '58pct', '59pct', '60pct',
+'61pct', '62pct', '63pct', '64pct', '65pct',
+'66pct', '67pct', '68pct', '69pct', '70pct',
+'71pct', '72pct', '73pct', '74pct', '75pct',
+'76pct', '77pct', '78pct', '79pct', '80pct',
+'81pct', '82pct', '83pct', '84pct', '85pct',
+'86pct', '87pct', '88pct', '89pct', '90pct',
+'91pct', '92pct', '93pct', '94pct', '95pct',
+'96pct', '97pct', '98pct', '99pct'].</dd>
+<dt><code class="docutils literal"><span class="pre">--comparison-operator</span> <span class="pre">&lt;OPERATOR&gt;</span></code></dt>
+<dd>Operator to compare with, one of: ['lt', 'le',
+'eq', 'ne', 'ge', 'gt'].</dd>
+<dt><code class="docutils literal"><span class="pre">--threshold</span> <span class="pre">&lt;THRESHOLD&gt;</span></code></dt>
+<dd>Threshold to evaluate against.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;METRIC&gt;,</span> <span class="pre">--metric</span> <span class="pre">&lt;METRIC&gt;</span></code></dt>
+<dd>Metric to evaluate against.</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-type</span> <span class="pre">&lt;RESOURCE_TYPE&gt;</span></code></dt>
+<dd>Resource_type to evaluate against.</dd>
+<dt><code class="docutils literal"><span class="pre">--query</span> <span class="pre">&lt;QUERY&gt;</span></code></dt>
+<dd>Gnocchi resources search query filter</dd>
+<dt><code class="docutils literal"><span class="pre">--remove-time-constraint</span> <span class="pre">&lt;Constraint</span> <span class="pre">names&gt;</span></code></dt>
+<dd>Name or list of names of the time constraints
+to remove.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-alarm-gnocchi-resources-threshold-create">
+<span id="id10"></span><h3>ceilometer alarm-gnocchi-resources-threshold-create<a class="headerlink" href="ceilometer.html#ceilometer-alarm-gnocchi-resources-threshold-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer alarm-gnocchi-resources-threshold-create --name &lt;NAME&gt;</span>
+<span class="go">                                                           [--project-id &lt;ALARM_PROJECT_ID&gt;]</span>
+<span class="go">                                                           [--user-id &lt;ALARM_USER_ID&gt;]</span>
+<span class="go">                                                           [--description &lt;DESCRIPTION&gt;]</span>
+<span class="go">                                                           [--state &lt;STATE&gt;]</span>
+<span class="go">                                                           [--severity &lt;SEVERITY&gt;]</span>
+<span class="go">                                                           [--enabled {True|False}]</span>
+<span class="go">                                                           [--alarm-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                                           [--ok-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                                           [--insufficient-data-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                                           [--time-constraint &lt;Time Constraint&gt;]</span>
+<span class="go">                                                           [--repeat-actions {True|False}]</span>
+<span class="go">                                                           [--granularity &lt;GRANULARITY&gt;]</span>
+<span class="go">                                                           [--evaluation-periods &lt;COUNT&gt;]</span>
+<span class="go">                                                           --aggregation-method</span>
+<span class="go">                                                           &lt;AGGREATION&gt;</span>
+<span class="go">                                                           [--comparison-operator &lt;OPERATOR&gt;]</span>
+<span class="go">                                                           --threshold</span>
+<span class="go">                                                           &lt;THRESHOLD&gt; -m</span>
+<span class="go">                                                           &lt;METRIC&gt;</span>
+<span class="go">                                                           --resource-type</span>
+<span class="go">                                                           &lt;RESOURCE_TYPE&gt;</span>
+<span class="go">                                                           --resource-id</span>
+<span class="go">                                                           &lt;RESOURCE_ID&gt;</span>
+</pre></div>
+</div>
+<p>Create a new alarm based on computed statistics.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Name of the alarm (must be unique per tenant).
+Required.</dd>
+<dt><code class="docutils literal"><span class="pre">--project-id</span> <span class="pre">&lt;ALARM_PROJECT_ID&gt;</span></code></dt>
+<dd>Tenant to associate with alarm (configurable
+by admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--user-id</span> <span class="pre">&lt;ALARM_USER_ID&gt;</span></code></dt>
+<dd>User to associate with alarm (configurable by
+admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;DESCRIPTION&gt;</span></code></dt>
+<dd>Free text description of the alarm.</dd>
+<dt><code class="docutils literal"><span class="pre">--state</span> <span class="pre">&lt;STATE&gt;</span></code></dt>
+<dd>State of the alarm, one of: ['ok', 'alarm',
+'insufficient data']</dd>
+<dt><code class="docutils literal"><span class="pre">--severity</span> <span class="pre">&lt;SEVERITY&gt;</span></code></dt>
+<dd>Severity of the alarm, one of: ['low',
+'moderate', 'critical']</dd>
+<dt><code class="docutils literal"><span class="pre">--enabled</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if alarm evaluation/actioning is enabled.</dd>
+<dt><code class="docutils literal"><span class="pre">--alarm-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to alarm.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--ok-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to OK.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--insufficient-data-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to
+insufficient data. May be used multiple times.
+Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--time-constraint</span> <span class="pre">&lt;Time</span> <span class="pre">Constraint&gt;</span></code></dt>
+<dd>Only evaluate the alarm if the time at
+evaluation is within this time constraint.
+Start point(s) of the constraint are specified
+with a cron expression, whereas its duration
+is given in seconds. Can be specified multiple
+times for multiple time constraints, format
+is: name=&lt;CONSTRAINT_NAME&gt;;start=&lt;CRON&gt;;durati
+on=&lt;SECONDS&gt;;[description=&lt;DESCRIPTION&gt;;[timez
+one=&lt;IANA Timezone&gt;]] Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--repeat-actions</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if actions should be repeatedly notified
+while alarm remains in target state.</dd>
+<dt><code class="docutils literal"><span class="pre">--granularity</span> <span class="pre">&lt;GRANULARITY&gt;</span></code></dt>
+<dd>Length of each period (seconds) to evaluate
+over.</dd>
+<dt><code class="docutils literal"><span class="pre">--evaluation-periods</span> <span class="pre">&lt;COUNT&gt;</span></code></dt>
+<dd>Number of periods to evaluate over.</dd>
+<dt><code class="docutils literal"><span class="pre">--aggregation-method</span> <span class="pre">&lt;AGGREATION&gt;</span></code></dt>
+<dd>Aggregation method to use, one of: ['last',
+'min', 'median', 'sum', 'std', 'first',
+'mean', 'count', 'moving-average', 'max',
+'1pct', '2pct', '3pct', '4pct', '5pct',
+'6pct', '7pct', '8pct', '9pct', '10pct',
+'11pct', '12pct', '13pct', '14pct', '15pct',
+'16pct', '17pct', '18pct', '19pct', '20pct',
+'21pct', '22pct', '23pct', '24pct', '25pct',
+'26pct', '27pct', '28pct', '29pct', '30pct',
+'31pct', '32pct', '33pct', '34pct', '35pct',
+'36pct', '37pct', '38pct', '39pct', '40pct',
+'41pct', '42pct', '43pct', '44pct', '45pct',
+'46pct', '47pct', '48pct', '49pct', '50pct',
+'51pct', '52pct', '53pct', '54pct', '55pct',
+'56pct', '57pct', '58pct', '59pct', '60pct',
+'61pct', '62pct', '63pct', '64pct', '65pct',
+'66pct', '67pct', '68pct', '69pct', '70pct',
+'71pct', '72pct', '73pct', '74pct', '75pct',
+'76pct', '77pct', '78pct', '79pct', '80pct',
+'81pct', '82pct', '83pct', '84pct', '85pct',
+'86pct', '87pct', '88pct', '89pct', '90pct',
+'91pct', '92pct', '93pct', '94pct', '95pct',
+'96pct', '97pct', '98pct', '99pct']. Required.</dd>
+<dt><code class="docutils literal"><span class="pre">--comparison-operator</span> <span class="pre">&lt;OPERATOR&gt;</span></code></dt>
+<dd>Operator to compare with, one of: ['lt', 'le',
+'eq', 'ne', 'ge', 'gt'].</dd>
+<dt><code class="docutils literal"><span class="pre">--threshold</span> <span class="pre">&lt;THRESHOLD&gt;</span></code></dt>
+<dd>Threshold to evaluate against. Required.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;METRIC&gt;,</span> <span class="pre">--metric</span> <span class="pre">&lt;METRIC&gt;</span></code></dt>
+<dd>Metric to evaluate against. Required.</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-type</span> <span class="pre">&lt;RESOURCE_TYPE&gt;</span></code></dt>
+<dd>Resource_type to evaluate against. Required.</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-id</span> <span class="pre">&lt;RESOURCE_ID&gt;</span></code></dt>
+<dd>Resource id to evaluate against Required.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-alarm-gnocchi-resources-threshold-update">
+<span id="id11"></span><h3>ceilometer alarm-gnocchi-resources-threshold-update<a class="headerlink" href="ceilometer.html#ceilometer-alarm-gnocchi-resources-threshold-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer alarm-gnocchi-resources-threshold-update [--name &lt;NAME&gt;]</span>
+<span class="go">                                                           [--project-id &lt;ALARM_PROJECT_ID&gt;]</span>
+<span class="go">                                                           [--user-id &lt;ALARM_USER_ID&gt;]</span>
+<span class="go">                                                           [--description &lt;DESCRIPTION&gt;]</span>
+<span class="go">                                                           [--state &lt;STATE&gt;]</span>
+<span class="go">                                                           [--severity &lt;SEVERITY&gt;]</span>
+<span class="go">                                                           [--enabled {True|False}]</span>
+<span class="go">                                                           [--alarm-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                                           [--ok-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                                           [--insufficient-data-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                                           [--time-constraint &lt;Time Constraint&gt;]</span>
+<span class="go">                                                           [--repeat-actions {True|False}]</span>
+<span class="go">                                                           [--granularity &lt;GRANULARITY&gt;]</span>
+<span class="go">                                                           [--evaluation-periods &lt;COUNT&gt;]</span>
+<span class="go">                                                           [--aggregation-method &lt;AGGREATION&gt;]</span>
+<span class="go">                                                           [--comparison-operator &lt;OPERATOR&gt;]</span>
+<span class="go">                                                           [--threshold &lt;THRESHOLD&gt;]</span>
+<span class="go">                                                           [-m &lt;METRIC&gt;]</span>
+<span class="go">                                                           [--resource-type &lt;RESOURCE_TYPE&gt;]</span>
+<span class="go">                                                           [--resource-id &lt;RESOURCE_ID&gt;]</span>
+<span class="go">                                                           [--remove-time-constraint &lt;Constraint names&gt;]</span>
+<span class="go">                                                           [&lt;ALARM_ID&gt;]</span>
+</pre></div>
+</div>
+<p>Update an existing alarm based on computed statistics.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ALARM_ID&gt;</span></code></dt>
+<dd>ID of the alarm to update.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Name of the alarm (must be unique per tenant).</dd>
+<dt><code class="docutils literal"><span class="pre">--project-id</span> <span class="pre">&lt;ALARM_PROJECT_ID&gt;</span></code></dt>
+<dd>Tenant to associate with alarm (configurable
+by admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--user-id</span> <span class="pre">&lt;ALARM_USER_ID&gt;</span></code></dt>
+<dd>User to associate with alarm (configurable by
+admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;DESCRIPTION&gt;</span></code></dt>
+<dd>Free text description of the alarm.</dd>
+<dt><code class="docutils literal"><span class="pre">--state</span> <span class="pre">&lt;STATE&gt;</span></code></dt>
+<dd>State of the alarm, one of: ['ok', 'alarm',
+'insufficient data']</dd>
+<dt><code class="docutils literal"><span class="pre">--severity</span> <span class="pre">&lt;SEVERITY&gt;</span></code></dt>
+<dd>Severity of the alarm, one of: ['low',
+'moderate', 'critical']</dd>
+<dt><code class="docutils literal"><span class="pre">--enabled</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if alarm evaluation/actioning is enabled.</dd>
+<dt><code class="docutils literal"><span class="pre">--alarm-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to alarm.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--ok-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to OK.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--insufficient-data-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to
+insufficient data. May be used multiple times.
+Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--time-constraint</span> <span class="pre">&lt;Time</span> <span class="pre">Constraint&gt;</span></code></dt>
+<dd>Only evaluate the alarm if the time at
+evaluation is within this time constraint.
+Start point(s) of the constraint are specified
+with a cron expression, whereas its duration
+is given in seconds. Can be specified multiple
+times for multiple time constraints, format
+is: name=&lt;CONSTRAINT_NAME&gt;;start=&lt;CRON&gt;;durati
+on=&lt;SECONDS&gt;;[description=&lt;DESCRIPTION&gt;;[timez
+one=&lt;IANA Timezone&gt;]] Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--repeat-actions</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if actions should be repeatedly notified
+while alarm remains in target state.</dd>
+<dt><code class="docutils literal"><span class="pre">--granularity</span> <span class="pre">&lt;GRANULARITY&gt;</span></code></dt>
+<dd>Length of each period (seconds) to evaluate
+over.</dd>
+<dt><code class="docutils literal"><span class="pre">--evaluation-periods</span> <span class="pre">&lt;COUNT&gt;</span></code></dt>
+<dd>Number of periods to evaluate over.</dd>
+<dt><code class="docutils literal"><span class="pre">--aggregation-method</span> <span class="pre">&lt;AGGREATION&gt;</span></code></dt>
+<dd>Aggregation method to use, one of: ['last',
+'min', 'median', 'sum', 'std', 'first',
+'mean', 'count', 'moving-average', 'max',
+'1pct', '2pct', '3pct', '4pct', '5pct',
+'6pct', '7pct', '8pct', '9pct', '10pct',
+'11pct', '12pct', '13pct', '14pct', '15pct',
+'16pct', '17pct', '18pct', '19pct', '20pct',
+'21pct', '22pct', '23pct', '24pct', '25pct',
+'26pct', '27pct', '28pct', '29pct', '30pct',
+'31pct', '32pct', '33pct', '34pct', '35pct',
+'36pct', '37pct', '38pct', '39pct', '40pct',
+'41pct', '42pct', '43pct', '44pct', '45pct',
+'46pct', '47pct', '48pct', '49pct', '50pct',
+'51pct', '52pct', '53pct', '54pct', '55pct',
+'56pct', '57pct', '58pct', '59pct', '60pct',
+'61pct', '62pct', '63pct', '64pct', '65pct',
+'66pct', '67pct', '68pct', '69pct', '70pct',
+'71pct', '72pct', '73pct', '74pct', '75pct',
+'76pct', '77pct', '78pct', '79pct', '80pct',
+'81pct', '82pct', '83pct', '84pct', '85pct',
+'86pct', '87pct', '88pct', '89pct', '90pct',
+'91pct', '92pct', '93pct', '94pct', '95pct',
+'96pct', '97pct', '98pct', '99pct'].</dd>
+<dt><code class="docutils literal"><span class="pre">--comparison-operator</span> <span class="pre">&lt;OPERATOR&gt;</span></code></dt>
+<dd>Operator to compare with, one of: ['lt', 'le',
+'eq', 'ne', 'ge', 'gt'].</dd>
+<dt><code class="docutils literal"><span class="pre">--threshold</span> <span class="pre">&lt;THRESHOLD&gt;</span></code></dt>
+<dd>Threshold to evaluate against.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;METRIC&gt;,</span> <span class="pre">--metric</span> <span class="pre">&lt;METRIC&gt;</span></code></dt>
+<dd>Metric to evaluate against.</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-type</span> <span class="pre">&lt;RESOURCE_TYPE&gt;</span></code></dt>
+<dd>Resource_type to evaluate against.</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-id</span> <span class="pre">&lt;RESOURCE_ID&gt;</span></code></dt>
+<dd>Resource id to evaluate against</dd>
+<dt><code class="docutils literal"><span class="pre">--remove-time-constraint</span> <span class="pre">&lt;Constraint</span> <span class="pre">names&gt;</span></code></dt>
+<dd>Name or list of names of the time constraints
+to remove.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-alarm-history">
+<span id="id12"></span><h3>ceilometer alarm-history<a class="headerlink" href="ceilometer.html#ceilometer-alarm-history" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer alarm-history [-q &lt;QUERY&gt;] [&lt;ALARM_ID&gt;]</span>
+</pre></div>
+</div>
+<p>Display the change history of an alarm.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ALARM_ID&gt;</span></code></dt>
+<dd>ID of the alarm for which history is shown.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-q</span> <span class="pre">&lt;QUERY&gt;,</span> <span class="pre">--query</span> <span class="pre">&lt;QUERY&gt;</span></code></dt>
+<dd>key[op]data_type::value; list. data_type is
+optional, but if supplied must be string,
+integer, float, or boolean.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-alarm-list">
+<span id="id13"></span><h3>ceilometer alarm-list<a class="headerlink" href="ceilometer.html#ceilometer-alarm-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer alarm-list [-q &lt;QUERY&gt;]</span>
+</pre></div>
+</div>
+<p>List the user's alarms.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-q</span> <span class="pre">&lt;QUERY&gt;,</span> <span class="pre">--query</span> <span class="pre">&lt;QUERY&gt;</span></code></dt>
+<dd>key[op]data_type::value; list. data_type is
+optional, but if supplied must be string,
+integer, float, or boolean.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-alarm-show">
+<span id="id14"></span><h3>ceilometer alarm-show<a class="headerlink" href="ceilometer.html#ceilometer-alarm-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer alarm-show [&lt;ALARM_ID&gt;]</span>
+</pre></div>
+</div>
+<p>Show an alarm.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ALARM_ID&gt;</span></code></dt>
+<dd>ID of the alarm to show.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-alarm-state-get">
+<span id="id15"></span><h3>ceilometer alarm-state-get<a class="headerlink" href="ceilometer.html#ceilometer-alarm-state-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer alarm-state-get [&lt;ALARM_ID&gt;]</span>
+</pre></div>
+</div>
+<p>Get the state of an alarm.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ALARM_ID&gt;</span></code></dt>
+<dd>ID of the alarm state to show.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-alarm-state-set">
+<span id="id16"></span><h3>ceilometer alarm-state-set<a class="headerlink" href="ceilometer.html#ceilometer-alarm-state-set" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer alarm-state-set --state &lt;STATE&gt; [&lt;ALARM_ID&gt;]</span>
+</pre></div>
+</div>
+<p>Set the state of an alarm.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ALARM_ID&gt;</span></code></dt>
+<dd>ID of the alarm state to set.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--state</span> <span class="pre">&lt;STATE&gt;</span></code></dt>
+<dd>State of the alarm, one of: ['ok', 'alarm', 'insufficient
+data']. Required.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-alarm-threshold-create">
+<span id="id17"></span><h3>ceilometer alarm-threshold-create<a class="headerlink" href="ceilometer.html#ceilometer-alarm-threshold-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer alarm-threshold-create --name &lt;NAME&gt;</span>
+<span class="go">                                         [--project-id &lt;ALARM_PROJECT_ID&gt;]</span>
+<span class="go">                                         [--user-id &lt;ALARM_USER_ID&gt;]</span>
+<span class="go">                                         [--description &lt;DESCRIPTION&gt;]</span>
+<span class="go">                                         [--state &lt;STATE&gt;]</span>
+<span class="go">                                         [--severity &lt;SEVERITY&gt;]</span>
+<span class="go">                                         [--enabled {True|False}]</span>
+<span class="go">                                         [--alarm-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                         [--ok-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                         [--insufficient-data-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                         [--time-constraint &lt;Time Constraint&gt;]</span>
+<span class="go">                                         [--repeat-actions {True|False}] -m</span>
+<span class="go">                                         &lt;METRIC&gt; [--period &lt;PERIOD&gt;]</span>
+<span class="go">                                         [--evaluation-periods &lt;COUNT&gt;]</span>
+<span class="go">                                         [--statistic &lt;STATISTIC&gt;]</span>
+<span class="go">                                         [--comparison-operator &lt;OPERATOR&gt;]</span>
+<span class="go">                                         --threshold &lt;THRESHOLD&gt; [-q &lt;QUERY&gt;]</span>
+</pre></div>
+</div>
+<p>Create a new alarm based on computed statistics.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Name of the alarm (must be unique per tenant).
+Required.</dd>
+<dt><code class="docutils literal"><span class="pre">--project-id</span> <span class="pre">&lt;ALARM_PROJECT_ID&gt;</span></code></dt>
+<dd>Tenant to associate with alarm (configurable
+by admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--user-id</span> <span class="pre">&lt;ALARM_USER_ID&gt;</span></code></dt>
+<dd>User to associate with alarm (configurable by
+admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;DESCRIPTION&gt;</span></code></dt>
+<dd>Free text description of the alarm.</dd>
+<dt><code class="docutils literal"><span class="pre">--state</span> <span class="pre">&lt;STATE&gt;</span></code></dt>
+<dd>State of the alarm, one of: ['ok', 'alarm',
+'insufficient data']</dd>
+<dt><code class="docutils literal"><span class="pre">--severity</span> <span class="pre">&lt;SEVERITY&gt;</span></code></dt>
+<dd>Severity of the alarm, one of: ['low',
+'moderate', 'critical']</dd>
+<dt><code class="docutils literal"><span class="pre">--enabled</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if alarm evaluation/actioning is enabled.</dd>
+<dt><code class="docutils literal"><span class="pre">--alarm-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to alarm.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--ok-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to OK.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--insufficient-data-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to
+insufficient data. May be used multiple times.
+Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--time-constraint</span> <span class="pre">&lt;Time</span> <span class="pre">Constraint&gt;</span></code></dt>
+<dd>Only evaluate the alarm if the time at
+evaluation is within this time constraint.
+Start point(s) of the constraint are specified
+with a cron expression, whereas its duration
+is given in seconds. Can be specified multiple
+times for multiple time constraints, format
+is: name=&lt;CONSTRAINT_NAME&gt;;start=&lt;CRON&gt;;durati
+on=&lt;SECONDS&gt;;[description=&lt;DESCRIPTION&gt;;[timez
+one=&lt;IANA Timezone&gt;]] Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--repeat-actions</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if actions should be repeatedly notified
+while alarm remains in target state.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;METRIC&gt;,</span> <span class="pre">--meter-name</span> <span class="pre">&lt;METRIC&gt;</span></code></dt>
+<dd>Metric to evaluate against. Required.</dd>
+<dt><code class="docutils literal"><span class="pre">--period</span> <span class="pre">&lt;PERIOD&gt;</span></code></dt>
+<dd>Length of each period (seconds) to evaluate
+over.</dd>
+<dt><code class="docutils literal"><span class="pre">--evaluation-periods</span> <span class="pre">&lt;COUNT&gt;</span></code></dt>
+<dd>Number of periods to evaluate over.</dd>
+<dt><code class="docutils literal"><span class="pre">--statistic</span> <span class="pre">&lt;STATISTIC&gt;</span></code></dt>
+<dd>Statistic to evaluate, one of: ['max', 'min',
+'avg', 'sum', 'count'].</dd>
+<dt><code class="docutils literal"><span class="pre">--comparison-operator</span> <span class="pre">&lt;OPERATOR&gt;</span></code></dt>
+<dd>Operator to compare with, one of: ['lt', 'le',
+'eq', 'ne', 'ge', 'gt'].</dd>
+<dt><code class="docutils literal"><span class="pre">--threshold</span> <span class="pre">&lt;THRESHOLD&gt;</span></code></dt>
+<dd>Threshold to evaluate against. Required.</dd>
+<dt><code class="docutils literal"><span class="pre">-q</span> <span class="pre">&lt;QUERY&gt;,</span> <span class="pre">--query</span> <span class="pre">&lt;QUERY&gt;</span></code></dt>
+<dd>key[op]data_type::value; list. data_type is
+optional, but if supplied must be string,
+integer, float, or boolean.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-alarm-threshold-update">
+<span id="id18"></span><h3>ceilometer alarm-threshold-update<a class="headerlink" href="ceilometer.html#ceilometer-alarm-threshold-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer alarm-threshold-update [--name &lt;NAME&gt;]</span>
+<span class="go">                                         [--project-id &lt;ALARM_PROJECT_ID&gt;]</span>
+<span class="go">                                         [--user-id &lt;ALARM_USER_ID&gt;]</span>
+<span class="go">                                         [--description &lt;DESCRIPTION&gt;]</span>
+<span class="go">                                         [--state &lt;STATE&gt;]</span>
+<span class="go">                                         [--severity &lt;SEVERITY&gt;]</span>
+<span class="go">                                         [--enabled {True|False}]</span>
+<span class="go">                                         [--alarm-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                         [--ok-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                         [--insufficient-data-action &lt;Webhook URL&gt;]</span>
+<span class="go">                                         [--time-constraint &lt;Time Constraint&gt;]</span>
+<span class="go">                                         [--repeat-actions {True|False}]</span>
+<span class="go">                                         [--remove-time-constraint &lt;Constraint names&gt;]</span>
+<span class="go">                                         [-m &lt;METRIC&gt;] [--period &lt;PERIOD&gt;]</span>
+<span class="go">                                         [--evaluation-periods &lt;COUNT&gt;]</span>
+<span class="go">                                         [--statistic &lt;STATISTIC&gt;]</span>
+<span class="go">                                         [--comparison-operator &lt;OPERATOR&gt;]</span>
+<span class="go">                                         [--threshold &lt;THRESHOLD&gt;]</span>
+<span class="go">                                         [-q &lt;QUERY&gt;]</span>
+<span class="go">                                         [&lt;ALARM_ID&gt;]</span>
+</pre></div>
+</div>
+<p>Update an existing alarm based on computed statistics.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ALARM_ID&gt;</span></code></dt>
+<dd>ID of the alarm to update.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Name of the alarm (must be unique per tenant).</dd>
+<dt><code class="docutils literal"><span class="pre">--project-id</span> <span class="pre">&lt;ALARM_PROJECT_ID&gt;</span></code></dt>
+<dd>Tenant to associate with alarm (configurable
+by admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--user-id</span> <span class="pre">&lt;ALARM_USER_ID&gt;</span></code></dt>
+<dd>User to associate with alarm (configurable by
+admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;DESCRIPTION&gt;</span></code></dt>
+<dd>Free text description of the alarm.</dd>
+<dt><code class="docutils literal"><span class="pre">--state</span> <span class="pre">&lt;STATE&gt;</span></code></dt>
+<dd>State of the alarm, one of: ['ok', 'alarm',
+'insufficient data']</dd>
+<dt><code class="docutils literal"><span class="pre">--severity</span> <span class="pre">&lt;SEVERITY&gt;</span></code></dt>
+<dd>Severity of the alarm, one of: ['low',
+'moderate', 'critical']</dd>
+<dt><code class="docutils literal"><span class="pre">--enabled</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if alarm evaluation/actioning is enabled.</dd>
+<dt><code class="docutils literal"><span class="pre">--alarm-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to alarm.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--ok-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to OK.
+May be used multiple times. Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--insufficient-data-action</span> <span class="pre">&lt;Webhook</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>URL to invoke when state transitions to
+insufficient data. May be used multiple times.
+Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--time-constraint</span> <span class="pre">&lt;Time</span> <span class="pre">Constraint&gt;</span></code></dt>
+<dd>Only evaluate the alarm if the time at
+evaluation is within this time constraint.
+Start point(s) of the constraint are specified
+with a cron expression, whereas its duration
+is given in seconds. Can be specified multiple
+times for multiple time constraints, format
+is: name=&lt;CONSTRAINT_NAME&gt;;start=&lt;CRON&gt;;durati
+on=&lt;SECONDS&gt;;[description=&lt;DESCRIPTION&gt;;[timez
+one=&lt;IANA Timezone&gt;]] Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">--repeat-actions</span> <span class="pre">{True|False}</span></code></dt>
+<dd>True if actions should be repeatedly notified
+while alarm remains in target state.</dd>
+<dt><code class="docutils literal"><span class="pre">--remove-time-constraint</span> <span class="pre">&lt;Constraint</span> <span class="pre">names&gt;</span></code></dt>
+<dd>Name or list of names of the time constraints
+to remove.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;METRIC&gt;,</span> <span class="pre">--meter-name</span> <span class="pre">&lt;METRIC&gt;</span></code></dt>
+<dd>Metric to evaluate against.</dd>
+<dt><code class="docutils literal"><span class="pre">--period</span> <span class="pre">&lt;PERIOD&gt;</span></code></dt>
+<dd>Length of each period (seconds) to evaluate
+over.</dd>
+<dt><code class="docutils literal"><span class="pre">--evaluation-periods</span> <span class="pre">&lt;COUNT&gt;</span></code></dt>
+<dd>Number of periods to evaluate over.</dd>
+<dt><code class="docutils literal"><span class="pre">--statistic</span> <span class="pre">&lt;STATISTIC&gt;</span></code></dt>
+<dd>Statistic to evaluate, one of: ['max', 'min',
+'avg', 'sum', 'count'].</dd>
+<dt><code class="docutils literal"><span class="pre">--comparison-operator</span> <span class="pre">&lt;OPERATOR&gt;</span></code></dt>
+<dd>Operator to compare with, one of: ['lt', 'le',
+'eq', 'ne', 'ge', 'gt'].</dd>
+<dt><code class="docutils literal"><span class="pre">--threshold</span> <span class="pre">&lt;THRESHOLD&gt;</span></code></dt>
+<dd>Threshold to evaluate against.</dd>
+<dt><code class="docutils literal"><span class="pre">-q</span> <span class="pre">&lt;QUERY&gt;,</span> <span class="pre">--query</span> <span class="pre">&lt;QUERY&gt;</span></code></dt>
+<dd>key[op]data_type::value; list. data_type is
+optional, but if supplied must be string,
+integer, float, or boolean.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-capabilities">
+<span id="id19"></span><h3>ceilometer capabilities<a class="headerlink" href="ceilometer.html#ceilometer-capabilities" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer capabilities</span>
+</pre></div>
+</div>
+<p>Print Ceilometer capabilities.</p>
+</div>
+<div class="section" id="ceilometer-event-list">
+<span id="id20"></span><h3>ceilometer event-list<a class="headerlink" href="ceilometer.html#ceilometer-event-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer event-list [-q &lt;QUERY&gt;] [--no-traits] [-l &lt;NUMBER&gt;]</span>
+</pre></div>
+</div>
+<p>List events.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-q</span> <span class="pre">&lt;QUERY&gt;,</span> <span class="pre">--query</span> <span class="pre">&lt;QUERY&gt;</span></code></dt>
+<dd>key[op]data_type::value; list. data_type is
+optional, but if supplied must be string,
+integer, float or datetime.</dd>
+<dt><code class="docutils literal"><span class="pre">--no-traits</span></code></dt>
+<dd>If specified, traits will not be printed.</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;NUMBER&gt;,</span> <span class="pre">--limit</span> <span class="pre">&lt;NUMBER&gt;</span></code></dt>
+<dd>Maximum number of events to return. API server
+limits result to &lt;default_api_return_limit&gt;
+rows if no limit provided. Option is
+configured in ceilometer.conf [api] group</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-event-show">
+<span id="id21"></span><h3>ceilometer event-show<a class="headerlink" href="ceilometer.html#ceilometer-event-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer event-show &lt;message_id&gt;</span>
+</pre></div>
+</div>
+<p>Show a particular event.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;message_id&gt;</span></code></dt>
+<dd>The ID of the event. Should be a UUID.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-event-type-list">
+<span id="id22"></span><h3>ceilometer event-type-list<a class="headerlink" href="ceilometer.html#ceilometer-event-type-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer event-type-list</span>
+</pre></div>
+</div>
+<p>List event types.</p>
+</div>
+<div class="section" id="ceilometer-meter-list">
+<span id="id23"></span><h3>ceilometer meter-list<a class="headerlink" href="ceilometer.html#ceilometer-meter-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer meter-list [-q &lt;QUERY&gt;] [-l &lt;NUMBER&gt;]</span>
+<span class="go">                             [--unique {True|False}]</span>
+</pre></div>
+</div>
+<p>List the user's meters.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-q</span> <span class="pre">&lt;QUERY&gt;,</span> <span class="pre">--query</span> <span class="pre">&lt;QUERY&gt;</span></code></dt>
+<dd>key[op]data_type::value; list. data_type is
+optional, but if supplied must be string,
+integer, float, or boolean.</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;NUMBER&gt;,</span> <span class="pre">--limit</span> <span class="pre">&lt;NUMBER&gt;</span></code></dt>
+<dd>Maximum number of meters to return. API server
+limits result to &lt;default_api_return_limit&gt;
+rows if no limit provided. Option is
+configured in ceilometer.conf [api] group</dd>
+<dt><code class="docutils literal"><span class="pre">--unique</span> <span class="pre">{True|False}</span></code></dt>
+<dd>Retrieves unique list of meters.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-query-alarm-history">
+<span id="id24"></span><h3>ceilometer query-alarm-history<a class="headerlink" href="ceilometer.html#ceilometer-query-alarm-history" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer query-alarm-history [-f &lt;FILTER&gt;] [-o &lt;ORDERBY&gt;]</span>
+<span class="go">                                      [-l &lt;LIMIT&gt;]</span>
+</pre></div>
+</div>
+<p>Query Alarm History.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;FILTER&gt;,</span> <span class="pre">--filter</span> <span class="pre">&lt;FILTER&gt;</span></code></dt>
+<dd>{complex_op: [{simple_op: {field_name:
+value}}]} The complex_op is one of: ['and',
+'or'], simple_op is one of: ['=', '!=', '&lt;',
+'&lt;=', '&gt;', '&gt;='].</dd>
+<dt><code class="docutils literal"><span class="pre">-o</span> <span class="pre">&lt;ORDERBY&gt;,</span> <span class="pre">--orderby</span> <span class="pre">&lt;ORDERBY&gt;</span></code></dt>
+<dd>[{field_name: direction}, {field_name:
+direction}] The direction is one of: ['asc',
+'desc'].</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;LIMIT&gt;,</span> <span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></dt>
+<dd>Maximum number of alarm history items to
+return. API server limits result to
+&lt;default_api_return_limit&gt; rows if no limit
+provided. Option is configured in
+ceilometer.conf [api] group</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-query-alarms">
+<span id="id25"></span><h3>ceilometer query-alarms<a class="headerlink" href="ceilometer.html#ceilometer-query-alarms" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer query-alarms [-f &lt;FILTER&gt;] [-o &lt;ORDERBY&gt;] [-l &lt;LIMIT&gt;]</span>
+</pre></div>
+</div>
+<p>Query Alarms.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;FILTER&gt;,</span> <span class="pre">--filter</span> <span class="pre">&lt;FILTER&gt;</span></code></dt>
+<dd>{complex_op: [{simple_op: {field_name:
+value}}]} The complex_op is one of: ['and',
+'or'], simple_op is one of: ['=', '!=', '&lt;',
+'&lt;=', '&gt;', '&gt;='].</dd>
+<dt><code class="docutils literal"><span class="pre">-o</span> <span class="pre">&lt;ORDERBY&gt;,</span> <span class="pre">--orderby</span> <span class="pre">&lt;ORDERBY&gt;</span></code></dt>
+<dd>[{field_name: direction}, {field_name:
+direction}] The direction is one of: ['asc',
+'desc'].</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;LIMIT&gt;,</span> <span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></dt>
+<dd>Maximum number of alarms to return. API server
+limits result to &lt;default_api_return_limit&gt;
+rows if no limit provided. Option is
+configured in ceilometer.conf [api] group</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-query-samples">
+<span id="id26"></span><h3>ceilometer query-samples<a class="headerlink" href="ceilometer.html#ceilometer-query-samples" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer query-samples [-f &lt;FILTER&gt;] [-o &lt;ORDERBY&gt;] [-l &lt;LIMIT&gt;]</span>
+</pre></div>
+</div>
+<p>Query samples.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;FILTER&gt;,</span> <span class="pre">--filter</span> <span class="pre">&lt;FILTER&gt;</span></code></dt>
+<dd>{complex_op: [{simple_op: {field_name:
+value}}]} The complex_op is one of: ['and',
+'or'], simple_op is one of: ['=', '!=', '&lt;',
+'&lt;=', '&gt;', '&gt;='].</dd>
+<dt><code class="docutils literal"><span class="pre">-o</span> <span class="pre">&lt;ORDERBY&gt;,</span> <span class="pre">--orderby</span> <span class="pre">&lt;ORDERBY&gt;</span></code></dt>
+<dd>[{field_name: direction}, {field_name:
+direction}] The direction is one of: ['asc',
+'desc'].</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;LIMIT&gt;,</span> <span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></dt>
+<dd>Maximum number of samples to return. API
+server limits result to
+&lt;default_api_return_limit&gt; rows if no limit
+provided. Option is configured in
+ceilometer.conf [api] group</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-resource-list">
+<span id="id27"></span><h3>ceilometer resource-list<a class="headerlink" href="ceilometer.html#ceilometer-resource-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer resource-list [-q &lt;QUERY&gt;] [-l &lt;NUMBER&gt;]</span>
+</pre></div>
+</div>
+<p>List the resources.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-q</span> <span class="pre">&lt;QUERY&gt;,</span> <span class="pre">--query</span> <span class="pre">&lt;QUERY&gt;</span></code></dt>
+<dd>key[op]data_type::value; list. data_type is
+optional, but if supplied must be string,
+integer, float, or boolean.</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;NUMBER&gt;,</span> <span class="pre">--limit</span> <span class="pre">&lt;NUMBER&gt;</span></code></dt>
+<dd>Maximum number of resources to return. API
+server limits result to
+&lt;default_api_return_limit&gt; rows if no limit
+provided. Option is configured in
+ceilometer.conf [api] group</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-resource-show">
+<span id="id28"></span><h3>ceilometer resource-show<a class="headerlink" href="ceilometer.html#ceilometer-resource-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer resource-show &lt;RESOURCE_ID&gt;</span>
+</pre></div>
+</div>
+<p>Show the resource.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;RESOURCE_ID&gt;</span></code></dt>
+<dd>ID of the resource to show.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-sample-create">
+<span id="id29"></span><h3>ceilometer sample-create<a class="headerlink" href="ceilometer.html#ceilometer-sample-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer sample-create [--project-id &lt;SAMPLE_PROJECT_ID&gt;]</span>
+<span class="go">                                [--user-id &lt;SAMPLE_USER_ID&gt;] -r &lt;RESOURCE_ID&gt;</span>
+<span class="go">                                -m &lt;METER_NAME&gt; --meter-type &lt;METER_TYPE&gt;</span>
+<span class="go">                                --meter-unit &lt;METER_UNIT&gt; --sample-volume</span>
+<span class="go">                                &lt;SAMPLE_VOLUME&gt;</span>
+<span class="go">                                [--resource-metadata &lt;RESOURCE_METADATA&gt;]</span>
+<span class="go">                                [--timestamp &lt;TIMESTAMP&gt;] [--direct &lt;DIRECT&gt;]</span>
+</pre></div>
+</div>
+<p>Create a sample.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--project-id</span> <span class="pre">&lt;SAMPLE_PROJECT_ID&gt;</span></code></dt>
+<dd>Tenant to associate with sample (configurable
+by admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">--user-id</span> <span class="pre">&lt;SAMPLE_USER_ID&gt;</span></code></dt>
+<dd>User to associate with sample (configurable by
+admin users only).</dd>
+<dt><code class="docutils literal"><span class="pre">-r</span> <span class="pre">&lt;RESOURCE_ID&gt;,</span> <span class="pre">--resource-id</span> <span class="pre">&lt;RESOURCE_ID&gt;</span></code></dt>
+<dd>ID of the resource. Required.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;METER_NAME&gt;,</span> <span class="pre">--meter-name</span> <span class="pre">&lt;METER_NAME&gt;</span></code></dt>
+<dd>The meter name. Required.</dd>
+<dt><code class="docutils literal"><span class="pre">--meter-type</span> <span class="pre">&lt;METER_TYPE&gt;</span></code></dt>
+<dd>The meter type. Required.</dd>
+<dt><code class="docutils literal"><span class="pre">--meter-unit</span> <span class="pre">&lt;METER_UNIT&gt;</span></code></dt>
+<dd>The meter unit. Required.</dd>
+<dt><code class="docutils literal"><span class="pre">--sample-volume</span> <span class="pre">&lt;SAMPLE_VOLUME&gt;</span></code></dt>
+<dd>The sample volume. Required.</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-metadata</span> <span class="pre">&lt;RESOURCE_METADATA&gt;</span></code></dt>
+<dd>Resource metadata. Provided value should be a
+set of key-value pairs e.g. {&quot;key&quot;:&quot;value&quot;}.</dd>
+<dt><code class="docutils literal"><span class="pre">--timestamp</span> <span class="pre">&lt;TIMESTAMP&gt;</span></code></dt>
+<dd>The sample timestamp.</dd>
+<dt><code class="docutils literal"><span class="pre">--direct</span> <span class="pre">&lt;DIRECT&gt;</span></code></dt>
+<dd>Post sample to storage directly. Defaults to
+False.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-sample-create-list">
+<span id="id30"></span><h3>ceilometer sample-create-list<a class="headerlink" href="ceilometer.html#ceilometer-sample-create-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer sample-create-list [--direct &lt;DIRECT&gt;] &lt;SAMPLES_LIST&gt;</span>
+</pre></div>
+</div>
+<p>Create a sample list.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;SAMPLES_LIST&gt;</span></code></dt>
+<dd>Json array with samples to create.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--direct</span> <span class="pre">&lt;DIRECT&gt;</span></code></dt>
+<dd>Post samples to storage directly. Defaults to False.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-sample-list">
+<span id="id31"></span><h3>ceilometer sample-list<a class="headerlink" href="ceilometer.html#ceilometer-sample-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer sample-list [-q &lt;QUERY&gt;] [-m &lt;NAME&gt;] [-l &lt;NUMBER&gt;]</span>
+</pre></div>
+</div>
+<p>List the samples (return OldSample objects if -m/--meter is set).</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-q</span> <span class="pre">&lt;QUERY&gt;,</span> <span class="pre">--query</span> <span class="pre">&lt;QUERY&gt;</span></code></dt>
+<dd>key[op]data_type::value; list. data_type is
+optional, but if supplied must be string,
+integer, float, or boolean.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;NAME&gt;,</span> <span class="pre">--meter</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Name of meter to show samples for.</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;NUMBER&gt;,</span> <span class="pre">--limit</span> <span class="pre">&lt;NUMBER&gt;</span></code></dt>
+<dd>Maximum number of samples to return. API
+server limits result to
+&lt;default_api_return_limit&gt; rows if no limit
+provided. Option is configured in
+ceilometer.conf [api] group</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-sample-show">
+<span id="id32"></span><h3>ceilometer sample-show<a class="headerlink" href="ceilometer.html#ceilometer-sample-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer sample-show &lt;SAMPLE_ID&gt;</span>
+</pre></div>
+</div>
+<p>Show a sample.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;SAMPLE_ID&gt;</span></code></dt>
+<dd>ID (aka message ID) of the sample to show.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-statistics">
+<span id="id33"></span><h3>ceilometer statistics<a class="headerlink" href="ceilometer.html#ceilometer-statistics" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer statistics [-q &lt;QUERY&gt;] -m &lt;NAME&gt; [-p &lt;PERIOD&gt;] [-g &lt;FIELD&gt;]</span>
+<span class="go">                             [-a &lt;FUNC&gt;[&lt;-&lt;PARAM&gt;]]</span>
+</pre></div>
+</div>
+<p>List the statistics for a meter.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-q</span> <span class="pre">&lt;QUERY&gt;,</span> <span class="pre">--query</span> <span class="pre">&lt;QUERY&gt;</span></code></dt>
+<dd>key[op]data_type::value; list. data_type is
+optional, but if supplied must be string,
+integer, float, or boolean.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;NAME&gt;,</span> <span class="pre">--meter</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Name of meter to list statistics for.
+Required.</dd>
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">&lt;PERIOD&gt;,</span> <span class="pre">--period</span> <span class="pre">&lt;PERIOD&gt;</span></code></dt>
+<dd>Period in seconds over which to group samples.</dd>
+<dt><code class="docutils literal"><span class="pre">-g</span> <span class="pre">&lt;FIELD&gt;,</span> <span class="pre">--groupby</span> <span class="pre">&lt;FIELD&gt;</span></code></dt>
+<dd>Field for group by.</dd>
+<dt><code class="docutils literal"><span class="pre">-a</span> <span class="pre">&lt;FUNC&gt;[&lt;-&lt;PARAM&gt;],</span> <span class="pre">--aggregate</span> <span class="pre">&lt;FUNC&gt;[&lt;-&lt;PARAM&gt;]</span></code></dt>
+<dd>Function for data aggregation. Available
+aggregates are: count, cardinality, min, max,
+sum, stddev, avg. Defaults to [].</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-trait-description-list">
+<span id="id34"></span><h3>ceilometer trait-description-list<a class="headerlink" href="ceilometer.html#ceilometer-trait-description-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer trait-description-list -e &lt;EVENT_TYPE&gt;</span>
+</pre></div>
+</div>
+<p>List trait info for an event type.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-e</span> <span class="pre">&lt;EVENT_TYPE&gt;,</span> <span class="pre">--event_type</span> <span class="pre">&lt;EVENT_TYPE&gt;</span></code></dt>
+<dd>Type of the event for which traits will be
+shown. Required.</dd>
+</dl>
+</div>
+<div class="section" id="ceilometer-trait-list">
+<span id="id35"></span><h3>ceilometer trait-list<a class="headerlink" href="ceilometer.html#ceilometer-trait-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ceilometer trait-list -e &lt;EVENT_TYPE&gt; -t &lt;TRAIT_NAME&gt;</span>
+</pre></div>
+</div>
+<p>List all traits with name &lt;trait_name&gt; for Event Type &lt;event_type&gt;.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-e</span> <span class="pre">&lt;EVENT_TYPE&gt;,</span> <span class="pre">--event_type</span> <span class="pre">&lt;EVENT_TYPE&gt;</span></code></dt>
+<dd>Type of the event for which traits will
+listed. Required.</dd>
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">&lt;TRAIT_NAME&gt;,</span> <span class="pre">--trait_name</span> <span class="pre">&lt;TRAIT_NAME&gt;</span></code></dt>
+<dd>The name of the trait to list. Required.</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="aodh.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Telemetry Alarming service (aodh) command-line client"></i></a>
+          
+          
+            <a href="gnocchi.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: A time series storage and resources index service (gnocchi) command-line client"></i></a>
+          
+            <a id="logABugLink3" href="ceilometer.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="ceilometer.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="murano.html">Application Catalog service (murano) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="freezer.html">Backup, Restore, and Disaster Recovery service (freezer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ironic.html">Bare Metal service (ironic) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cinder.html">Block Storage service (cinder) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="senlin.html">Clustering service (senlin) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute service (nova) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnum.html">Container Infrastructure Management service (magnum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database service (trove) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="designate.html">DNS service (designate) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image service (glance) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watcher.html">Infrastructure Optimization service (watcher) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barbican.html">Key Manager service (barbican) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monasca.html">Monitoring (monasca) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networking.html">Networking service (neutron) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tacker.html">NFV Orchestration service (tacker) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="swift.html">Object Storage service (swift) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heat.html">Orchestration service (heat) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloudkitty.html">Rating service (cloudkitty) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vitrage.html">RCA (Root Cause Analysis) service (vitrage) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manila.html">Shared File Systems service (manila) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solum.html">Software Development Lifecycle Automation service (solum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aodh.html">Telemetry Alarming service (aodh) command-line client</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="ceilometer.html#">Telemetry Data Collection service (ceilometer) command-line client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ceilometer.html#ceilometer-usage">ceilometer usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ceilometer.html#ceilometer-optional-arguments">ceilometer optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gnocchi.html">A time series storage and resources index service (gnocchi) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mistral.html">Workflow service (mistral) command-line client</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "ceilometer" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/cli-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "Telemetry Data Collection service (ceilometer) command-line client in Command-Line Interface Reference";
+    var fieldTags = "cli-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:39";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

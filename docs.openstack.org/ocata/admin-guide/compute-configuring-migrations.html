@@ -1,0 +1,817 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: Configure live migrations</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>Configure live migrations</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="compute-root-wrap-reference.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Secure with rootwrap"></i></a>
+    
+    
+    <a href="compute-live-migration-usage.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Migrate instances"></i></a>
+    
+    <a id="logABugLink1" href="compute-configuring-migrations.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:38</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="compute-configuring-migrations.html#">Configure live migrations</a><ul>
+<li><a class="reference internal" href="compute-configuring-migrations.html#kvm-libvirt">KVM-libvirt</a><ul>
+<li><a class="reference internal" href="compute-configuring-migrations.html#general-configuration">General configuration</a></li>
+<li><a class="reference internal" href="compute-configuring-migrations.html#block-migration-volume-based-live-migration">Block migration, volume-based live migration</a></li>
+<li><a class="reference internal" href="compute-configuring-migrations.html#shared-storage">Shared storage</a></li>
+<li><a class="reference internal" href="compute-configuring-migrations.html#advanced-configuration-for-kvm-and-qemu">Advanced configuration for KVM and QEMU</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="compute-configuring-migrations.html#xenserver">XenServer</a><ul>
+<li><a class="reference internal" href="compute-configuring-migrations.html#configuring-migrations-xenserver-shared-storage">Shared storage</a></li>
+<li><a class="reference internal" href="compute-configuring-migrations.html#block-migration">Block migration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="configure-live-migrations">
+<span id="section-configuring-compute-migrations"></span><h1>Configure live migrations<a class="headerlink" href="compute-configuring-migrations.html#configure-live-migrations" title="Permalink to this headline">¶</a></h1>
+<p>Migration enables an administrator to move a virtual machine instance
+from one compute host to another. A typical scenario is planned
+maintenance on the source host, but
+migration can also be useful to redistribute
+the load when many VM instances are running on a specific physical
+machine.</p>
+<p>This document covers live migrations using the
+<a class="reference internal" href="compute-configuring-migrations.html#configuring-migrations-kvm-libvirt"><span class="std std-ref">KVM-libvirt</span></a>
+and <a class="reference internal" href="compute-configuring-migrations.html#configuring-migrations-xenserver"><span class="std std-ref">XenServer</span></a> hypervisors.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Not all Compute service hypervisor drivers support live-migration,
+or support all live-migration features.</p>
+<p>Consult the <a class="reference external" href="https://docs.openstack.org/developer/nova/support-matrix.html">Hypervisor Support Matrix</a> to
+determine which hypervisors support live-migration.</p>
+<p class="last">See the <a class="reference external" href="../config-reference/compute/hypervisors.html">Hypervisor configuration pages</a>
+for details on hypervisor-specific configuration settings.</p>
+</div>
+<p>The migration types are:</p>
+<ul>
+<li><p class="first"><strong>Non-live migration</strong>, also known as cold migration or simply
+migration.</p>
+<p>The instance is shut down, then moved to another
+hypervisor and restarted. The instance recognizes that it was
+rebooted, and the application running on the instance is disrupted.</p>
+<p>This section does not cover cold migration.</p>
+</li>
+<li><p class="first"><strong>Live migration</strong></p>
+<p>The instance keeps running throughout the migration.
+This is useful when it is not possible or desirable to stop the application
+running on the instance.</p>
+<p>Live migrations can be classified further by the way they treat instance
+storage:</p>
+<ul class="simple">
+<li><strong>Shared storage-based live migration</strong>. The instance has ephemeral
+disks that are located on storage shared between the source and
+destination hosts.</li>
+<li><strong>Block live migration</strong>, or simply block migration.
+The instance has ephemeral disks that
+are not shared between the source and destination hosts.
+Block migration is
+incompatible with read-only devices such as CD-ROMs and
+<a class="reference external" href="https://docs.openstack.org/user-guide/cli-config-drive.html">Configuration Drive (config_drive)</a>.</li>
+<li><strong>Volume-backed live migration</strong>. Instances use volumes
+rather than ephemeral disks.</li>
+</ul>
+<p>Block live migration requires copying disks from the source to the
+destination host. It takes more time and puts more load on the network.
+Shared-storage and volume-backed live migration does not copy disks.</p>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In a multi-cell cloud, instances can be live migrated to a
+different host in the same cell, but not across cells.</p>
+</div>
+<p>The following sections describe how to configure your hosts
+for live migrations using the KVM and XenServer hypervisors.</p>
+<div class="section" id="kvm-libvirt">
+<span id="configuring-migrations-kvm-libvirt"></span><h2>KVM-libvirt<a class="headerlink" href="compute-configuring-migrations.html#kvm-libvirt" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="general-configuration">
+<span id="configuring-migrations-kvm-general"></span><h3>General configuration<a class="headerlink" href="compute-configuring-migrations.html#general-configuration" title="Permalink to this headline">¶</a></h3>
+<p>To enable any type of live migration, configure the compute hosts according
+to the instructions below:</p>
+<ol class="arabic">
+<li><p class="first">Set the following parameters in <code class="docutils literal"><span class="pre">nova.conf</span></code> on all compute hosts:</p>
+<ul>
+<li><p class="first"><code class="docutils literal"><span class="pre">vncserver_listen=0.0.0.0</span></code></p>
+<p>You must not make the VNC server listen to the IP address of its
+compute host, since that addresses changes when the instance is migrated.</p>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p class="last">Since this setting allows VNC clients from any IP address to connect
+to instance consoles, you must take additional measures like secure
+networks or firewalls to prevent potential attackers from gaining
+access to instances.</p>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">instances_path</span></code> must have the same value for all compute hosts.
+In this guide, the value <code class="docutils literal"><span class="pre">/var/lib/nova/instances</span></code> is assumed.</p>
+</li>
+</ul>
+</li>
+<li><p class="first">Ensure that name resolution on all compute hosts is identical, so
+that they can connect each other through their hostnames.</p>
+<p>If you use <code class="docutils literal"><span class="pre">/etc/hosts</span></code> for name resolution and enable SELinux,
+ensure
+that <code class="docutils literal"><span class="pre">/etc/hosts</span></code> has the correct SELinux context:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">#</span> restorecon /etc/hosts
+</pre></div>
+</div>
+</li>
+<li><p class="first">Enable password-less SSH so that
+root on one compute host can log on to any other compute host
+without providing a password.
+The <code class="docutils literal"><span class="pre">libvirtd</span></code> daemon, which runs as root,
+uses the SSH protocol to copy the instance to the destination
+and can&#8217;t know the passwords of all compute hosts.</p>
+<p>You may, for example, compile root&#8217;s public SSH keys on all compute hosts
+into an <code class="docutils literal"><span class="pre">authorized_keys</span></code> file and deploy that file to the compute hosts.</p>
+</li>
+<li><p class="first">Configure the firewalls to allow libvirt to
+communicate between compute hosts.</p>
+<p>By default, libvirt uses the TCP
+port range from 49152 to 49261 for copying memory and disk contents.
+Compute hosts
+must accept connections in this range.</p>
+<p>For information about ports used by libvirt,
+see the <a class="reference external" href="http://libvirt.org/remote.html#Remote_libvirtd_configuration">libvirt documentation</a>.</p>
+<div class="admonition important">
+<p class="first admonition-title">Important</p>
+<p class="last">Be mindful
+of the security risks introduced by opening ports.</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="block-migration-volume-based-live-migration">
+<span id="configuring-migrations-kvm-block-and-volume-migration"></span><h3>Block migration, volume-based live migration<a class="headerlink" href="compute-configuring-migrations.html#block-migration-volume-based-live-migration" title="Permalink to this headline">¶</a></h3>
+<p>No additional configuration is required for block migration and volume-backed
+live migration.</p>
+<p>Be aware that block migration adds load to the network and storage subsystems.</p>
+</div>
+<div class="section" id="shared-storage">
+<span id="configuring-migrations-kvm-shared-storage"></span><h3>Shared storage<a class="headerlink" href="compute-configuring-migrations.html#shared-storage" title="Permalink to this headline">¶</a></h3>
+<p>Compute hosts have many options for sharing storage,
+for example NFS, shared disk array LUNs,
+Ceph or GlusterFS.</p>
+<p>The next steps show how a regular Linux system
+might be configured as an NFS v4 server for live migration.
+For detailed information and alternative ways to configure
+NFS on Linux, see instructions for
+<a class="reference external" href="https://help.ubuntu.com/community/SettingUpNFSHowTo">Ubuntu</a>,
+<a class="reference external" href="https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/Storage_Administration_Guide/nfs-serverconfig.html">RHEL and derivatives</a>
+or <a class="reference external" href="https://www.suse.com/documentation/sles-12/book_sle_admin/data/sec_nfs_configuring-nfs-server.html">SLES and OpenSUSE</a>.</p>
+<ol class="arabic">
+<li><p class="first">Ensure that UID and GID of the nova user
+are identical on the compute hosts and the NFS server.</p>
+</li>
+<li><p class="first">Create a directory
+with enough disk space for all
+instances in the cloud, owned by user nova. In this guide, we
+assume <code class="docutils literal"><span class="pre">/var/lib/nova/instances</span></code>.</p>
+</li>
+<li><p class="first">Set the execute/search bit on the <code class="docutils literal"><span class="pre">instances</span></code> directory:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> chmod o+x /var/lib/nova/instances
+</pre></div>
+</div>
+<p>This  allows qemu to access the <code class="docutils literal"><span class="pre">instances</span></code> directory tree.</p>
+</li>
+<li><p class="first">Export <code class="docutils literal"><span class="pre">/var/lib/nova/instances</span></code>
+to the compute hosts. For example, add the following line to
+<code class="docutils literal"><span class="pre">/etc/exports</span></code>:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">/var/lib/nova/instances *(rw,sync,fsid</span><span class="o">=</span><span class="s">0,no_root_squash)</span>
+</pre></div>
+</div>
+<p>The asterisk permits access to any NFS client. The option <code class="docutils literal"><span class="pre">fsid=0</span></code>
+exports the instances directory as the NFS root.</p>
+</li>
+</ol>
+<p>After setting up the NFS server, mount the remote filesystem
+on all compute hosts.</p>
+<ol class="arabic">
+<li><p class="first">Assuming the NFS server&#8217;s hostname is <code class="docutils literal"><span class="pre">nfs-server</span></code>,
+add this line to <code class="docutils literal"><span class="pre">/etc/fstab</span></code> to mount the NFS root:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">nfs-server:/ /var/lib/nova/instances nfs4 defaults 0 0</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Test NFS by mounting the instances directory and
+check access permissions for the nova user:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> sudo mount -a -v
+<span class="gp">$</span> ls -ld /var/lib/nova/instances/
+<span class="go">drwxr-xr-x. 2 nova nova 6 Mar 14 21:30 /var/lib/nova/instances/</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="advanced-configuration-for-kvm-and-qemu">
+<span id="configuring-migrations-kvm-advanced"></span><h3>Advanced configuration for KVM and QEMU<a class="headerlink" href="compute-configuring-migrations.html#advanced-configuration-for-kvm-and-qemu" title="Permalink to this headline">¶</a></h3>
+<p>Live migration copies the instance&#8217;s memory from the source to the
+destination compute host. After a memory page has been copied,
+the instance
+may write to it again, so that it has to be copied again.
+Instances that
+frequently write to different memory pages can overwhelm the
+memory copy
+process and prevent the live migration from completing.</p>
+<p>This section covers configuration settings that can help live
+migration
+of memory-intensive instances succeed.</p>
+<ol class="arabic">
+<li><p class="first"><strong>Live migration completion timeout</strong></p>
+<p>The Compute service aborts a migration when it has been running
+for too long.
+The timeout is calculated based on the instance size, which is the
+instance&#8217;s
+memory size in GiB. In the case of block migration, the size of
+ephemeral storage in GiB is added.</p>
+<p>The timeout in seconds is the instance size multiplied by the
+configurable parameter
+<code class="docutils literal"><span class="pre">live_migration_completion_timeout</span></code>, whose default is 800. For
+example,
+shared-storage live migration of an instance with 8GiB memory will
+time out after 6400 seconds.</p>
+</li>
+<li><p class="first"><strong>Live migration progress timeout</strong></p>
+<p>The Compute service also aborts a live migration when it detects that
+memory copy is not making progress for a certain time. You can set
+this time, in seconds,
+through the configurable parameter
+<code class="docutils literal"><span class="pre">live_migration_progress_timeout</span></code>.</p>
+<p>In Ocata,
+the default value of <code class="docutils literal"><span class="pre">live_migration_progress_timeout</span></code> is 0,
+which disables progress timeouts. You should not change
+this value, since the algorithm that detects memory copy progress
+has been determined to be unreliable. It may be re-enabled in
+future releases.</p>
+</li>
+<li><p class="first"><strong>Instance downtime</strong></p>
+<p>Near the end of the memory copy, the instance is paused for a
+short time
+so that the remaining few pages can be copied without
+interference from
+instance memory writes. The Compute service initializes this
+time to a small
+value that depends on the instance size, typically around 50
+milliseconds. When
+it notices that the memory copy does not make sufficient
+progress, it increases
+the time gradually.</p>
+<p>You can influence the instance downtime algorithm with the
+help of three
+configuration variables on the compute hosts:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">live_migration_downtime</span> <span class="o">=</span> <span class="s">500</span>
+<span class="na">live_migration_downtime_steps</span> <span class="o">=</span> <span class="s">10</span>
+<span class="na">live_migration_downtime_delay</span> <span class="o">=</span> <span class="s">75</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">live_migration_downtime</span></code> sets the maximum permitted
+downtime for a live migration, in <em>milliseconds</em>.
+The default is 500.</p>
+<p><code class="docutils literal"><span class="pre">live_migration_downtime_steps</span></code> sets the total number of
+adjustment steps until <code class="docutils literal"><span class="pre">live_migration_downtime</span></code> is reached.
+The default is 10 steps.</p>
+<p><code class="docutils literal"><span class="pre">live_migration_downtime_delay</span></code>
+sets the time interval between two
+adjustment steps in <em>seconds</em>. The default is 75.</p>
+</li>
+<li><p class="first"><strong>Auto-convergence</strong></p>
+<p>One strategy for a successful live migration of a
+memory-intensive instance
+is slowing the instance down. This is called auto-convergence.
+Both libvirt and QEMU implement this feature by automatically
+throttling the instance&#8217;s CPU when memory copy delays are detected.</p>
+<p>Auto-convergence is disabled by default.
+You can enable it by setting
+<code class="docutils literal"><span class="pre">live_migration_permit_auto_convergence=true</span></code>.</p>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p>Before enabling auto-convergence,
+make sure that the instance&#8217;s application
+tolerates a slow-down.</p>
+<p class="last">Be aware that auto-convergence does not
+guarantee live migration success.</p>
+</div>
+</li>
+<li><p class="first"><strong>Post-copy</strong></p>
+<p>Live migration of a memory-intensive instance is certain to
+succeed
+when you
+enable post-copy. This feature, implemented by libvirt and
+QEMU, activates the
+virtual machine on the destination host before all of its
+memory has been copied.
+When the virtual machine accesses a page that is missing on
+the destination host,
+the resulting page fault is resolved by copying the page from
+the source host.</p>
+<p>Post-copy is disabled by default. You can enable it by setting
+<code class="docutils literal"><span class="pre">live_migration_permit_post_copy=true</span></code>.</p>
+<p>When you enable both auto-convergence and post-copy,
+auto-convergence remains
+disabled.</p>
+<div class="admonition caution">
+<p class="first admonition-title">Caution</p>
+<p>The page faults introduced by post-copy can slow the
+instance down.</p>
+<p class="last">When the network connection between source and destination
+host is
+interrupted, page faults cannot be resolved anymore and the
+instance
+is rebooted.</p>
+</div>
+</li>
+</ol>
+<p>The full list of live migration configuration parameters is documented
+in the <a class="reference external" href="../config-reference/compute/config-options.html#id24">OpenStack Configuration Reference Guide</a></p>
+</div>
+</div>
+<div class="section" id="xenserver">
+<span id="configuring-migrations-xenserver"></span><h2>XenServer<a class="headerlink" href="compute-configuring-migrations.html#xenserver" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="configuring-migrations-xenserver-shared-storage">
+<span id="id1"></span><h3>Shared storage<a class="headerlink" href="compute-configuring-migrations.html#configuring-migrations-xenserver-shared-storage" title="Permalink to this headline">¶</a></h3>
+<p><strong>Prerequisites</strong></p>
+<ul>
+<li><p class="first"><strong>Compatible XenServer hypervisors</strong>. For more information, see the
+<a class="reference external" href="http://docs.vmd.citrix.com/XenServer/6.0.0/1.0/en_gb/reference.html#pooling_homogeneity_requirements">Requirements for Creating Resource Pools</a> section of the XenServer
+Administrator&#8217;s Guide.</p>
+</li>
+<li><p class="first"><strong>Shared storage</strong>. An NFS export, visible to all XenServer hosts.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For the supported NFS versions, see the
+<a class="reference external" href="http://docs.vmd.citrix.com/XenServer/6.0.0/1.0/en_gb/reference.html#id1002701">NFS VHD</a>
+section of the XenServer Administrator&#8217;s Guide.</p>
+</div>
+</li>
+</ul>
+<p>To use shared storage live migration with XenServer hypervisors, the
+hosts must be joined to a XenServer pool. To create that pool, a host
+aggregate must be created with specific metadata. This metadata is used
+by the XAPI plug-ins to establish the pool.</p>
+<p><strong>Using shared storage live migrations with XenServer Hypervisors</strong></p>
+<ol class="arabic">
+<li><p class="first">Add an NFS VHD storage to your master XenServer, and set it as the
+default storage repository. For more information, see NFS VHD in the
+XenServer Administrator&#8217;s Guide.</p>
+</li>
+<li><p class="first">Configure all compute nodes to use the default storage repository
+(<code class="docutils literal"><span class="pre">sr</span></code>) for pool operations. Add this line to your <code class="docutils literal"><span class="pre">nova.conf</span></code>
+configuration files on all compute nodes:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">sr_matching_filter</span><span class="o">=</span><span class="s">default-sr:true</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Create a host aggregate. This command creates the aggregate, and then
+displays a table that contains the ID of the new aggregate</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack aggregate create --zone AVAILABILITY_ZONE POOL_NAME
+</pre></div>
+</div>
+<p>Add metadata to the aggregate, to mark it as a hypervisor pool</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack aggregate <span class="nb">set</span> --property <span class="nv">hypervisor_pool</span><span class="o">=</span><span class="nb">true</span> AGGREGATE_ID
+
+<span class="gp">$</span> openstack aggregate <span class="nb">set</span> --property <span class="nv">operational_state</span><span class="o">=</span>created AGGREGATE_ID
+</pre></div>
+</div>
+<p>Make the first compute node part of that aggregate</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack aggregate add host AGGREGATE_ID MASTER_COMPUTE_NAME
+</pre></div>
+</div>
+<p>The host is now part of a XenServer pool.</p>
+</li>
+<li><p class="first">Add hosts to the pool</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack aggregate add host AGGREGATE_ID COMPUTE_HOST_NAME
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The added compute node and the host will shut down to join the host
+to the XenServer pool. The operation will fail if any server other
+than the compute node is running or suspended on the host.</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="block-migration">
+<span id="configuring-migrations-xenserver-block-migration"></span><h3>Block migration<a class="headerlink" href="compute-configuring-migrations.html#block-migration" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first"><strong>Compatible XenServer hypervisors</strong>.
+The hypervisors must support the Storage XenMotion feature.
+See your XenServer manual to make sure your edition
+has this feature.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>To use block migration, you must use the <code class="docutils literal"><span class="pre">--block-migrate</span></code>
+parameter with the live migration command.</li>
+<li>Block migration works only with EXT local storage storage
+repositories, and the server must not have any volumes attached.</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="compute-root-wrap-reference.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Secure with rootwrap"></i></a>
+          
+          
+            <a href="compute-live-migration-usage.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Migrate instances"></i></a>
+          
+            <a id="logABugLink3" href="compute-configuring-migrations.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:38</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="compute-configuring-migrations.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="common/conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common/get-started-with-openstack.html">Get started with OpenStack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="identity-management.html">Identity management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dashboard.html">Dashboard</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="compute.html">Compute</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="compute-arch.html">System architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compute-images-instances.html">Images and instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compute-networking-nova.html">Networking with nova-network</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="compute-system-admin.html">System administration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="support-compute.html">Troubleshoot Compute</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="objectstorage.html">Object Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blockstorage.html">Block Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="shared-file-systems.html">Shared File Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networking.html">Networking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="telemetry.html">Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="baremetal.html">Bare Metal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="orchestration.html">Orchestration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">OpenStack command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cross-project.html">Cross-project features</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="firewalls-default-ports.html">Firewalls and default ports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common/app-support.html">Community support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="common/glossary.html">Glossary</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "compute-configuring-migrations" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/admin-guide/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "Configure live migrations in Administrator Guide";
+    var fieldTags = "admin-guide";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:38";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

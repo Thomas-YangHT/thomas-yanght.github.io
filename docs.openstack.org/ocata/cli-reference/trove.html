@@ -1,0 +1,2716 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: Database service (trove) command-line client</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>Database service (trove) command-line client</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="database.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Database service (trove) command-line clients"></i></a>
+    
+    
+    <a href="trove-manage.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: trove-manage command-line client"></i></a>
+    
+    <a id="logABugLink1" href="trove.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="trove.html#">Database service (trove) command-line client</a><ul>
+<li><a class="reference internal" href="trove.html#trove-usage">trove usage</a></li>
+<li><a class="reference internal" href="trove.html#trove-optional-arguments">trove optional arguments</a><ul>
+<li><a class="reference internal" href="trove.html#trove-backup-copy">trove backup-copy</a></li>
+<li><a class="reference internal" href="trove.html#trove-backup-create">trove backup-create</a></li>
+<li><a class="reference internal" href="trove.html#trove-backup-delete">trove backup-delete</a></li>
+<li><a class="reference internal" href="trove.html#trove-backup-list">trove backup-list</a></li>
+<li><a class="reference internal" href="trove.html#trove-backup-list-instance">trove backup-list-instance</a></li>
+<li><a class="reference internal" href="trove.html#trove-backup-show">trove backup-show</a></li>
+<li><a class="reference internal" href="trove.html#trove-cluster-create">trove cluster-create</a></li>
+<li><a class="reference internal" href="trove.html#trove-cluster-delete">trove cluster-delete</a></li>
+<li><a class="reference internal" href="trove.html#trove-cluster-force-delete">trove cluster-force-delete</a></li>
+<li><a class="reference internal" href="trove.html#trove-cluster-grow">trove cluster-grow</a></li>
+<li><a class="reference internal" href="trove.html#trove-cluster-instances">trove cluster-instances</a></li>
+<li><a class="reference internal" href="trove.html#trove-cluster-list">trove cluster-list</a></li>
+<li><a class="reference internal" href="trove.html#trove-cluster-modules">trove cluster-modules</a></li>
+<li><a class="reference internal" href="trove.html#trove-cluster-reset-status">trove cluster-reset-status</a></li>
+<li><a class="reference internal" href="trove.html#trove-cluster-show">trove cluster-show</a></li>
+<li><a class="reference internal" href="trove.html#trove-cluster-shrink">trove cluster-shrink</a></li>
+<li><a class="reference internal" href="trove.html#trove-cluster-upgrade">trove cluster-upgrade</a></li>
+<li><a class="reference internal" href="trove.html#trove-configuration-attach">trove configuration-attach</a></li>
+<li><a class="reference internal" href="trove.html#trove-configuration-create">trove configuration-create</a></li>
+<li><a class="reference internal" href="trove.html#trove-configuration-default">trove configuration-default</a></li>
+<li><a class="reference internal" href="trove.html#trove-configuration-delete">trove configuration-delete</a></li>
+<li><a class="reference internal" href="trove.html#trove-configuration-detach">trove configuration-detach</a></li>
+<li><a class="reference internal" href="trove.html#trove-configuration-instances">trove configuration-instances</a></li>
+<li><a class="reference internal" href="trove.html#trove-configuration-list">trove configuration-list</a></li>
+<li><a class="reference internal" href="trove.html#trove-configuration-parameter-list">trove configuration-parameter-list</a></li>
+<li><a class="reference internal" href="trove.html#trove-configuration-parameter-show">trove configuration-parameter-show</a></li>
+<li><a class="reference internal" href="trove.html#trove-configuration-patch">trove configuration-patch</a></li>
+<li><a class="reference internal" href="trove.html#trove-configuration-show">trove configuration-show</a></li>
+<li><a class="reference internal" href="trove.html#trove-configuration-update">trove configuration-update</a></li>
+<li><a class="reference internal" href="trove.html#trove-create">trove create</a></li>
+<li><a class="reference internal" href="trove.html#trove-database-create">trove database-create</a></li>
+<li><a class="reference internal" href="trove.html#trove-database-delete">trove database-delete</a></li>
+<li><a class="reference internal" href="trove.html#trove-database-list">trove database-list</a></li>
+<li><a class="reference internal" href="trove.html#trove-datastore-list">trove datastore-list</a></li>
+<li><a class="reference internal" href="trove.html#trove-datastore-show">trove datastore-show</a></li>
+<li><a class="reference internal" href="trove.html#trove-datastore-version-list">trove datastore-version-list</a></li>
+<li><a class="reference internal" href="trove.html#trove-datastore-version-show">trove datastore-version-show</a></li>
+<li><a class="reference internal" href="trove.html#trove-delete">trove delete</a></li>
+<li><a class="reference internal" href="trove.html#trove-detach-replica">trove detach-replica</a></li>
+<li><a class="reference internal" href="trove.html#trove-eject-replica-source">trove eject-replica-source</a></li>
+<li><a class="reference internal" href="trove.html#trove-execution-delete">trove execution-delete</a></li>
+<li><a class="reference internal" href="trove.html#trove-execution-list">trove execution-list</a></li>
+<li><a class="reference internal" href="trove.html#trove-flavor-list">trove flavor-list</a></li>
+<li><a class="reference internal" href="trove.html#trove-flavor-show">trove flavor-show</a></li>
+<li><a class="reference internal" href="trove.html#trove-force-delete">trove force-delete</a></li>
+<li><a class="reference internal" href="trove.html#trove-limit-list">trove limit-list</a></li>
+<li><a class="reference internal" href="trove.html#trove-list">trove list</a></li>
+<li><a class="reference internal" href="trove.html#trove-log-disable">trove log-disable</a></li>
+<li><a class="reference internal" href="trove.html#trove-log-discard">trove log-discard</a></li>
+<li><a class="reference internal" href="trove.html#trove-log-enable">trove log-enable</a></li>
+<li><a class="reference internal" href="trove.html#trove-log-list">trove log-list</a></li>
+<li><a class="reference internal" href="trove.html#trove-log-publish">trove log-publish</a></li>
+<li><a class="reference internal" href="trove.html#trove-log-save">trove log-save</a></li>
+<li><a class="reference internal" href="trove.html#trove-log-show">trove log-show</a></li>
+<li><a class="reference internal" href="trove.html#trove-log-tail">trove log-tail</a></li>
+<li><a class="reference internal" href="trove.html#trove-metadata-create">trove metadata-create</a></li>
+<li><a class="reference internal" href="trove.html#trove-metadata-delete">trove metadata-delete</a></li>
+<li><a class="reference internal" href="trove.html#trove-metadata-edit">trove metadata-edit</a></li>
+<li><a class="reference internal" href="trove.html#trove-metadata-list">trove metadata-list</a></li>
+<li><a class="reference internal" href="trove.html#trove-metadata-show">trove metadata-show</a></li>
+<li><a class="reference internal" href="trove.html#trove-metadata-update">trove metadata-update</a></li>
+<li><a class="reference internal" href="trove.html#trove-module-apply">trove module-apply</a></li>
+<li><a class="reference internal" href="trove.html#trove-module-create">trove module-create</a></li>
+<li><a class="reference internal" href="trove.html#trove-module-delete">trove module-delete</a></li>
+<li><a class="reference internal" href="trove.html#trove-module-instance-count">trove module-instance-count</a></li>
+<li><a class="reference internal" href="trove.html#trove-module-instances">trove module-instances</a></li>
+<li><a class="reference internal" href="trove.html#trove-module-list">trove module-list</a></li>
+<li><a class="reference internal" href="trove.html#trove-module-list-instance">trove module-list-instance</a></li>
+<li><a class="reference internal" href="trove.html#trove-module-query">trove module-query</a></li>
+<li><a class="reference internal" href="trove.html#trove-module-reapply">trove module-reapply</a></li>
+<li><a class="reference internal" href="trove.html#trove-module-remove">trove module-remove</a></li>
+<li><a class="reference internal" href="trove.html#trove-module-retrieve">trove module-retrieve</a></li>
+<li><a class="reference internal" href="trove.html#trove-module-show">trove module-show</a></li>
+<li><a class="reference internal" href="trove.html#trove-module-update">trove module-update</a></li>
+<li><a class="reference internal" href="trove.html#trove-promote-to-replica-source">trove promote-to-replica-source</a></li>
+<li><a class="reference internal" href="trove.html#trove-quota-show">trove quota-show</a></li>
+<li><a class="reference internal" href="trove.html#trove-quota-update">trove quota-update</a></li>
+<li><a class="reference internal" href="trove.html#trove-reset-status">trove reset-status</a></li>
+<li><a class="reference internal" href="trove.html#trove-resize-instance">trove resize-instance</a></li>
+<li><a class="reference internal" href="trove.html#trove-resize-volume">trove resize-volume</a></li>
+<li><a class="reference internal" href="trove.html#trove-restart">trove restart</a></li>
+<li><a class="reference internal" href="trove.html#trove-root-disable">trove root-disable</a></li>
+<li><a class="reference internal" href="trove.html#trove-root-enable">trove root-enable</a></li>
+<li><a class="reference internal" href="trove.html#trove-root-show">trove root-show</a></li>
+<li><a class="reference internal" href="trove.html#trove-schedule-create">trove schedule-create</a></li>
+<li><a class="reference internal" href="trove.html#trove-schedule-delete">trove schedule-delete</a></li>
+<li><a class="reference internal" href="trove.html#trove-schedule-list">trove schedule-list</a></li>
+<li><a class="reference internal" href="trove.html#trove-schedule-show">trove schedule-show</a></li>
+<li><a class="reference internal" href="trove.html#trove-secgroup-add-rule">trove secgroup-add-rule</a></li>
+<li><a class="reference internal" href="trove.html#trove-secgroup-delete-rule">trove secgroup-delete-rule</a></li>
+<li><a class="reference internal" href="trove.html#trove-secgroup-list">trove secgroup-list</a></li>
+<li><a class="reference internal" href="trove.html#trove-secgroup-list-rules">trove secgroup-list-rules</a></li>
+<li><a class="reference internal" href="trove.html#trove-secgroup-show">trove secgroup-show</a></li>
+<li><a class="reference internal" href="trove.html#trove-show">trove show</a></li>
+<li><a class="reference internal" href="trove.html#trove-update">trove update</a></li>
+<li><a class="reference internal" href="trove.html#trove-upgrade">trove upgrade</a></li>
+<li><a class="reference internal" href="trove.html#trove-user-create">trove user-create</a></li>
+<li><a class="reference internal" href="trove.html#trove-user-delete">trove user-delete</a></li>
+<li><a class="reference internal" href="trove.html#trove-user-grant-access">trove user-grant-access</a></li>
+<li><a class="reference internal" href="trove.html#trove-user-list">trove user-list</a></li>
+<li><a class="reference internal" href="trove.html#trove-user-revoke-access">trove user-revoke-access</a></li>
+<li><a class="reference internal" href="trove.html#trove-user-show">trove user-show</a></li>
+<li><a class="reference internal" href="trove.html#trove-user-show-access">trove user-show-access</a></li>
+<li><a class="reference internal" href="trove.html#trove-user-update-attributes">trove user-update-attributes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="database-service-trove-command-line-client">
+<h1>Database service (trove) command-line client<a class="headerlink" href="trove.html#database-service-trove-command-line-client" title="Permalink to this headline">¶</a></h1>
+<p>The trove client is the command-line interface (CLI) for
+the Database service (trove) API and its extensions.</p>
+<p>This chapter documents <strong class="command">trove</strong> version <code class="docutils literal"><span class="pre">2.8.0</span></code>.</p>
+<p>For help on a specific <strong class="command">trove</strong> command, enter:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> trove <span class="nb">help</span> COMMAND
+</pre></div>
+</div>
+<div class="section" id="trove-usage">
+<span id="trove-command-usage"></span><h2>trove usage<a class="headerlink" href="trove.html#trove-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove [--version] [--debug] [--service-type &lt;service-type&gt;]</span>
+<span class="go">             [--service-name &lt;service-name&gt;] [--bypass-url &lt;bypass-url&gt;]</span>
+<span class="go">             [--database-service-name &lt;database-service-name&gt;]</span>
+<span class="go">             [--endpoint-type &lt;endpoint-type&gt;]</span>
+<span class="go">             [--os-database-api-version &lt;database-api-ver&gt;]</span>
+<span class="go">             [--retries &lt;retries&gt;] [--json] [--profile HMAC_KEY] [--insecure]</span>
+<span class="go">             [--os-cacert &lt;ca-certificate&gt;] [--os-cert &lt;certificate&gt;]</span>
+<span class="go">             [--os-key &lt;key&gt;] [--timeout &lt;seconds&gt;] [--os-auth-type &lt;name&gt;]</span>
+<span class="go">             [--os-auth-url OS_AUTH_URL] [--os-domain-id OS_DOMAIN_ID]</span>
+<span class="go">             [--os-domain-name OS_DOMAIN_NAME] [--os-project-id OS_PROJECT_ID]</span>
+<span class="go">             [--os-project-name OS_PROJECT_NAME]</span>
+<span class="go">             [--os-project-domain-id OS_PROJECT_DOMAIN_ID]</span>
+<span class="go">             [--os-project-domain-name OS_PROJECT_DOMAIN_NAME]</span>
+<span class="go">             [--os-trust-id OS_TRUST_ID]</span>
+<span class="go">             [--os-default-domain-id OS_DEFAULT_DOMAIN_ID]</span>
+<span class="go">             [--os-default-domain-name OS_DEFAULT_DOMAIN_NAME]</span>
+<span class="go">             [--os-user-id OS_USER_ID] [--os-username OS_USERNAME]</span>
+<span class="go">             [--os-user-domain-id OS_USER_DOMAIN_ID]</span>
+<span class="go">             [--os-user-domain-name OS_USER_DOMAIN_NAME]</span>
+<span class="go">             [--os-password OS_PASSWORD] [--os-region-name &lt;region-name&gt;]</span>
+<span class="go">             &lt;subcommand&gt; ...</span>
+</pre></div>
+</div>
+<p><strong>Subcommands:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">backup-copy</span></code></dt>
+<dd>Creates a backup from another backup.</dd>
+<dt><code class="docutils literal"><span class="pre">backup-create</span></code></dt>
+<dd>Creates a backup of an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">backup-delete</span></code></dt>
+<dd>Deletes a backup.</dd>
+<dt><code class="docutils literal"><span class="pre">backup-list</span></code></dt>
+<dd>Lists available backups.</dd>
+<dt><code class="docutils literal"><span class="pre">backup-list-instance</span></code></dt>
+<dd>Lists available backups for an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">backup-show</span></code></dt>
+<dd>Shows details of a backup.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-create</span></code></dt>
+<dd>Creates a new cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-delete</span></code></dt>
+<dd>Deletes a cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-force-delete</span></code></dt>
+<dd>Force delete a cluster</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-grow</span></code></dt>
+<dd>Adds more instances to a cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-instances</span></code></dt>
+<dd>Lists all instances of a cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-list</span></code></dt>
+<dd>Lists all the clusters.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-modules</span></code></dt>
+<dd>Lists all modules for each instance of a
+cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-reset-status</span></code></dt>
+<dd>Set the cluster task to NONE.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-show</span></code></dt>
+<dd>Shows details of a cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-shrink</span></code></dt>
+<dd>Drops instances from a cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-upgrade</span></code></dt>
+<dd>Upgrades a cluster to a new datastore
+version.</dd>
+<dt><code class="docutils literal"><span class="pre">configuration-attach</span></code></dt>
+<dd>Attaches a configuration group to an
+instance.</dd>
+<dt><code class="docutils literal"><span class="pre">configuration-create</span></code></dt>
+<dd>Creates a configuration group.</dd>
+<dt><code class="docutils literal"><span class="pre">configuration-default</span></code></dt>
+<dd>Shows the default configuration of an
+instance.</dd>
+<dt><code class="docutils literal"><span class="pre">configuration-delete</span></code></dt>
+<dd>Deletes a configuration group.</dd>
+<dt><code class="docutils literal"><span class="pre">configuration-detach</span></code></dt>
+<dd>Detaches a configuration group from an
+instance.</dd>
+<dt><code class="docutils literal"><span class="pre">configuration-instances</span></code></dt>
+<dd>Lists all instances associated with a
+configuration group.</dd>
+<dt><code class="docutils literal"><span class="pre">configuration-list</span></code></dt>
+<dd>Lists all configuration groups.</dd>
+<dt><code class="docutils literal"><span class="pre">configuration-parameter-list</span></code></dt>
+<dd>Lists available parameters for a
+configuration group.</dd>
+<dt><code class="docutils literal"><span class="pre">configuration-parameter-show</span></code></dt>
+<dd>Shows details of a configuration parameter.</dd>
+<dt><code class="docutils literal"><span class="pre">configuration-patch</span></code></dt>
+<dd>Patches a configuration group.</dd>
+<dt><code class="docutils literal"><span class="pre">configuration-show</span></code></dt>
+<dd>Shows details of a configuration group.</dd>
+<dt><code class="docutils literal"><span class="pre">configuration-update</span></code></dt>
+<dd>Updates a configuration group.</dd>
+<dt><code class="docutils literal"><span class="pre">create</span></code></dt>
+<dd>Creates a new instance.</dd>
+<dt><code class="docutils literal"><span class="pre">database-create</span></code></dt>
+<dd>Creates a database on an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">database-delete</span></code></dt>
+<dd>Deletes a database from an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">database-list</span></code></dt>
+<dd>Lists available databases on an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">datastore-list</span></code></dt>
+<dd>Lists available datastores.</dd>
+<dt><code class="docutils literal"><span class="pre">datastore-show</span></code></dt>
+<dd>Shows details of a datastore.</dd>
+<dt><code class="docutils literal"><span class="pre">datastore-version-list</span></code></dt>
+<dd>Lists available versions for a datastore.</dd>
+<dt><code class="docutils literal"><span class="pre">datastore-version-show</span></code></dt>
+<dd>Shows details of a datastore version.</dd>
+<dt><code class="docutils literal"><span class="pre">delete</span></code></dt>
+<dd>Deletes an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">detach-replica</span></code></dt>
+<dd>Detaches a replica instance from its
+replication source.</dd>
+<dt><code class="docutils literal"><span class="pre">eject-replica-source</span></code></dt>
+<dd>Ejects a replica source from its set.</dd>
+<dt><code class="docutils literal"><span class="pre">execution-delete</span></code></dt>
+<dd>Deletes an execution.</dd>
+<dt><code class="docutils literal"><span class="pre">execution-list</span></code></dt>
+<dd>Lists executions of a scheduled backup of an
+instance.</dd>
+<dt><code class="docutils literal"><span class="pre">flavor-list</span></code></dt>
+<dd>Lists available flavors.</dd>
+<dt><code class="docutils literal"><span class="pre">flavor-show</span></code></dt>
+<dd>Shows details of a flavor.</dd>
+<dt><code class="docutils literal"><span class="pre">force-delete</span></code></dt>
+<dd>Force delete an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">limit-list</span></code></dt>
+<dd>Lists the limits for a tenant.</dd>
+<dt><code class="docutils literal"><span class="pre">list</span></code></dt>
+<dd>Lists all the instances.</dd>
+<dt><code class="docutils literal"><span class="pre">log-disable</span></code></dt>
+<dd>Instructs Trove guest to stop collecting log
+details.</dd>
+<dt><code class="docutils literal"><span class="pre">log-discard</span></code></dt>
+<dd>Instructs Trove guest to discard the
+container of the published log.</dd>
+<dt><code class="docutils literal"><span class="pre">log-enable</span></code></dt>
+<dd>Instructs Trove guest to start collecting
+log details.</dd>
+<dt><code class="docutils literal"><span class="pre">log-list</span></code></dt>
+<dd>Lists the log files available for instance.</dd>
+<dt><code class="docutils literal"><span class="pre">log-publish</span></code></dt>
+<dd>Instructs Trove guest to publish latest log
+entries on instance.</dd>
+<dt><code class="docutils literal"><span class="pre">log-save</span></code></dt>
+<dd>Save log file for instance.</dd>
+<dt><code class="docutils literal"><span class="pre">log-show</span></code></dt>
+<dd>Instructs Trove guest to show details of
+log.</dd>
+<dt><code class="docutils literal"><span class="pre">log-tail</span></code></dt>
+<dd>Display log entries for instance.</dd>
+<dt><code class="docutils literal"><span class="pre">metadata-create</span></code></dt>
+<dd>Creates metadata in the database for
+instance &lt;id&gt;.</dd>
+<dt><code class="docutils literal"><span class="pre">metadata-delete</span></code></dt>
+<dd>Deletes metadata for instance &lt;id&gt;.</dd>
+<dt><code class="docutils literal"><span class="pre">metadata-edit</span></code></dt>
+<dd>Replaces metadata value with a new one, this
+is non-destructive.</dd>
+<dt><code class="docutils literal"><span class="pre">metadata-list</span></code></dt>
+<dd>Shows all metadata for instance &lt;id&gt;.</dd>
+<dt><code class="docutils literal"><span class="pre">metadata-show</span></code></dt>
+<dd>Shows metadata entry for key &lt;key&gt; and
+instance &lt;id&gt;.</dd>
+<dt><code class="docutils literal"><span class="pre">metadata-update</span></code></dt>
+<dd>Updates metadata, this is destructive.</dd>
+<dt><code class="docutils literal"><span class="pre">module-apply</span></code></dt>
+<dd>Apply modules to an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">module-create</span></code></dt>
+<dd>Create a module.</dd>
+<dt><code class="docutils literal"><span class="pre">module-delete</span></code></dt>
+<dd>Delete a module.</dd>
+<dt><code class="docutils literal"><span class="pre">module-instance-count</span></code></dt>
+<dd>Lists a count of the instances for each
+module md5.</dd>
+<dt><code class="docutils literal"><span class="pre">module-instances</span></code></dt>
+<dd>Lists the instances that have a particular
+module applied.</dd>
+<dt><code class="docutils literal"><span class="pre">module-list</span></code></dt>
+<dd>Lists the modules available.</dd>
+<dt><code class="docutils literal"><span class="pre">module-list-instance</span></code></dt>
+<dd>Lists the modules that have been applied to
+an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">module-query</span></code></dt>
+<dd>Query the status of the modules on an
+instance.</dd>
+<dt><code class="docutils literal"><span class="pre">module-reapply</span></code></dt>
+<dd>Reapply a module.</dd>
+<dt><code class="docutils literal"><span class="pre">module-remove</span></code></dt>
+<dd>Remove a module from an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">module-retrieve</span></code></dt>
+<dd>Retrieve module contents from an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">module-show</span></code></dt>
+<dd>Shows details of a module.</dd>
+<dt><code class="docutils literal"><span class="pre">module-update</span></code></dt>
+<dd>Update a module.</dd>
+<dt><code class="docutils literal"><span class="pre">promote-to-replica-source</span></code></dt>
+<dd>Promotes a replica to be the new replica
+source of its set.</dd>
+<dt><code class="docutils literal"><span class="pre">quota-show</span></code></dt>
+<dd>Show quotas for a tenant.</dd>
+<dt><code class="docutils literal"><span class="pre">quota-update</span></code></dt>
+<dd>Update quotas for a tenant.</dd>
+<dt><code class="docutils literal"><span class="pre">reset-status</span></code></dt>
+<dd>Set the status to NONE.</dd>
+<dt><code class="docutils literal"><span class="pre">resize-instance</span></code></dt>
+<dd>Resizes an instance with a new flavor.</dd>
+<dt><code class="docutils literal"><span class="pre">resize-volume</span></code></dt>
+<dd>Resizes the volume size of an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">restart</span></code></dt>
+<dd>Restarts an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">root-disable</span></code></dt>
+<dd>Disables root for an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">root-enable</span></code></dt>
+<dd>Enables root for an instance and resets if
+already exists.</dd>
+<dt><code class="docutils literal"><span class="pre">root-show</span></code></dt>
+<dd>Gets status if root was ever enabled for an
+instance or cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">schedule-create</span></code></dt>
+<dd>Schedules backups for an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">schedule-delete</span></code></dt>
+<dd>Deletes a schedule.</dd>
+<dt><code class="docutils literal"><span class="pre">schedule-list</span></code></dt>
+<dd>Lists scheduled backups for an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">schedule-show</span></code></dt>
+<dd>Shows details of a schedule.</dd>
+<dt><code class="docutils literal"><span class="pre">secgroup-add-rule</span></code></dt>
+<dd>Creates a security group rule.</dd>
+<dt><code class="docutils literal"><span class="pre">secgroup-delete-rule</span></code></dt>
+<dd>Deletes a security group rule.</dd>
+<dt><code class="docutils literal"><span class="pre">secgroup-list</span></code></dt>
+<dd>Lists all security groups.</dd>
+<dt><code class="docutils literal"><span class="pre">secgroup-list-rules</span></code></dt>
+<dd>Lists all rules for a security group.</dd>
+<dt><code class="docutils literal"><span class="pre">secgroup-show</span></code></dt>
+<dd>Shows details of a security group.</dd>
+<dt><code class="docutils literal"><span class="pre">show</span></code></dt>
+<dd>Shows details of an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">update</span></code></dt>
+<dd>Updates an instance: Edits name,
+configuration, or replica source.</dd>
+<dt><code class="docutils literal"><span class="pre">upgrade</span></code></dt>
+<dd>Upgrades an instance to a new datastore
+version.</dd>
+<dt><code class="docutils literal"><span class="pre">user-create</span></code></dt>
+<dd>Creates a user on an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">user-delete</span></code></dt>
+<dd>Deletes a user from an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">user-grant-access</span></code></dt>
+<dd>Grants access to a database(s) for a user.</dd>
+<dt><code class="docutils literal"><span class="pre">user-list</span></code></dt>
+<dd>Lists the users for an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">user-revoke-access</span></code></dt>
+<dd>Revokes access to a database for a user.</dd>
+<dt><code class="docutils literal"><span class="pre">user-show</span></code></dt>
+<dd>Shows details of a user of an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">user-show-access</span></code></dt>
+<dd>Shows access details of a user of an
+instance.</dd>
+<dt><code class="docutils literal"><span class="pre">user-update-attributes</span></code></dt>
+<dd>Updates a user's attributes on an instance.</dd>
+<dt><code class="docutils literal"><span class="pre">bash-completion</span></code></dt>
+<dd>Prints arguments for bash_completion.</dd>
+<dt><code class="docutils literal"><span class="pre">help</span></code></dt>
+<dd>Displays help about this program or one of
+its subcommands.</dd>
+</dl>
+</div>
+<div class="section" id="trove-optional-arguments">
+<span id="trove-command-options"></span><h2>trove optional arguments<a class="headerlink" href="trove.html#trove-optional-arguments" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--version</span></code></dt>
+<dd>Show program's version number and exit.</dd>
+<dt><code class="docutils literal"><span class="pre">--debug</span></code></dt>
+<dd>Print debugging output.</dd>
+<dt><code class="docutils literal"><span class="pre">--service-type</span> <span class="pre">&lt;service-type&gt;</span></code></dt>
+<dd>Defaults to database for most actions.</dd>
+<dt><code class="docutils literal"><span class="pre">--service-name</span> <span class="pre">&lt;service-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[TROVE_SERVICE_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--bypass-url</span> <span class="pre">&lt;bypass-url&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[TROVE_BYPASS_URL]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--database-service-name</span> <span class="pre">&lt;database-service-name&gt;</span></code></dt>
+<dd>Defaults to
+<code class="docutils literal"><span class="pre">env[TROVE_DATABASE_SERVICE_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--endpoint-type</span> <span class="pre">&lt;endpoint-type&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[TROVE_ENDPOINT_TYPE]</span></code> or
+<code class="docutils literal"><span class="pre">env[OS_ENDPOINT_TYPE]</span></code> or publicURL.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-database-api-version</span> <span class="pre">&lt;database-api-ver&gt;</span></code></dt>
+<dd>Accepts 1, defaults to
+<code class="docutils literal"><span class="pre">env[OS_DATABASE_API_VERSION]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--retries</span> <span class="pre">&lt;retries&gt;</span></code></dt>
+<dd>Number of retries.</dd>
+<dt><code class="docutils literal"><span class="pre">--json,</span> <span class="pre">--os-json-output</span></code></dt>
+<dd>Output JSON instead of prettyprint. Defaults
+to <code class="docutils literal"><span class="pre">env[OS_JSON_OUTPUT]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--profile</span> <span class="pre">HMAC_KEY</span></code></dt>
+<dd>HMAC key used to encrypt context data when
+profiling the performance of an operation.
+This key should be set to one of the HMAC
+keys configured in Trove (they are found in
+api-paste.ini, typically in /etc/trove).
+Without the key, profiling will not be
+triggered even if it is enabled on the
+server side. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_PROFILE_HMACKEY]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-type</span> <span class="pre">&lt;name&gt;,</span> <span class="pre">--os-auth-plugin</span> <span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Authentication type to use</dd>
+<dt><code class="docutils literal"><span class="pre">--os-region-name</span> <span class="pre">&lt;region-name&gt;</span></code></dt>
+<dd>Specify the region to use. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_REGION_NAME]</span></code>.</dd>
+</dl>
+<div class="section" id="trove-backup-copy">
+<span id="id1"></span><h3>trove backup-copy<a class="headerlink" href="trove.html#trove-backup-copy" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove backup-copy [--description &lt;description&gt;] &lt;name&gt; &lt;backup&gt;</span>
+</pre></div>
+</div>
+<p>Creates a backup from another backup.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name of the backup.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;backup&gt;</span></code></dt>
+<dd>Backup ID of the source backup.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;description&gt;</span></code></dt>
+<dd>An optional description for the backup.</dd>
+</dl>
+</div>
+<div class="section" id="trove-backup-create">
+<span id="id2"></span><h3>trove backup-create<a class="headerlink" href="trove.html#trove-backup-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove backup-create &lt;instance&gt; &lt;name&gt;</span>
+<span class="go">                           [--description &lt;description&gt;] [--parent &lt;parent&gt;]</span>
+<span class="go">                           [--incremental]</span>
+</pre></div>
+</div>
+<p>Creates a backup of an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name of the backup.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;description&gt;</span></code></dt>
+<dd>An optional description for the backup.</dd>
+<dt><code class="docutils literal"><span class="pre">--parent</span> <span class="pre">&lt;parent&gt;</span></code></dt>
+<dd>Optional ID of the parent backup to perform an
+incremental backup from.</dd>
+<dt><code class="docutils literal"><span class="pre">--incremental</span></code></dt>
+<dd>Create an incremental backup based on the last
+full or incremental backup. It will create a
+full backup if no existing backup found.</dd>
+</dl>
+</div>
+<div class="section" id="trove-backup-delete">
+<span id="id3"></span><h3>trove backup-delete<a class="headerlink" href="trove.html#trove-backup-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove backup-delete &lt;backup&gt;</span>
+</pre></div>
+</div>
+<p>Deletes a backup.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;backup&gt;</span></code></dt>
+<dd>ID or name of the backup.</dd>
+</dl>
+</div>
+<div class="section" id="trove-backup-list">
+<span id="id4"></span><h3>trove backup-list<a class="headerlink" href="trove.html#trove-backup-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove backup-list [--limit &lt;limit&gt;] [--marker &lt;ID&gt;]</span>
+<span class="go">                         [--datastore &lt;datastore&gt;]</span>
+</pre></div>
+</div>
+<p>Lists available backups.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Return up to N number of the most recent backups.</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Begin displaying the results for IDs greater than
+the specified marker. When used with --limit, set
+this to the last ID displayed in the previous run.</dd>
+<dt><code class="docutils literal"><span class="pre">--datastore</span> <span class="pre">&lt;datastore&gt;</span></code></dt>
+<dd>ID or name of the datastore (to filter backups by).</dd>
+</dl>
+</div>
+<div class="section" id="trove-backup-list-instance">
+<span id="id5"></span><h3>trove backup-list-instance<a class="headerlink" href="trove.html#trove-backup-list-instance" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove backup-list-instance [--limit &lt;limit&gt;] [--marker &lt;ID&gt;] &lt;instance&gt;</span>
+</pre></div>
+</div>
+<p>Lists available backups for an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Return up to N number of the most recent backups.</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Begin displaying the results for IDs greater than the
+specified marker. When used with --limit, set this to the
+last ID displayed in the previous run.</dd>
+</dl>
+</div>
+<div class="section" id="trove-backup-show">
+<span id="id6"></span><h3>trove backup-show<a class="headerlink" href="trove.html#trove-backup-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove backup-show &lt;backup&gt;</span>
+</pre></div>
+</div>
+<p>Shows details of a backup.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;backup&gt;</span></code></dt>
+<dd>ID or name of the backup.</dd>
+</dl>
+</div>
+<div class="section" id="trove-cluster-create">
+<span id="id7"></span><h3>trove cluster-create<a class="headerlink" href="trove.html#trove-cluster-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove cluster-create &lt;name&gt; &lt;datastore&gt; &lt;datastore_version&gt;</span>
+<span class="go">                            [--instance &quot;opt=&lt;value&gt;[,opt=&lt;value&gt; ...] &quot;]</span>
+<span class="go">                            [--locality &lt;policy&gt;]</span>
+</pre></div>
+</div>
+<p>Creates a new cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name of the cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;datastore&gt;</span></code></dt>
+<dd>A datastore name or ID.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;datastore_version&gt;</span></code></dt>
+<dd>A datastore version name or ID.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--instance</span> <span class="pre">&quot;opt=&lt;value&gt;[,opt=&lt;value&gt;</span> <span class="pre">...]</span> <span class="pre">&quot;</span></code></dt>
+<dd>Add an instance to the cluster. Specify
+multiple times to create multiple instances.
+Valid options are:
+flavor=&lt;flavor_name_or_id&gt;,
+volume=&lt;disk_size_in_GB&gt;,
+volume_type=&lt;type&gt;, nic='&lt;net-id=&lt;net-uuid&gt;,
+v4-fixed-ip=&lt;ip-addr&gt;, port-id=&lt;port-uuid&gt;&gt;'
+(where net-id=network_id, v4-fixed-ip=IPv4r_fixed_address, port-id=port_id),
+availability_zone=&lt;AZ_hint_for_Nova&gt;,
+module=&lt;module_name_or_id&gt;,
+type=&lt;type_of_cluster_node&gt;.</dd>
+<dt><code class="docutils literal"><span class="pre">--locality</span> <span class="pre">&lt;policy&gt;</span></code></dt>
+<dd>Locality policy to use when creating
+cluster. Choose one of affinity, anti-affinity.</dd>
+</dl>
+</div>
+<div class="section" id="trove-cluster-delete">
+<span id="id8"></span><h3>trove cluster-delete<a class="headerlink" href="trove.html#trove-cluster-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove cluster-delete &lt;cluster&gt;</span>
+</pre></div>
+</div>
+<p>Deletes a cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;cluster&gt;</span></code></dt>
+<dd>ID or name of the cluster.</dd>
+</dl>
+</div>
+<div class="section" id="trove-cluster-force-delete">
+<span id="id9"></span><h3>trove cluster-force-delete<a class="headerlink" href="trove.html#trove-cluster-force-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove cluster-force-delete &lt;cluster&gt;</span>
+</pre></div>
+</div>
+<p>Force delete a cluster</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;cluster&gt;</span></code></dt>
+<dd>ID or name of the cluster.</dd>
+</dl>
+</div>
+<div class="section" id="trove-cluster-grow">
+<span id="id10"></span><h3>trove cluster-grow<a class="headerlink" href="trove.html#trove-cluster-grow" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove cluster-grow &lt;cluster&gt;</span>
+<span class="go">                          [--instance &quot;opt=&lt;value&gt;[,opt=&lt;value&gt; ...] &quot;]</span>
+</pre></div>
+</div>
+<p>Adds more instances to a cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;cluster&gt;</span></code></dt>
+<dd>ID or name of the cluster.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--instance</span> <span class="pre">&quot;opt=&lt;value&gt;[,opt=&lt;value&gt;</span> <span class="pre">...]</span> <span class="pre">&quot;</span></code></dt>
+<dd>Add an instance to the cluster. Specify
+multiple times to create multiple instances.
+Valid options are:
+flavor=&lt;flavor_name_or_id&gt;,
+volume=&lt;disk_size_in_GB&gt;,
+volume_type=&lt;type&gt;, nic='&lt;net-id=&lt;net-uuid&gt;,
+v4-fixed-ip=&lt;ip-addr&gt;, port-id=&lt;port-uuid&gt;&gt;'
+(where net-id=network_id, v4-fixed-ip=IPv4r_fixed_address, port-id=port_id),
+availability_zone=&lt;AZ_hint_for_Nova&gt;,
+module=&lt;module_name_or_id&gt;,
+type=&lt;type_of_cluster_node&gt;.</dd>
+</dl>
+</div>
+<div class="section" id="trove-cluster-instances">
+<span id="id11"></span><h3>trove cluster-instances<a class="headerlink" href="trove.html#trove-cluster-instances" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove cluster-instances &lt;cluster&gt;</span>
+</pre></div>
+</div>
+<p>Lists all instances of a cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;cluster&gt;</span></code></dt>
+<dd>ID or name of the cluster.</dd>
+</dl>
+</div>
+<div class="section" id="trove-cluster-list">
+<span id="id12"></span><h3>trove cluster-list<a class="headerlink" href="trove.html#trove-cluster-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove cluster-list [--limit &lt;limit&gt;] [--marker &lt;ID&gt;]</span>
+</pre></div>
+</div>
+<p>Lists all the clusters.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Limit the number of results displayed.</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Begin displaying the results for IDs greater than the
+specified marker. When used with --limit, set this to the
+last ID displayed in the previous run.</dd>
+</dl>
+</div>
+<div class="section" id="trove-cluster-modules">
+<span id="id13"></span><h3>trove cluster-modules<a class="headerlink" href="trove.html#trove-cluster-modules" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove cluster-modules &lt;cluster&gt;</span>
+</pre></div>
+</div>
+<p>Lists all modules for each instance of a cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;cluster&gt;</span></code></dt>
+<dd>ID or name of the cluster.</dd>
+</dl>
+</div>
+<div class="section" id="trove-cluster-reset-status">
+<span id="id14"></span><h3>trove cluster-reset-status<a class="headerlink" href="trove.html#trove-cluster-reset-status" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove cluster-reset-status &lt;cluster&gt;</span>
+</pre></div>
+</div>
+<p>Set the cluster task to NONE.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;cluster&gt;</span></code></dt>
+<dd>ID or name of the cluster.</dd>
+</dl>
+</div>
+<div class="section" id="trove-cluster-show">
+<span id="id15"></span><h3>trove cluster-show<a class="headerlink" href="trove.html#trove-cluster-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove cluster-show &lt;cluster&gt;</span>
+</pre></div>
+</div>
+<p>Shows details of a cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;cluster&gt;</span></code></dt>
+<dd>ID or name of the cluster.</dd>
+</dl>
+</div>
+<div class="section" id="trove-cluster-shrink">
+<span id="id16"></span><h3>trove cluster-shrink<a class="headerlink" href="trove.html#trove-cluster-shrink" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove cluster-shrink &lt;cluster&gt; &lt;instance&gt; [&lt;instance&gt; ...]</span>
+</pre></div>
+</div>
+<p>Drops instances from a cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;cluster&gt;</span></code></dt>
+<dd>ID or name of the cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>Drop instance(s) from the cluster. Specify multiple ids to drop
+multiple instances.</dd>
+</dl>
+</div>
+<div class="section" id="trove-cluster-upgrade">
+<span id="id17"></span><h3>trove cluster-upgrade<a class="headerlink" href="trove.html#trove-cluster-upgrade" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove cluster-upgrade &lt;cluster&gt; &lt;datastore_version&gt;</span>
+</pre></div>
+</div>
+<p>Upgrades a cluster to a new datastore version.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;cluster&gt;</span></code></dt>
+<dd>ID or name of the cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;datastore_version&gt;</span></code></dt>
+<dd>A datastore version name or ID.</dd>
+</dl>
+</div>
+<div class="section" id="trove-configuration-attach">
+<span id="id18"></span><h3>trove configuration-attach<a class="headerlink" href="trove.html#trove-configuration-attach" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove configuration-attach &lt;instance&gt; &lt;configuration&gt;</span>
+</pre></div>
+</div>
+<p>Attaches a configuration group to an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;configuration&gt;</span></code></dt>
+<dd>ID or name of the configuration group to attach to the
+instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-configuration-create">
+<span id="id19"></span><h3>trove configuration-create<a class="headerlink" href="trove.html#trove-configuration-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove configuration-create &lt;name&gt; &lt;values&gt;</span>
+<span class="go">                                  [--datastore &lt;datastore&gt;]</span>
+<span class="go">                                  [--datastore_version &lt;datastore_version&gt;]</span>
+<span class="go">                                  [--description &lt;description&gt;]</span>
+</pre></div>
+</div>
+<p>Creates a configuration group.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name of the configuration group.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;values&gt;</span></code></dt>
+<dd>Dictionary of the values to set.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--datastore</span> <span class="pre">&lt;datastore&gt;</span></code></dt>
+<dd>Datastore assigned to the configuration
+group. Required if default datastore is not
+configured.</dd>
+<dt><code class="docutils literal"><span class="pre">--datastore_version</span> <span class="pre">&lt;datastore_version&gt;</span></code></dt>
+<dd>Datastore version ID assigned to the
+configuration group.</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;description&gt;</span></code></dt>
+<dd>An optional description for the
+configuration group.</dd>
+</dl>
+</div>
+<div class="section" id="trove-configuration-default">
+<span id="id20"></span><h3>trove configuration-default<a class="headerlink" href="trove.html#trove-configuration-default" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove configuration-default &lt;instance&gt;</span>
+</pre></div>
+</div>
+<p>Shows the default configuration of an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-configuration-delete">
+<span id="id21"></span><h3>trove configuration-delete<a class="headerlink" href="trove.html#trove-configuration-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove configuration-delete &lt;configuration_group&gt;</span>
+</pre></div>
+</div>
+<p>Deletes a configuration group.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;configuration_group&gt;</span></code></dt>
+<dd>ID or name of the configuration group.</dd>
+</dl>
+</div>
+<div class="section" id="trove-configuration-detach">
+<span id="id22"></span><h3>trove configuration-detach<a class="headerlink" href="trove.html#trove-configuration-detach" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove configuration-detach &lt;instance&gt;</span>
+</pre></div>
+</div>
+<p>Detaches a configuration group from an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-configuration-instances">
+<span id="id23"></span><h3>trove configuration-instances<a class="headerlink" href="trove.html#trove-configuration-instances" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove configuration-instances &lt;configuration_group&gt;</span>
+<span class="go">                                     [--limit &lt;limit&gt;] [--marker &lt;ID&gt;]</span>
+</pre></div>
+</div>
+<p>Lists all instances associated with a configuration group.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;configuration_group&gt;</span></code></dt>
+<dd>ID or name of the configuration group.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Limit the number of results displayed.</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Begin displaying the results for IDs greater than the
+specified marker. When used with --limit, set this to
+the last ID displayed in the previous run.</dd>
+</dl>
+</div>
+<div class="section" id="trove-configuration-list">
+<span id="id24"></span><h3>trove configuration-list<a class="headerlink" href="trove.html#trove-configuration-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove configuration-list [--limit &lt;limit&gt;] [--marker &lt;ID&gt;]</span>
+</pre></div>
+</div>
+<p>Lists all configuration groups.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Limit the number of results displayed.</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Begin displaying the results for IDs greater than the
+specified marker. When used with --limit, set this to the
+last ID displayed in the previous run.</dd>
+</dl>
+</div>
+<div class="section" id="trove-configuration-parameter-list">
+<span id="id25"></span><h3>trove configuration-parameter-list<a class="headerlink" href="trove.html#trove-configuration-parameter-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove configuration-parameter-list &lt;datastore_version&gt;</span>
+<span class="go">                                          [--datastore &lt;datastore&gt;]</span>
+</pre></div>
+</div>
+<p>Lists available parameters for a configuration group.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;datastore_version&gt;</span></code></dt>
+<dd>Datastore version name or ID assigned to the
+configuration group.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--datastore</span> <span class="pre">&lt;datastore&gt;</span></code></dt>
+<dd>ID or name of the datastore to list configuration
+parameters for. Optional if the ID of the
+datastore_version is provided.</dd>
+</dl>
+</div>
+<div class="section" id="trove-configuration-parameter-show">
+<span id="id26"></span><h3>trove configuration-parameter-show<a class="headerlink" href="trove.html#trove-configuration-parameter-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove configuration-parameter-show &lt;datastore_version&gt; &lt;parameter&gt;</span>
+<span class="go">                                          [--datastore &lt;datastore&gt;]</span>
+</pre></div>
+</div>
+<p>Shows details of a configuration parameter.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;datastore_version&gt;</span></code></dt>
+<dd>Datastore version name or ID assigned to the
+configuration group.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;parameter&gt;</span></code></dt>
+<dd>Name of the configuration parameter.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--datastore</span> <span class="pre">&lt;datastore&gt;</span></code></dt>
+<dd>ID or name of the datastore to list configuration
+parameters for. Optional if the ID of the
+datastore_version is provided.</dd>
+</dl>
+</div>
+<div class="section" id="trove-configuration-patch">
+<span id="id27"></span><h3>trove configuration-patch<a class="headerlink" href="trove.html#trove-configuration-patch" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove configuration-patch &lt;configuration_group&gt; &lt;values&gt;</span>
+</pre></div>
+</div>
+<p>Patches a configuration group.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;configuration_group&gt;</span></code></dt>
+<dd>ID or name of the configuration group.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;values&gt;</span></code></dt>
+<dd>Dictionary of the values to set.</dd>
+</dl>
+</div>
+<div class="section" id="trove-configuration-show">
+<span id="id28"></span><h3>trove configuration-show<a class="headerlink" href="trove.html#trove-configuration-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove configuration-show &lt;configuration_group&gt;</span>
+</pre></div>
+</div>
+<p>Shows details of a configuration group.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;configuration_group&gt;</span></code></dt>
+<dd>ID or name of the configuration group.</dd>
+</dl>
+</div>
+<div class="section" id="trove-configuration-update">
+<span id="id29"></span><h3>trove configuration-update<a class="headerlink" href="trove.html#trove-configuration-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove configuration-update &lt;configuration_group&gt; &lt;values&gt;</span>
+<span class="go">                                  [--name &lt;name&gt;]</span>
+<span class="go">                                  [--description &lt;description&gt;]</span>
+</pre></div>
+</div>
+<p>Updates a configuration group.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;configuration_group&gt;</span></code></dt>
+<dd>ID or name of the configuration group.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;values&gt;</span></code></dt>
+<dd>Dictionary of the values to set.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name of the configuration group.</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;description&gt;</span></code></dt>
+<dd>An optional description for the configuration
+group.</dd>
+</dl>
+</div>
+<div class="section" id="trove-create">
+<span id="id30"></span><h3>trove create<a class="headerlink" href="trove.html#trove-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove create &lt;name&gt; &lt;flavor&gt;</span>
+<span class="go">                    [--size &lt;size&gt;] [--volume_type &lt;volume_type&gt;]</span>
+<span class="go">                    [--databases &lt;database&gt; [&lt;database&gt; ...]]</span>
+<span class="go">                    [--users &lt;user:password&gt; [&lt;user:password&gt; ...]]</span>
+<span class="go">                    [--backup &lt;backup&gt;]</span>
+<span class="go">                    [--availability_zone &lt;availability_zone&gt;]</span>
+<span class="go">                    [--datastore &lt;datastore&gt;]</span>
+<span class="go">                    [--datastore_version &lt;datastore_version&gt;]</span>
+<span class="go">                    [--nic &lt;net-id=&lt;net-uuid&gt;,v4-fixed-ip=&lt;ip-addr&gt;,port-id=&lt;port-uuid&gt;&gt;]</span>
+<span class="go">                    [--configuration &lt;configuration&gt;]</span>
+<span class="go">                    [--replica_of &lt;source_instance&gt;] [--replica_count &lt;count&gt;]</span>
+<span class="go">                    [--module &lt;module&gt;] [--locality &lt;policy&gt;]</span>
+</pre></div>
+</div>
+<p>Creates a new instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;flavor&gt;</span></code></dt>
+<dd>A flavor name or ID.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--size</span> <span class="pre">&lt;size&gt;</span></code></dt>
+<dd>Size of the instance disk volume in GB.
+Required when volume support is enabled.</dd>
+<dt><code class="docutils literal"><span class="pre">--volume_type</span> <span class="pre">&lt;volume_type&gt;</span></code></dt>
+<dd>Volume type. Optional when volume support is
+enabled.</dd>
+<dt><code class="docutils literal"><span class="pre">--databases</span> <span class="pre">&lt;database&gt;</span> <span class="pre">[&lt;database&gt;</span> <span class="pre">...]</span></code></dt>
+<dd>Optional list of databases.</dd>
+<dt><code class="docutils literal"><span class="pre">--users</span> <span class="pre">&lt;user:password&gt;</span> <span class="pre">[&lt;user:password&gt;</span> <span class="pre">...]</span></code></dt>
+<dd>Optional list of users.</dd>
+<dt><code class="docutils literal"><span class="pre">--backup</span> <span class="pre">&lt;backup&gt;</span></code></dt>
+<dd>A backup name or ID.</dd>
+<dt><code class="docutils literal"><span class="pre">--availability_zone</span> <span class="pre">&lt;availability_zone&gt;</span></code></dt>
+<dd>The Zone hint to give to Nova.</dd>
+<dt><code class="docutils literal"><span class="pre">--datastore</span> <span class="pre">&lt;datastore&gt;</span></code></dt>
+<dd>A datastore name or ID.</dd>
+<dt><code class="docutils literal"><span class="pre">--datastore_version</span> <span class="pre">&lt;datastore_version&gt;</span></code></dt>
+<dd>A datastore version name or ID.</dd>
+<dt><code class="docutils literal"><span class="pre">--nic</span> <span class="pre">&lt;net-id=&lt;net-uuid&gt;,v4-fixed-ip=&lt;ip-addr&gt;,port-id=&lt;port-uuid&gt;&gt;</span></code></dt>
+<dd>Create a NIC on the instance. Specify option
+multiple
+times
+to
+create
+multiple
+NICs.
+net-id:
+attach
+NIC
+to
+network
+with
+this
+ID
+(either port-id or net-id must be
+specified), v4-fixed-ip: IPv4 fixed address
+for NIC (optional), port-id: attach NIC to
+port with this ID (either port-id or net-id
+must be specified).</dd>
+<dt><code class="docutils literal"><span class="pre">--configuration</span> <span class="pre">&lt;configuration&gt;</span></code></dt>
+<dd>ID of the configuration group to attach to
+the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">--replica_of</span> <span class="pre">&lt;source_instance&gt;</span></code></dt>
+<dd>ID or name of an existing instance to
+replicate from.</dd>
+<dt><code class="docutils literal"><span class="pre">--replica_count</span> <span class="pre">&lt;count&gt;</span></code></dt>
+<dd>Number of replicas to create (defaults to 1
+if replica_of specified).</dd>
+<dt><code class="docutils literal"><span class="pre">--module</span> <span class="pre">&lt;module&gt;</span></code></dt>
+<dd>ID or name of the module to apply. Specify
+multiple times to apply multiple modules.</dd>
+<dt><code class="docutils literal"><span class="pre">--locality</span> <span class="pre">&lt;policy&gt;</span></code></dt>
+<dd>Locality policy to use when creating
+replicas. Choose one of affinity, anti-affinity.</dd>
+</dl>
+</div>
+<div class="section" id="trove-database-create">
+<span id="id31"></span><h3>trove database-create<a class="headerlink" href="trove.html#trove-database-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove database-create &lt;instance&gt; &lt;name&gt;</span>
+<span class="go">                             [--character_set &lt;character_set&gt;]</span>
+<span class="go">                             [--collate &lt;collate&gt;]</span>
+</pre></div>
+</div>
+<p>Creates a database on an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name of the database.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--character_set</span> <span class="pre">&lt;character_set&gt;</span></code></dt>
+<dd>Optional character set for database.</dd>
+<dt><code class="docutils literal"><span class="pre">--collate</span> <span class="pre">&lt;collate&gt;</span></code></dt>
+<dd>Optional collation type for database.</dd>
+</dl>
+</div>
+<div class="section" id="trove-database-delete">
+<span id="id32"></span><h3>trove database-delete<a class="headerlink" href="trove.html#trove-database-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove database-delete &lt;instance&gt; &lt;database&gt;</span>
+</pre></div>
+</div>
+<p>Deletes a database from an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;database&gt;</span></code></dt>
+<dd>Name of the database.</dd>
+</dl>
+</div>
+<div class="section" id="trove-database-list">
+<span id="id33"></span><h3>trove database-list<a class="headerlink" href="trove.html#trove-database-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove database-list &lt;instance&gt;</span>
+</pre></div>
+</div>
+<p>Lists available databases on an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-datastore-list">
+<span id="id34"></span><h3>trove datastore-list<a class="headerlink" href="trove.html#trove-datastore-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove datastore-list</span>
+</pre></div>
+</div>
+<p>Lists available datastores.</p>
+</div>
+<div class="section" id="trove-datastore-show">
+<span id="id35"></span><h3>trove datastore-show<a class="headerlink" href="trove.html#trove-datastore-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove datastore-show &lt;datastore&gt;</span>
+</pre></div>
+</div>
+<p>Shows details of a datastore.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;datastore&gt;</span></code></dt>
+<dd>ID of the datastore.</dd>
+</dl>
+</div>
+<div class="section" id="trove-datastore-version-list">
+<span id="id36"></span><h3>trove datastore-version-list<a class="headerlink" href="trove.html#trove-datastore-version-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove datastore-version-list &lt;datastore&gt;</span>
+</pre></div>
+</div>
+<p>Lists available versions for a datastore.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;datastore&gt;</span></code></dt>
+<dd>ID or name of the datastore.</dd>
+</dl>
+</div>
+<div class="section" id="trove-datastore-version-show">
+<span id="id37"></span><h3>trove datastore-version-show<a class="headerlink" href="trove.html#trove-datastore-version-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove datastore-version-show &lt;datastore_version&gt;</span>
+<span class="go">                                    [--datastore &lt;datastore&gt;]</span>
+</pre></div>
+</div>
+<p>Shows details of a datastore version.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;datastore_version&gt;</span></code></dt>
+<dd>ID or name of the datastore version.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--datastore</span> <span class="pre">&lt;datastore&gt;</span></code></dt>
+<dd>ID or name of the datastore. Optional if the ID of
+the datastore_version is provided.</dd>
+</dl>
+</div>
+<div class="section" id="trove-delete">
+<span id="id38"></span><h3>trove delete<a class="headerlink" href="trove.html#trove-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove delete &lt;instance&gt;</span>
+</pre></div>
+</div>
+<p>Deletes an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-detach-replica">
+<span id="id39"></span><h3>trove detach-replica<a class="headerlink" href="trove.html#trove-detach-replica" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove detach-replica &lt;instance&gt;</span>
+</pre></div>
+</div>
+<p>Detaches a replica instance from its replication source.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-eject-replica-source">
+<span id="id40"></span><h3>trove eject-replica-source<a class="headerlink" href="trove.html#trove-eject-replica-source" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove eject-replica-source &lt;instance&gt;</span>
+</pre></div>
+</div>
+<p>Ejects a replica source from its set.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-execution-delete">
+<span id="id41"></span><h3>trove execution-delete<a class="headerlink" href="trove.html#trove-execution-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove execution-delete &lt;execution&gt;</span>
+</pre></div>
+</div>
+<p>Deletes an execution.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;execution&gt;</span></code></dt>
+<dd>Id of the execution to delete.</dd>
+</dl>
+</div>
+<div class="section" id="trove-execution-list">
+<span id="id42"></span><h3>trove execution-list<a class="headerlink" href="trove.html#trove-execution-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove execution-list [--limit &lt;limit&gt;] [--marker &lt;ID&gt;] &lt;schedule id&gt;</span>
+</pre></div>
+</div>
+<p>Lists executions of a scheduled backup of an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;schedule</span> <span class="pre">id&gt;</span></code></dt>
+<dd>Id of the schedule.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Return up to N number of the most recent executions.</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Begin displaying the results for IDs greater than the
+specified marker. When used with --limit, set this to the
+last ID displayed in the previous run.</dd>
+</dl>
+</div>
+<div class="section" id="trove-flavor-list">
+<span id="id43"></span><h3>trove flavor-list<a class="headerlink" href="trove.html#trove-flavor-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove flavor-list [--datastore_type &lt;datastore_type&gt;]</span>
+<span class="go">                         [--datastore_version_id &lt;datastore_version_id&gt;]</span>
+</pre></div>
+</div>
+<p>Lists available flavors.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--datastore_type</span> <span class="pre">&lt;datastore_type&gt;</span></code></dt>
+<dd>Type of the datastore. For eg: mysql.</dd>
+<dt><code class="docutils literal"><span class="pre">--datastore_version_id</span> <span class="pre">&lt;datastore_version_id&gt;</span></code></dt>
+<dd>ID of the datastore version.</dd>
+</dl>
+</div>
+<div class="section" id="trove-flavor-show">
+<span id="id44"></span><h3>trove flavor-show<a class="headerlink" href="trove.html#trove-flavor-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove flavor-show &lt;flavor&gt;</span>
+</pre></div>
+</div>
+<p>Shows details of a flavor.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;flavor&gt;</span></code></dt>
+<dd>ID or name of the flavor.</dd>
+</dl>
+</div>
+<div class="section" id="trove-force-delete">
+<span id="id45"></span><h3>trove force-delete<a class="headerlink" href="trove.html#trove-force-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove force-delete &lt;instance&gt;</span>
+</pre></div>
+</div>
+<p>Force delete an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-limit-list">
+<span id="id46"></span><h3>trove limit-list<a class="headerlink" href="trove.html#trove-limit-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove limit-list</span>
+</pre></div>
+</div>
+<p>Lists the limits for a tenant.</p>
+</div>
+<div class="section" id="trove-list">
+<span id="id47"></span><h3>trove list<a class="headerlink" href="trove.html#trove-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove list [--limit &lt;limit&gt;] [--marker &lt;ID&gt;] [--include_clustered]</span>
+</pre></div>
+</div>
+<p>Lists all the instances.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Limit the number of results displayed.</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Begin displaying the results for IDs greater
+than the specified marker. When used with
+--limit, set this to the last ID displayed
+in the previous run.</dd>
+<dt><code class="docutils literal"><span class="pre">--include_clustered,</span> <span class="pre">--include-clustered</span></code></dt>
+<dd>Include instances that are part of a cluster
+(default False). --include-clustered may be
+deprecated in the future, retaining just
+--include_clustered.</dd>
+</dl>
+</div>
+<div class="section" id="trove-log-disable">
+<span id="id48"></span><h3>trove log-disable<a class="headerlink" href="trove.html#trove-log-disable" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove log-disable [--discard] &lt;instance&gt; &lt;log_name&gt;</span>
+</pre></div>
+</div>
+<p>Instructs Trove guest to stop collecting log details.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>Id or Name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;log_name&gt;</span></code></dt>
+<dd>Name of log to publish.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--discard</span></code></dt>
+<dd>Discard published contents of specified log.</dd>
+</dl>
+</div>
+<div class="section" id="trove-log-discard">
+<span id="id49"></span><h3>trove log-discard<a class="headerlink" href="trove.html#trove-log-discard" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove log-discard &lt;instance&gt; &lt;log_name&gt;</span>
+</pre></div>
+</div>
+<p>Instructs Trove guest to discard the container of the published log.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>Id or Name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;log_name&gt;</span></code></dt>
+<dd>Name of log to publish.</dd>
+</dl>
+</div>
+<div class="section" id="trove-log-enable">
+<span id="id50"></span><h3>trove log-enable<a class="headerlink" href="trove.html#trove-log-enable" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove log-enable &lt;instance&gt; &lt;log_name&gt;</span>
+</pre></div>
+</div>
+<p>Instructs Trove guest to start collecting log details.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>Id or Name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;log_name&gt;</span></code></dt>
+<dd>Name of log to publish.</dd>
+</dl>
+</div>
+<div class="section" id="trove-log-list">
+<span id="id51"></span><h3>trove log-list<a class="headerlink" href="trove.html#trove-log-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove log-list &lt;instance&gt;</span>
+</pre></div>
+</div>
+<p>Lists the log files available for instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>Id or Name of the instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-log-publish">
+<span id="id52"></span><h3>trove log-publish<a class="headerlink" href="trove.html#trove-log-publish" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove log-publish [--disable] [--discard] &lt;instance&gt; &lt;log_name&gt;</span>
+</pre></div>
+</div>
+<p>Instructs Trove guest to publish latest log entries on instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>Id or Name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;log_name&gt;</span></code></dt>
+<dd>Name of log to publish.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--disable</span></code></dt>
+<dd>Stop collection of specified log.</dd>
+<dt><code class="docutils literal"><span class="pre">--discard</span></code></dt>
+<dd>Discard published contents of specified log.</dd>
+</dl>
+</div>
+<div class="section" id="trove-log-save">
+<span id="id53"></span><h3>trove log-save<a class="headerlink" href="trove.html#trove-log-save" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove log-save [--publish] [--file &lt;file&gt;] &lt;instance&gt; &lt;log_name&gt;</span>
+</pre></div>
+</div>
+<p>Save log file for instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>Id or Name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;log_name&gt;</span></code></dt>
+<dd>Name of log to publish.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--publish</span></code></dt>
+<dd>Publish latest entries from guest before display.</dd>
+<dt><code class="docutils literal"><span class="pre">--file</span> <span class="pre">&lt;file&gt;</span></code></dt>
+<dd>Path of file to save log to for instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-log-show">
+<span id="id54"></span><h3>trove log-show<a class="headerlink" href="trove.html#trove-log-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove log-show &lt;instance&gt; &lt;log_name&gt;</span>
+</pre></div>
+</div>
+<p>Instructs Trove guest to show details of log.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>Id or Name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;log_name&gt;</span></code></dt>
+<dd>Name of log to show.</dd>
+</dl>
+</div>
+<div class="section" id="trove-log-tail">
+<span id="id55"></span><h3>trove log-tail<a class="headerlink" href="trove.html#trove-log-tail" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove log-tail [--publish] [--lines &lt;lines&gt;] &lt;instance&gt; &lt;log_name&gt;</span>
+</pre></div>
+</div>
+<p>Display log entries for instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>Id or Name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;log_name&gt;</span></code></dt>
+<dd>Name of log to publish.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--publish</span></code></dt>
+<dd>Publish latest entries from guest before display.</dd>
+<dt><code class="docutils literal"><span class="pre">--lines</span> <span class="pre">&lt;lines&gt;</span></code></dt>
+<dd>Publish latest entries from guest before display.</dd>
+</dl>
+</div>
+<div class="section" id="trove-metadata-create">
+<span id="id56"></span><h3>trove metadata-create<a class="headerlink" href="trove.html#trove-metadata-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove metadata-create &lt;instance_id&gt; &lt;key&gt; &lt;value&gt;</span>
+</pre></div>
+</div>
+<p>Creates metadata in the database for instance &lt;id&gt;.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance_id&gt;</span></code></dt>
+<dd>UUID for instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;key&gt;</span></code></dt>
+<dd>Key for assignment.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;value&gt;</span></code></dt>
+<dd>Value to assign to &lt;key&gt;.</dd>
+</dl>
+</div>
+<div class="section" id="trove-metadata-delete">
+<span id="id57"></span><h3>trove metadata-delete<a class="headerlink" href="trove.html#trove-metadata-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove metadata-delete &lt;instance_id&gt; &lt;key&gt;</span>
+</pre></div>
+</div>
+<p>Deletes metadata for instance &lt;id&gt;.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance_id&gt;</span></code></dt>
+<dd>UUID for instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;key&gt;</span></code></dt>
+<dd>Metadata key to delete.</dd>
+</dl>
+</div>
+<div class="section" id="trove-metadata-edit">
+<span id="id58"></span><h3>trove metadata-edit<a class="headerlink" href="trove.html#trove-metadata-edit" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove metadata-edit &lt;instance_id&gt; &lt;key&gt; &lt;value&gt;</span>
+</pre></div>
+</div>
+<p>Replaces metadata value with a new one, this is non-destructive.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance_id&gt;</span></code></dt>
+<dd>UUID for instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;key&gt;</span></code></dt>
+<dd>Key to replace.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;value&gt;</span></code></dt>
+<dd>New value to assign to &lt;key&gt;.</dd>
+</dl>
+</div>
+<div class="section" id="trove-metadata-list">
+<span id="id59"></span><h3>trove metadata-list<a class="headerlink" href="trove.html#trove-metadata-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove metadata-list &lt;instance_id&gt;</span>
+</pre></div>
+</div>
+<p>Shows all metadata for instance &lt;id&gt;.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance_id&gt;</span></code></dt>
+<dd>UUID for instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-metadata-show">
+<span id="id60"></span><h3>trove metadata-show<a class="headerlink" href="trove.html#trove-metadata-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove metadata-show &lt;instance_id&gt; &lt;key&gt;</span>
+</pre></div>
+</div>
+<p>Shows metadata entry for key &lt;key&gt; and instance &lt;id&gt;.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance_id&gt;</span></code></dt>
+<dd>UUID for instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;key&gt;</span></code></dt>
+<dd>Key to display.</dd>
+</dl>
+</div>
+<div class="section" id="trove-metadata-update">
+<span id="id61"></span><h3>trove metadata-update<a class="headerlink" href="trove.html#trove-metadata-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove metadata-update &lt;instance_id&gt; &lt;key&gt; &lt;newkey&gt; &lt;value&gt;</span>
+</pre></div>
+</div>
+<p>Updates metadata, this is destructive.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance_id&gt;</span></code></dt>
+<dd>UUID for instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;key&gt;</span></code></dt>
+<dd>Key to update.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;newkey&gt;</span></code></dt>
+<dd>New key.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;value&gt;</span></code></dt>
+<dd>Value to assign to &lt;newkey&gt;.</dd>
+</dl>
+</div>
+<div class="section" id="trove-module-apply">
+<span id="id62"></span><h3>trove module-apply<a class="headerlink" href="trove.html#trove-module-apply" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove module-apply &lt;instance&gt; &lt;module&gt; [&lt;module&gt; ...]</span>
+</pre></div>
+</div>
+<p>Apply modules to an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;module&gt;</span></code></dt>
+<dd>ID or name of the module.</dd>
+</dl>
+</div>
+<div class="section" id="trove-module-create">
+<span id="id63"></span><h3>trove module-create<a class="headerlink" href="trove.html#trove-module-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove module-create &lt;name&gt; &lt;type&gt; &lt;filename&gt;</span>
+<span class="go">                           [--description &lt;description&gt;]</span>
+<span class="go">                           [--datastore &lt;datastore&gt;]</span>
+<span class="go">                           [--datastore_version &lt;version&gt;] [--auto_apply]</span>
+<span class="go">                           [--all_tenants] [--hidden] [--live_update]</span>
+<span class="go">                           [--priority_apply]</span>
+<span class="go">                           [--apply_order {0,1,2,3,4,5,6,7,8,9}]</span>
+<span class="go">                           [--full_access]</span>
+</pre></div>
+</div>
+<p>Create a module.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name of the module.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;type&gt;</span></code></dt>
+<dd>Type of the module. The type must be
+supported by a corresponding module plugin
+on the datastore it is applied to.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;filename&gt;</span></code></dt>
+<dd>File containing data contents for the
+module.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;description&gt;</span></code></dt>
+<dd>Description of the module.</dd>
+<dt><code class="docutils literal"><span class="pre">--datastore</span> <span class="pre">&lt;datastore&gt;</span></code></dt>
+<dd>Name or ID of datastore this module can be
+applied to. If not specified, module can be
+applied to all datastores.</dd>
+<dt><code class="docutils literal"><span class="pre">--datastore_version</span> <span class="pre">&lt;version&gt;</span></code></dt>
+<dd>Name or ID of datastore version this module
+can be applied to. If not specified, module
+can be applied to all versions.</dd>
+<dt><code class="docutils literal"><span class="pre">--auto_apply</span></code></dt>
+<dd>Automatically apply this module when
+creating an instance or cluster. Admin only.</dd>
+<dt><code class="docutils literal"><span class="pre">--all_tenants</span></code></dt>
+<dd>Module is valid for all tenants. Admin only.</dd>
+<dt><code class="docutils literal"><span class="pre">--hidden</span></code></dt>
+<dd>Hide this module from non-Admin. Useful in
+creating auto-apply modules without
+cluttering up module lists. Admin only.</dd>
+<dt><code class="docutils literal"><span class="pre">--live_update</span></code></dt>
+<dd>Allow module to be updated even if it is
+already applied to a current instance or
+cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">--priority_apply</span></code></dt>
+<dd>Sets a priority for applying the module. All
+priority modules will be applied before non-priority ones. Admin only.</dd>
+<dt><code class="docutils literal"><span class="pre">--apply_order</span> <span class="pre">{0,1,2,3,4,5,6,7,8,9}</span></code></dt>
+<dd>Sets an order for applying the module.
+Modules with a lower value will be applied
+before modules with a higher value. Modules
+having the same value may be applied in any
+order (default 5).</dd>
+<dt><code class="docutils literal"><span class="pre">--full_access</span></code></dt>
+<dd>Marks a module as 'non-admin', unless an
+admin-only option was specified. Admin only.</dd>
+</dl>
+</div>
+<div class="section" id="trove-module-delete">
+<span id="id64"></span><h3>trove module-delete<a class="headerlink" href="trove.html#trove-module-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove module-delete &lt;module&gt;</span>
+</pre></div>
+</div>
+<p>Delete a module.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;module&gt;</span></code></dt>
+<dd>ID or name of the module.</dd>
+</dl>
+</div>
+<div class="section" id="trove-module-instance-count">
+<span id="id65"></span><h3>trove module-instance-count<a class="headerlink" href="trove.html#trove-module-instance-count" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove module-instance-count [--include_clustered] &lt;module&gt;</span>
+</pre></div>
+</div>
+<p>Lists a count of the instances for each module md5.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;module&gt;</span></code></dt>
+<dd>ID or name of the module.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--include_clustered</span></code></dt>
+<dd>Include instances that are part of a cluster (default
+False).</dd>
+</dl>
+</div>
+<div class="section" id="trove-module-instances">
+<span id="id66"></span><h3>trove module-instances<a class="headerlink" href="trove.html#trove-module-instances" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove module-instances &lt;module&gt;</span>
+<span class="go">                              [--include_clustered] [--limit &lt;limit&gt;]</span>
+<span class="go">                              [--marker &lt;ID&gt;]</span>
+</pre></div>
+</div>
+<p>Lists the instances that have a particular module applied.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;module&gt;</span></code></dt>
+<dd>ID or name of the module.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--include_clustered</span></code></dt>
+<dd>Include instances that are part of a cluster (default
+False).</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Return up to N number of the most recent results.</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Begin displaying the results for IDs greater than the
+specified marker. When used with --limit, set this to
+the last ID displayed in the previous run.</dd>
+</dl>
+</div>
+<div class="section" id="trove-module-list">
+<span id="id67"></span><h3>trove module-list<a class="headerlink" href="trove.html#trove-module-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove module-list [--datastore &lt;datastore&gt;]</span>
+</pre></div>
+</div>
+<p>Lists the modules available.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--datastore</span> <span class="pre">&lt;datastore&gt;</span></code></dt>
+<dd>Name or ID of datastore to list modules for. Use
+'all' to list modules that apply to all datastores.</dd>
+</dl>
+</div>
+<div class="section" id="trove-module-list-instance">
+<span id="id68"></span><h3>trove module-list-instance<a class="headerlink" href="trove.html#trove-module-list-instance" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove module-list-instance &lt;instance&gt;</span>
+</pre></div>
+</div>
+<p>Lists the modules that have been applied to an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-module-query">
+<span id="id69"></span><h3>trove module-query<a class="headerlink" href="trove.html#trove-module-query" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove module-query &lt;instance&gt;</span>
+</pre></div>
+</div>
+<p>Query the status of the modules on an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-module-reapply">
+<span id="id70"></span><h3>trove module-reapply<a class="headerlink" href="trove.html#trove-module-reapply" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove module-reapply &lt;module&gt;</span>
+<span class="go">                            [--md5 &lt;md5&gt;] [--include_clustered]</span>
+<span class="go">                            [--batch_size &lt;batch_size&gt;] [--delay &lt;delay&gt;]</span>
+<span class="go">                            [--force]</span>
+</pre></div>
+</div>
+<p>Reapply a module.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;module&gt;</span></code></dt>
+<dd>Name or ID of the module.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--md5</span> <span class="pre">&lt;md5&gt;</span></code></dt>
+<dd>Reapply the module only to instances applied with
+the specific md5.</dd>
+<dt><code class="docutils literal"><span class="pre">--include_clustered</span></code></dt>
+<dd>Include instances that are part of a cluster
+(default False).</dd>
+<dt><code class="docutils literal"><span class="pre">--batch_size</span> <span class="pre">&lt;batch_size&gt;</span></code></dt>
+<dd>Number of instances to reapply the module to
+before sleeping.</dd>
+<dt><code class="docutils literal"><span class="pre">--delay</span> <span class="pre">&lt;delay&gt;</span></code></dt>
+<dd>Time to sleep in seconds between applying
+batches.</dd>
+<dt><code class="docutils literal"><span class="pre">--force</span></code></dt>
+<dd>Force reapply even on modules already having the
+current MD5</dd>
+</dl>
+</div>
+<div class="section" id="trove-module-remove">
+<span id="id71"></span><h3>trove module-remove<a class="headerlink" href="trove.html#trove-module-remove" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove module-remove &lt;instance&gt; &lt;module&gt;</span>
+</pre></div>
+</div>
+<p>Remove a module from an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;module&gt;</span></code></dt>
+<dd>ID or name of the module.</dd>
+</dl>
+</div>
+<div class="section" id="trove-module-retrieve">
+<span id="id72"></span><h3>trove module-retrieve<a class="headerlink" href="trove.html#trove-module-retrieve" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove module-retrieve &lt;instance&gt;</span>
+<span class="go">                             [--directory &lt;directory&gt;]</span>
+<span class="go">                             [--prefix &lt;filename_prefix&gt;]</span>
+</pre></div>
+</div>
+<p>Retrieve module contents from an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--directory</span> <span class="pre">&lt;directory&gt;</span></code></dt>
+<dd>Directory to write module content files in. It
+will be created if it does not exist. Defaults
+to the current directory.</dd>
+<dt><code class="docutils literal"><span class="pre">--prefix</span> <span class="pre">&lt;filename_prefix&gt;</span></code></dt>
+<dd>Prefix to prepend to generated filename for each
+module.</dd>
+</dl>
+</div>
+<div class="section" id="trove-module-show">
+<span id="id73"></span><h3>trove module-show<a class="headerlink" href="trove.html#trove-module-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove module-show &lt;module&gt;</span>
+</pre></div>
+</div>
+<p>Shows details of a module.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;module&gt;</span></code></dt>
+<dd>ID or name of the module.</dd>
+</dl>
+</div>
+<div class="section" id="trove-module-update">
+<span id="id74"></span><h3>trove module-update<a class="headerlink" href="trove.html#trove-module-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove module-update &lt;module&gt;</span>
+<span class="go">                           [--name &lt;name&gt;] [--type &lt;type&gt;] [--file &lt;filename&gt;]</span>
+<span class="go">                           [--description &lt;description&gt;]</span>
+<span class="go">                           [--datastore &lt;datastore&gt;] [--all_datastores]</span>
+<span class="go">                           [--datastore_version &lt;version&gt;]</span>
+<span class="go">                           [--all_datastore_versions] [--auto_apply]</span>
+<span class="go">                           [--no_auto_apply] [--all_tenants]</span>
+<span class="go">                           [--no_all_tenants] [--hidden] [--no_hidden]</span>
+<span class="go">                           [--live_update] [--no_live_update]</span>
+<span class="go">                           [--priority_apply] [--no_priority_apply]</span>
+<span class="go">                           [--apply_order {0,1,2,3,4,5,6,7,8,9}]</span>
+<span class="go">                           [--full_access] [--no_full_access]</span>
+</pre></div>
+</div>
+<p>Update a module.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;module&gt;</span></code></dt>
+<dd>Name or ID of the module.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name of the module.</dd>
+<dt><code class="docutils literal"><span class="pre">--type</span> <span class="pre">&lt;type&gt;</span></code></dt>
+<dd>Type of the module. The type must be
+supported by a corresponding module driver
+plugin on the datastore it is applied to.</dd>
+<dt><code class="docutils literal"><span class="pre">--file</span> <span class="pre">&lt;filename&gt;</span></code></dt>
+<dd>File containing data contents for the
+module.</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;description&gt;</span></code></dt>
+<dd>Description of the module.</dd>
+<dt><code class="docutils literal"><span class="pre">--datastore</span> <span class="pre">&lt;datastore&gt;</span></code></dt>
+<dd>Name or ID of datastore this module can be
+applied to. If not specified, module can be
+applied to all datastores.</dd>
+<dt><code class="docutils literal"><span class="pre">--all_datastores</span></code></dt>
+<dd>Module is valid for all datastores.</dd>
+<dt><code class="docutils literal"><span class="pre">--datastore_version</span> <span class="pre">&lt;version&gt;</span></code></dt>
+<dd>Name or ID of datastore version this module
+can be applied to. If not specified, module
+can be applied to all versions.</dd>
+<dt><code class="docutils literal"><span class="pre">--all_datastore_versions</span></code></dt>
+<dd>Module is valid for all datastore versions.</dd>
+<dt><code class="docutils literal"><span class="pre">--auto_apply</span></code></dt>
+<dd>Automatically apply this module when
+creating an instance or cluster. Admin only.</dd>
+<dt><code class="docutils literal"><span class="pre">--no_auto_apply</span></code></dt>
+<dd>Do not automatically apply this module when
+creating an instance or cluster. Admin only.</dd>
+<dt><code class="docutils literal"><span class="pre">--all_tenants</span></code></dt>
+<dd>Module is valid for all tenants. Admin only.</dd>
+<dt><code class="docutils literal"><span class="pre">--no_all_tenants</span></code></dt>
+<dd>Module is valid for current tenant only.
+Admin only.</dd>
+<dt><code class="docutils literal"><span class="pre">--hidden</span></code></dt>
+<dd>Hide this module from non-admin users.
+Useful in creating auto-apply modules
+without cluttering up module lists. Admin
+only.</dd>
+<dt><code class="docutils literal"><span class="pre">--no_hidden</span></code></dt>
+<dd>Allow all users to see this module. Admin
+only.</dd>
+<dt><code class="docutils literal"><span class="pre">--live_update</span></code></dt>
+<dd>Allow module to be updated or deleted even
+if it is already applied to a current
+instance or cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">--no_live_update</span></code></dt>
+<dd>Restricts a module from being updated or
+deleted if it is already applied to a
+current instance or cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">--priority_apply</span></code></dt>
+<dd>Sets a priority for applying the module. All
+priority modules will be applied before non-priority ones. Admin only.</dd>
+<dt><code class="docutils literal"><span class="pre">--no_priority_apply</span></code></dt>
+<dd>Removes apply priority from the module.
+Admin only.</dd>
+<dt><code class="docutils literal"><span class="pre">--apply_order</span> <span class="pre">{0,1,2,3,4,5,6,7,8,9}</span></code></dt>
+<dd>Sets an order for applying the module.
+Modules with a lower value will be applied
+before modules with a higher value. Modules
+having the same value may be applied in any
+order (default None).</dd>
+<dt><code class="docutils literal"><span class="pre">--full_access</span></code></dt>
+<dd>Marks a module as 'non-admin', unless an
+admin-only option was specified. Admin only.</dd>
+<dt><code class="docutils literal"><span class="pre">--no_full_access</span></code></dt>
+<dd>Restricts modification access for non-admin.
+Admin only.</dd>
+</dl>
+</div>
+<div class="section" id="trove-promote-to-replica-source">
+<span id="id75"></span><h3>trove promote-to-replica-source<a class="headerlink" href="trove.html#trove-promote-to-replica-source" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove promote-to-replica-source &lt;instance&gt;</span>
+</pre></div>
+</div>
+<p>Promotes a replica to be the new replica source of its set.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-quota-show">
+<span id="id76"></span><h3>trove quota-show<a class="headerlink" href="trove.html#trove-quota-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove quota-show &lt;tenant_id&gt;</span>
+</pre></div>
+</div>
+<p>Show quotas for a tenant.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;tenant_id&gt;</span></code></dt>
+<dd>Id of tenant for which to show quotas.</dd>
+</dl>
+</div>
+<div class="section" id="trove-quota-update">
+<span id="id77"></span><h3>trove quota-update<a class="headerlink" href="trove.html#trove-quota-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove quota-update &lt;tenant_id&gt; &lt;resource&gt; &lt;limit&gt;</span>
+</pre></div>
+</div>
+<p>Update quotas for a tenant.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;tenant_id&gt;</span></code></dt>
+<dd>Id of tenant for which to update quotas.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;resource&gt;</span></code></dt>
+<dd>Id of resource to change.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>New limit to set for the named resource.</dd>
+</dl>
+</div>
+<div class="section" id="trove-reset-status">
+<span id="id78"></span><h3>trove reset-status<a class="headerlink" href="trove.html#trove-reset-status" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove reset-status &lt;instance&gt;</span>
+</pre></div>
+</div>
+<p>Set the status to NONE.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-resize-instance">
+<span id="id79"></span><h3>trove resize-instance<a class="headerlink" href="trove.html#trove-resize-instance" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove resize-instance &lt;instance&gt; &lt;flavor&gt;</span>
+</pre></div>
+</div>
+<p>Resizes an instance with a new flavor.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;flavor&gt;</span></code></dt>
+<dd>New flavor of the instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-resize-volume">
+<span id="id80"></span><h3>trove resize-volume<a class="headerlink" href="trove.html#trove-resize-volume" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove resize-volume &lt;instance&gt; &lt;size&gt;</span>
+</pre></div>
+</div>
+<p>Resizes the volume size of an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;size&gt;</span></code></dt>
+<dd>New size of the instance disk volume in GB.</dd>
+</dl>
+</div>
+<div class="section" id="trove-restart">
+<span id="id81"></span><h3>trove restart<a class="headerlink" href="trove.html#trove-restart" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove restart &lt;instance&gt;</span>
+</pre></div>
+</div>
+<p>Restarts an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-root-disable">
+<span id="id82"></span><h3>trove root-disable<a class="headerlink" href="trove.html#trove-root-disable" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove root-disable &lt;instance&gt;</span>
+</pre></div>
+</div>
+<p>Disables root for an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-root-enable">
+<span id="id83"></span><h3>trove root-enable<a class="headerlink" href="trove.html#trove-root-enable" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove root-enable &lt;instance_or_cluster&gt;</span>
+<span class="go">                         [--root_password &lt;root_password&gt;]</span>
+</pre></div>
+</div>
+<p>Enables root for an instance and resets if already exists.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance_or_cluster&gt;</span></code></dt>
+<dd>ID or name of the instance or cluster.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--root_password</span> <span class="pre">&lt;root_password&gt;</span></code></dt>
+<dd>Root password to set.</dd>
+</dl>
+</div>
+<div class="section" id="trove-root-show">
+<span id="id84"></span><h3>trove root-show<a class="headerlink" href="trove.html#trove-root-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove root-show &lt;instance_or_cluster&gt;</span>
+</pre></div>
+</div>
+<p>Gets status if root was ever enabled for an instance or cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance_or_cluster&gt;</span></code></dt>
+<dd>ID or name of the instance or cluster.</dd>
+</dl>
+</div>
+<div class="section" id="trove-schedule-create">
+<span id="id85"></span><h3>trove schedule-create<a class="headerlink" href="trove.html#trove-schedule-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove schedule-create &lt;instance&gt; &lt;pattern&gt; &lt;name&gt;</span>
+<span class="go">                             [--description &lt;description&gt;] [--incremental]</span>
+</pre></div>
+</div>
+<p>Schedules backups for an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;pattern&gt;</span></code></dt>
+<dd>Cron style pattern describing schedule
+occurrence.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name of the backup.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;description&gt;</span></code></dt>
+<dd>An optional description for the backup.</dd>
+<dt><code class="docutils literal"><span class="pre">--incremental</span></code></dt>
+<dd>Flag to select incremental backup based on most
+recent backup.</dd>
+</dl>
+</div>
+<div class="section" id="trove-schedule-delete">
+<span id="id86"></span><h3>trove schedule-delete<a class="headerlink" href="trove.html#trove-schedule-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove schedule-delete &lt;schedule id&gt;</span>
+</pre></div>
+</div>
+<p>Deletes a schedule.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;schedule</span> <span class="pre">id&gt;</span></code></dt>
+<dd>Id of the schedule.</dd>
+</dl>
+</div>
+<div class="section" id="trove-schedule-list">
+<span id="id87"></span><h3>trove schedule-list<a class="headerlink" href="trove.html#trove-schedule-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove schedule-list &lt;instance&gt;</span>
+</pre></div>
+</div>
+<p>Lists scheduled backups for an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-schedule-show">
+<span id="id88"></span><h3>trove schedule-show<a class="headerlink" href="trove.html#trove-schedule-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove schedule-show &lt;schedule id&gt;</span>
+</pre></div>
+</div>
+<p>Shows details of a schedule.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;schedule</span> <span class="pre">id&gt;</span></code></dt>
+<dd>Id of the schedule.</dd>
+</dl>
+</div>
+<div class="section" id="trove-secgroup-add-rule">
+<span id="id89"></span><h3>trove secgroup-add-rule<a class="headerlink" href="trove.html#trove-secgroup-add-rule" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove secgroup-add-rule &lt;security_group&gt; &lt;cidr&gt;</span>
+</pre></div>
+</div>
+<p>Creates a security group rule.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;security_group&gt;</span></code></dt>
+<dd>Security group ID.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;cidr&gt;</span></code></dt>
+<dd>CIDR address.</dd>
+</dl>
+</div>
+<div class="section" id="trove-secgroup-delete-rule">
+<span id="id90"></span><h3>trove secgroup-delete-rule<a class="headerlink" href="trove.html#trove-secgroup-delete-rule" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove secgroup-delete-rule &lt;security_group_rule&gt;</span>
+</pre></div>
+</div>
+<p>Deletes a security group rule.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;security_group_rule&gt;</span></code></dt>
+<dd>Name of security group rule.</dd>
+</dl>
+</div>
+<div class="section" id="trove-secgroup-list">
+<span id="id91"></span><h3>trove secgroup-list<a class="headerlink" href="trove.html#trove-secgroup-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove secgroup-list</span>
+</pre></div>
+</div>
+<p>Lists all security groups.</p>
+</div>
+<div class="section" id="trove-secgroup-list-rules">
+<span id="id92"></span><h3>trove secgroup-list-rules<a class="headerlink" href="trove.html#trove-secgroup-list-rules" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove secgroup-list-rules &lt;security_group&gt;</span>
+</pre></div>
+</div>
+<p>Lists all rules for a security group.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;security_group&gt;</span></code></dt>
+<dd>Security group ID.</dd>
+</dl>
+</div>
+<div class="section" id="trove-secgroup-show">
+<span id="id93"></span><h3>trove secgroup-show<a class="headerlink" href="trove.html#trove-secgroup-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove secgroup-show &lt;security_group&gt;</span>
+</pre></div>
+</div>
+<p>Shows details of a security group.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;security_group&gt;</span></code></dt>
+<dd>Security group ID.</dd>
+</dl>
+</div>
+<div class="section" id="trove-show">
+<span id="id94"></span><h3>trove show<a class="headerlink" href="trove.html#trove-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove show &lt;instance&gt;</span>
+</pre></div>
+</div>
+<p>Shows details of an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-update">
+<span id="id95"></span><h3>trove update<a class="headerlink" href="trove.html#trove-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove update &lt;instance&gt;</span>
+<span class="go">                    [--name &lt;name&gt;] [--configuration &lt;configuration&gt;]</span>
+<span class="go">                    [--detach_replica_source] [--remove_configuration]</span>
+</pre></div>
+</div>
+<p>Updates an instance: Edits name, configuration, or replica source.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">--configuration</span> <span class="pre">&lt;configuration&gt;</span></code></dt>
+<dd>ID of the configuration reference to attach.</dd>
+<dt><code class="docutils literal"><span class="pre">--detach_replica_source,</span> <span class="pre">--detach-replica-source</span></code></dt>
+<dd>Detach the replica instance from its
+replication source. --detach-replica-source
+may be deprecated in the future in favor of
+just --detach_replica_source</dd>
+<dt><code class="docutils literal"><span class="pre">--remove_configuration</span></code></dt>
+<dd>Drops the current configuration reference.</dd>
+</dl>
+</div>
+<div class="section" id="trove-upgrade">
+<span id="id96"></span><h3>trove upgrade<a class="headerlink" href="trove.html#trove-upgrade" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove upgrade &lt;instance&gt; &lt;datastore_version&gt;</span>
+</pre></div>
+</div>
+<p>Upgrades an instance to a new datastore version.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;datastore_version&gt;</span></code></dt>
+<dd>A datastore version name or ID.</dd>
+</dl>
+</div>
+<div class="section" id="trove-user-create">
+<span id="id97"></span><h3>trove user-create<a class="headerlink" href="trove.html#trove-user-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove user-create &lt;instance&gt; &lt;name&gt; &lt;password&gt;</span>
+<span class="go">                         [--host &lt;host&gt;]</span>
+<span class="go">                         [--databases &lt;databases&gt; [&lt;databases&gt; ...]]</span>
+</pre></div>
+</div>
+<p>Creates a user on an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name of user.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;password&gt;</span></code></dt>
+<dd>Password of user.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--host</span> <span class="pre">&lt;host&gt;</span></code></dt>
+<dd>Optional host of user.</dd>
+<dt><code class="docutils literal"><span class="pre">--databases</span> <span class="pre">&lt;databases&gt;</span> <span class="pre">[&lt;databases&gt;</span> <span class="pre">...]</span></code></dt>
+<dd>Optional list of databases.</dd>
+</dl>
+</div>
+<div class="section" id="trove-user-delete">
+<span id="id98"></span><h3>trove user-delete<a class="headerlink" href="trove.html#trove-user-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove user-delete [--host &lt;host&gt;] &lt;instance&gt; &lt;name&gt;</span>
+</pre></div>
+</div>
+<p>Deletes a user from an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name of user.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--host</span> <span class="pre">&lt;host&gt;</span></code></dt>
+<dd>Optional host of user.</dd>
+</dl>
+</div>
+<div class="section" id="trove-user-grant-access">
+<span id="id99"></span><h3>trove user-grant-access<a class="headerlink" href="trove.html#trove-user-grant-access" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove user-grant-access &lt;instance&gt; &lt;name&gt; &lt;databases&gt; [&lt;databases&gt; ...]</span>
+<span class="go">                               [--host &lt;host&gt;]</span>
+</pre></div>
+</div>
+<p>Grants access to a database(s) for a user.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name of user.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;databases&gt;</span></code></dt>
+<dd>List of databases.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--host</span> <span class="pre">&lt;host&gt;</span></code></dt>
+<dd>Optional host of user.</dd>
+</dl>
+</div>
+<div class="section" id="trove-user-list">
+<span id="id100"></span><h3>trove user-list<a class="headerlink" href="trove.html#trove-user-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove user-list &lt;instance&gt;</span>
+</pre></div>
+</div>
+<p>Lists the users for an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+</dl>
+</div>
+<div class="section" id="trove-user-revoke-access">
+<span id="id101"></span><h3>trove user-revoke-access<a class="headerlink" href="trove.html#trove-user-revoke-access" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove user-revoke-access [--host &lt;host&gt;] &lt;instance&gt; &lt;name&gt; &lt;database&gt;</span>
+</pre></div>
+</div>
+<p>Revokes access to a database for a user.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name of user.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;database&gt;</span></code></dt>
+<dd>A single database.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--host</span> <span class="pre">&lt;host&gt;</span></code></dt>
+<dd>Optional host of user.</dd>
+</dl>
+</div>
+<div class="section" id="trove-user-show">
+<span id="id102"></span><h3>trove user-show<a class="headerlink" href="trove.html#trove-user-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove user-show [--host &lt;host&gt;] &lt;instance&gt; &lt;name&gt;</span>
+</pre></div>
+</div>
+<p>Shows details of a user of an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name of user.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--host</span> <span class="pre">&lt;host&gt;</span></code></dt>
+<dd>Optional host of user.</dd>
+</dl>
+</div>
+<div class="section" id="trove-user-show-access">
+<span id="id103"></span><h3>trove user-show-access<a class="headerlink" href="trove.html#trove-user-show-access" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove user-show-access [--host &lt;host&gt;] &lt;instance&gt; &lt;name&gt;</span>
+</pre></div>
+</div>
+<p>Shows access details of a user of an instance.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name of user.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--host</span> <span class="pre">&lt;host&gt;</span></code></dt>
+<dd>Optional host of user.</dd>
+</dl>
+</div>
+<div class="section" id="trove-user-update-attributes">
+<span id="id104"></span><h3>trove user-update-attributes<a class="headerlink" href="trove.html#trove-user-update-attributes" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove user-update-attributes &lt;instance&gt; &lt;name&gt;</span>
+<span class="go">                                    [--host &lt;host&gt;] [--new_name &lt;new_name&gt;]</span>
+<span class="go">                                    [--new_password &lt;new_password&gt;]</span>
+<span class="go">                                    [--new_host &lt;new_host&gt;]</span>
+</pre></div>
+</div>
+<p>Updates a user's attributes on an instance. At least one optional argument
+must be provided.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;instance&gt;</span></code></dt>
+<dd>ID or name of the instance.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name of user.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--host</span> <span class="pre">&lt;host&gt;</span></code></dt>
+<dd>Optional host of user.</dd>
+<dt><code class="docutils literal"><span class="pre">--new_name</span> <span class="pre">&lt;new_name&gt;</span></code></dt>
+<dd>Optional new name of user.</dd>
+<dt><code class="docutils literal"><span class="pre">--new_password</span> <span class="pre">&lt;new_password&gt;</span></code></dt>
+<dd>Optional new password of user.</dd>
+<dt><code class="docutils literal"><span class="pre">--new_host</span> <span class="pre">&lt;new_host&gt;</span></code></dt>
+<dd>Optional new host of user.</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="database.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Database service (trove) command-line clients"></i></a>
+          
+          
+            <a href="trove-manage.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: trove-manage command-line client"></i></a>
+          
+            <a id="logABugLink3" href="trove.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="trove.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="murano.html">Application Catalog service (murano) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="freezer.html">Backup, Restore, and Disaster Recovery service (freezer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ironic.html">Bare Metal service (ironic) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cinder.html">Block Storage service (cinder) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="senlin.html">Clustering service (senlin) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute service (nova) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnum.html">Container Infrastructure Management service (magnum) command-line client</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="database.html">Database service (trove) command-line clients</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="trove.html#">Database service (trove) command-line client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="trove-manage.html">trove-manage command-line client</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="designate.html">DNS service (designate) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image service (glance) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watcher.html">Infrastructure Optimization service (watcher) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barbican.html">Key Manager service (barbican) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monasca.html">Monitoring (monasca) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networking.html">Networking service (neutron) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tacker.html">NFV Orchestration service (tacker) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="swift.html">Object Storage service (swift) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heat.html">Orchestration service (heat) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloudkitty.html">Rating service (cloudkitty) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vitrage.html">RCA (Root Cause Analysis) service (vitrage) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manila.html">Shared File Systems service (manila) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solum.html">Software Development Lifecycle Automation service (solum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aodh.html">Telemetry Alarming service (aodh) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ceilometer.html">Telemetry Data Collection service (ceilometer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gnocchi.html">A time series storage and resources index service (gnocchi) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mistral.html">Workflow service (mistral) command-line client</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "trove" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/cli-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "Database service (trove) command-line client in Command-Line Interface Reference";
+    var fieldTags = "cli-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:39";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

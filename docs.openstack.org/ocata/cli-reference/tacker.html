@@ -1,0 +1,1934 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: NFV Orchestration service (tacker) command-line client</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>NFV Orchestration service (tacker) command-line client</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="neutron-sanity-check.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: neutron-sanity-check command-line client"></i></a>
+    
+    
+    <a href="swift.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Object Storage service (swift) command-line client"></i></a>
+    
+    <a id="logABugLink1" href="tacker.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="tacker.html#">NFV Orchestration service (tacker) command-line client</a><ul>
+<li><a class="reference internal" href="tacker.html#tacker-usage">tacker usage</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-optional-arguments">tacker optional arguments</a><ul>
+<li><a class="reference internal" href="tacker.html#tacker-chain-list">tacker chain-list</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-chain-show">tacker chain-show</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-classifier-list">tacker classifier-list</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-classifier-show">tacker classifier-show</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-event-show">tacker event-show</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-events-list">tacker events-list</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-ext-list">tacker ext-list</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-ext-show">tacker ext-show</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-nfp-list">tacker nfp-list</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-nfp-show">tacker nfp-show</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-ns-create">tacker ns-create</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-ns-delete">tacker ns-delete</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-ns-list">tacker ns-list</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-ns-show">tacker ns-show</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-nsd-create">tacker nsd-create</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-nsd-delete">tacker nsd-delete</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-nsd-list">tacker nsd-list</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-nsd-show">tacker nsd-show</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-nsd-template-show">tacker nsd-template-show</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vim-delete">tacker vim-delete</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vim-events-list">tacker vim-events-list</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vim-list">tacker vim-list</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vim-register">tacker vim-register</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vim-show">tacker vim-show</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vim-update">tacker vim-update</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnf-create">tacker vnf-create</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnf-delete">tacker vnf-delete</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnf-events-list">tacker vnf-events-list</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnf-list">tacker vnf-list</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnf-resource-list">tacker vnf-resource-list</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnf-scale">tacker vnf-scale</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnf-show">tacker vnf-show</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnf-update">tacker vnf-update</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnfd-create">tacker vnfd-create</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnfd-delete">tacker vnfd-delete</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnfd-events-list">tacker vnfd-events-list</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnfd-list">tacker vnfd-list</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnfd-show">tacker vnfd-show</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnfd-template-show">tacker vnfd-template-show</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnffg-create">tacker vnffg-create</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnffg-delete">tacker vnffg-delete</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnffg-list">tacker vnffg-list</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnffg-show">tacker vnffg-show</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnffg-update">tacker vnffg-update</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnffgd-create">tacker vnffgd-create</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnffgd-delete">tacker vnffgd-delete</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnffgd-list">tacker vnffgd-list</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnffgd-show">tacker vnffgd-show</a></li>
+<li><a class="reference internal" href="tacker.html#tacker-vnffgd-template-show">tacker vnffgd-template-show</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="nfv-orchestration-service-tacker-command-line-client">
+<h1>NFV Orchestration service (tacker) command-line client<a class="headerlink" href="tacker.html#nfv-orchestration-service-tacker-command-line-client" title="Permalink to this headline">¶</a></h1>
+<p>The tacker client is the command-line interface (CLI) for
+the NFV Orchestration service (tacker) API and its extensions.</p>
+<p>This chapter documents <strong class="command">tacker</strong> version <code class="docutils literal"><span class="pre">0.9.0</span></code>.</p>
+<p>For help on a specific <strong class="command">tacker</strong> command, enter:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> tacker <span class="nb">help</span> COMMAND
+</pre></div>
+</div>
+<div class="section" id="tacker-usage">
+<span id="tacker-command-usage"></span><h2>tacker usage<a class="headerlink" href="tacker.html#tacker-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker [--version] [-v] [-q] [-h] [-r NUM]</span>
+<span class="go">              [--os-service-type &lt;os-service-type&gt;]</span>
+<span class="go">              [--os-endpoint-type &lt;os-endpoint-type&gt;]</span>
+<span class="go">              [--service-type &lt;service-type&gt;]</span>
+<span class="go">              [--endpoint-type &lt;endpoint-type&gt;]</span>
+<span class="go">              [--os-auth-strategy &lt;auth-strategy&gt;] [--os-auth-url &lt;auth-url&gt;]</span>
+<span class="go">              [--os-tenant-name &lt;auth-tenant-name&gt; | --os-project-name &lt;auth-project-name&gt;]</span>
+<span class="go">              [--os-tenant-id &lt;auth-tenant-id&gt; | --os-project-id &lt;auth-project-id&gt;]</span>
+<span class="go">              [--os-username &lt;auth-username&gt;] [--os-user-id &lt;auth-user-id&gt;]</span>
+<span class="go">              [--os-user-domain-id &lt;auth-user-domain-id&gt;]</span>
+<span class="go">              [--os-user-domain-name &lt;auth-user-domain-name&gt;]</span>
+<span class="go">              [--os-project-domain-id &lt;auth-project-domain-id&gt;]</span>
+<span class="go">              [--os-project-domain-name &lt;auth-project-domain-name&gt;]</span>
+<span class="go">              [--os-cert &lt;certificate&gt;] [--os-cacert &lt;ca-certificate&gt;]</span>
+<span class="go">              [--os-key &lt;key&gt;] [--os-password &lt;auth-password&gt;]</span>
+<span class="go">              [--os-region-name &lt;auth-region-name&gt;] [--os-token &lt;token&gt;]</span>
+<span class="go">              [--http-timeout &lt;seconds&gt;] [--os-url &lt;url&gt;] [--insecure]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="tacker-optional-arguments">
+<span id="tacker-command-options"></span><h2>tacker optional arguments<a class="headerlink" href="tacker.html#tacker-optional-arguments" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--version</span></code></dt>
+<dd>show program's version number and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-v,</span> <span class="pre">--verbose,</span> <span class="pre">--debug</span></code></dt>
+<dd>Increase verbosity of output and show tracebacks on
+errors. You can repeat this option.</dd>
+<dt><code class="docutils literal"><span class="pre">-q,</span> <span class="pre">--quiet</span></code></dt>
+<dd>Suppress output except warnings and errors.</dd>
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>Show this help message and exit.</dd>
+<dt><code class="docutils literal"><span class="pre">-r</span> <span class="pre">NUM,</span> <span class="pre">--retries</span> <span class="pre">NUM</span></code></dt>
+<dd>How many times the request to the Tacker server should
+be retried if it fails.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-service-type</span> <span class="pre">&lt;os-service-type&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TACKER_SERVICE_TYPE]</span></code> or nfv-orchestration.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-endpoint-type</span> <span class="pre">&lt;os-endpoint-type&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_ENDPOINT_TYPE]</span></code> or publicURL.</dd>
+<dt><code class="docutils literal"><span class="pre">--service-type</span> <span class="pre">&lt;service-type&gt;</span></code></dt>
+<dd><strong>DEPRECATED!</strong> Use --os-service-type.</dd>
+<dt><code class="docutils literal"><span class="pre">--endpoint-type</span> <span class="pre">&lt;endpoint-type&gt;</span></code></dt>
+<dd><strong>DEPRECATED!</strong> Use --os-endpoint-type.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-strategy</span> <span class="pre">&lt;auth-strategy&gt;</span></code></dt>
+<dd><strong>DEPRECATED!</strong> Only keystone is supported.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-url</span> <span class="pre">&lt;auth-url&gt;</span></code></dt>
+<dd>Authentication URL, defaults to <code class="docutils literal"><span class="pre">env[OS_AUTH_URL]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-name</span> <span class="pre">&lt;auth-tenant-name&gt;</span></code></dt>
+<dd>Authentication tenant name, defaults to
+<code class="docutils literal"><span class="pre">env[OS_TENANT_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-name</span> <span class="pre">&lt;auth-project-name&gt;</span></code></dt>
+<dd>Another way to specify tenant name. This option is
+mutually exclusive with --os-tenant-name. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_PROJECT_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-id</span> <span class="pre">&lt;auth-tenant-id&gt;</span></code></dt>
+<dd>Authentication tenant ID, defaults to
+<code class="docutils literal"><span class="pre">env[OS_TENANT_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-id</span> <span class="pre">&lt;auth-project-id&gt;</span></code></dt>
+<dd>Another way to specify tenant ID. This option is
+mutually exclusive with --os-tenant-id. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_PROJECT_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-username</span> <span class="pre">&lt;auth-username&gt;</span></code></dt>
+<dd>Authentication username, defaults to <code class="docutils literal"><span class="pre">env[OS_USERNAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-id</span> <span class="pre">&lt;auth-user-id&gt;</span></code></dt>
+<dd>Authentication user ID (Env: OS_USER_ID)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-id</span> <span class="pre">&lt;auth-user-domain-id&gt;</span></code></dt>
+<dd>OpenStack user domain ID. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_USER_DOMAIN_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-name</span> <span class="pre">&lt;auth-user-domain-name&gt;</span></code></dt>
+<dd>OpenStack user domain name. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_USER_DOMAIN_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-id</span> <span class="pre">&lt;auth-project-domain-id&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_DOMAIN_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-name</span> <span class="pre">&lt;auth-project-domain-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_DOMAIN_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-cert</span> <span class="pre">&lt;certificate&gt;</span></code></dt>
+<dd>Path of certificate file to use in SSL connection.
+This file can optionally be prepended with the private
+key. Defaults to <code class="docutils literal"><span class="pre">env[OS_CERT]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-cacert</span> <span class="pre">&lt;ca-certificate&gt;</span></code></dt>
+<dd>Specify a CA bundle file to use in verifying a TLS
+(https) server certificate. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_CACERT]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-key</span> <span class="pre">&lt;key&gt;</span></code></dt>
+<dd>Path of client key to use in SSL connection. This
+option is not necessary if your key is prepended to
+your certificate file. Defaults to <code class="docutils literal"><span class="pre">env[OS_KEY]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-password</span> <span class="pre">&lt;auth-password&gt;</span></code></dt>
+<dd>Authentication password, defaults to <code class="docutils literal"><span class="pre">env[OS_PASSWORD]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-region-name</span> <span class="pre">&lt;auth-region-name&gt;</span></code></dt>
+<dd>Authentication region name, defaults to
+<code class="docutils literal"><span class="pre">env[OS_REGION_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-token</span> <span class="pre">&lt;token&gt;</span></code></dt>
+<dd>Authentication token, defaults to <code class="docutils literal"><span class="pre">env[OS_TOKEN]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--http-timeout</span> <span class="pre">&lt;seconds&gt;</span></code></dt>
+<dd>Timeout in seconds to wait for an HTTP response.
+Defaults to <code class="docutils literal"><span class="pre">env[OS_NETWORK_TIMEOUT]</span></code> or None if not
+specified.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-url</span> <span class="pre">&lt;url&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_URL]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--insecure</span></code></dt>
+<dd>Explicitly allow tackerclient to perform &quot;insecure&quot;
+SSL (https) requests. The server's certificate will
+not be verified against any certificate authorities.
+This option should be used with caution.</dd>
+</dl>
+<div class="section" id="tacker-chain-list">
+<span id="id1"></span><h3>tacker chain-list<a class="headerlink" href="tacker.html#tacker-chain-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker chain-list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                         [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                         [--noindent] [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                         [--request-format {json,xml}] [-D] [-F FIELD]</span>
+</pre></div>
+</div>
+<p>List SFCs that belong to a given tenant.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-chain-show">
+<span id="id2"></span><h3>tacker chain-show<a class="headerlink" href="tacker.html#tacker-chain-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker chain-show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                         [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                         [--noindent] [--prefix PREFIX]</span>
+<span class="go">                         [--request-format {json,xml}] [-D] [-F FIELD]</span>
+<span class="go">                         SFC</span>
+</pre></div>
+</div>
+<p>Show information of a given SFC.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">SFC</span></code></dt>
+<dd>ID or name of sfc to look up</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-classifier-list">
+<span id="id3"></span><h3>tacker classifier-list<a class="headerlink" href="tacker.html#tacker-classifier-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker classifier-list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                              [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                              [--print-empty] [--noindent]</span>
+<span class="go">                              [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                              [--request-format {json,xml}] [-D] [-F FIELD]</span>
+</pre></div>
+</div>
+<p>List FCs that belong to a given tenant.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-classifier-show">
+<span id="id4"></span><h3>tacker classifier-show<a class="headerlink" href="tacker.html#tacker-classifier-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker classifier-show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                              [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                              [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                              [--request-format {json,xml}] [-D] [-F FIELD]</span>
+<span class="go">                              CLASSIFIER</span>
+</pre></div>
+</div>
+<p>Show information of a given FC.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">CLASSIFIER</span></code></dt>
+<dd>ID or name of classifier to look up</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-event-show">
+<span id="id5"></span><h3>tacker event-show<a class="headerlink" href="tacker.html#tacker-event-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker event-show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                         [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                         [--noindent] [--prefix PREFIX]</span>
+<span class="go">                         [--request-format {json,xml}] [-D] [-F FIELD]</span>
+<span class="go">                         EVENT</span>
+</pre></div>
+</div>
+<p>Show event given the event id.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">EVENT</span></code></dt>
+<dd>ID or name of event to look up</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-events-list">
+<span id="id6"></span><h3>tacker events-list<a class="headerlink" href="tacker.html#tacker-events-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker events-list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                          [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                          [--noindent] [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                          [--request-format {json,xml}] [-D] [-F FIELD]</span>
+<span class="go">                          [--id ID] [--resource-id RESOURCE_ID]</span>
+<span class="go">                          [--resource-state RESOURCE_STATE]</span>
+<span class="go">                          [--event-type EVENT_TYPE]</span>
+<span class="go">                          [--resource-type RESOURCE_TYPE]</span>
+</pre></div>
+</div>
+<p>List events of resources.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+<dt><code class="docutils literal"><span class="pre">--id</span> <span class="pre">ID</span></code></dt>
+<dd>id of the event to look up.</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-id</span> <span class="pre">RESOURCE_ID</span></code></dt>
+<dd>resource id of the events to look up.</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-state</span> <span class="pre">RESOURCE_STATE</span></code></dt>
+<dd>resource state of the events to look up.</dd>
+<dt><code class="docutils literal"><span class="pre">--event-type</span> <span class="pre">EVENT_TYPE</span></code></dt>
+<dd>event type of the events to look up.</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-type</span> <span class="pre">RESOURCE_TYPE</span></code></dt>
+<dd>resource type of the events to look up.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-ext-list">
+<span id="id7"></span><h3>tacker ext-list<a class="headerlink" href="tacker.html#tacker-ext-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker ext-list [-h] [-f {csv,html,json,table,value,yaml}] [-c COLUMN]</span>
+<span class="go">                       [--max-width &lt;integer&gt;] [--print-empty] [--noindent]</span>
+<span class="go">                       [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                       [--request-format {json,xml}] [-D] [-F FIELD]</span>
+</pre></div>
+</div>
+<p>List all extensions.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-ext-show">
+<span id="id8"></span><h3>tacker ext-show<a class="headerlink" href="tacker.html#tacker-ext-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker ext-show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                       [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                       [--noindent] [--prefix PREFIX]</span>
+<span class="go">                       [--request-format {json,xml}] [-D] [-F FIELD]</span>
+<span class="go">                       EXT-ALIAS</span>
+</pre></div>
+</div>
+<p>Show information of a given resource.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">EXT-ALIAS</span></code></dt>
+<dd>ID of extension to look up</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-nfp-list">
+<span id="id9"></span><h3>tacker nfp-list<a class="headerlink" href="tacker.html#tacker-nfp-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker nfp-list [-h] [-f {csv,html,json,table,value,yaml}] [-c COLUMN]</span>
+<span class="go">                       [--max-width &lt;integer&gt;] [--print-empty] [--noindent]</span>
+<span class="go">                       [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                       [--request-format {json,xml}] [-D] [-F FIELD]</span>
+</pre></div>
+</div>
+<p>List NFPs that belong to a given tenant.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-nfp-show">
+<span id="id10"></span><h3>tacker nfp-show<a class="headerlink" href="tacker.html#tacker-nfp-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker nfp-show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                       [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                       [--noindent] [--prefix PREFIX]</span>
+<span class="go">                       [--request-format {json,xml}] [-D] [-F FIELD]</span>
+<span class="go">                       NFP</span>
+</pre></div>
+</div>
+<p>Show information of a given NFP.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">NFP</span></code></dt>
+<dd>ID or name of nfp to look up</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-ns-create">
+<span id="id11"></span><h3>tacker ns-create<a class="headerlink" href="tacker.html#tacker-ns-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker ns-create [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                        [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                        [--noindent] [--prefix PREFIX]</span>
+<span class="go">                        [--request-format {json,xml}] [--tenant-id TENANT_ID]</span>
+<span class="go">                        [--description DESCRIPTION]</span>
+<span class="go">                        (--nsd-id NSD_ID | --nsd-name NSD_NAME)</span>
+<span class="go">                        [--vim-id VIM_ID | --vim-name VIM_NAME]</span>
+<span class="go">                        [--vim-region-name VIM_REGION_NAME]</span>
+<span class="go">                        [--param-file PARAM_FILE]</span>
+<span class="go">                        NAME</span>
+</pre></div>
+</div>
+<p>Create a NS.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">NAME</span></code></dt>
+<dd>Set a name for the NS</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">--tenant-id</span> <span class="pre">TENANT_ID</span></code></dt>
+<dd>The owner tenant ID</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">DESCRIPTION</span></code></dt>
+<dd>Set description for the NS</dd>
+<dt><code class="docutils literal"><span class="pre">--nsd-id</span> <span class="pre">NSD_ID</span></code></dt>
+<dd>NSD ID to use as template to create NS</dd>
+<dt><code class="docutils literal"><span class="pre">--nsd-name</span> <span class="pre">NSD_NAME</span></code></dt>
+<dd>NSD name to use as template to create NS</dd>
+<dt><code class="docutils literal"><span class="pre">--vim-id</span> <span class="pre">VIM_ID</span></code></dt>
+<dd>VIM ID to use to create NS on the specified VIM</dd>
+<dt><code class="docutils literal"><span class="pre">--vim-name</span> <span class="pre">VIM_NAME</span></code></dt>
+<dd>VIM name to use to create NS on the specified VIM</dd>
+<dt><code class="docutils literal"><span class="pre">--vim-region-name</span> <span class="pre">VIM_REGION_NAME</span></code></dt>
+<dd>VIM Region to use to create NS on the specified VIM</dd>
+<dt><code class="docutils literal"><span class="pre">--param-file</span> <span class="pre">PARAM_FILE</span></code></dt>
+<dd>Specify parameter yaml file</dd>
+</dl>
+</div>
+<div class="section" id="tacker-ns-delete">
+<span id="id12"></span><h3>tacker ns-delete<a class="headerlink" href="tacker.html#tacker-ns-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker ns-delete [-h] [--request-format {json,xml}] NS [NS ...]</span>
+</pre></div>
+</div>
+<p>Delete given NS(s).</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">NS</span></code></dt>
+<dd>IDs or names of ns to delete</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+</dl>
+</div>
+<div class="section" id="tacker-ns-list">
+<span id="id13"></span><h3>tacker ns-list<a class="headerlink" href="tacker.html#tacker-ns-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker ns-list [-h] [-f {csv,html,json,table,value,yaml}] [-c COLUMN]</span>
+<span class="go">                      [--max-width &lt;integer&gt;] [--print-empty] [--noindent]</span>
+<span class="go">                      [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                      [--request-format {json,xml}] [-D] [-F FIELD]</span>
+</pre></div>
+</div>
+<p>List NS that belong to a given tenant.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-ns-show">
+<span id="id14"></span><h3>tacker ns-show<a class="headerlink" href="tacker.html#tacker-ns-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker ns-show [-h] [-f {html,json,shell,table,value,yaml}] [-c COLUMN]</span>
+<span class="go">                      [--max-width &lt;integer&gt;] [--print-empty] [--noindent]</span>
+<span class="go">                      [--prefix PREFIX] [--request-format {json,xml}] [-D]</span>
+<span class="go">                      [-F FIELD]</span>
+<span class="go">                      NS</span>
+</pre></div>
+</div>
+<p>Show information of a given NS.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">NS</span></code></dt>
+<dd>ID or name of ns to look up</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-nsd-create">
+<span id="id15"></span><h3>tacker nsd-create<a class="headerlink" href="tacker.html#tacker-nsd-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker nsd-create [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                         [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                         [--noindent] [--prefix PREFIX]</span>
+<span class="go">                         [--request-format {json,xml}] [--tenant-id TENANT_ID]</span>
+<span class="go">                         --nsd-file NSD_FILE [--description DESCRIPTION]</span>
+<span class="go">                         NAME</span>
+</pre></div>
+</div>
+<p>Create a NSD.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">NAME</span></code></dt>
+<dd>Set a name for the NSD</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">--tenant-id</span> <span class="pre">TENANT_ID</span></code></dt>
+<dd>The owner tenant ID</dd>
+<dt><code class="docutils literal"><span class="pre">--nsd-file</span> <span class="pre">NSD_FILE</span></code></dt>
+<dd>Specify NSD file</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">DESCRIPTION</span></code></dt>
+<dd>Set a description for the NSD</dd>
+</dl>
+</div>
+<div class="section" id="tacker-nsd-delete">
+<span id="id16"></span><h3>tacker nsd-delete<a class="headerlink" href="tacker.html#tacker-nsd-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker nsd-delete [-h] [--request-format {json,xml}] NSD [NSD ...]</span>
+</pre></div>
+</div>
+<p>Delete a given NSD.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">NSD</span></code></dt>
+<dd>IDs or names of nsd to delete</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+</dl>
+</div>
+<div class="section" id="tacker-nsd-list">
+<span id="id17"></span><h3>tacker nsd-list<a class="headerlink" href="tacker.html#tacker-nsd-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker nsd-list [-h] [-f {csv,html,json,table,value,yaml}] [-c COLUMN]</span>
+<span class="go">                       [--max-width &lt;integer&gt;] [--print-empty] [--noindent]</span>
+<span class="go">                       [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                       [--request-format {json,xml}] [-D] [-F FIELD]</span>
+</pre></div>
+</div>
+<p>List NSDs that belong to a given tenant.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-nsd-show">
+<span id="id18"></span><h3>tacker nsd-show<a class="headerlink" href="tacker.html#tacker-nsd-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker nsd-show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                       [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                       [--noindent] [--prefix PREFIX]</span>
+<span class="go">                       [--request-format {json,xml}] [-D] [-F FIELD]</span>
+<span class="go">                       NSD</span>
+</pre></div>
+</div>
+<p>Show information of a given NSD.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">NSD</span></code></dt>
+<dd>ID or name of nsd to look up</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-nsd-template-show">
+<span id="id19"></span><h3>tacker nsd-template-show<a class="headerlink" href="tacker.html#tacker-nsd-template-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker nsd-template-show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                                [--request-format {json,xml}] [-D] [-F FIELD]</span>
+<span class="go">                                NSD</span>
+</pre></div>
+</div>
+<p>Show template of a given NSD.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">NSD</span></code></dt>
+<dd>ID or name of nsd to look up</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vim-delete">
+<span id="id20"></span><h3>tacker vim-delete<a class="headerlink" href="tacker.html#tacker-vim-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vim-delete [-h] [--request-format {json,xml}] VIM [VIM ...]</span>
+</pre></div>
+</div>
+<p>Delete given VIM(s).</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">VIM</span></code></dt>
+<dd>IDs or names of vim to delete</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vim-events-list">
+<span id="id21"></span><h3>tacker vim-events-list<a class="headerlink" href="tacker.html#tacker-vim-events-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vim-events-list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                              [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                              [--print-empty] [--noindent]</span>
+<span class="go">                              [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                              [--request-format {json,xml}] [-D] [-F FIELD]</span>
+<span class="go">                              [--id ID] [--resource-id RESOURCE_ID]</span>
+<span class="go">                              [--resource-state RESOURCE_STATE]</span>
+<span class="go">                              [--event-type EVENT_TYPE]</span>
+</pre></div>
+</div>
+<p>List events of VIMs.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+<dt><code class="docutils literal"><span class="pre">--id</span> <span class="pre">ID</span></code></dt>
+<dd>id of the event to look up.</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-id</span> <span class="pre">RESOURCE_ID</span></code></dt>
+<dd>resource id of the events to look up.</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-state</span> <span class="pre">RESOURCE_STATE</span></code></dt>
+<dd>resource state of the events to look up.</dd>
+<dt><code class="docutils literal"><span class="pre">--event-type</span> <span class="pre">EVENT_TYPE</span></code></dt>
+<dd>event type of the events to look up.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vim-list">
+<span id="id22"></span><h3>tacker vim-list<a class="headerlink" href="tacker.html#tacker-vim-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vim-list [-h] [-f {csv,html,json,table,value,yaml}] [-c COLUMN]</span>
+<span class="go">                       [--max-width &lt;integer&gt;] [--print-empty] [--noindent]</span>
+<span class="go">                       [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                       [--request-format {json,xml}] [-D] [-F FIELD]</span>
+</pre></div>
+</div>
+<p>List VIMs that belong to a given tenant.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vim-register">
+<span id="id23"></span><h3>tacker vim-register<a class="headerlink" href="tacker.html#tacker-vim-register" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vim-register [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                           [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                           [--noindent] [--prefix PREFIX]</span>
+<span class="go">                           [--request-format {json,xml}]</span>
+<span class="go">                           [--tenant-id TENANT_ID] --config-file CONFIG_FILE</span>
+<span class="go">                           [--description DESCRIPTION] [--is-default]</span>
+<span class="go">                           NAME</span>
+</pre></div>
+</div>
+<p>Create a VIM.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">NAME</span></code></dt>
+<dd>Set a name for the VIM</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">--tenant-id</span> <span class="pre">TENANT_ID</span></code></dt>
+<dd>The owner tenant ID</dd>
+<dt><code class="docutils literal"><span class="pre">--config-file</span> <span class="pre">CONFIG_FILE</span></code></dt>
+<dd>YAML file with VIM configuration parameters</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">DESCRIPTION</span></code></dt>
+<dd>Set a description for the VIM</dd>
+<dt><code class="docutils literal"><span class="pre">--is-default</span></code></dt>
+<dd>Set as default VIM</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vim-show">
+<span id="id24"></span><h3>tacker vim-show<a class="headerlink" href="tacker.html#tacker-vim-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vim-show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                       [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                       [--noindent] [--prefix PREFIX]</span>
+<span class="go">                       [--request-format {json,xml}] [-D] [-F FIELD]</span>
+<span class="go">                       VIM</span>
+</pre></div>
+</div>
+<p>Show information of a given VIM.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">VIM</span></code></dt>
+<dd>ID or name of vim to look up</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vim-update">
+<span id="id25"></span><h3>tacker vim-update<a class="headerlink" href="tacker.html#tacker-vim-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vim-update [-h] [--request-format {json,xml}] --config-file</span>
+<span class="go">                         CONFIG_FILE [--name NAME] [--description DESCRIPTION]</span>
+<span class="go">                         [--is-default {True,False}]</span>
+<span class="go">                         VIM</span>
+</pre></div>
+</div>
+<p>Update a given VIM.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">VIM</span></code></dt>
+<dd>ID or name of vim to update</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">--config-file</span> <span class="pre">CONFIG_FILE</span></code></dt>
+<dd>YAML file with VIM configuration parameters</dd>
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">NAME</span></code></dt>
+<dd>New name for the VIM</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">DESCRIPTION</span></code></dt>
+<dd>New description for the VIM</dd>
+<dt><code class="docutils literal"><span class="pre">--is-default</span> <span class="pre">{True,False}</span></code></dt>
+<dd>Indicate whether the VIM is used as default</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnf-create">
+<span id="id26"></span><h3>tacker vnf-create<a class="headerlink" href="tacker.html#tacker-vnf-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnf-create [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                         [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                         [--noindent] [--prefix PREFIX]</span>
+<span class="go">                         [--request-format {json,xml}] [--tenant-id TENANT_ID]</span>
+<span class="go">                         [--description DESCRIPTION]</span>
+<span class="go">                         (--vnfd-id VNFD_ID | --vnfd-name VNFD_NAME | --vnfd-template VNFD_TEMPLATE)</span>
+<span class="go">                         [--vim-id VIM_ID | --vim-name VIM_NAME]</span>
+<span class="go">                         [--vim-region-name VIM_REGION_NAME]</span>
+<span class="go">                         [--config-file CONFIG_FILE] [--config CONFIG]</span>
+<span class="go">                         [--param-file PARAM_FILE]</span>
+<span class="go">                         NAME</span>
+</pre></div>
+</div>
+<p>Create a VNF.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">NAME</span></code></dt>
+<dd>Set a name for the VNF</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">--tenant-id</span> <span class="pre">TENANT_ID</span></code></dt>
+<dd>The owner tenant ID</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">DESCRIPTION</span></code></dt>
+<dd>Set description for the VNF</dd>
+<dt><code class="docutils literal"><span class="pre">--vnfd-id</span> <span class="pre">VNFD_ID</span></code></dt>
+<dd>VNFD ID to use as template to create VNF</dd>
+<dt><code class="docutils literal"><span class="pre">--vnfd-name</span> <span class="pre">VNFD_NAME</span></code></dt>
+<dd>VNFD Name to use as template to create VNF</dd>
+<dt><code class="docutils literal"><span class="pre">--vnfd-template</span> <span class="pre">VNFD_TEMPLATE</span></code></dt>
+<dd>VNFD file to create VNF</dd>
+<dt><code class="docutils literal"><span class="pre">--vim-id</span> <span class="pre">VIM_ID</span></code></dt>
+<dd>VIM ID to use to create VNF on the specified VIM</dd>
+<dt><code class="docutils literal"><span class="pre">--vim-name</span> <span class="pre">VIM_NAME</span></code></dt>
+<dd>VIM name to use to create VNF on the specified VIM</dd>
+<dt><code class="docutils literal"><span class="pre">--vim-region-name</span> <span class="pre">VIM_REGION_NAME</span></code></dt>
+<dd>VIM Region to use to create VNF on the specified VIM</dd>
+<dt><code class="docutils literal"><span class="pre">--config-file</span> <span class="pre">CONFIG_FILE</span></code></dt>
+<dd>YAML file with VNF configuration</dd>
+<dt><code class="docutils literal"><span class="pre">--config</span> <span class="pre">CONFIG</span></code></dt>
+<dd>Specify config yaml data (<strong>DEPRECATED</strong>)</dd>
+<dt><code class="docutils literal"><span class="pre">--param-file</span> <span class="pre">PARAM_FILE</span></code></dt>
+<dd>Specify parameter yaml file</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnf-delete">
+<span id="id27"></span><h3>tacker vnf-delete<a class="headerlink" href="tacker.html#tacker-vnf-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnf-delete [-h] [--request-format {json,xml}] VNF [VNF ...]</span>
+</pre></div>
+</div>
+<p>Delete given VNF(s).</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">VNF</span></code></dt>
+<dd>IDs or names of vnf to delete</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnf-events-list">
+<span id="id28"></span><h3>tacker vnf-events-list<a class="headerlink" href="tacker.html#tacker-vnf-events-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnf-events-list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                              [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                              [--print-empty] [--noindent]</span>
+<span class="go">                              [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                              [--request-format {json,xml}] [-D] [-F FIELD]</span>
+<span class="go">                              [--id ID] [--resource-id RESOURCE_ID]</span>
+<span class="go">                              [--resource-state RESOURCE_STATE]</span>
+<span class="go">                              [--event-type EVENT_TYPE]</span>
+</pre></div>
+</div>
+<p>List events of VNFs.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+<dt><code class="docutils literal"><span class="pre">--id</span> <span class="pre">ID</span></code></dt>
+<dd>id of the event to look up.</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-id</span> <span class="pre">RESOURCE_ID</span></code></dt>
+<dd>resource id of the events to look up.</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-state</span> <span class="pre">RESOURCE_STATE</span></code></dt>
+<dd>resource state of the events to look up.</dd>
+<dt><code class="docutils literal"><span class="pre">--event-type</span> <span class="pre">EVENT_TYPE</span></code></dt>
+<dd>event type of the events to look up.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnf-list">
+<span id="id29"></span><h3>tacker vnf-list<a class="headerlink" href="tacker.html#tacker-vnf-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnf-list [-h] [-f {csv,html,json,table,value,yaml}] [-c COLUMN]</span>
+<span class="go">                       [--max-width &lt;integer&gt;] [--print-empty] [--noindent]</span>
+<span class="go">                       [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                       [--request-format {json,xml}] [-D] [-F FIELD]</span>
+</pre></div>
+</div>
+<p>List VNF that belong to a given tenant.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnf-resource-list">
+<span id="id30"></span><h3>tacker vnf-resource-list<a class="headerlink" href="tacker.html#tacker-vnf-resource-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnf-resource-list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                                [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                [--print-empty] [--noindent]</span>
+<span class="go">                                [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                                [--request-format {json,xml}] [-D] [-F FIELD]</span>
+<span class="go">                                VNF</span>
+</pre></div>
+</div>
+<p>List resources of a VNF like VDU, CP, etc.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">VNF</span></code></dt>
+<dd>ID or name of vnf to look up</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnf-scale">
+<span id="id31"></span><h3>tacker vnf-scale<a class="headerlink" href="tacker.html#tacker-vnf-scale" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnf-scale [-h] [--request-format {json,xml}]</span>
+<span class="go">                        (--vnf-id VNF_ID | --vnf-name VNF_NAME)</span>
+<span class="go">                        [--scaling-policy-name SCALING_POLICY_NAME]</span>
+<span class="go">                        [--scaling-type SCALING_TYPE]</span>
+</pre></div>
+</div>
+<p>Scale a VNF.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">--vnf-id</span> <span class="pre">VNF_ID</span></code></dt>
+<dd>VNF ID</dd>
+<dt><code class="docutils literal"><span class="pre">--vnf-name</span> <span class="pre">VNF_NAME</span></code></dt>
+<dd>VNF name</dd>
+<dt><code class="docutils literal"><span class="pre">--scaling-policy-name</span> <span class="pre">SCALING_POLICY_NAME</span></code></dt>
+<dd>VNF policy name used to scale</dd>
+<dt><code class="docutils literal"><span class="pre">--scaling-type</span> <span class="pre">SCALING_TYPE</span></code></dt>
+<dd>VNF scaling type, it could be either &quot;out&quot; or &quot;in&quot;</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnf-show">
+<span id="id32"></span><h3>tacker vnf-show<a class="headerlink" href="tacker.html#tacker-vnf-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnf-show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                       [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                       [--noindent] [--prefix PREFIX]</span>
+<span class="go">                       [--request-format {json,xml}] [-D] [-F FIELD]</span>
+<span class="go">                       VNF</span>
+</pre></div>
+</div>
+<p>Show information of a given VNF.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">VNF</span></code></dt>
+<dd>ID or name of vnf to look up</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnf-update">
+<span id="id33"></span><h3>tacker vnf-update<a class="headerlink" href="tacker.html#tacker-vnf-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnf-update [-h] [--request-format {json,xml}]</span>
+<span class="go">                         [--config-file CONFIG_FILE] [--config CONFIG]</span>
+<span class="go">                         VNF</span>
+</pre></div>
+</div>
+<p>Update a given VNF.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">VNF</span></code></dt>
+<dd>ID or name of vnf to update</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">--config-file</span> <span class="pre">CONFIG_FILE</span></code></dt>
+<dd>YAML file with VNF configuration</dd>
+<dt><code class="docutils literal"><span class="pre">--config</span> <span class="pre">CONFIG</span></code></dt>
+<dd>Specify config yaml data</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnfd-create">
+<span id="id34"></span><h3>tacker vnfd-create<a class="headerlink" href="tacker.html#tacker-vnfd-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnfd-create [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                          [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                          [--noindent] [--prefix PREFIX]</span>
+<span class="go">                          [--request-format {json,xml}]</span>
+<span class="go">                          [--tenant-id TENANT_ID]</span>
+<span class="go">                          (--vnfd-file VNFD_FILE | --vnfd VNFD)</span>
+<span class="go">                          [--description DESCRIPTION]</span>
+<span class="go">                          NAME</span>
+</pre></div>
+</div>
+<p>Create a VNFD.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">NAME</span></code></dt>
+<dd>Set a name for the VNFD</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">--tenant-id</span> <span class="pre">TENANT_ID</span></code></dt>
+<dd>The owner tenant ID</dd>
+<dt><code class="docutils literal"><span class="pre">--vnfd-file</span> <span class="pre">VNFD_FILE</span></code></dt>
+<dd>Specify VNFD file</dd>
+<dt><code class="docutils literal"><span class="pre">--vnfd</span> <span class="pre">VNFD</span></code></dt>
+<dd>Specify VNFD (<strong>DEPRECATED</strong>)</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">DESCRIPTION</span></code></dt>
+<dd>Set a description for the VNFD</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnfd-delete">
+<span id="id35"></span><h3>tacker vnfd-delete<a class="headerlink" href="tacker.html#tacker-vnfd-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnfd-delete [-h] [--request-format {json,xml}] VNFD [VNFD ...]</span>
+</pre></div>
+</div>
+<p>Delete given VNFD(s).</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">VNFD</span></code></dt>
+<dd>IDs or names of vnfd to delete</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnfd-events-list">
+<span id="id36"></span><h3>tacker vnfd-events-list<a class="headerlink" href="tacker.html#tacker-vnfd-events-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnfd-events-list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                               [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                               [--print-empty] [--noindent]</span>
+<span class="go">                               [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                               [--request-format {json,xml}] [-D] [-F FIELD]</span>
+<span class="go">                               [--id ID] [--resource-id RESOURCE_ID]</span>
+<span class="go">                               [--resource-state RESOURCE_STATE]</span>
+<span class="go">                               [--event-type EVENT_TYPE]</span>
+</pre></div>
+</div>
+<p>List events of VNFDs.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+<dt><code class="docutils literal"><span class="pre">--id</span> <span class="pre">ID</span></code></dt>
+<dd>id of the event to look up.</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-id</span> <span class="pre">RESOURCE_ID</span></code></dt>
+<dd>resource id of the events to look up.</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-state</span> <span class="pre">RESOURCE_STATE</span></code></dt>
+<dd>resource state of the events to look up.</dd>
+<dt><code class="docutils literal"><span class="pre">--event-type</span> <span class="pre">EVENT_TYPE</span></code></dt>
+<dd>event type of the events to look up.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnfd-list">
+<span id="id37"></span><h3>tacker vnfd-list<a class="headerlink" href="tacker.html#tacker-vnfd-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnfd-list [-h] [-f {csv,html,json,table,value,yaml}] [-c COLUMN]</span>
+<span class="go">                        [--max-width &lt;integer&gt;] [--print-empty] [--noindent]</span>
+<span class="go">                        [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                        [--request-format {json,xml}] [-D] [-F FIELD]</span>
+<span class="go">                        [--template-source TEMPLATE_SOURCE]</span>
+</pre></div>
+</div>
+<p>List VNFD that belong to a given tenant.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+<dt><code class="docutils literal"><span class="pre">--template-source</span> <span class="pre">TEMPLATE_SOURCE</span></code></dt>
+<dd>List VNFD with specified template source. Available
+options are 'onboarded' (default), 'inline' or 'all'</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnfd-show">
+<span id="id38"></span><h3>tacker vnfd-show<a class="headerlink" href="tacker.html#tacker-vnfd-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnfd-show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                        [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                        [--noindent] [--prefix PREFIX]</span>
+<span class="go">                        [--request-format {json,xml}] [-D] [-F FIELD]</span>
+<span class="go">                        VNFD</span>
+</pre></div>
+</div>
+<p>Show information of a given VNFD.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">VNFD</span></code></dt>
+<dd>ID or name of vnfd to look up</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnfd-template-show">
+<span id="id39"></span><h3>tacker vnfd-template-show<a class="headerlink" href="tacker.html#tacker-vnfd-template-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnfd-template-show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                 [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                 [--print-empty] [--noindent]</span>
+<span class="go">                                 [--prefix PREFIX]</span>
+<span class="go">                                 [--request-format {json,xml}] [-D] [-F FIELD]</span>
+<span class="go">                                 VNFD</span>
+</pre></div>
+</div>
+<p>Show template of a given VNFD.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">VNFD</span></code></dt>
+<dd>ID or name of vnfd to look up</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnffg-create">
+<span id="id40"></span><h3>tacker vnffg-create<a class="headerlink" href="tacker.html#tacker-vnffg-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnffg-create [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                           [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                           [--noindent] [--prefix PREFIX]</span>
+<span class="go">                           [--request-format {json,xml}]</span>
+<span class="go">                           [--tenant-id TENANT_ID]</span>
+<span class="go">                           (--vnffgd-id VNFFGD_ID | --vnffgd-name VNFFGD_NAME)</span>
+<span class="go">                           [--vnf-mapping VNF_MAPPING]</span>
+<span class="go">                           [--symmetrical {True,False}]</span>
+<span class="go">                           [--param-file PARAM_FILE]</span>
+<span class="go">                           NAME</span>
+</pre></div>
+</div>
+<p>Create a VNFFG.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">NAME</span></code></dt>
+<dd>Set a name for the VNFFG</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">--tenant-id</span> <span class="pre">TENANT_ID</span></code></dt>
+<dd>The owner tenant ID</dd>
+<dt><code class="docutils literal"><span class="pre">--vnffgd-id</span> <span class="pre">VNFFGD_ID</span></code></dt>
+<dd>VNFFGD ID to use as template to create VNFFG</dd>
+<dt><code class="docutils literal"><span class="pre">--vnffgd-name</span> <span class="pre">VNFFGD_NAME</span></code></dt>
+<dd>VNFFGD Name to use as template to create VNFFG</dd>
+<dt><code class="docutils literal"><span class="pre">--vnf-mapping</span> <span class="pre">VNF_MAPPING</span></code></dt>
+<dd>List of logical VNFD name to VNF instance name
+mapping. Example: VNF1:my_vnf1,VNF2:my_vnf2</dd>
+<dt><code class="docutils literal"><span class="pre">--symmetrical</span> <span class="pre">{True,False}</span></code></dt>
+<dd>Should a reverse path be created for the NFP</dd>
+<dt><code class="docutils literal"><span class="pre">--param-file</span> <span class="pre">PARAM_FILE</span></code></dt>
+<dd>Specify parameter yaml file</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnffg-delete">
+<span id="id41"></span><h3>tacker vnffg-delete<a class="headerlink" href="tacker.html#tacker-vnffg-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnffg-delete [-h] [--request-format {json,xml}]</span>
+<span class="go">                           VNFFG [VNFFG ...]</span>
+</pre></div>
+</div>
+<p>Delete a given VNFFG.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">VNFFG</span></code></dt>
+<dd>IDs or names of vnffg to delete</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnffg-list">
+<span id="id42"></span><h3>tacker vnffg-list<a class="headerlink" href="tacker.html#tacker-vnffg-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnffg-list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                         [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                         [--noindent] [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                         [--request-format {json,xml}] [-D] [-F FIELD]</span>
+</pre></div>
+</div>
+<p>List VNFFGs that belong to a given tenant.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnffg-show">
+<span id="id43"></span><h3>tacker vnffg-show<a class="headerlink" href="tacker.html#tacker-vnffg-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnffg-show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                         [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                         [--noindent] [--prefix PREFIX]</span>
+<span class="go">                         [--request-format {json,xml}] [-D] [-F FIELD]</span>
+<span class="go">                         VNFFG</span>
+</pre></div>
+</div>
+<p>Show information of a given VNFFG.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">VNFFG</span></code></dt>
+<dd>ID or name of vnffg to look up</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnffg-update">
+<span id="id44"></span><h3>tacker vnffg-update<a class="headerlink" href="tacker.html#tacker-vnffg-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnffg-update [-h] [--request-format {json,xml}]</span>
+<span class="go">                           [--vnf-mapping VNF_MAPPING]</span>
+<span class="go">                           [--symmetrical {True,False}]</span>
+<span class="go">                           VNFFG</span>
+</pre></div>
+</div>
+<p>Update a given VNFFG.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">VNFFG</span></code></dt>
+<dd>ID or name of vnffg to update</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">--vnf-mapping</span> <span class="pre">VNF_MAPPING</span></code></dt>
+<dd>List of logical VNFD name to VNF instance name
+mapping. Example: VNF1:my_vnf1,VNF2:my_vnf2</dd>
+<dt><code class="docutils literal"><span class="pre">--symmetrical</span> <span class="pre">{True,False}</span></code></dt>
+<dd>Should a reverse path be created for the NFP</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnffgd-create">
+<span id="id45"></span><h3>tacker vnffgd-create<a class="headerlink" href="tacker.html#tacker-vnffgd-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnffgd-create [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                            [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                            [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                            [--request-format {json,xml}]</span>
+<span class="go">                            [--tenant-id TENANT_ID]</span>
+<span class="go">                            (--vnffgd-file VNFFGD_FILE | --vnffgd VNFFGD)</span>
+<span class="go">                            [--description DESCRIPTION]</span>
+<span class="go">                            NAME</span>
+</pre></div>
+</div>
+<p>Create a VNFFGD.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">NAME</span></code></dt>
+<dd>Set a name for the VNFFGD</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">--tenant-id</span> <span class="pre">TENANT_ID</span></code></dt>
+<dd>The owner tenant ID</dd>
+<dt><code class="docutils literal"><span class="pre">--vnffgd-file</span> <span class="pre">VNFFGD_FILE</span></code></dt>
+<dd>Specify VNFFGD file</dd>
+<dt><code class="docutils literal"><span class="pre">--vnffgd</span> <span class="pre">VNFFGD</span></code></dt>
+<dd>Specify VNFFGD (<strong>DEPRECATED</strong>)</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">DESCRIPTION</span></code></dt>
+<dd>Set a description for the VNFFGD</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnffgd-delete">
+<span id="id46"></span><h3>tacker vnffgd-delete<a class="headerlink" href="tacker.html#tacker-vnffgd-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnffgd-delete [-h] [--request-format {json,xml}]</span>
+<span class="go">                            VNFFGD [VNFFGD ...]</span>
+</pre></div>
+</div>
+<p>Delete a given VNFFGD.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">VNFFGD</span></code></dt>
+<dd>IDs or names of vnffgd to delete</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnffgd-list">
+<span id="id47"></span><h3>tacker vnffgd-list<a class="headerlink" href="tacker.html#tacker-vnffgd-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnffgd-list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                          [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                          [--noindent] [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                          [--request-format {json,xml}] [-D] [-F FIELD]</span>
+</pre></div>
+</div>
+<p>List VNFFGDs that belong to a given tenant.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnffgd-show">
+<span id="id48"></span><h3>tacker vnffgd-show<a class="headerlink" href="tacker.html#tacker-vnffgd-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnffgd-show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                          [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                          [--noindent] [--prefix PREFIX]</span>
+<span class="go">                          [--request-format {json,xml}] [-D] [-F FIELD]</span>
+<span class="go">                          VNFFGD</span>
+</pre></div>
+</div>
+<p>Show information of a given VNFFGD.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">VNFFGD</span></code></dt>
+<dd>ID or name of vnffgd to look up</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+<div class="section" id="tacker-vnffgd-template-show">
+<span id="id49"></span><h3>tacker vnffgd-template-show<a class="headerlink" href="tacker.html#tacker-vnffgd-template-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: tacker vnffgd-template-show [-h]</span>
+<span class="go">                                   [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                   [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                   [--print-empty] [--noindent]</span>
+<span class="go">                                   [--prefix PREFIX]</span>
+<span class="go">                                   [--request-format {json,xml}] [-D]</span>
+<span class="go">                                   [-F FIELD]</span>
+<span class="go">                                   VNFFGD</span>
+</pre></div>
+</div>
+<p>Show template of a given VNFFGD.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">VNFFGD</span></code></dt>
+<dd>ID or name of vnffgd to look up</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--request-format</span> <span class="pre">{json,xml}</span></code></dt>
+<dd>The xml or json request format</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--show-details</span></code></dt>
+<dd>Show detailed info</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">FIELD,</span> <span class="pre">--field</span> <span class="pre">FIELD</span></code></dt>
+<dd>Specify the field(s) to be returned by server. You can
+repeat this option.</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="neutron-sanity-check.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: neutron-sanity-check command-line client"></i></a>
+          
+          
+            <a href="swift.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Object Storage service (swift) command-line client"></i></a>
+          
+            <a id="logABugLink3" href="tacker.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="tacker.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="murano.html">Application Catalog service (murano) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="freezer.html">Backup, Restore, and Disaster Recovery service (freezer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ironic.html">Bare Metal service (ironic) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cinder.html">Block Storage service (cinder) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="senlin.html">Clustering service (senlin) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute service (nova) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnum.html">Container Infrastructure Management service (magnum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database service (trove) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="designate.html">DNS service (designate) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image service (glance) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watcher.html">Infrastructure Optimization service (watcher) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barbican.html">Key Manager service (barbican) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monasca.html">Monitoring (monasca) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networking.html">Networking service (neutron) command-line clients</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="tacker.html#">NFV Orchestration service (tacker) command-line client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tacker.html#tacker-usage">tacker usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tacker.html#tacker-optional-arguments">tacker optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="swift.html">Object Storage service (swift) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heat.html">Orchestration service (heat) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloudkitty.html">Rating service (cloudkitty) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vitrage.html">RCA (Root Cause Analysis) service (vitrage) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manila.html">Shared File Systems service (manila) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solum.html">Software Development Lifecycle Automation service (solum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aodh.html">Telemetry Alarming service (aodh) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ceilometer.html">Telemetry Data Collection service (ceilometer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gnocchi.html">A time series storage and resources index service (gnocchi) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mistral.html">Workflow service (mistral) command-line client</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "tacker" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/cli-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "NFV Orchestration service (tacker) command-line client in Command-Line Interface Reference";
+    var fieldTags = "cli-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:39";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

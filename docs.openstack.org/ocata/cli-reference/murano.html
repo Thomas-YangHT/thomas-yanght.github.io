@@ -1,0 +1,1475 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: Application Catalog service (murano) command-line client</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>Application Catalog service (murano) command-line client</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="index.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: OpenStack Command-Line Interface Reference"></i></a>
+    
+    
+    <a href="freezer.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Backup, Restore, and Disaster Recovery service (freezer) command-line client"></i></a>
+    
+    <a id="logABugLink1" href="murano.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="murano.html#">Application Catalog service (murano) command-line client</a><ul>
+<li><a class="reference internal" href="murano.html#murano-usage">murano usage</a></li>
+<li><a class="reference internal" href="murano.html#murano-optional-arguments">murano optional arguments</a><ul>
+<li><a class="reference internal" href="murano.html#murano-app-show">murano app-show</a></li>
+<li><a class="reference internal" href="murano.html#murano-bundle-import">murano bundle-import</a></li>
+<li><a class="reference internal" href="murano.html#murano-bundle-save">murano bundle-save</a></li>
+<li><a class="reference internal" href="murano.html#murano-category-create">murano category-create</a></li>
+<li><a class="reference internal" href="murano.html#murano-category-delete">murano category-delete</a></li>
+<li><a class="reference internal" href="murano.html#murano-category-list">murano category-list</a></li>
+<li><a class="reference internal" href="murano.html#murano-category-show">murano category-show</a></li>
+<li><a class="reference internal" href="murano.html#murano-class-schema">murano class-schema</a></li>
+<li><a class="reference internal" href="murano.html#murano-deployment-list">murano deployment-list</a></li>
+<li><a class="reference internal" href="murano.html#murano-env-template-add-app">murano env-template-add-app</a></li>
+<li><a class="reference internal" href="murano.html#murano-env-template-clone">murano env-template-clone</a></li>
+<li><a class="reference internal" href="murano.html#murano-env-template-create">murano env-template-create</a></li>
+<li><a class="reference internal" href="murano.html#murano-env-template-create-env">murano env-template-create-env</a></li>
+<li><a class="reference internal" href="murano.html#murano-env-template-del-app">murano env-template-del-app</a></li>
+<li><a class="reference internal" href="murano.html#murano-env-template-delete">murano env-template-delete</a></li>
+<li><a class="reference internal" href="murano.html#murano-env-template-list">murano env-template-list</a></li>
+<li><a class="reference internal" href="murano.html#murano-env-template-show">murano env-template-show</a></li>
+<li><a class="reference internal" href="murano.html#murano-env-template-update">murano env-template-update</a></li>
+<li><a class="reference internal" href="murano.html#murano-environment-action-call">murano environment-action-call</a></li>
+<li><a class="reference internal" href="murano.html#murano-environment-action-get-result">murano environment-action-get-result</a></li>
+<li><a class="reference internal" href="murano.html#murano-environment-apps-edit">murano environment-apps-edit</a></li>
+<li><a class="reference internal" href="murano.html#murano-environment-create">murano environment-create</a></li>
+<li><a class="reference internal" href="murano.html#murano-environment-delete">murano environment-delete</a></li>
+<li><a class="reference internal" href="murano.html#murano-environment-deploy">murano environment-deploy</a></li>
+<li><a class="reference internal" href="murano.html#murano-environment-list">murano environment-list</a></li>
+<li><a class="reference internal" href="murano.html#murano-environment-model-edit">murano environment-model-edit</a></li>
+<li><a class="reference internal" href="murano.html#murano-environment-model-show">murano environment-model-show</a></li>
+<li><a class="reference internal" href="murano.html#murano-environment-rename">murano environment-rename</a></li>
+<li><a class="reference internal" href="murano.html#murano-environment-session-create">murano environment-session-create</a></li>
+<li><a class="reference internal" href="murano.html#murano-environment-show">murano environment-show</a></li>
+<li><a class="reference internal" href="murano.html#murano-package-create">murano package-create</a></li>
+<li><a class="reference internal" href="murano.html#murano-package-delete">murano package-delete</a></li>
+<li><a class="reference internal" href="murano.html#murano-package-download">murano package-download</a></li>
+<li><a class="reference internal" href="murano.html#murano-package-import">murano package-import</a></li>
+<li><a class="reference internal" href="murano.html#murano-package-list">murano package-list</a></li>
+<li><a class="reference internal" href="murano.html#murano-package-save">murano package-save</a></li>
+<li><a class="reference internal" href="murano.html#murano-package-show">murano package-show</a></li>
+<li><a class="reference internal" href="murano.html#murano-package-update">murano package-update</a></li>
+<li><a class="reference internal" href="murano.html#murano-static-action-call">murano static-action-call</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="application-catalog-service-murano-command-line-client">
+<h1>Application Catalog service (murano) command-line client<a class="headerlink" href="murano.html#application-catalog-service-murano-command-line-client" title="Permalink to this headline">¶</a></h1>
+<p>The murano client is the command-line interface (CLI) for
+the Application Catalog service (murano) API and its extensions.</p>
+<p>This chapter documents <strong class="command">murano</strong> version <code class="docutils literal"><span class="pre">0.12.0</span></code>.</p>
+<p>For help on a specific <strong class="command">murano</strong> command, enter:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> murano <span class="nb">help</span> COMMAND
+</pre></div>
+</div>
+<div class="section" id="murano-usage">
+<span id="murano-command-usage"></span><h2>murano usage<a class="headerlink" href="murano.html#murano-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano [--version] [-d] [-v] [--cert-file OS_CERT] [--key-file OS_KEY]</span>
+<span class="go">              [--ca-file OS_CACERT] [--api-timeout API_TIMEOUT]</span>
+<span class="go">              [--os-tenant-id OS_TENANT_ID] [--os-tenant-name OS_TENANT_NAME]</span>
+<span class="go">              [--os-region-name OS_REGION_NAME]</span>
+<span class="go">              [--os-auth-token OS_AUTH_TOKEN] [--os-no-client-auth]</span>
+<span class="go">              [--murano-url MURANO_URL] [--glance-url GLANCE_URL]</span>
+<span class="go">              [--glare-url GLARE_URL]</span>
+<span class="go">              [--murano-api-version MURANO_API_VERSION]</span>
+<span class="go">              [--os-service-type OS_SERVICE_TYPE]</span>
+<span class="go">              [--os-endpoint-type OS_ENDPOINT_TYPE] [--include-password]</span>
+<span class="go">              [--murano-repo-url MURANO_REPO_URL]</span>
+<span class="go">              [--murano-packages-service {murano,glance,glare}] [--insecure]</span>
+<span class="go">              [--os-cacert &lt;ca-certificate&gt;] [--os-cert &lt;certificate&gt;]</span>
+<span class="go">              [--os-key &lt;key&gt;] [--timeout &lt;seconds&gt;]</span>
+<span class="go">              [--os-auth-url OS_AUTH_URL] [--os-domain-id OS_DOMAIN_ID]</span>
+<span class="go">              [--os-domain-name OS_DOMAIN_NAME]</span>
+<span class="go">              [--os-project-id OS_PROJECT_ID]</span>
+<span class="go">              [--os-project-name OS_PROJECT_NAME]</span>
+<span class="go">              [--os-project-domain-id OS_PROJECT_DOMAIN_ID]</span>
+<span class="go">              [--os-project-domain-name OS_PROJECT_DOMAIN_NAME]</span>
+<span class="go">              [--os-trust-id OS_TRUST_ID] [--os-user-id OS_USER_ID]</span>
+<span class="go">              [--os-username OS_USERNAME]</span>
+<span class="go">              [--os-user-domain-id OS_USER_DOMAIN_ID]</span>
+<span class="go">              [--os-user-domain-name OS_USER_DOMAIN_NAME]</span>
+<span class="go">              [--os-password OS_PASSWORD]</span>
+<span class="go">              &lt;subcommand&gt; ...</span>
+</pre></div>
+</div>
+<p><strong>Subcommands:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">app-show</span></code></dt>
+<dd>List applications, added to specified environment.</dd>
+<dt><code class="docutils literal"><span class="pre">bundle-import</span></code></dt>
+<dd>Import a bundle.</dd>
+<dt><code class="docutils literal"><span class="pre">bundle-save</span></code></dt>
+<dd>Save a bundle.</dd>
+<dt><code class="docutils literal"><span class="pre">category-create</span></code></dt>
+<dd>Create a category.</dd>
+<dt><code class="docutils literal"><span class="pre">category-delete</span></code></dt>
+<dd>Delete a category.</dd>
+<dt><code class="docutils literal"><span class="pre">category-list</span></code></dt>
+<dd>List all available categories.</dd>
+<dt><code class="docutils literal"><span class="pre">category-show</span></code></dt>
+<dd>Display category details.</dd>
+<dt><code class="docutils literal"><span class="pre">class-schema</span></code></dt>
+<dd>Display class schema</dd>
+<dt><code class="docutils literal"><span class="pre">deployment-list</span></code></dt>
+<dd>List deployments for an environment.</dd>
+<dt><code class="docutils literal"><span class="pre">env-template-add-app</span></code></dt>
+<dd>Add application to the environment template.</dd>
+<dt><code class="docutils literal"><span class="pre">env-template-clone</span></code></dt>
+<dd>Create a new template, cloned from template.</dd>
+<dt><code class="docutils literal"><span class="pre">env-template-create</span></code></dt>
+<dd>Create an environment template.</dd>
+<dt><code class="docutils literal"><span class="pre">env-template-create-env</span></code></dt>
+<dd>Create a new environment from template.</dd>
+<dt><code class="docutils literal"><span class="pre">env-template-del-app</span></code></dt>
+<dd>Delete application from the environment template.</dd>
+<dt><code class="docutils literal"><span class="pre">env-template-delete</span></code></dt>
+<dd>Delete an environment template.</dd>
+<dt><code class="docutils literal"><span class="pre">env-template-list</span></code></dt>
+<dd>List the environments templates.</dd>
+<dt><code class="docutils literal"><span class="pre">env-template-show</span></code></dt>
+<dd>Display environment template details.</dd>
+<dt><code class="docutils literal"><span class="pre">env-template-update</span></code></dt>
+<dd>Update an environment template.</dd>
+<dt><code class="docutils literal"><span class="pre">environment-action-call</span></code></dt>
+<dd>Call action `ACTION` in environment `ID`.</dd>
+<dt><code class="docutils literal"><span class="pre">environment-action-get-result</span></code></dt>
+<dd>Get result of `TASK` in environment `ID`.</dd>
+<dt><code class="docutils literal"><span class="pre">environment-apps-edit</span></code></dt>
+<dd>Edit environment's object model.</dd>
+<dt><code class="docutils literal"><span class="pre">environment-create</span></code></dt>
+<dd>Create an environment.</dd>
+<dt><code class="docutils literal"><span class="pre">environment-delete</span></code></dt>
+<dd>Delete an environment.</dd>
+<dt><code class="docutils literal"><span class="pre">environment-deploy</span></code></dt>
+<dd>Start deployment of a murano environment session.</dd>
+<dt><code class="docutils literal"><span class="pre">environment-list</span></code></dt>
+<dd>List the environments.</dd>
+<dt><code class="docutils literal"><span class="pre">environment-model-edit</span></code></dt>
+<dd>Edit an environment's object model.</dd>
+<dt><code class="docutils literal"><span class="pre">environment-model-show</span></code></dt>
+<dd>Display an environment's object model.</dd>
+<dt><code class="docutils literal"><span class="pre">environment-rename</span></code></dt>
+<dd>Rename an environment.</dd>
+<dt><code class="docutils literal"><span class="pre">environment-session-create</span></code></dt>
+<dd>Creates a new configuration session for environment
+ID.</dd>
+<dt><code class="docutils literal"><span class="pre">environment-show</span></code></dt>
+<dd>Display environment details.</dd>
+<dt><code class="docutils literal"><span class="pre">package-create</span></code></dt>
+<dd>Create an application package.</dd>
+<dt><code class="docutils literal"><span class="pre">package-delete</span></code></dt>
+<dd>Delete a package.</dd>
+<dt><code class="docutils literal"><span class="pre">package-download</span></code></dt>
+<dd>Download a package to a filename or stdout.</dd>
+<dt><code class="docutils literal"><span class="pre">package-import</span></code></dt>
+<dd>Import a package.</dd>
+<dt><code class="docutils literal"><span class="pre">package-list</span></code></dt>
+<dd>List available packages.</dd>
+<dt><code class="docutils literal"><span class="pre">package-save</span></code></dt>
+<dd>Save a package.</dd>
+<dt><code class="docutils literal"><span class="pre">package-show</span></code></dt>
+<dd>Display details for a package.</dd>
+<dt><code class="docutils literal"><span class="pre">package-update</span></code></dt>
+<dd>Update an existing package.</dd>
+<dt><code class="docutils literal"><span class="pre">static-action-call</span></code></dt>
+<dd>Call static method `METHOD` of the class `CLASS` with
+`ARGUMENTS`.</dd>
+<dt><code class="docutils literal"><span class="pre">bash-completion</span></code></dt>
+<dd>Prints all of the commands and options to stdout.</dd>
+<dt><code class="docutils literal"><span class="pre">help</span></code></dt>
+<dd>Display help about this program or one of its
+subcommands.</dd>
+</dl>
+</div>
+<div class="section" id="murano-optional-arguments">
+<span id="murano-command-options"></span><h2>murano optional arguments<a class="headerlink" href="murano.html#murano-optional-arguments" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--version</span></code></dt>
+<dd>Show program's version number and exit.</dd>
+<dt><code class="docutils literal"><span class="pre">-d,</span> <span class="pre">--debug</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[MURANOCLIENT_DEBUG]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></dt>
+<dd>Print more verbose output.</dd>
+<dt><code class="docutils literal"><span class="pre">--cert-file</span> <span class="pre">OS_CERT</span></code></dt>
+<dd><strong>DEPRECATED!</strong> Use --os-cert.</dd>
+<dt><code class="docutils literal"><span class="pre">--key-file</span> <span class="pre">OS_KEY</span></code></dt>
+<dd><strong>DEPRECATED!</strong> Use --os-key.</dd>
+<dt><code class="docutils literal"><span class="pre">--ca-file</span> <span class="pre">OS_CACERT</span></code></dt>
+<dd><strong>DEPRECATED!</strong> Use --os-cacert.</dd>
+<dt><code class="docutils literal"><span class="pre">--api-timeout</span> <span class="pre">API_TIMEOUT</span></code></dt>
+<dd>Number of seconds to wait for an API response,
+defaults to system socket timeout.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-id</span> <span class="pre">OS_TENANT_ID</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TENANT_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-name</span> <span class="pre">OS_TENANT_NAME</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TENANT_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-region-name</span> <span class="pre">OS_REGION_NAME</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_REGION_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-token</span> <span class="pre">OS_AUTH_TOKEN</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_AUTH_TOKEN]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-no-client-auth</span></code></dt>
+<dd>Do not contact keystone for a token. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_NO_CLIENT_AUTH]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--murano-url</span> <span class="pre">MURANO_URL</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[MURANO_URL]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--glance-url</span> <span class="pre">GLANCE_URL</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[GLANCE_URL]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--glare-url</span> <span class="pre">GLARE_URL</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[GLARE_URL]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--murano-api-version</span> <span class="pre">MURANO_API_VERSION</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[MURANO_API_VERSION]</span></code> or 1.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-service-type</span> <span class="pre">OS_SERVICE_TYPE</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_SERVICE_TYPE]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-endpoint-type</span> <span class="pre">OS_ENDPOINT_TYPE</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_ENDPOINT_TYPE]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--include-password</span></code></dt>
+<dd>Send os-username and os-password to murano.</dd>
+<dt><code class="docutils literal"><span class="pre">--murano-repo-url</span> <span class="pre">MURANO_REPO_URL</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[MURANO_REPO_URL]</span></code> or
+<a class="reference external" href="http://apps.openstack.org/api/v1/murano_repo/liberty/">http://apps.openstack.org/api/v1/murano_repo/liberty/</a></dd>
+<dt><code class="docutils literal"><span class="pre">--murano-packages-service</span> <span class="pre">{murano,glance,glare}</span></code></dt>
+<dd>Specifies if murano-api (&quot;murano&quot;) or Glance Artifact
+Repository (&quot;glare&quot;) should be used to store murano
+packages. Defaults to <code class="docutils literal"><span class="pre">env[MURANO_PACKAGES_SERVICE]</span></code> or
+to &quot;murano&quot;</dd>
+<dt><code class="docutils literal"><span class="pre">--insecure</span></code></dt>
+<dd>Explicitly allow client to perform &quot;insecure&quot; TLS
+(https) requests. The server's certificate will not be
+verified against any certificate authorities. This
+option should be used with caution.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-cacert</span> <span class="pre">&lt;ca-certificate&gt;</span></code></dt>
+<dd>Specify a CA bundle file to use in verifying a TLS
+(https) server certificate. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_CACERT]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-cert</span> <span class="pre">&lt;certificate&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_CERT]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-key</span> <span class="pre">&lt;key&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_KEY]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--timeout</span> <span class="pre">&lt;seconds&gt;</span></code></dt>
+<dd>Set request timeout (in seconds).</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-url</span> <span class="pre">OS_AUTH_URL</span></code></dt>
+<dd>Authentication URL</dd>
+<dt><code class="docutils literal"><span class="pre">--os-domain-id</span> <span class="pre">OS_DOMAIN_ID</span></code></dt>
+<dd>Domain ID to scope to</dd>
+<dt><code class="docutils literal"><span class="pre">--os-domain-name</span> <span class="pre">OS_DOMAIN_NAME</span></code></dt>
+<dd>Domain name to scope to</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-id</span> <span class="pre">OS_PROJECT_ID</span></code></dt>
+<dd>Project ID to scope to</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-name</span> <span class="pre">OS_PROJECT_NAME</span></code></dt>
+<dd>Project name to scope to</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-id</span> <span class="pre">OS_PROJECT_DOMAIN_ID</span></code></dt>
+<dd>Domain ID containing project</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-name</span> <span class="pre">OS_PROJECT_DOMAIN_NAME</span></code></dt>
+<dd>Domain name containing project</dd>
+<dt><code class="docutils literal"><span class="pre">--os-trust-id</span> <span class="pre">OS_TRUST_ID</span></code></dt>
+<dd>Trust ID</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-id</span> <span class="pre">OS_USER_ID</span></code></dt>
+<dd>User ID</dd>
+<dt><code class="docutils literal"><span class="pre">--os-username</span> <span class="pre">OS_USERNAME,</span> <span class="pre">--os-user_name</span> <span class="pre">OS_USERNAME</span></code></dt>
+<dd>Username</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-id</span> <span class="pre">OS_USER_DOMAIN_ID</span></code></dt>
+<dd>User's domain id</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-name</span> <span class="pre">OS_USER_DOMAIN_NAME</span></code></dt>
+<dd>User's domain name</dd>
+<dt><code class="docutils literal"><span class="pre">--os-password</span> <span class="pre">OS_PASSWORD</span></code></dt>
+<dd>User's password</dd>
+</dl>
+<div class="section" id="murano-app-show">
+<span id="id1"></span><h3>murano app-show<a class="headerlink" href="murano.html#murano-app-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano app-show [-p &lt;PATH&gt;] &lt;ID&gt;</span>
+</pre></div>
+</div>
+<p>List applications, added to specified environment.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Environment ID to show applications from.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">&lt;PATH&gt;,</span> <span class="pre">--path</span> <span class="pre">&lt;PATH&gt;</span></code></dt>
+<dd>Level of detalization to show. Leave empty to browse
+all applications in the environment.</dd>
+</dl>
+</div>
+<div class="section" id="murano-bundle-import">
+<span id="id2"></span><h3>murano bundle-import<a class="headerlink" href="murano.html#murano-bundle-import" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano bundle-import [--is-public] [--exists-action {a,s,u}]</span>
+<span class="go">                            &lt;FILE&gt; [&lt;FILE&gt; ...]</span>
+</pre></div>
+</div>
+<p>Import
+a
+bundle.
+`FILE`
+can
+be
+either
+a
+path
+to
+a
+zip
+file,
+URL,
+or
+name
+from
+repo. If `FILE` is a local file, treat names of packages in a bundle as file
+names, relative to location of the bundle file. Requirements are first
+searched in the same directory.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;FILE&gt;</span></code></dt>
+<dd>Bundle URL, bundle name, or path to the bundle file.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--is-public</span></code></dt>
+<dd>Make packages available to users from other tenants.</dd>
+<dt><code class="docutils literal"><span class="pre">--exists-action</span> <span class="pre">{a,s,u}</span></code></dt>
+<dd>Default action when a package already exists.</dd>
+</dl>
+</div>
+<div class="section" id="murano-bundle-save">
+<span id="id3"></span><h3>murano bundle-save<a class="headerlink" href="murano.html#murano-bundle-save" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano bundle-save [-p &lt;PATH&gt;] [--no-images] &lt;BUNDLE&gt;</span>
+</pre></div>
+</div>
+<p>Save a bundle. This will download a bundle of packages with all dependencies
+to specified path. If path doesn't exist it will be created.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;BUNDLE&gt;</span></code></dt>
+<dd>Bundle URL, bundle name, or path to the bundle file.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">&lt;PATH&gt;,</span> <span class="pre">--path</span> <span class="pre">&lt;PATH&gt;</span></code></dt>
+<dd>Path to the directory to store packages. If not set
+will use current directory.</dd>
+<dt><code class="docutils literal"><span class="pre">--no-images</span></code></dt>
+<dd>If set will skip images downloading.</dd>
+</dl>
+</div>
+<div class="section" id="murano-category-create">
+<span id="id4"></span><h3>murano category-create<a class="headerlink" href="murano.html#murano-category-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano category-create &lt;CATEGORY_NAME&gt;</span>
+</pre></div>
+</div>
+<p>Create a category.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CATEGORY_NAME&gt;</span></code></dt>
+<dd>Category name.</dd>
+</dl>
+</div>
+<div class="section" id="murano-category-delete">
+<span id="id5"></span><h3>murano category-delete<a class="headerlink" href="murano.html#murano-category-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano category-delete &lt;ID&gt; [&lt;ID&gt; ...]</span>
+</pre></div>
+</div>
+<p>Delete a category.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>ID of a category(ies) to delete.</dd>
+</dl>
+</div>
+<div class="section" id="murano-category-list">
+<span id="id6"></span><h3>murano category-list<a class="headerlink" href="murano.html#murano-category-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano category-list</span>
+</pre></div>
+</div>
+<p>List all available categories.</p>
+</div>
+<div class="section" id="murano-category-show">
+<span id="id7"></span><h3>murano category-show<a class="headerlink" href="murano.html#murano-category-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano category-show &lt;ID&gt;</span>
+</pre></div>
+</div>
+<p>Display category details.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>ID of a category(s) to show.</dd>
+</dl>
+</div>
+<div class="section" id="murano-class-schema">
+<span id="id8"></span><h3>murano class-schema<a class="headerlink" href="murano.html#murano-class-schema" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano class-schema [--package-name PACKAGE_NAME]</span>
+<span class="go">                           [--class-version CLASS_VERSION]</span>
+<span class="go">                           &lt;CLASS&gt; [&lt;METHOD&gt; [&lt;METHOD&gt; ...]]</span>
+</pre></div>
+</div>
+<p>Display class schema</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CLASS&gt;</span></code></dt>
+<dd>Class FQN</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;METHOD&gt;</span></code></dt>
+<dd>Method name</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--package-name</span> <span class="pre">PACKAGE_NAME</span></code></dt>
+<dd>FQN of the package where the class is located</dd>
+<dt><code class="docutils literal"><span class="pre">--class-version</span> <span class="pre">CLASS_VERSION</span></code></dt>
+<dd>Class version or version range (version spec)</dd>
+</dl>
+</div>
+<div class="section" id="murano-deployment-list">
+<span id="id9"></span><h3>murano deployment-list<a class="headerlink" href="murano.html#murano-deployment-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano deployment-list &lt;ID&gt;</span>
+</pre></div>
+</div>
+<p>List deployments for an environment.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Environment ID for which to list deployments.</dd>
+</dl>
+</div>
+<div class="section" id="murano-env-template-add-app">
+<span id="id10"></span><h3>murano env-template-add-app<a class="headerlink" href="murano.html#murano-env-template-add-app" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano env-template-add-app &lt;ENV_TEMPLATE_ID&gt; &lt;FILE&gt;</span>
+</pre></div>
+</div>
+<p>Add application to the environment template.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ENV_TEMPLATE_ID&gt;</span></code></dt>
+<dd>Environment template ID.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;FILE&gt;</span></code></dt>
+<dd>Path to the template.</dd>
+</dl>
+</div>
+<div class="section" id="murano-env-template-clone">
+<span id="id11"></span><h3>murano env-template-clone<a class="headerlink" href="murano.html#murano-env-template-clone" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano env-template-clone &lt;ID&gt; &lt;ENV_TEMPLATE_NAME&gt;</span>
+</pre></div>
+</div>
+<p>Create a new template, cloned from template.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Environment template ID.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;ENV_TEMPLATE_NAME&gt;</span></code></dt>
+<dd>New environment template name.</dd>
+</dl>
+</div>
+<div class="section" id="murano-env-template-create">
+<span id="id12"></span><h3>murano env-template-create<a class="headerlink" href="murano.html#murano-env-template-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano env-template-create [--is-public] &lt;ENV_TEMPLATE_NAME&gt;</span>
+</pre></div>
+</div>
+<p>Create an environment template.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ENV_TEMPLATE_NAME&gt;</span></code></dt>
+<dd>Environment template name.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--is-public</span></code></dt>
+<dd>Make the template available for users from other
+tenants.</dd>
+</dl>
+</div>
+<div class="section" id="murano-env-template-create-env">
+<span id="id13"></span><h3>murano env-template-create-env<a class="headerlink" href="murano.html#murano-env-template-create-env" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano env-template-create-env [--region &lt;REGION_NAME&gt;] &lt;ID&gt; &lt;ENV_NAME&gt;</span>
+</pre></div>
+</div>
+<p>Create a new environment from template.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Environment template ID.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;ENV_NAME&gt;</span></code></dt>
+<dd>New environment name.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--region</span> <span class="pre">&lt;REGION_NAME&gt;</span></code></dt>
+<dd>Name of the target OpenStack region.</dd>
+</dl>
+</div>
+<div class="section" id="murano-env-template-del-app">
+<span id="id14"></span><h3>murano env-template-del-app<a class="headerlink" href="murano.html#murano-env-template-del-app" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano env-template-del-app &lt;ENV_TEMPLATE_ID&gt; &lt;ENV_TEMPLATE_APP_ID&gt;</span>
+</pre></div>
+</div>
+<p>Delete application from the environment template.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ENV_TEMPLATE_ID&gt;</span></code></dt>
+<dd>Environment template ID.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;ENV_TEMPLATE_APP_ID&gt;</span></code></dt>
+<dd>Application ID.</dd>
+</dl>
+</div>
+<div class="section" id="murano-env-template-delete">
+<span id="id15"></span><h3>murano env-template-delete<a class="headerlink" href="murano.html#murano-env-template-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano env-template-delete &lt;ID&gt; [&lt;ID&gt; ...]</span>
+</pre></div>
+</div>
+<p>Delete an environment template.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>ID of environment(s) template to delete.</dd>
+</dl>
+</div>
+<div class="section" id="murano-env-template-list">
+<span id="id16"></span><h3>murano env-template-list<a class="headerlink" href="murano.html#murano-env-template-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano env-template-list</span>
+</pre></div>
+</div>
+<p>List the environments templates.</p>
+</div>
+<div class="section" id="murano-env-template-show">
+<span id="id17"></span><h3>murano env-template-show<a class="headerlink" href="murano.html#murano-env-template-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano env-template-show &lt;ID&gt;</span>
+</pre></div>
+</div>
+<p>Display environment template details.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Environment template ID.</dd>
+</dl>
+</div>
+<div class="section" id="murano-env-template-update">
+<span id="id18"></span><h3>murano env-template-update<a class="headerlink" href="murano.html#murano-env-template-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano env-template-update &lt;ID&gt; &lt;ENV_TEMPLATE_NAME&gt;</span>
+</pre></div>
+</div>
+<p>Update an environment template.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Environment template ID.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;ENV_TEMPLATE_NAME&gt;</span></code></dt>
+<dd>Environment template name.</dd>
+</dl>
+</div>
+<div class="section" id="murano-environment-action-call">
+<span id="id19"></span><h3>murano environment-action-call<a class="headerlink" href="murano.html#murano-environment-action-call" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano environment-action-call --action-id &lt;ACTION&gt;</span>
+<span class="go">                                      [--arguments [&lt;KEY=VALUE&gt; [&lt;KEY=VALUE&gt; ...]]]</span>
+<span class="go">                                      id</span>
+</pre></div>
+</div>
+<p>Call
+action
+`ACTION`
+in
+environment
+`ID`.
+Returns
+id
+of
+an
+asynchronous
+task,
+that executes the action. Actions can only be called on a `deployed`
+environment. To view actions available in a given environment use
+`environment-show` command.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">id</span></code></dt>
+<dd>ID of Environment to call action against.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--action-id</span> <span class="pre">&lt;ACTION&gt;</span></code></dt>
+<dd>ID of action to run.</dd>
+<dt><code class="docutils literal"><span class="pre">--arguments</span> <span class="pre">[&lt;KEY=VALUE&gt;</span> <span class="pre">[&lt;KEY=VALUE&gt;</span> <span class="pre">...]]</span></code></dt>
+<dd>Action arguments.</dd>
+</dl>
+</div>
+<div class="section" id="murano-environment-action-get-result">
+<span id="id20"></span><h3>murano environment-action-get-result<a class="headerlink" href="murano.html#murano-environment-action-get-result" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano environment-action-get-result --task-id &lt;TASK&gt; &lt;ID&gt;</span>
+</pre></div>
+</div>
+<p>Get result of `TASK` in environment `ID`.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>ID of Environment where task is being executed.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--task-id</span> <span class="pre">&lt;TASK&gt;</span></code></dt>
+<dd>ID of action to run.</dd>
+</dl>
+</div>
+<div class="section" id="murano-environment-apps-edit">
+<span id="id21"></span><h3>murano environment-apps-edit<a class="headerlink" href="murano.html#murano-environment-apps-edit" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano environment-apps-edit --session-id &lt;SESSION_ID&gt; &lt;ID&gt; [FILE]</span>
+</pre></div>
+</div>
+<p>Edit environment's object model. `FILE` is path to a file, that contains
+jsonpatch, that describes changes to be made to environment's object-model. [
+{ &quot;op&quot;: &quot;add&quot;, &quot;path&quot;: &quot;/-&quot;, &quot;value&quot;: { ... your-app object model here ... }
+}, { &quot;op&quot;: &quot;replace&quot;, &quot;path&quot;: &quot;/0/?/name&quot;, &quot;value&quot;: &quot;new_name&quot; }, ] NOTE:
+Values '===id1===', '===id2===', etc. in the resulting object-model will be
+substituted with uuids. For more info on jsonpatch see RFC 6902</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>ID of Environment to edit.</dd>
+<dt><code class="docutils literal"><span class="pre">FILE</span></code></dt>
+<dd>File to read jsonpatch from (defaults to stdin).</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--session-id</span> <span class="pre">&lt;SESSION_ID&gt;</span></code></dt>
+<dd>Id of a config session.</dd>
+</dl>
+</div>
+<div class="section" id="murano-environment-create">
+<span id="id22"></span><h3>murano environment-create<a class="headerlink" href="murano.html#murano-environment-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano environment-create [--join-net-id &lt;NET_ID&gt;]</span>
+<span class="go">                                 [--join-subnet-id &lt;SUBNET_ID&gt;]</span>
+<span class="go">                                 [--region &lt;REGION_NAME&gt;]</span>
+<span class="go">                                 &lt;ENVIRONMENT_NAME&gt;</span>
+</pre></div>
+</div>
+<p>Create an environment.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ENVIRONMENT_NAME&gt;</span></code></dt>
+<dd>Environment name.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--join-net-id</span> <span class="pre">&lt;NET_ID&gt;</span></code></dt>
+<dd>Network id to join.</dd>
+<dt><code class="docutils literal"><span class="pre">--join-subnet-id</span> <span class="pre">&lt;SUBNET_ID&gt;</span></code></dt>
+<dd>Subnetwork id to join.</dd>
+<dt><code class="docutils literal"><span class="pre">--region</span> <span class="pre">&lt;REGION_NAME&gt;</span></code></dt>
+<dd>Name of the target OpenStack region.</dd>
+</dl>
+</div>
+<div class="section" id="murano-environment-delete">
+<span id="id23"></span><h3>murano environment-delete<a class="headerlink" href="murano.html#murano-environment-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano environment-delete [--abandon] &lt;NAME or ID&gt; [&lt;NAME or ID&gt; ...]</span>
+</pre></div>
+</div>
+<p>Delete an environment.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Id or name of environment(s) to delete.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--abandon</span></code></dt>
+<dd>If set will abandon environment without deleting any of its
+resources.</dd>
+</dl>
+</div>
+<div class="section" id="murano-environment-deploy">
+<span id="id24"></span><h3>murano environment-deploy<a class="headerlink" href="murano.html#murano-environment-deploy" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano environment-deploy --session-id &lt;SESSION&gt; &lt;ID&gt;</span>
+</pre></div>
+</div>
+<p>Start deployment of a murano environment session.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>ID of Environment to deploy.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--session-id</span> <span class="pre">&lt;SESSION&gt;</span></code></dt>
+<dd>ID of configuration session to deploy.</dd>
+</dl>
+</div>
+<div class="section" id="murano-environment-list">
+<span id="id25"></span><h3>murano environment-list<a class="headerlink" href="murano.html#murano-environment-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano environment-list [--all-tenants] [--tenant &lt;TENANT_ID&gt;]</span>
+</pre></div>
+</div>
+<p>List the environments.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--all-tenants</span></code></dt>
+<dd>Allows to list environments from all tenants (admin
+only).</dd>
+<dt><code class="docutils literal"><span class="pre">--tenant</span> <span class="pre">&lt;TENANT_ID&gt;</span></code></dt>
+<dd>Allows to list environments for a given tenant (admin
+only).</dd>
+</dl>
+</div>
+<div class="section" id="murano-environment-model-edit">
+<span id="id26"></span><h3>murano environment-model-edit<a class="headerlink" href="murano.html#murano-environment-model-edit" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano environment-model-edit --session-id &lt;SESSION_ID&gt; &lt;ID&gt; [&lt;FILE&gt;]</span>
+</pre></div>
+</div>
+<p>Edit an environment's object model.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>ID of Environment to edit.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;FILE&gt;</span></code></dt>
+<dd>File to read JSON-patch from (defaults to stdin).</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--session-id</span> <span class="pre">&lt;SESSION_ID&gt;</span></code></dt>
+<dd>Id of a config session.</dd>
+</dl>
+</div>
+<div class="section" id="murano-environment-model-show">
+<span id="id27"></span><h3>murano environment-model-show<a class="headerlink" href="murano.html#murano-environment-model-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano environment-model-show [--path &lt;PATH&gt;]</span>
+<span class="go">                                     [--session-id &lt;SESSION_ID&gt;]</span>
+<span class="go">                                     &lt;ID&gt;</span>
+</pre></div>
+</div>
+<p>Display an environment's object model.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>ID of Environment to show.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--path</span> <span class="pre">&lt;PATH&gt;</span></code></dt>
+<dd>Path to Environment model section. Defaults to '/'.</dd>
+<dt><code class="docutils literal"><span class="pre">--session-id</span> <span class="pre">&lt;SESSION_ID&gt;</span></code></dt>
+<dd>Id of a config session.</dd>
+</dl>
+</div>
+<div class="section" id="murano-environment-rename">
+<span id="id28"></span><h3>murano environment-rename<a class="headerlink" href="murano.html#murano-environment-rename" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano environment-rename &lt;NAME or ID&gt; &lt;ENVIRONMENT_NAME&gt;</span>
+</pre></div>
+</div>
+<p>Rename an environment.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Environment ID or name.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;ENVIRONMENT_NAME&gt;</span></code></dt>
+<dd>A name to which the environment will be renamed.</dd>
+</dl>
+</div>
+<div class="section" id="murano-environment-session-create">
+<span id="id29"></span><h3>murano environment-session-create<a class="headerlink" href="murano.html#murano-environment-session-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano environment-session-create &lt;ID&gt;</span>
+</pre></div>
+</div>
+<p>Creates a new configuration session for environment ID.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>ID of Environment to add session to.</dd>
+</dl>
+</div>
+<div class="section" id="murano-environment-show">
+<span id="id30"></span><h3>murano environment-show<a class="headerlink" href="murano.html#murano-environment-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano environment-show [--session-id &lt;SESSION_ID&gt;] [--only-apps]</span>
+<span class="go">                               &lt;NAME or ID&gt;</span>
+</pre></div>
+</div>
+<p>Display environment details.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Environment ID or name.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--session-id</span> <span class="pre">&lt;SESSION_ID&gt;</span></code></dt>
+<dd>Id of a config session.</dd>
+<dt><code class="docutils literal"><span class="pre">--only-apps</span></code></dt>
+<dd>Only print apps of the environment (useful for
+automation).</dd>
+</dl>
+</div>
+<div class="section" id="murano-package-create">
+<span id="id31"></span><h3>murano package-create<a class="headerlink" href="murano.html#murano-package-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano package-create [-t &lt;HEAT_TEMPLATE&gt;] [-c &lt;CLASSES_DIRECTORY&gt;]</span>
+<span class="go">                             [-r &lt;RESOURCES_DIRECTORY&gt;] [-n &lt;DISPLAY_NAME&gt;]</span>
+<span class="go">                             [-f &lt;full-name&gt;] [-a &lt;AUTHOR&gt;]</span>
+<span class="go">                             [--tags [&lt;TAG1 TAG2&gt; [&lt;TAG1 TAG2&gt; ...]]]</span>
+<span class="go">                             [-d &lt;DESCRIPTION&gt;] [-o &lt;PACKAGE_NAME&gt;]</span>
+<span class="go">                             [-u &lt;UI_DEFINITION&gt;] [--type TYPE] [-l &lt;LOGO&gt;]</span>
+</pre></div>
+</div>
+<p>Create an application package.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">&lt;HEAT_TEMPLATE&gt;,</span> <span class="pre">--template</span> <span class="pre">&lt;HEAT_TEMPLATE&gt;</span></code></dt>
+<dd>Path to the Heat template to import as an Application
+Definition.</dd>
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">&lt;CLASSES_DIRECTORY&gt;,</span> <span class="pre">--classes-dir</span> <span class="pre">&lt;CLASSES_DIRECTORY&gt;</span></code></dt>
+<dd>Path to the directory containing application classes.</dd>
+<dt><code class="docutils literal"><span class="pre">-r</span> <span class="pre">&lt;RESOURCES_DIRECTORY&gt;,</span> <span class="pre">--resources-dir</span> <span class="pre">&lt;RESOURCES_DIRECTORY&gt;</span></code></dt>
+<dd>Path to the directory containing application
+resources.</dd>
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">&lt;DISPLAY_NAME&gt;,</span> <span class="pre">--name</span> <span class="pre">&lt;DISPLAY_NAME&gt;</span></code></dt>
+<dd>Display name of the Application in Catalog.</dd>
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;full-name&gt;,</span> <span class="pre">--full-name</span> <span class="pre">&lt;full-name&gt;</span></code></dt>
+<dd>Fully-qualified name of the Application in Catalog.</dd>
+<dt><code class="docutils literal"><span class="pre">-a</span> <span class="pre">&lt;AUTHOR&gt;,</span> <span class="pre">--author</span> <span class="pre">&lt;AUTHOR&gt;</span></code></dt>
+<dd>Name of the publisher.</dd>
+<dt><code class="docutils literal"><span class="pre">--tags</span> <span class="pre">[&lt;TAG1</span> <span class="pre">TAG2&gt;</span> <span class="pre">[&lt;TAG1</span> <span class="pre">TAG2&gt;</span> <span class="pre">...]]</span></code></dt>
+<dd>A list of keywords connected to the application.</dd>
+<dt><code class="docutils literal"><span class="pre">-d</span> <span class="pre">&lt;DESCRIPTION&gt;,</span> <span class="pre">--description</span> <span class="pre">&lt;DESCRIPTION&gt;</span></code></dt>
+<dd>Detailed description for the Application in Catalog.</dd>
+<dt><code class="docutils literal"><span class="pre">-o</span> <span class="pre">&lt;PACKAGE_NAME&gt;,</span> <span class="pre">--output</span> <span class="pre">&lt;PACKAGE_NAME&gt;</span></code></dt>
+<dd>The name of the output file archive to save locally.</dd>
+<dt><code class="docutils literal"><span class="pre">-u</span> <span class="pre">&lt;UI_DEFINITION&gt;,</span> <span class="pre">--ui</span> <span class="pre">&lt;UI_DEFINITION&gt;</span></code></dt>
+<dd>Dynamic UI form definition.</dd>
+<dt><code class="docutils literal"><span class="pre">--type</span> <span class="pre">TYPE</span></code></dt>
+<dd>Package type. Possible values: Application or Library.</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;LOGO&gt;,</span> <span class="pre">--logo</span> <span class="pre">&lt;LOGO&gt;</span></code></dt>
+<dd>Path to the package logo.</dd>
+</dl>
+</div>
+<div class="section" id="murano-package-delete">
+<span id="id32"></span><h3>murano package-delete<a class="headerlink" href="murano.html#murano-package-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano package-delete &lt;ID&gt; [&lt;ID&gt; ...]</span>
+</pre></div>
+</div>
+<p>Delete a package.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Package ID to delete.</dd>
+</dl>
+</div>
+<div class="section" id="murano-package-download">
+<span id="id33"></span><h3>murano package-download<a class="headerlink" href="murano.html#murano-package-download" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano package-download &lt;ID&gt; [file]</span>
+</pre></div>
+</div>
+<p>Download a package to a filename or stdout.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Package ID to download.</dd>
+<dt><code class="docutils literal"><span class="pre">file</span></code></dt>
+<dd>Filename to save package to. If it is not specified and there is no
+stdout redirection the package won't be saved.</dd>
+</dl>
+</div>
+<div class="section" id="murano-package-import">
+<span id="id34"></span><h3>murano package-import<a class="headerlink" href="murano.html#murano-package-import" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano package-import [-c [&lt;CATEGORY&gt; [&lt;CATEGORY&gt; ...]]] [--is-public]</span>
+<span class="go">                             [--package-version PACKAGE_VERSION]</span>
+<span class="go">                             [--exists-action {a,s,u}]</span>
+<span class="go">                             [--dep-exists-action {a,s,u}]</span>
+<span class="go">                             &lt;FILE&gt; [&lt;FILE&gt; ...]</span>
+</pre></div>
+</div>
+<p>Import a package. `FILE` can be either a path to a zip file, url or a FQPN.
+You
+can
+use
+`--`
+to
+separate
+`FILE`s
+from
+other
+arguments.
+Categories
+have
+to
+be separated with a space and have to be already present in murano.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;FILE&gt;</span></code></dt>
+<dd>URL of the murano zip package, FQPN, path to zip
+package or path to directory with package.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">[&lt;CATEGORY&gt;</span> <span class="pre">[&lt;CATEGORY&gt;</span> <span class="pre">...]],</span> <span class="pre">--categories</span> <span class="pre">[&lt;CATEGORY&gt;</span> <span class="pre">[&lt;CATEGORY&gt;</span> <span class="pre">...]]</span></code></dt>
+<dd>Category list to attach.</dd>
+<dt><code class="docutils literal"><span class="pre">--is-public</span></code></dt>
+<dd>Make the package available for users from other
+tenants.</dd>
+<dt><code class="docutils literal"><span class="pre">--package-version</span> <span class="pre">PACKAGE_VERSION</span></code></dt>
+<dd>Version of the package to use from repository (ignored
+when importing with multiple packages).</dd>
+<dt><code class="docutils literal"><span class="pre">--exists-action</span> <span class="pre">{a,s,u}</span></code></dt>
+<dd>Default action when a package already exists: (s)kip,
+(u)pdate, (a)bort.</dd>
+<dt><code class="docutils literal"><span class="pre">--dep-exists-action</span> <span class="pre">{a,s,u}</span></code></dt>
+<dd>Default action when a dependency package already
+exists: (s)kip, (u)pdate, (a)bort.</dd>
+</dl>
+</div>
+<div class="section" id="murano-package-list">
+<span id="id35"></span><h3>murano package-list<a class="headerlink" href="murano.html#murano-package-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano package-list [--limit LIMIT] [--marker MARKER]</span>
+<span class="go">                           [--include-disabled] [--owned]</span>
+<span class="go">                           [--search &lt;SEARCH_KEYS&gt;] [--name &lt;PACKAGE_NAME&gt;]</span>
+<span class="go">                           [--fqn &lt;PACKAGE_FULLY_QUALIFIED_NAME&gt;]</span>
+<span class="go">                           [--type &lt;PACKAGE_TYPE&gt;]</span>
+<span class="go">                           [--category &lt;PACKAGE_CATEGORY&gt;]</span>
+<span class="go">                           [--class_name &lt;PACKAGE_CLASS_NAME&gt;]</span>
+<span class="go">                           [--tag &lt;PACKAGE_TAG&gt;]</span>
+</pre></div>
+</div>
+<p>List available packages.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">LIMIT</span></code></dt>
+<dd>Show limited number of packages</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">MARKER</span></code></dt>
+<dd>Show packages starting from package with id excluding
+it</dd>
+</dl>
+<p><code class="docutils literal"><span class="pre">--include-disabled</span></code></p>
+<p><code class="docutils literal"><span class="pre">--owned</span></code></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--search</span> <span class="pre">&lt;SEARCH_KEYS&gt;</span></code></dt>
+<dd>Show packages, that match search keys fuzzily</dd>
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;PACKAGE_NAME&gt;</span></code></dt>
+<dd>Show packages, whose name match parameter exactly</dd>
+<dt><code class="docutils literal"><span class="pre">--fqn</span> <span class="pre">&lt;PACKAGE_FULLY_QUALIFIED_NAME&gt;</span></code></dt>
+<dd>Show packages, whose fully qualified name match
+parameter exactly</dd>
+<dt><code class="docutils literal"><span class="pre">--type</span> <span class="pre">&lt;PACKAGE_TYPE&gt;</span></code></dt>
+<dd>Show packages, whose type match parameter exactly</dd>
+<dt><code class="docutils literal"><span class="pre">--category</span> <span class="pre">&lt;PACKAGE_CATEGORY&gt;</span></code></dt>
+<dd>Show packages, whose categories include parameter</dd>
+<dt><code class="docutils literal"><span class="pre">--class_name</span> <span class="pre">&lt;PACKAGE_CLASS_NAME&gt;</span></code></dt>
+<dd>Show packages, whose class name match parameter
+exactly</dd>
+<dt><code class="docutils literal"><span class="pre">--tag</span> <span class="pre">&lt;PACKAGE_TAG&gt;</span></code></dt>
+<dd>Show packages, whose tags include parameter</dd>
+</dl>
+</div>
+<div class="section" id="murano-package-save">
+<span id="id36"></span><h3>murano package-save<a class="headerlink" href="murano.html#murano-package-save" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano package-save [-p &lt;PATH&gt;] [--package-version PACKAGE_VERSION]</span>
+<span class="go">                           [--no-images]</span>
+<span class="go">                           &lt;PACKAGE&gt; [&lt;PACKAGE&gt; ...]</span>
+</pre></div>
+</div>
+<p>Save a package. This will download package(s) with all dependencies to
+specified path. If path doesn't exist it will be created.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;PACKAGE&gt;</span></code></dt>
+<dd>Package URL or name.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">&lt;PATH&gt;,</span> <span class="pre">--path</span> <span class="pre">&lt;PATH&gt;</span></code></dt>
+<dd>Path to the directory to store package. If not set
+will use current directory.</dd>
+<dt><code class="docutils literal"><span class="pre">--package-version</span> <span class="pre">PACKAGE_VERSION</span></code></dt>
+<dd>Version of the package to use from repository (ignored
+when saving with multiple packages).</dd>
+<dt><code class="docutils literal"><span class="pre">--no-images</span></code></dt>
+<dd>If set will skip images downloading.</dd>
+</dl>
+</div>
+<div class="section" id="murano-package-show">
+<span id="id37"></span><h3>murano package-show<a class="headerlink" href="murano.html#murano-package-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano package-show &lt;ID&gt;</span>
+</pre></div>
+</div>
+<p>Display details for a package.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Package ID to show.</dd>
+</dl>
+</div>
+<div class="section" id="murano-package-update">
+<span id="id38"></span><h3>murano package-update<a class="headerlink" href="murano.html#murano-package-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano package-update [--is-public {true|false}]</span>
+<span class="go">                             [--enabled {true|false}] [--name NAME]</span>
+<span class="go">                             [--description DESCRIPTION]</span>
+<span class="go">                             [--tags [&lt;TAG&gt; [&lt;TAG&gt; ...]]]</span>
+<span class="go">                             &lt;ID&gt;</span>
+</pre></div>
+</div>
+<p>Update an existing package.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Package ID to update.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--is-public</span> <span class="pre">{true|false}</span></code></dt>
+<dd>Make package available to users from other tenants.</dd>
+<dt><code class="docutils literal"><span class="pre">--enabled</span> <span class="pre">{true|false}</span></code></dt>
+<dd>Make package active and available for deployments.</dd>
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">NAME</span></code></dt>
+<dd>New name for the package.</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">DESCRIPTION</span></code></dt>
+<dd>New package description.</dd>
+<dt><code class="docutils literal"><span class="pre">--tags</span> <span class="pre">[&lt;TAG&gt;</span> <span class="pre">[&lt;TAG&gt;</span> <span class="pre">...]]</span></code></dt>
+<dd>A list of keywords connected to the application.</dd>
+</dl>
+</div>
+<div class="section" id="murano-static-action-call">
+<span id="id39"></span><h3>murano static-action-call<a class="headerlink" href="murano.html#murano-static-action-call" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: murano static-action-call [--arguments [&lt;KEY=VALUE&gt; [&lt;KEY=VALUE&gt; ...]]]</span>
+<span class="go">                                 [--package-name &lt;PACKAGE&gt;]</span>
+<span class="go">                                 [--class-version CLASS_VERSION]</span>
+<span class="go">                                 &lt;CLASS&gt; &lt;METHOD&gt;</span>
+</pre></div>
+</div>
+<p>Call
+static
+method
+`METHOD`
+of
+the
+class
+`CLASS`
+with
+`ARGUMENTS`.
+Returns
+the
+result
+of
+the
+method
+execution.
+`PACKAGE`
+and
+`CLASS_VERSION`
+can
+be
+specified
+optionally to find class in a particular package and to look for the specific
+version of a class respectively.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CLASS&gt;</span></code></dt>
+<dd>FQN of the class with static method</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;METHOD&gt;</span></code></dt>
+<dd>Static method to run</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--arguments</span> <span class="pre">[&lt;KEY=VALUE&gt;</span> <span class="pre">[&lt;KEY=VALUE&gt;</span> <span class="pre">...]]</span></code></dt>
+<dd>Method arguments. No arguments by default</dd>
+<dt><code class="docutils literal"><span class="pre">--package-name</span> <span class="pre">&lt;PACKAGE&gt;</span></code></dt>
+<dd>Optional FQN of the package to look for the class in</dd>
+<dt><code class="docutils literal"><span class="pre">--class-version</span> <span class="pre">CLASS_VERSION</span></code></dt>
+<dd>Optional version of the class, otherwise version =0 is
+used</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="index.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: OpenStack Command-Line Interface Reference"></i></a>
+          
+          
+            <a href="freezer.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Backup, Restore, and Disaster Recovery service (freezer) command-line client"></i></a>
+          
+            <a id="logABugLink3" href="murano.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="murano.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="murano.html#">Application Catalog service (murano) command-line client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="murano.html#murano-usage">murano usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="murano.html#murano-optional-arguments">murano optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="freezer.html">Backup, Restore, and Disaster Recovery service (freezer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ironic.html">Bare Metal service (ironic) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cinder.html">Block Storage service (cinder) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="senlin.html">Clustering service (senlin) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute service (nova) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnum.html">Container Infrastructure Management service (magnum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database service (trove) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="designate.html">DNS service (designate) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image service (glance) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watcher.html">Infrastructure Optimization service (watcher) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barbican.html">Key Manager service (barbican) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monasca.html">Monitoring (monasca) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networking.html">Networking service (neutron) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tacker.html">NFV Orchestration service (tacker) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="swift.html">Object Storage service (swift) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heat.html">Orchestration service (heat) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloudkitty.html">Rating service (cloudkitty) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vitrage.html">RCA (Root Cause Analysis) service (vitrage) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manila.html">Shared File Systems service (manila) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solum.html">Software Development Lifecycle Automation service (solum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aodh.html">Telemetry Alarming service (aodh) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ceilometer.html">Telemetry Data Collection service (ceilometer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gnocchi.html">A time series storage and resources index service (gnocchi) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mistral.html">Workflow service (mistral) command-line client</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "murano" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/cli-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "Application Catalog service (murano) command-line client in Command-Line Interface Reference";
+    var fieldTags = "cli-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:39";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,937 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: Object Storage service (swift) command-line client</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>Object Storage service (swift) command-line client</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="tacker.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: NFV Orchestration service (tacker) command-line client"></i></a>
+    
+    
+    <a href="heat.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Orchestration service (heat) command-line client"></i></a>
+    
+    <a id="logABugLink1" href="swift.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="swift.html#">Object Storage service (swift) command-line client</a><ul>
+<li><a class="reference internal" href="swift.html#swift-usage">swift usage</a></li>
+<li><a class="reference internal" href="swift.html#swift-examples">swift examples</a></li>
+<li><a class="reference internal" href="swift.html#swift-optional-arguments">swift optional arguments</a><ul>
+<li><a class="reference internal" href="swift.html#swift-auth">swift auth</a></li>
+<li><a class="reference internal" href="swift.html#swift-capabilities">swift capabilities</a></li>
+<li><a class="reference internal" href="swift.html#swift-copy">swift copy</a></li>
+<li><a class="reference internal" href="swift.html#swift-delete">swift delete</a></li>
+<li><a class="reference internal" href="swift.html#swift-download">swift download</a></li>
+<li><a class="reference internal" href="swift.html#swift-list">swift list</a></li>
+<li><a class="reference internal" href="swift.html#swift-post">swift post</a></li>
+<li><a class="reference internal" href="swift.html#swift-stat">swift stat</a></li>
+<li><a class="reference internal" href="swift.html#swift-tempurl">swift tempurl</a></li>
+<li><a class="reference internal" href="swift.html#swift-upload">swift upload</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="object-storage-service-swift-command-line-client">
+<h1>Object Storage service (swift) command-line client<a class="headerlink" href="swift.html#object-storage-service-swift-command-line-client" title="Permalink to this headline">¶</a></h1>
+<p>The swift client is the command-line interface (CLI) for
+the Object Storage service API and its extensions.</p>
+<p>This chapter documents <strong class="command">swift</strong> version <code class="docutils literal"><span class="pre">3.3.0</span></code>.</p>
+<p>For help on a specific <strong class="command">swift</strong> command, enter:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> swift COMMAND --help
+</pre></div>
+</div>
+<div class="section" id="swift-usage">
+<span id="swift-command-usage"></span><h2>swift usage<a class="headerlink" href="swift.html#swift-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">Usage: swift [--version] [--help] [--os-help] [--snet] [--verbose]</span>
+<span class="go">             [--debug] [--info] [--quiet] [--auth &lt;auth_url&gt;]</span>
+<span class="go">             [--auth-version &lt;auth_version&gt; |</span>
+<span class="go">                 --os-identity-api-version &lt;auth_version&gt; ]</span>
+<span class="go">             [--user &lt;username&gt;]</span>
+<span class="go">             [--key &lt;api_key&gt;] [--retries &lt;num_retries&gt;]</span>
+<span class="go">             [--os-username &lt;auth-user-name&gt;] [--os-password &lt;auth-password&gt;]</span>
+<span class="go">             [--os-user-id &lt;auth-user-id&gt;]</span>
+<span class="go">             [--os-user-domain-id &lt;auth-user-domain-id&gt;]</span>
+<span class="go">             [--os-user-domain-name &lt;auth-user-domain-name&gt;]</span>
+<span class="go">             [--os-tenant-id &lt;auth-tenant-id&gt;]</span>
+<span class="go">             [--os-tenant-name &lt;auth-tenant-name&gt;]</span>
+<span class="go">             [--os-project-id &lt;auth-project-id&gt;]</span>
+<span class="go">             [--os-project-name &lt;auth-project-name&gt;]</span>
+<span class="go">             [--os-project-domain-id &lt;auth-project-domain-id&gt;]</span>
+<span class="go">             [--os-project-domain-name &lt;auth-project-domain-name&gt;]</span>
+<span class="go">             [--os-auth-url &lt;auth-url&gt;] [--os-auth-token &lt;auth-token&gt;]</span>
+<span class="go">             [--os-storage-url &lt;storage-url&gt;] [--os-region-name &lt;region-name&gt;]</span>
+<span class="go">             [--os-service-type &lt;service-type&gt;]</span>
+<span class="go">             [--os-endpoint-type &lt;endpoint-type&gt;]</span>
+<span class="go">             [--os-cacert &lt;ca-certificate&gt;] [--insecure]</span>
+<span class="go">             [--os-cert &lt;client-certificate-file&gt;]</span>
+<span class="go">             [--os-key &lt;client-certificate-key-file&gt;]</span>
+<span class="go">             [--no-ssl-compression]</span>
+<span class="go">             &lt;subcommand&gt; [--help] [&lt;subcommand options&gt;]</span>
+</pre></div>
+</div>
+<p><strong>Subcommands:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">delete</span></code></dt>
+<dd>Delete a container or objects within a container.</dd>
+<dt><code class="docutils literal"><span class="pre">download</span></code></dt>
+<dd>Download objects from containers.</dd>
+<dt><code class="docutils literal"><span class="pre">list</span></code></dt>
+<dd>Lists the containers for the account or the objects
+for a container.</dd>
+<dt><code class="docutils literal"><span class="pre">post</span></code></dt>
+<dd>Updates meta information for the account, container,
+or object; creates containers if not present.</dd>
+<dt><code class="docutils literal"><span class="pre">copy</span></code></dt>
+<dd>Copies object, optionally adds meta</dd>
+<dt><code class="docutils literal"><span class="pre">stat</span></code></dt>
+<dd>Displays information for the account, container,
+or object.</dd>
+<dt><code class="docutils literal"><span class="pre">upload</span></code></dt>
+<dd>Uploads files or directories to the given container.</dd>
+<dt><code class="docutils literal"><span class="pre">capabilities</span></code></dt>
+<dd>List cluster capabilities.</dd>
+<dt><code class="docutils literal"><span class="pre">tempurl</span></code></dt>
+<dd>Create a temporary URL.</dd>
+<dt><code class="docutils literal"><span class="pre">auth</span></code></dt>
+<dd>Display auth related environment variables.</dd>
+</dl>
+</div>
+<div class="section" id="swift-examples">
+<span id="id1"></span><h2>swift examples<a class="headerlink" href="swift.html#swift-examples" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">swift download --help</span>
+
+<span class="go">swift -A https://auth.api.rackspacecloud.com/v1.0 -U user -K api_key stat -v</span>
+
+<span class="go">swift --os-auth-url https://api.example.com/v2.0 \</span>
+<span class="go">      --os-tenant-name tenant --os-username user --os-password password list</span>
+
+<span class="go">swift --os-auth-url https://api.example.com/v3 --auth-version 3 \</span>
+<span class="go">      --os-project-name project1 --os-project-domain-name domain1 \</span>
+<span class="go">      --os-username user --os-user-domain-name domain1 \</span>
+<span class="go">      --os-password password list</span>
+
+<span class="go">swift --os-auth-url https://api.example.com/v3 --auth-version 3 \</span>
+<span class="go">      --os-project-id 0123456789abcdef0123456789abcdef \</span>
+<span class="go">      --os-user-id abcdef0123456789abcdef0123456789 \</span>
+<span class="go">      --os-password password list</span>
+
+<span class="go">swift --os-auth-token 6ee5eb33efad4e45ab46806eac010566 \</span>
+<span class="go">      --os-storage-url https://10.1.5.2:8080/v1/AUTH_ced809b6a4baea7aeab61a \</span>
+<span class="go">      list</span>
+
+<span class="go">swift list --lh</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="swift-optional-arguments">
+<span id="swift-command-options"></span><h2>swift optional arguments<a class="headerlink" href="swift.html#swift-optional-arguments" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--version</span></code></dt>
+<dd>show program's version number and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--os-help</span></code></dt>
+<dd>Show OpenStack authentication options.</dd>
+<dt><code class="docutils literal"><span class="pre">-s,</span> <span class="pre">--snet</span></code></dt>
+<dd>Use SERVICENET internal network.</dd>
+<dt><code class="docutils literal"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></dt>
+<dd>Print more info.</dd>
+<dt><code class="docutils literal"><span class="pre">--debug</span></code></dt>
+<dd>Show the curl commands and results of all http queries
+regardless of result status.</dd>
+<dt><code class="docutils literal"><span class="pre">--info</span></code></dt>
+<dd>Show the curl commands and results of all http queries
+which return an error.</dd>
+<dt><code class="docutils literal"><span class="pre">-q,</span> <span class="pre">--quiet</span></code></dt>
+<dd>Suppress status output.</dd>
+<dt><code class="docutils literal"><span class="pre">-A</span> <span class="pre">AUTH,</span> <span class="pre">--auth=AUTH</span></code></dt>
+<dd>URL for obtaining an auth token.</dd>
+<dt><code class="docutils literal"><span class="pre">-V</span> <span class="pre">AUTH_VERSION,</span> <span class="pre">--auth-version=AUTH_VERSION,</span> <span class="pre">--os-identity-api-version=AUTH_VERSION</span></code></dt>
+<dd>Specify a version for authentication. Defaults to
+<code class="docutils literal"><span class="pre">env[ST_AUTH_VERSION]</span></code>, <code class="docutils literal"><span class="pre">env[OS_AUTH_VERSION]</span></code>,
+<code class="docutils literal"><span class="pre">env[OS_IDENTITY_API_VERSION]</span></code> or 1.0.</dd>
+<dt><code class="docutils literal"><span class="pre">-U</span> <span class="pre">USER,</span> <span class="pre">--user=USER</span></code></dt>
+<dd>User name for obtaining an auth token.</dd>
+<dt><code class="docutils literal"><span class="pre">-K</span> <span class="pre">KEY,</span> <span class="pre">--key=KEY</span></code></dt>
+<dd>Key for obtaining an auth token.</dd>
+<dt><code class="docutils literal"><span class="pre">-R</span> <span class="pre">RETRIES,</span> <span class="pre">--retries=RETRIES</span></code></dt>
+<dd>The number of times to retry a failed connection.</dd>
+<dt><code class="docutils literal"><span class="pre">--insecure</span></code></dt>
+<dd>Allow swiftclient to access servers without having to
+verify the SSL certificate. Defaults to
+<code class="docutils literal"><span class="pre">env[SWIFTCLIENT_INSECURE]</span></code> (set to 'true' to enable).</dd>
+<dt><code class="docutils literal"><span class="pre">--no-ssl-compression</span></code></dt>
+<dd>This option is deprecated and not used anymore. SSL
+compression should be disabled by default by the
+system SSL library.</dd>
+</dl>
+<div class="section" id="swift-auth">
+<span id="id2"></span><h3>swift auth<a class="headerlink" href="swift.html#swift-auth" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">Usage: swift auth</span>
+</pre></div>
+</div>
+<p>Display auth related authentication variables in shell friendly format.</p>
+<p>Commands to run to export storage url and auth token into
+<code class="docutils literal"><span class="pre">OS_STORAGE_URL</span></code> and <code class="docutils literal"><span class="pre">OS_AUTH_TOKEN</span></code>:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> swift auth
+</pre></div>
+</div>
+<p>Commands to append to a runcom file (e.g. ~/.bashrc, /etc/profile) for
+automatic authentication:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> swift auth -v -U test:tester -K testing -A http://localhost:8080/auth/v1.0
+</pre></div>
+</div>
+</div>
+<div class="section" id="swift-capabilities">
+<span id="id3"></span><h3>swift capabilities<a class="headerlink" href="swift.html#swift-capabilities" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">Usage: swift capabilities [--json] [&lt;proxy_url&gt;]</span>
+</pre></div>
+</div>
+<p>Retrieve capability of the proxy.</p>
+<p><strong>Optional positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;proxy_url&gt;</span></code></dt>
+<dd>Proxy URL of the cluster to retrieve capabilities.</dd>
+<dt><code class="docutils literal"><span class="pre">--json</span></code></dt>
+<dd>Print the cluster capabilities in JSON format.</dd>
+</dl>
+</div>
+<div class="section" id="swift-copy">
+<span id="id4"></span><h3>swift copy<a class="headerlink" href="swift.html#swift-copy" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">Usage: swift copy [--destination &lt;/container/object&gt;] [--fresh-metadata]</span>
+<span class="go">                  [--meta &lt;name:value&gt;] [--header &lt;header&gt;] &lt;container&gt;</span>
+<span class="go">                  &lt;object&gt; [&lt;object&gt;] [...]</span>
+</pre></div>
+</div>
+<p>Copies object to new destination, optionally updates objects metadata.
+If destination is not set, will update metadata of object</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;container&gt;</span></code></dt>
+<dd>Name of container to copy from.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;object&gt;</span></code></dt>
+<dd>Name of object to copy. Specify multiple times for multiple objects</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-d,</span> <span class="pre">--destination</span> <span class="pre">&lt;/container[/object]&gt;</span></code></dt>
+<dd>The container and name of the destination object. Name
+of destination object can be omitted, then will be
+same as name of source object. Supplying multiple
+objects and destination with object name is invalid.</dd>
+<dt><code class="docutils literal"><span class="pre">-M,</span> <span class="pre">--fresh-metadata</span></code></dt>
+<dd>Copy the object without any existing metadata,
+If not set, metadata will be preserved or appended</dd>
+<dt><code class="docutils literal"><span class="pre">-m,</span> <span class="pre">--meta</span> <span class="pre">&lt;name:value&gt;</span></code></dt>
+<dd><p class="first">Sets a meta data item. This option may be repeated.</p>
+<p class="last">Example: -m Color:Blue -m Size:Large</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-H,</span> <span class="pre">--header</span> <span class="pre">&lt;header:value&gt;</span></code></dt>
+<dd><p class="first">Adds a customized request header. This option may be repeated.</p>
+<p class="last">Example: -H &quot;content-type:text/plain&quot; -H &quot;Content-Length: 4000&quot;</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="swift-delete">
+<span id="id5"></span><h3>swift delete<a class="headerlink" href="swift.html#swift-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">Usage: swift delete [--all] [--leave-segments]</span>
+<span class="go">                    [--object-threads &lt;threads&gt;]</span>
+<span class="go">                    [--container-threads &lt;threads&gt;]</span>
+<span class="go">                    [--header &lt;header:value&gt;]</span>
+<span class="go">                    [&lt;container&gt; [&lt;object&gt;] [...]]</span>
+</pre></div>
+</div>
+<p>Delete a container or objects within a container.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">[&lt;container&gt;]</span></code></dt>
+<dd>Name of container to delete from.</dd>
+<dt><code class="docutils literal"><span class="pre">[&lt;object&gt;]</span></code></dt>
+<dd>Name of object to delete. Specify multiple times
+for multiple objects.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-a,</span> <span class="pre">--all</span></code></dt>
+<dd>Delete all containers and objects.</dd>
+<dt><code class="docutils literal"><span class="pre">--leave-segments</span></code></dt>
+<dd>Do not delete segments of manifest objects.</dd>
+<dt><code class="docutils literal"><span class="pre">-H,</span> <span class="pre">--header</span> <span class="pre">&lt;header:value&gt;</span></code></dt>
+<dd>Adds a custom request header to use for deleting
+objects or an entire container.</dd>
+<dt><code class="docutils literal"><span class="pre">--object-threads</span> <span class="pre">&lt;threads&gt;</span></code></dt>
+<dd>Number of threads to use for deleting objects.
+Default is 10.</dd>
+<dt><code class="docutils literal"><span class="pre">--container-threads</span> <span class="pre">&lt;threads&gt;</span></code></dt>
+<dd>Number of threads to use for deleting containers.
+Default is 10.</dd>
+</dl>
+</div>
+<div class="section" id="swift-download">
+<span id="id6"></span><h3>swift download<a class="headerlink" href="swift.html#swift-download" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">Usage: swift download [--all] [--marker &lt;marker&gt;] [--prefix &lt;prefix&gt;]</span>
+<span class="go">                      [--output &lt;out_file&gt;] [--output-dir &lt;out_directory&gt;]</span>
+<span class="go">                      [--object-threads &lt;threads&gt;] [--ignore-checksum]</span>
+<span class="go">                      [--container-threads &lt;threads&gt;] [--no-download]</span>
+<span class="go">                      [--skip-identical] [--remove-prefix]</span>
+<span class="go">                      [--header &lt;header:value&gt;] [--no-shuffle]</span>
+<span class="go">                      [&lt;container&gt; [&lt;object&gt;] [...]]</span>
+</pre></div>
+</div>
+<p>Download objects from containers.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;container&gt;</span></code></dt>
+<dd>Name of container to download from. To download a
+whole account, omit this and specify --all.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;object&gt;</span></code></dt>
+<dd>Name of object to download. Specify multiple times
+for multiple objects. Omit this to download all
+objects from the container.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-a,</span> <span class="pre">--all</span></code></dt>
+<dd>Indicates that you really want to download
+everything in the account.</dd>
+<dt><code class="docutils literal"><span class="pre">-m,</span> <span class="pre">--marker</span> <span class="pre">&lt;marker&gt;</span></code></dt>
+<dd>Marker to use when starting a container or account
+download.</dd>
+<dt><code class="docutils literal"><span class="pre">-p,</span> <span class="pre">--prefix</span> <span class="pre">&lt;prefix&gt;</span></code></dt>
+<dd>Only download items beginning with &lt;prefix&gt;</dd>
+<dt><code class="docutils literal"><span class="pre">-r,</span> <span class="pre">--remove-prefix</span></code></dt>
+<dd>An optional flag for --prefix &lt;prefix&gt;, use this
+option to download items without &lt;prefix&gt;</dd>
+<dt><code class="docutils literal"><span class="pre">-o,</span> <span class="pre">--output</span> <span class="pre">&lt;out_file&gt;</span></code></dt>
+<dd>For a single file download, stream the output to
+&lt;out_file&gt;. Specifying &quot;-&quot; as &lt;out_file&gt; will
+redirect to stdout.</dd>
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--output-dir</span> <span class="pre">&lt;out_directory&gt;</span></code></dt>
+<dd>An optional directory to which to store objects.
+By default, all objects are recreated in the current
+directory.</dd>
+<dt><code class="docutils literal"><span class="pre">--object-threads</span> <span class="pre">&lt;threads&gt;</span></code></dt>
+<dd>Number of threads to use for downloading objects.
+Default is 10.</dd>
+<dt><code class="docutils literal"><span class="pre">--container-threads</span> <span class="pre">&lt;threads&gt;</span></code></dt>
+<dd>Number of threads to use for downloading containers.
+Default is 10.</dd>
+<dt><code class="docutils literal"><span class="pre">--no-download</span></code></dt>
+<dd>Perform download(s), but don't actually write anything
+to disk.</dd>
+<dt><code class="docutils literal"><span class="pre">-H,</span> <span class="pre">--header</span> <span class="pre">&lt;header:value&gt;</span></code></dt>
+<dd><p class="first">Adds a customized request header to the query, like
+&quot;Range&quot; or &quot;If-Match&quot;. This option may be repeated.</p>
+<p class="last">Example: --header &quot;content-type:text/plain&quot;</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">--skip-identical</span></code></dt>
+<dd>Skip downloading files that are identical on both
+sides.</dd>
+<dt><code class="docutils literal"><span class="pre">--ignore-checksum</span></code></dt>
+<dd>Turn off checksum validation for downloads.</dd>
+<dt><code class="docutils literal"><span class="pre">--no-shuffle</span></code></dt>
+<dd>By default, when downloading a complete account or
+container, download order is randomised in order to
+reduce the load on individual drives when multiple
+clients are executed simultaneously to download the
+same set of objects (e.g. a nightly automated download
+script to multiple servers). Enable this option to
+submit download jobs to the thread pool in the order
+they are listed in the object store.</dd>
+</dl>
+</div>
+<div class="section" id="swift-list">
+<span id="id7"></span><h3>swift list<a class="headerlink" href="swift.html#swift-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">Usage: swift list [--long] [--lh] [--totals] [--prefix &lt;prefix&gt;]</span>
+<span class="go">                  [--delimiter &lt;delimiter&gt;] [--header &lt;header:value&gt;]</span>
+<span class="go">                  [&lt;container&gt;]</span>
+</pre></div>
+</div>
+<p>Lists the containers for the account or the objects for a container.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">[container]</span></code></dt>
+<dd>Name of container to list object in.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-l,</span> <span class="pre">--long</span></code></dt>
+<dd>Long listing format, similar to ls -l.</dd>
+<dt><code class="docutils literal"><span class="pre">--lh</span></code></dt>
+<dd>Report sizes in human readable format similar to
+ls -lh.</dd>
+<dt><code class="docutils literal"><span class="pre">-t,</span> <span class="pre">--totals</span></code></dt>
+<dd>Used with -l or --lh, only report totals.</dd>
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">&lt;prefix&gt;,</span> <span class="pre">--prefix</span> <span class="pre">&lt;prefix&gt;</span></code></dt>
+<dd>Only list items beginning with the prefix.</dd>
+<dt><code class="docutils literal"><span class="pre">-d</span> <span class="pre">&lt;delim&gt;,</span> <span class="pre">--delimiter</span> <span class="pre">&lt;delim&gt;</span></code></dt>
+<dd>Roll up items with the given delimiter. For containers
+only. See OpenStack Swift API documentation for what
+this means.</dd>
+<dt><code class="docutils literal"><span class="pre">-H,</span> <span class="pre">--header</span> <span class="pre">&lt;header:value&gt;</span></code></dt>
+<dd>Adds a custom request header to use for listing.</dd>
+</dl>
+</div>
+<div class="section" id="swift-post">
+<span id="id8"></span><h3>swift post<a class="headerlink" href="swift.html#swift-post" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">Usage: swift post [--read-acl &lt;acl&gt;] [--write-acl &lt;acl&gt;] [--sync-to]</span>
+<span class="go">                  [--sync-key &lt;sync-key&gt;] [--meta &lt;name:value&gt;]</span>
+<span class="go">                  [--header &lt;header&gt;]</span>
+<span class="go">                  [&lt;container&gt; [&lt;object&gt;]]</span>
+</pre></div>
+</div>
+<p>Updates meta information for the account, container, or object.
+If the container is not found, it will be created automatically.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">[container]</span></code></dt>
+<dd>Name of container to post to.</dd>
+<dt><code class="docutils literal"><span class="pre">[object]</span></code></dt>
+<dd>Name of object to post.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-r,</span> <span class="pre">--read-acl</span> <span class="pre">&lt;acl&gt;</span></code></dt>
+<dd>Read ACL for containers. Quick summary of ACL syntax:
+<code class="docutils literal"><span class="pre">.r:*</span></code>, <code class="docutils literal"><span class="pre">.r:-.example.com</span></code>, <code class="docutils literal"><span class="pre">.r:www.example.com</span></code>,
+<code class="docutils literal"><span class="pre">account1</span></code> (v1.0 identity API only),
+<code class="docutils literal"><span class="pre">account1:*</span></code>, <code class="docutils literal"><span class="pre">account2:user2</span></code> (v2.0+ identity API).</dd>
+<dt><code class="docutils literal"><span class="pre">-w,</span> <span class="pre">--write-acl</span> <span class="pre">&lt;acl&gt;</span></code></dt>
+<dd>Write ACL for containers. Quick summary of ACL syntax:
+<code class="docutils literal"><span class="pre">account1</span></code> (v1.0 identity API only),
+<code class="docutils literal"><span class="pre">account1:*</span></code>, <code class="docutils literal"><span class="pre">account2:user2</span></code> (v2.0+ identity API).</dd>
+<dt><code class="docutils literal"><span class="pre">-t,</span> <span class="pre">--sync-to</span> <span class="pre">&lt;sync-to&gt;</span></code></dt>
+<dd>Sync To for containers, for multi-cluster replication.</dd>
+<dt><code class="docutils literal"><span class="pre">-k,</span> <span class="pre">--sync-key</span> <span class="pre">&lt;sync-key&gt;</span></code></dt>
+<dd>Sync Key for containers, for multi-cluster replication.</dd>
+<dt><code class="docutils literal"><span class="pre">-m,</span> <span class="pre">--meta</span> <span class="pre">&lt;name:value&gt;</span></code></dt>
+<dd><p class="first">Sets a meta data item. This option may be repeated.</p>
+<p class="last">Example: -m Color:Blue -m Size:Large</p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">-H,</span> <span class="pre">--header</span> <span class="pre">&lt;header:value&gt;</span></code></dt>
+<dd><p class="first">Adds a customized request header.
+This option may be repeated.</p>
+<p class="last">Example: -H &quot;content-type:text/plain&quot; -H &quot;Content-Length: 4000&quot;</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="swift-stat">
+<span id="id9"></span><h3>swift stat<a class="headerlink" href="swift.html#swift-stat" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">Usage: swift stat [--lh] [--header &lt;header:value&gt;]</span>
+<span class="go">                  [&lt;container&gt; [&lt;object&gt;]]</span>
+</pre></div>
+</div>
+<p>Displays information for the account, container, or object.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">[container]</span></code></dt>
+<dd>Name of container to stat from.</dd>
+<dt><code class="docutils literal"><span class="pre">[object]</span></code></dt>
+<dd>Name of object to stat.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--lh</span></code></dt>
+<dd>Report sizes in human readable format similar to
+ls -lh.</dd>
+<dt><code class="docutils literal"><span class="pre">-H,</span> <span class="pre">--header</span> <span class="pre">&lt;header:value&gt;</span></code></dt>
+<dd>Adds a custom request header to use for stat.</dd>
+</dl>
+</div>
+<div class="section" id="swift-tempurl">
+<span id="id10"></span><h3>swift tempurl<a class="headerlink" href="swift.html#swift-tempurl" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">Usage: swift tempurl [--absolute] [--prefix-based]</span>
+<span class="go">                     &lt;method&gt; &lt;seconds&gt; &lt;path&gt; &lt;key&gt;</span>
+</pre></div>
+</div>
+<p>Generates a temporary URL for a Swift object.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;method&gt;</span></code></dt>
+<dd>An HTTP method to allow for this temporary URL.
+Usually 'GET' or 'PUT'.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;seconds&gt;</span></code></dt>
+<dd>The amount of time in seconds the temporary URL will be
+valid for; or, if --absolute is passed, the Unix
+timestamp when the temporary URL will expire.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;path&gt;</span></code></dt>
+<dd><p class="first">The full path to the Swift object.</p>
+<p class="last">Example: /v1/AUTH_account/c/o
+or: <a class="reference external" href="http://saio:8080/v1/AUTH_account/c/o">http://saio:8080/v1/AUTH_account/c/o</a></p>
+</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;key&gt;</span></code></dt>
+<dd>The secret temporary URL key set on the Swift cluster.
+To set a key, run 'swift post -m
+&quot;Temp-URL-Key:b3968d0207b54ece87cccc06515a89d4&quot;'</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--absolute</span></code></dt>
+<dd>Interpret the &lt;seconds&gt; positional argument as a Unix
+timestamp rather than a number of seconds in the
+future.</dd>
+<dt><code class="docutils literal"><span class="pre">--prefix-based</span></code></dt>
+<dd>If present, a prefix-based tempURL will be generated.</dd>
+</dl>
+</div>
+<div class="section" id="swift-upload">
+<span id="id11"></span><h3>swift upload<a class="headerlink" href="swift.html#swift-upload" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">Usage: swift upload [--changed] [--skip-identical] [--segment-size &lt;size&gt;]</span>
+<span class="go">                    [--segment-container &lt;container&gt;] [--leave-segments]</span>
+<span class="go">                    [--object-threads &lt;thread&gt;] [--segment-threads &lt;threads&gt;]</span>
+<span class="go">                    [--header &lt;header&gt;] [--use-slo] [--ignore-checksum]</span>
+<span class="go">                    [--object-name &lt;object-name&gt;]</span>
+<span class="go">                    &lt;container&gt; &lt;file_or_directory&gt; [&lt;file_or_directory&gt;] [...]</span>
+</pre></div>
+</div>
+<p>Uploads specified files and directories to the given container.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;container&gt;</span></code></dt>
+<dd>Name of container to upload to.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;file_or_directory&gt;</span></code></dt>
+<dd>Name of file or directory to upload. Specify multiple
+times for multiple uploads.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-c,</span> <span class="pre">--changed</span></code></dt>
+<dd>Only upload files that have changed since the last
+upload.</dd>
+<dt><code class="docutils literal"><span class="pre">--skip-identical</span></code></dt>
+<dd>Skip uploading files that are identical on both sides.</dd>
+<dt><code class="docutils literal"><span class="pre">-S,</span> <span class="pre">--segment-size</span> <span class="pre">&lt;size&gt;</span></code></dt>
+<dd>Upload files in segments no larger than &lt;size&gt; (in
+Bytes) and then create a &quot;manifest&quot; file that will
+download all the segments as if it were the original
+file.</dd>
+<dt><code class="docutils literal"><span class="pre">--segment-container</span> <span class="pre">&lt;container&gt;</span></code></dt>
+<dd>Upload the segments into the specified container. If
+not specified, the segments will be uploaded to a
+&lt;container&gt;_segments container to not pollute the
+main &lt;container&gt; listings.</dd>
+<dt><code class="docutils literal"><span class="pre">--leave-segments</span></code></dt>
+<dd>Indicates that you want the older segments of manifest
+objects left alone (in the case of overwrites).</dd>
+<dt><code class="docutils literal"><span class="pre">--object-threads</span> <span class="pre">&lt;threads&gt;</span></code></dt>
+<dd>Number of threads to use for uploading full objects.
+Default is 10.</dd>
+<dt><code class="docutils literal"><span class="pre">--segment-threads</span> <span class="pre">&lt;threads&gt;</span></code></dt>
+<dd>Number of threads to use for uploading object segments.
+Default is 10.</dd>
+<dt><code class="docutils literal"><span class="pre">-H,</span> <span class="pre">--header</span> <span class="pre">&lt;header:value&gt;</span></code></dt>
+<dd>Adds a customized request header. This option may be
+repeated. Example: -H &quot;content-type:text/plain&quot;
+-H &quot;Content-Length: 4000&quot;.</dd>
+<dt><code class="docutils literal"><span class="pre">--use-slo</span></code></dt>
+<dd>When used in conjunction with --segment-size it will
+create a Static Large Object instead of the default
+Dynamic Large Object.</dd>
+<dt><code class="docutils literal"><span class="pre">--object-name</span> <span class="pre">&lt;object-name&gt;</span></code></dt>
+<dd>Upload file and name object to &lt;object-name&gt; or upload
+dir and use &lt;object-name&gt; as object prefix instead of
+folder name.</dd>
+<dt><code class="docutils literal"><span class="pre">--ignore-checksum</span></code></dt>
+<dd>Turn off checksum validation for uploads.</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="tacker.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: NFV Orchestration service (tacker) command-line client"></i></a>
+          
+          
+            <a href="heat.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Orchestration service (heat) command-line client"></i></a>
+          
+            <a id="logABugLink3" href="swift.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="swift.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="murano.html">Application Catalog service (murano) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="freezer.html">Backup, Restore, and Disaster Recovery service (freezer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ironic.html">Bare Metal service (ironic) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cinder.html">Block Storage service (cinder) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="senlin.html">Clustering service (senlin) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute service (nova) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnum.html">Container Infrastructure Management service (magnum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database service (trove) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="designate.html">DNS service (designate) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image service (glance) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watcher.html">Infrastructure Optimization service (watcher) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barbican.html">Key Manager service (barbican) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monasca.html">Monitoring (monasca) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networking.html">Networking service (neutron) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tacker.html">NFV Orchestration service (tacker) command-line client</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="swift.html#">Object Storage service (swift) command-line client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="swift.html#swift-usage">swift usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="swift.html#swift-examples">swift examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="swift.html#swift-optional-arguments">swift optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="heat.html">Orchestration service (heat) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloudkitty.html">Rating service (cloudkitty) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vitrage.html">RCA (Root Cause Analysis) service (vitrage) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manila.html">Shared File Systems service (manila) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solum.html">Software Development Lifecycle Automation service (solum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aodh.html">Telemetry Alarming service (aodh) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ceilometer.html">Telemetry Data Collection service (ceilometer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gnocchi.html">A time series storage and resources index service (gnocchi) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mistral.html">Workflow service (mistral) command-line client</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "swift" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/cli-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "Object Storage service (swift) command-line client in Command-Line Interface Reference";
+    var fieldTags = "cli-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:39";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

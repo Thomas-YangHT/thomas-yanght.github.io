@@ -1,0 +1,1522 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: Additional configuration options for Identity service</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="../_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="../_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="../_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="../_static/css/combined.css" rel="stylesheet">
+<link href="../_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" href="../_static/sphinxmark.css" type="text/css" />
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>Additional configuration options for Identity service</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="federated-identity.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Federated Identity"></i></a>
+    
+    
+    <a href="samples/index.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Identity service sample configuration files"></i></a>
+    
+    <a id="logABugLink1" href="config-options.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:41</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="../index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="config-options.html#">Additional configuration options for Identity service</a><ul>
+<li><a class="reference internal" href="config-options.html#domain-specific-identity-drivers">Domain-specific Identity drivers</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="additional-configuration-options-for-identity-service">
+<h1>Additional configuration options for Identity service<a class="headerlink" href="config-options.html#additional-configuration-options-for-identity-service" title="Permalink to this headline">¶</a></h1>
+<p>The Identity service is configured in the <code class="docutils literal"><span class="pre">/etc/keystone/keystone.conf</span></code> file.</p>
+<p>The following tables provide a comprehensive list of the Identity
+service options.</p>
+<span id="keystone-assignment"></span><table border="1" class="config-ref-table docutils" id="id1">
+<caption><span class="caption-text">Description of assignment configuration options</span><a class="headerlink" href="config-options.html#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[assignment]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">driver</span></code> = <code class="docutils literal"><span class="pre">sql</span></code></td>
+<td>(String) Entry point for the assignment backend driver (where role assignments are stored) in the <cite>keystone.assignment</cite> namespace. Only a SQL driver is supplied by keystone itself. Unless you are writing proprietary drivers for keystone, you do not need to set this option.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">prohibited_implied_role</span></code> = <code class="docutils literal"><span class="pre">admin</span></code></td>
+<td>(List) A list of role names which are prohibited from being an implied role.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-auth"></span><table border="1" class="config-ref-table docutils" id="id2">
+<caption><span class="caption-text">Description of authorization configuration options</span><a class="headerlink" href="config-options.html#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[auth]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">external</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) Entry point for the external (<cite>REMOTE_USER</cite>) auth plugin module in the <cite>keystone.auth.external</cite> namespace. Supplied drivers are <cite>DefaultDomain</cite> and <cite>Domain</cite>. The default driver is <cite>DefaultDomain</cite>, which assumes that all users identified by the username specified to keystone in the <cite>REMOTE_USER</cite> variable exist within the context of the default domain. The <cite>Domain</cite> option expects an additional environment variable be presented to keystone, <cite>REMOTE_DOMAIN</cite>, containing the domain name of the <cite>REMOTE_USER</cite> (if <cite>REMOTE_DOMAIN</cite> is not set, then the default domain will be used instead). You do not need to set this unless you are taking advantage of &#8220;external authentication&#8221;, where the application server (such as Apache) is handling authentication instead of keystone.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">mapped</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) Entry point for the mapped auth plugin module in the <cite>keystone.auth.mapped</cite> namespace. You do not need to set this unless you are overriding keystone&#8217;s own <cite>mapped</cite> authentication plugin.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">methods</span></code> = <code class="docutils literal"><span class="pre">external,</span> <span class="pre">password,</span> <span class="pre">token,</span> <span class="pre">oauth1,</span> <span class="pre">mapped</span></code></td>
+<td>(List) Allowed authentication methods. Note: You should disable the <cite>external</cite> auth method if you are currently using federation. External auth and federation both use the REMOTE_USER variable. Since both the mapped and external plugin are being invoked to validate attributes in the request environment, it can cause conflicts.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">oauth1</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) Entry point for the OAuth 1.0a auth plugin module in the <cite>keystone.auth.oauth1</cite> namespace. You do not need to set this unless you are overriding keystone&#8217;s own <cite>oauth1</cite> authentication plugin.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">password</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) Entry point for the password auth plugin module in the <cite>keystone.auth.password</cite> namespace. You do not need to set this unless you are overriding keystone&#8217;s own password authentication plugin.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">token</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) Entry point for the token auth plugin module in the <cite>keystone.auth.token</cite> namespace. You do not need to set this unless you are overriding keystone&#8217;s own token authentication plugin.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-ca"></span><table border="1" class="config-ref-table docutils" id="id3">
+<caption><span class="caption-text">Description of CA and SSL configuration options</span><a class="headerlink" href="config-options.html#id3" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[signing]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ca_certs</span></code> = <code class="docutils literal"><span class="pre">/etc/keystone/ssl/certs/ca.pem</span></code></td>
+<td>(String) Absolute path to the public certificate authority (CA) file to use when creating self-signed certificates with <cite>keystone-manage pki_setup</cite>. Set this together with <cite>[signing] ca_key</cite>. There is no reason to set this option unless you are requesting revocation lists in a non-production environment. Use a <cite>[signing] certfile</cite> issued from a trusted certificate authority instead.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ca_key</span></code> = <code class="docutils literal"><span class="pre">/etc/keystone/ssl/private/cakey.pem</span></code></td>
+<td>(String) Absolute path to the private certificate authority (CA) key file to use when creating self-signed certificates with <cite>keystone-manage pki_setup</cite>. Set this together with <cite>[signing] ca_certs</cite>. There is no reason to set this option unless you are requesting revocation lists in a non-production environment. Use a <cite>[signing] certfile</cite> issued from a trusted certificate authority instead.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">cert_subject</span></code> = <code class="docutils literal"><span class="pre">/C=US/ST=Unset/L=Unset/O=Unset/CN=www.example.com</span></code></td>
+<td>(String) The certificate subject to use when generating a self-signed token signing certificate. There is no reason to set this option unless you are requesting revocation lists in a non-production environment. Use a <cite>[signing] certfile</cite> issued from a trusted certificate authority instead.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">certfile</span></code> = <code class="docutils literal"><span class="pre">/etc/keystone/ssl/certs/signing_cert.pem</span></code></td>
+<td>(String) Absolute path to the public certificate file to use for signing responses to revocation lists requests. Set this together with <cite>[signing] keyfile</cite>. For non-production environments, you may be interested in using <cite>keystone-manage pki_setup</cite> to generate self-signed certificates.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">key_size</span></code> = <code class="docutils literal"><span class="pre">2048</span></code></td>
+<td>(Integer) Key size (in bits) to use when generating a self-signed token signing certificate. There is no reason to set this option unless you are requesting revocation lists in a non-production environment. Use a <cite>[signing] certfile</cite> issued from a trusted certificate authority instead.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">keyfile</span></code> = <code class="docutils literal"><span class="pre">/etc/keystone/ssl/private/signing_key.pem</span></code></td>
+<td>(String) Absolute path to the private key file to use for signing responses to revocation lists requests. Set this together with <cite>[signing] certfile</cite>.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">valid_days</span></code> = <code class="docutils literal"><span class="pre">3650</span></code></td>
+<td>(Integer) The validity period (in days) to use when generating a self-signed token signing certificate. There is no reason to set this option unless you are requesting revocation lists in a non-production environment. Use a <cite>[signing] certfile</cite> issued from a trusted certificate authority instead.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-catalog"></span><table border="1" class="config-ref-table docutils" id="id4">
+<caption><span class="caption-text">Description of catalog configuration options</span><a class="headerlink" href="config-options.html#id4" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[catalog]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">cache_time</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(Integer) Time to cache catalog data (in seconds). This has no effect unless global and catalog caching are both enabled. Catalog data (services, endpoints, etc.) typically does not change frequently, and so a longer duration than the global default may be desirable.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">caching</span></code> = <code class="docutils literal"><span class="pre">True</span></code></td>
+<td>(Boolean) Toggle for catalog caching. This has no effect unless global caching is enabled. In a typical deployment, there is no reason to disable this.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">driver</span></code> = <code class="docutils literal"><span class="pre">sql</span></code></td>
+<td>(String) Entry point for the catalog driver in the <cite>keystone.catalog</cite> namespace. Keystone provides a <cite>sql</cite> option (which supports basic CRUD operations through SQL), a <cite>templated</cite> option (which loads the catalog from a templated catalog file on disk), and a <cite>endpoint_filter.sql</cite> option (which supports arbitrary service catalogs per project).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">list_limit</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(Integer) Maximum number of entities that will be returned in a catalog collection. There is typically no reason to set this, as it would be unusual for a deployment to have enough services or endpoints to exceed a reasonable limit.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">template_file</span></code> = <code class="docutils literal"><span class="pre">default_catalog.templates</span></code></td>
+<td>(String) Absolute path to the file used for the templated catalog backend. This option is only used if the <cite>[catalog] driver</cite> is set to <cite>templated</cite>.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-common"></span><table border="1" class="config-ref-table docutils" id="id5">
+<caption><span class="caption-text">Description of common configuration options</span><a class="headerlink" href="config-options.html#id5" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[DEFAULT]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">executor_thread_pool_size</span></code> = <code class="docutils literal"><span class="pre">64</span></code></td>
+<td>(Integer) Size of executor thread pool when executor is threading or eventlet.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">insecure_debug</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) If set to true, then the server will return information in HTTP responses that may allow an unauthenticated or authenticated user to get more information than normal, such as additional details about why authentication failed. This may be useful for debugging but is insecure.</td>
+</tr>
+<tr class="row-odd"><td><strong>[healthcheck]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">backends</span></code> =</td>
+<td>(List) Additional backends that can perform health checks and report that information back as part of a request.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">detailed</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Show more detailed information as part of the response</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">disable_by_file_path</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) Check the presence of a file to determine if an application is running on a port. Used by DisableByFileHealthcheck plugin.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">disable_by_file_paths</span></code> =</td>
+<td>(List) Check the presence of a file based on a port to determine if an application is running on a port. Expects a &#8220;port:path&#8221; list of strings. Used by DisableByFilesPortsHealthcheck plugin.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">path</span></code> = <code class="docutils literal"><span class="pre">/healthcheck</span></code></td>
+<td><p class="first">(String) The path to respond to healtcheck requests on.</p>
+<ul class="last">
+<li><p class="first"><strong>Deprecated</strong></p>
+<p>No deprecation reason provided for this option.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><strong>[profiler]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">connection_string</span></code> = <code class="docutils literal"><span class="pre">messaging://</span></code></td>
+<td>(String) Connection string for a notifier backend. Default value is messaging:// which sets the notifier to oslo_messaging.
+Examples of possible values:
+* messaging://: use oslo_messaging driver for sending notifications.
+* mongodb://127.0.0.1:27017 : use mongodb driver for sending notifications.
+* elasticsearch://127.0.0.1:9200 : use elasticsearch driver for sending notifications.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">enabled</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Enables the profiling for all services on this node. Default value is False (fully disable the profiling feature).
+Possible values:
+* True: Enables the feature
+* False: Disables the feature. The profiling cannot be started via this project operations. If the profiling is triggered by another project, this project part will be empty.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">es_doc_type</span></code> = <code class="docutils literal"><span class="pre">notification</span></code></td>
+<td>(String) Document type for notification indexing in elasticsearch.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">es_scroll_size</span></code> = <code class="docutils literal"><span class="pre">10000</span></code></td>
+<td>(Integer) Elasticsearch splits large requests in batches. This parameter defines maximum size of each batch (for example: es_scroll_size=10000).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">es_scroll_time</span></code> = <code class="docutils literal"><span class="pre">2m</span></code></td>
+<td>(String) This parameter is a time value parameter (for example: es_scroll_time=2m), indicating for how long the nodes that participate in the search will maintain relevant resources in order to continue and support it.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">hmac_keys</span></code> = <code class="docutils literal"><span class="pre">SECRET_KEY</span></code></td>
+<td>(String) Secret key(s) to use for encrypting context data for performance profiling. This string value should have the following format: &lt;key1&gt;[,&lt;key2&gt;,...&lt;keyn&gt;], where each key is some random string. A user who triggers the profiling via the REST API has to set one of these keys in the headers of the REST API call to include profiling results of this node for this particular project.
+Both &#8220;enabled&#8221; flag and &#8220;hmac_keys&#8221; config options should be set to enable profiling. Also, to generate correct profiling information across all services at least one key needs to be consistent between OpenStack projects. This ensures it can be used from client side to generate the trace, containing information from all possible resources.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sentinel_service_name</span></code> = <code class="docutils literal"><span class="pre">mymaster</span></code></td>
+<td>(String) Redissentinel uses a service name to identify a master redis service. This parameter defines the name (for example: sentinal_service_name=mymaster).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">socket_timeout</span></code> = <code class="docutils literal"><span class="pre">0.1</span></code></td>
+<td>(Floating point) Redissentinel provides a timeout option on the connections. This parameter defines that timeout (for example: socket_timeout=0.1).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">trace_sqlalchemy</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Enables SQL requests profiling in services. Default value is False (SQL requests won&#8217;t be traced).
+Possible values:
+* True: Enables SQL requests profiling. Each SQL query will be part of the trace and can the be analyzed by how much time was spent for that.
+* False: Disables SQL requests profiling. The spent time is only shown on a higher level of operations. Single SQL queries cannot be analyzed this way.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-compliance"></span><table border="1" class="config-ref-table docutils" id="id6">
+<caption><span class="caption-text">Description of Security compliance configuration options</span><a class="headerlink" href="config-options.html#id6" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[security_compliance]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">change_password_upon_first_use</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Enabling this option requires users to change their password when the user is created, or upon administrative reset. Before accessing any services, affected users will have to change their password. To ignore this requirement for specific users, such as service users, set the <cite>options</cite> attribute <cite>ignore_change_password_upon_first_use</cite> to <cite>True</cite> for the desired user via the update user API. This feature is disabled by default. This feature is only applicable with the <cite>sql</cite> backend for the <cite>[identity] driver</cite>.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">disable_user_account_days_inactive</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(Integer) The maximum number of days a user can go without authenticating before being considered &#8220;inactive&#8221; and automatically disabled (locked). This feature is disabled by default; set any value to enable it. This feature depends on the <cite>sql</cite> backend for the <cite>[identity] driver</cite>. When a user exceeds this threshold and is considered &#8220;inactive&#8221;, the user&#8217;s <cite>enabled</cite> attribute in the HTTP API may not match the value of the user&#8217;s <cite>enabled</cite> column in the user table.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">lockout_duration</span></code> = <code class="docutils literal"><span class="pre">1800</span></code></td>
+<td>(Integer) The number of seconds a user account will be locked when the maximum number of failed authentication attempts (as specified by <cite>[security_compliance] lockout_failure_attempts</cite>) is exceeded. Setting this option will have no effect unless you also set <cite>[security_compliance] lockout_failure_attempts</cite> to a non-zero value. This feature depends on the <cite>sql</cite> backend for the <cite>[identity] driver</cite>.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">lockout_failure_attempts</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(Integer) The maximum number of times that a user can fail to authenticate before the user account is locked for the number of seconds specified by <cite>[security_compliance] lockout_duration</cite>. This feature is disabled by default. If this feature is enabled and <cite>[security_compliance] lockout_duration</cite> is not set, then users may be locked out indefinitely until the user is explicitly enabled via the API. This feature depends on the <cite>sql</cite> backend for the <cite>[identity] driver</cite>.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">minimum_password_age</span></code> = <code class="docutils literal"><span class="pre">0</span></code></td>
+<td>(Integer) The number of days that a password must be used before the user can change it. This prevents users from changing their passwords immediately in order to wipe out their password history and reuse an old password. This feature does not prevent administrators from manually resetting passwords. It is disabled by default and allows for immediate password changes. This feature depends on the <cite>sql</cite> backend for the <cite>[identity] driver</cite>. Note: If <cite>[security_compliance] password_expires_days</cite> is set, then the value for this option should be less than the <cite>password_expires_days</cite>.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">password_expires_days</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(Integer) The number of days for which a password will be considered valid before requiring it to be changed. This feature is disabled by default. If enabled, new password changes will have an expiration date, however existing passwords would not be impacted. This feature depends on the <cite>sql</cite> backend for the <cite>[identity] driver</cite>.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">password_expires_ignore_user_ids</span></code> =</td>
+<td><p class="first">(List) Comma separated list of user IDs to be ignored when checking if a password is expired. Passwords for users in this list will not expire. This feature will only be enabled if <cite>[security_compliance] password_expires_days</cite> is set.</p>
+<ul class="last">
+<li><p class="first"><strong>Deprecated</strong></p>
+<p>Functionality added as a per-user option &#8220;ignore_password_expiry&#8221; in Ocata. Each user that should ignore password expiry should have the value set to &#8220;true&#8221; in the user&#8217;s <cite>options</cite> attribute (e.g. <cite>user[&#8216;options&#8217;][&#8216;ignore_password_expiry&#8217;] = True</cite>) with an &#8220;update_user&#8221; call. This avoids the need to restart keystone to adjust the users that ignore password expiry. This option will be removed in the Pike release.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">password_regex</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) The regular expression used to validate password strength requirements. By default, the regular expression will match any password. The following is an example of a pattern which requires at least 1 letter, 1 digit, and have a minimum length of 7 characters: ^(?=.*d)(?=.*[a-zA-Z]).{7,}$ This feature depends on the <cite>sql</cite> backend for the <cite>[identity] driver</cite>.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">password_regex_description</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) Describe your password regular expression here in language for humans. If a password fails to match the regular expression, the contents of this configuration variable will be returned to users to explain why their requested password was insufficient.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">unique_last_password_count</span></code> = <code class="docutils literal"><span class="pre">1</span></code></td>
+<td>(Integer) This controls the number of previous user password iterations to keep in history, in order to enforce that newly created passwords are unique. Setting the value to one (the default) disables this feature. Thus, to enable this feature, values must be greater than 1. This feature depends on the <cite>sql</cite> backend for the <cite>[identity] driver</cite>.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-credential"></span><table border="1" class="config-ref-table docutils" id="id7">
+<caption><span class="caption-text">Description of credential configuration options</span><a class="headerlink" href="config-options.html#id7" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[credential]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">driver</span></code> = <code class="docutils literal"><span class="pre">sql</span></code></td>
+<td>(String) Entry point for the credential backend driver in the <cite>keystone.credential</cite> namespace. Keystone only provides a <cite>sql</cite> driver, so there&#8217;s no reason to change this unless you are providing a custom entry point.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">key_repository</span></code> = <code class="docutils literal"><span class="pre">/etc/keystone/credential-keys/</span></code></td>
+<td>(String) Directory containing Fernet keys used to encrypt and decrypt credentials stored in the credential backend. Fernet keys used to encrypt credentials have no relationship to Fernet keys used to encrypt Fernet tokens. Both sets of keys should be managed separately and require different rotation policies. Do not share this repository with the repository used to manage keys for Fernet tokens.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">provider</span></code> = <code class="docutils literal"><span class="pre">fernet</span></code></td>
+<td>(String) Entry point for credential encryption and decryption operations in the <cite>keystone.credential.provider</cite> namespace. Keystone only provides a <cite>fernet</cite> driver, so there&#8217;s no reason to change this unless you are providing a custom entry point to encrypt and decrypt credentials.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-debug"></span><table border="1" class="config-ref-table docutils" id="id8">
+<caption><span class="caption-text">Description of logging configuration options</span><a class="headerlink" href="config-options.html#id8" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[audit]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">namespace</span></code> = <code class="docutils literal"><span class="pre">openstack</span></code></td>
+<td>(String) namespace prefix for generated id</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-domain"></span><table border="1" class="config-ref-table docutils" id="id9">
+<caption><span class="caption-text">Description of domain configuration options</span><a class="headerlink" href="config-options.html#id9" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[domain_config]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">cache_time</span></code> = <code class="docutils literal"><span class="pre">300</span></code></td>
+<td>(Integer) Time-to-live (TTL, in seconds) to cache domain-specific configuration data. This has no effect unless <cite>[domain_config] caching</cite> is enabled.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">caching</span></code> = <code class="docutils literal"><span class="pre">True</span></code></td>
+<td>(Boolean) Toggle for caching of the domain-specific configuration backend. This has no effect unless global caching is enabled. There is normally no reason to disable this.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">driver</span></code> = <code class="docutils literal"><span class="pre">sql</span></code></td>
+<td>(String) Entry point for the domain-specific configuration driver in the <cite>keystone.resource.domain_config</cite> namespace. Only a <cite>sql</cite> option is provided by keystone, so there is no reason to set this unless you are providing a custom entry point.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-federation"></span><table border="1" class="config-ref-table docutils" id="id10">
+<caption><span class="caption-text">Description of federation configuration options</span><a class="headerlink" href="config-options.html#id10" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[federation]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">assertion_prefix</span></code> =</td>
+<td>(String) Prefix to use when filtering environment variable names for federated assertions. Matched variables are passed into the federated mapping engine.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">caching</span></code> = <code class="docutils literal"><span class="pre">True</span></code></td>
+<td>(Boolean) Toggle for federation caching. This has no effect unless global caching is enabled. There is typically no reason to disable this.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">driver</span></code> = <code class="docutils literal"><span class="pre">sql</span></code></td>
+<td>(String) Entry point for the federation backend driver in the <cite>keystone.federation</cite> namespace. Keystone only provides a <cite>sql</cite> driver, so there is no reason to set this option unless you are providing a custom entry point.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">federated_domain_name</span></code> = <code class="docutils literal"><span class="pre">Federated</span></code></td>
+<td>(String) An arbitrary domain name that is reserved to allow federated ephemeral users to have a domain concept. Note that an admin will not be able to create a domain with this name or update an existing domain to this name. You are not advised to change this value unless you really have to.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">remote_id_attribute</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) Value to be used to obtain the entity ID of the Identity Provider from the environment. For <cite>mod_shib</cite>, this would be <cite>Shib-Identity-Provider</cite>. For For <cite>mod_auth_openidc</cite>, this could be <cite>HTTP_OIDC_ISS</cite>. For <cite>mod_auth_mellon</cite>, this could be <cite>MELLON_IDP</cite>.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sso_callback_template</span></code> = <code class="docutils literal"><span class="pre">/etc/keystone/sso_callback_template.html</span></code></td>
+<td>(String) Absolute path to an HTML file used as a Single Sign-On callback handler. This page is expected to redirect the user from keystone back to a trusted dashboard host, by form encoding a token in a POST request. Keystone&#8217;s default value should be sufficient for most deployments.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">trusted_dashboard</span></code> = <code class="docutils literal"><span class="pre">[]</span></code></td>
+<td>(Multi-valued) A list of trusted dashboard hosts. Before accepting a Single Sign-On request to return a token, the origin host must be a member of this list. This configuration option may be repeated for multiple values. You must set this in order to use web-based SSO flows. For example: trusted_dashboard=https://acme.example.com/auth/websso trusted_dashboard=https://beta.example.com/auth/websso</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-fernet-tokens"></span><table border="1" class="config-ref-table docutils" id="id11">
+<caption><span class="caption-text">Description of Fernet tokens configuration options</span><a class="headerlink" href="config-options.html#id11" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[fernet_tokens]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">key_repository</span></code> = <code class="docutils literal"><span class="pre">/etc/keystone/fernet-keys/</span></code></td>
+<td>(String) Directory containing Fernet token keys. This directory must exist before using <cite>keystone-manage fernet_setup</cite> for the first time, must be writable by the user running <cite>keystone-manage fernet_setup</cite> or <cite>keystone-manage fernet_rotate</cite>, and of course must be readable by keystone&#8217;s server process. The repository may contain keys in one of three states: a single staged key (always index 0) used for token validation, a single primary key (always the highest index) used for token creation and validation, and any number of secondary keys (all other index values) used for token validation. With multiple keystone nodes, each node must share the same key repository contents, with the exception of the staged key (index 0). It is safe to run <cite>keystone-manage fernet_rotate</cite> once on any one node to promote a staged key (index 0) to be the new primary (incremented from the previous highest index), and produce a new staged key (a new key with index 0); the resulting repository can then be atomically replicated to other nodes without any risk of race conditions (for example, it is safe to run <cite>keystone-manage fernet_rotate</cite> on host A, wait any amount of time, create a tarball of the directory on host A, unpack it on host B to a temporary location, and atomically move (<cite>mv</cite>) the directory into place on host B). Running <cite>keystone-manage fernet_rotate</cite> <em>twice</em> on a key repository without syncing other nodes will result in tokens that can not be validated by all nodes.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">max_active_keys</span></code> = <code class="docutils literal"><span class="pre">3</span></code></td>
+<td>(Integer) This controls how many keys are held in rotation by <cite>keystone-manage fernet_rotate</cite> before they are discarded. The default value of 3 means that keystone will maintain one staged key (always index 0), one primary key (the highest numerical index), and one secondary key (every other index). Increasing this value means that additional secondary keys will be kept in the rotation.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-identity"></span><table border="1" class="config-ref-table docutils" id="id12">
+<caption><span class="caption-text">Description of identity configuration options</span><a class="headerlink" href="config-options.html#id12" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[identity]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">cache_time</span></code> = <code class="docutils literal"><span class="pre">600</span></code></td>
+<td>(Integer) Time to cache identity data (in seconds). This has no effect unless global and identity caching are enabled.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">caching</span></code> = <code class="docutils literal"><span class="pre">True</span></code></td>
+<td>(Boolean) Toggle for identity caching. This has no effect unless global caching is enabled. There is typically no reason to disable this.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">default_domain_id</span></code> = <code class="docutils literal"><span class="pre">default</span></code></td>
+<td>(String) This references the domain to use for all Identity API v2 requests (which are not aware of domains). A domain with this ID can optionally be created for you by <cite>keystone-manage bootstrap</cite>. The domain referenced by this ID cannot be deleted on the v3 API, to prevent accidentally breaking the v2 API. There is nothing special about this domain, other than the fact that it must exist to order to maintain support for your v2 clients. There is typically no reason to change this value.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">domain_config_dir</span></code> = <code class="docutils literal"><span class="pre">/etc/keystone/domains</span></code></td>
+<td>(String) Absolute path where keystone should locate domain-specific <cite>[identity]</cite> configuration files. This option has no effect unless <cite>[identity] domain_specific_drivers_enabled</cite> is set to true. There is typically no reason to change this value.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">domain_configurations_from_database</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) By default, domain-specific configuration data is read from files in the directory identified by <cite>[identity] domain_config_dir</cite>. Enabling this configuration option allows you to instead manage domain-specific configurations through the API, which are then persisted in the backend (typically, a SQL database), rather than using configuration files on disk.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">domain_specific_drivers_enabled</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) A subset (or all) of domains can have their own identity driver, each with their own partial configuration options, stored in either the resource backend or in a file in a domain configuration directory (depending on the setting of <cite>[identity] domain_configurations_from_database</cite>). Only values specific to the domain need to be specified in this manner. This feature is disabled by default, but may be enabled by default in a future release; set to true to enable.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">driver</span></code> = <code class="docutils literal"><span class="pre">sql</span></code></td>
+<td>(String) Entry point for the identity backend driver in the <cite>keystone.identity</cite> namespace. Keystone provides a <cite>sql</cite> and <cite>ldap</cite> driver. This option is also used as the default driver selection (along with the other configuration variables in this section) in the event that <cite>[identity] domain_specific_drivers_enabled</cite> is enabled, but no applicable domain-specific configuration is defined for the domain in question. Unless your deployment primarily relies on <cite>ldap</cite> AND is not using domain-specific configuration, you should typically leave this set to <cite>sql</cite>.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">list_limit</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(Integer) Maximum number of entities that will be returned in an identity collection.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">max_password_length</span></code> = <code class="docutils literal"><span class="pre">4096</span></code></td>
+<td>(Integer) Maximum allowed length for user passwords. Decrease this value to improve performance. Changing this value does not effect existing passwords.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-kvs"></span><table border="1" class="config-ref-table docutils" id="id13">
+<caption><span class="caption-text">Description of KVS configuration options</span><a class="headerlink" href="config-options.html#id13" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[kvs]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">backends</span></code> =</td>
+<td>(List) Extra dogpile.cache backend modules to register with the dogpile.cache library.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">config_prefix</span></code> = <code class="docutils literal"><span class="pre">keystone.kvs</span></code></td>
+<td>(String) Prefix for building the configuration dictionary for the KVS region. This should not need to be changed unless there is another dogpile.cache region with the same configuration name.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">default_lock_timeout</span></code> = <code class="docutils literal"><span class="pre">5</span></code></td>
+<td>(Integer) Default lock timeout (in seconds) for distributed locking.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">enable_key_mangler</span></code> = <code class="docutils literal"><span class="pre">True</span></code></td>
+<td>(Boolean) Toggle to disable using a key-mangling function to ensure fixed length keys. This is toggle-able for debugging purposes, it is highly recommended to always leave this set to true.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-ldap"></span><table border="1" class="config-ref-table docutils" id="id14">
+<caption><span class="caption-text">Description of LDAP configuration options</span><a class="headerlink" href="config-options.html#id14" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[ldap]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">alias_dereferencing</span></code> = <code class="docutils literal"><span class="pre">default</span></code></td>
+<td>(String) The LDAP dereferencing option to use for queries involving aliases. A value of <cite>default</cite> falls back to using default dereferencing behavior configured by your <cite>ldap.conf</cite>. A value of <cite>never</cite> prevents aliases from being dereferenced at all. A value of <cite>searching</cite> dereferences aliases only after name resolution. A value of <cite>finding</cite> dereferences aliases only during name resolution. A value of <cite>always</cite> dereferences aliases in all cases.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">auth_pool_connection_lifetime</span></code> = <code class="docutils literal"><span class="pre">60</span></code></td>
+<td>(Integer) The maximum end user authentication connection lifetime to the LDAP server in seconds. When this lifetime is exceeded, the connection will be unbound and removed from the connection pool. This option has no effect unless <cite>[ldap] use_auth_pool</cite> is also enabled.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">auth_pool_size</span></code> = <code class="docutils literal"><span class="pre">100</span></code></td>
+<td>(Integer) The size of the connection pool to use for end user authentication. This option has no effect unless <cite>[ldap] use_auth_pool</cite> is also enabled.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">chase_referrals</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(Boolean) Sets keystone&#8217;s referral chasing behavior across directory partitions. If left unset, the system&#8217;s default behavior will be used.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">connection_timeout</span></code> = <code class="docutils literal"><span class="pre">-1</span></code></td>
+<td>(Integer) The connection timeout to use with the LDAP server. A value of <cite>-1</cite> means that connections will never timeout.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">debug_level</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(Integer) Sets the LDAP debugging level for LDAP calls. A value of 0 means that debugging is not enabled. This value is a bitmask, consult your LDAP documentation for possible values.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">group_ad_nesting</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) If enabled, group queries will use Active Directory specific filters for nested groups.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">group_additional_attribute_mapping</span></code> =</td>
+<td>(List) A list of LDAP attribute to keystone group attribute pairs used for mapping additional attributes to groups in keystone. The expected format is <cite>&lt;ldap_attr&gt;:&lt;group_attr&gt;</cite>, where <cite>ldap_attr</cite> is the attribute in the LDAP object and <cite>group_attr</cite> is the attribute which should appear in the identity API.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">group_attribute_ignore</span></code> =</td>
+<td>(List) List of group attributes to ignore on create and update. or whether a specific group attribute should be filtered for list or show group.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">group_desc_attribute</span></code> = <code class="docutils literal"><span class="pre">description</span></code></td>
+<td>(String) The LDAP attribute mapped to group descriptions in keystone.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">group_filter</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) The LDAP search filter to use for groups.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">group_id_attribute</span></code> = <code class="docutils literal"><span class="pre">cn</span></code></td>
+<td>(String) The LDAP attribute mapped to group IDs in keystone. This must NOT be a multivalued attribute. Group IDs are expected to be globally unique across keystone domains and URL-safe.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">group_member_attribute</span></code> = <code class="docutils literal"><span class="pre">member</span></code></td>
+<td>(String) The LDAP attribute used to indicate that a user is a member of the group.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">group_members_are_ids</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Enable this option if the members of the group object class are keystone user IDs rather than LDAP DNs. This is the case when using <cite>posixGroup</cite> as the group object class in Open Directory.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">group_name_attribute</span></code> = <code class="docutils literal"><span class="pre">ou</span></code></td>
+<td>(String) The LDAP attribute mapped to group names in keystone. Group names are expected to be unique only within a keystone domain and are not expected to be URL-safe.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">group_objectclass</span></code> = <code class="docutils literal"><span class="pre">groupOfNames</span></code></td>
+<td>(String) The LDAP object class to use for groups. If setting this option to <cite>posixGroup</cite>, you may also be interested in enabling the <cite>[ldap] group_members_are_ids</cite> option.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">group_tree_dn</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) The search base to use for groups. Defaults to the <cite>[ldap] suffix</cite> value.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">page_size</span></code> = <code class="docutils literal"><span class="pre">0</span></code></td>
+<td>(Integer) Defines the maximum number of results per page that keystone should request from the LDAP server when listing objects. A value of zero (<cite>0</cite>) disables paging.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">password</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) The password of the administrator bind DN to use when querying the LDAP server, if your LDAP server requires it.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">pool_connection_lifetime</span></code> = <code class="docutils literal"><span class="pre">600</span></code></td>
+<td>(Integer) The maximum connection lifetime to the LDAP server in seconds. When this lifetime is exceeded, the connection will be unbound and removed from the connection pool. This option has no effect unless <cite>[ldap] use_pool</cite> is also enabled.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">pool_connection_timeout</span></code> = <code class="docutils literal"><span class="pre">-1</span></code></td>
+<td>(Integer) The connection timeout to use when pooling LDAP connections. A value of <cite>-1</cite> means that connections will never timeout. This option has no effect unless <cite>[ldap] use_pool</cite> is also enabled.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">pool_retry_delay</span></code> = <code class="docutils literal"><span class="pre">0.1</span></code></td>
+<td>(Floating point) The number of seconds to wait before attempting to reconnect to the LDAP server. This option has no effect unless <cite>[ldap] use_pool</cite> is also enabled.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">pool_retry_max</span></code> = <code class="docutils literal"><span class="pre">3</span></code></td>
+<td>(Integer) The maximum number of times to attempt reconnecting to the LDAP server before aborting. A value of zero prevents retries. This option has no effect unless <cite>[ldap] use_pool</cite> is also enabled.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">pool_size</span></code> = <code class="docutils literal"><span class="pre">10</span></code></td>
+<td>(Integer) The size of the LDAP connection pool. This option has no effect unless <cite>[ldap] use_pool</cite> is also enabled.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">query_scope</span></code> = <code class="docutils literal"><span class="pre">one</span></code></td>
+<td>(String) The search scope which defines how deep to search within the search base. A value of <cite>one</cite> (representing <cite>oneLevel</cite> or <cite>singleLevel</cite>) indicates a search of objects immediately below to the base object, but does not include the base object itself. A value of <cite>sub</cite> (representing <cite>subtree</cite> or <cite>wholeSubtree</cite>) indicates a search of both the base object itself and the entire subtree below it.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">suffix</span></code> = <code class="docutils literal"><span class="pre">cn=example,cn=com</span></code></td>
+<td>(String) The default LDAP server suffix to use, if a DN is not defined via either <cite>[ldap] user_tree_dn</cite> or <cite>[ldap] group_tree_dn</cite>.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">tls_cacertdir</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) An absolute path to a CA certificate directory to use when communicating with LDAP servers. There is no reason to set this option if you&#8217;ve also set <cite>[ldap] tls_cacertfile</cite>.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">tls_cacertfile</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) An absolute path to a CA certificate file to use when communicating with LDAP servers. This option will take precedence over <cite>[ldap] tls_cacertdir</cite>, so there is no reason to set both.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">tls_req_cert</span></code> = <code class="docutils literal"><span class="pre">demand</span></code></td>
+<td>(String) Specifies which checks to perform against client certificates on incoming TLS sessions. If set to <cite>demand</cite>, then a certificate will always be requested and required from the LDAP server. If set to <cite>allow</cite>, then a certificate will always be requested but not required from the LDAP server. If set to <cite>never</cite>, then a certificate will never be requested.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">url</span></code> = <code class="docutils literal"><span class="pre">ldap://localhost</span></code></td>
+<td>(String) URL(s) for connecting to the LDAP server. Multiple LDAP URLs may be specified as a comma separated string. The first URL to successfully bind is used for the connection.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">use_auth_pool</span></code> = <code class="docutils literal"><span class="pre">True</span></code></td>
+<td>(Boolean) Enable LDAP connection pooling for end user authentication. There is typically no reason to disable this.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">use_pool</span></code> = <code class="docutils literal"><span class="pre">True</span></code></td>
+<td>(Boolean) Enable LDAP connection pooling for queries to the LDAP server. There is typically no reason to disable this.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">use_tls</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Enable TLS when communicating with LDAP servers. You should also set the <cite>[ldap] tls_cacertfile</cite> and <cite>[ldap] tls_cacertdir</cite> options when using this option. Do not set this option if you are using LDAP over SSL (LDAPS) instead of TLS.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">user</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) The user name of the administrator bind DN to use when querying the LDAP server, if your LDAP server requires it.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">user_additional_attribute_mapping</span></code> =</td>
+<td>(List) A list of LDAP attribute to keystone user attribute pairs used for mapping additional attributes to users in keystone. The expected format is <cite>&lt;ldap_attr&gt;:&lt;user_attr&gt;</cite>, where <cite>ldap_attr</cite> is the attribute in the LDAP object and <cite>user_attr</cite> is the attribute which should appear in the identity API.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">user_attribute_ignore</span></code> = <code class="docutils literal"><span class="pre">default_project_id</span></code></td>
+<td>(List) List of user attributes to ignore on create and update, or whether a specific user attribute should be filtered for list or show user.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">user_default_project_id_attribute</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) The LDAP attribute mapped to a user&#8217;s default_project_id in keystone. This is most commonly used when keystone has write access to LDAP.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">user_description_attribute</span></code> = <code class="docutils literal"><span class="pre">description</span></code></td>
+<td>(String) The LDAP attribute mapped to user descriptions in keystone.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">user_enabled_attribute</span></code> = <code class="docutils literal"><span class="pre">enabled</span></code></td>
+<td>(String) The LDAP attribute mapped to the user enabled attribute in keystone. If setting this option to <cite>userAccountControl</cite>, then you may be interested in setting <cite>[ldap] user_enabled_mask</cite> and <cite>[ldap] user_enabled_default</cite> as well.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">user_enabled_default</span></code> = <code class="docutils literal"><span class="pre">True</span></code></td>
+<td>(String) The default value to enable users. This should match an appropriate integer value if the LDAP server uses non-boolean (bitmask) values to indicate if a user is enabled or disabled. If this is not set to <cite>True</cite>, then the typical value is <cite>512</cite>. This is typically used when <cite>[ldap] user_enabled_attribute = userAccountControl</cite>.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">user_enabled_emulation</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) If enabled, keystone uses an alternative method to determine if a user is enabled or not by checking if they are a member of the group defined by the <cite>[ldap] user_enabled_emulation_dn</cite> option. Enabling this option causes keystone to ignore the value of <cite>[ldap] user_enabled_invert</cite>.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">user_enabled_emulation_dn</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) DN of the group entry to hold enabled users when using enabled emulation. Setting this option has no effect unless <cite>[ldap] user_enabled_emulation</cite> is also enabled.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">user_enabled_emulation_use_group_config</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Use the <cite>[ldap] group_member_attribute</cite> and <cite>[ldap] group_objectclass</cite> settings to determine membership in the emulated enabled group. Enabling this option has no effect unless <cite>[ldap] user_enabled_emulation</cite> is also enabled.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">user_enabled_invert</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Logically negate the boolean value of the enabled attribute obtained from the LDAP server. Some LDAP servers use a boolean lock attribute where &#8220;true&#8221; means an account is disabled. Setting <cite>[ldap] user_enabled_invert = true</cite> will allow these lock attributes to be used. This option will have no effect if either the <cite>[ldap] user_enabled_mask</cite> or <cite>[ldap] user_enabled_emulation</cite> options are in use.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">user_enabled_mask</span></code> = <code class="docutils literal"><span class="pre">0</span></code></td>
+<td>(Integer) Bitmask integer to select which bit indicates the enabled value if the LDAP server represents &#8220;enabled&#8221; as a bit on an integer rather than as a discrete boolean. A value of <cite>0</cite> indicates that the mask is not used. If this is not set to <cite>0</cite> the typical value is <cite>2</cite>. This is typically used when <cite>[ldap] user_enabled_attribute = userAccountControl</cite>. Setting this option causes keystone to ignore the value of <cite>[ldap] user_enabled_invert</cite>.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">user_filter</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) The LDAP search filter to use for users.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">user_id_attribute</span></code> = <code class="docutils literal"><span class="pre">cn</span></code></td>
+<td>(String) The LDAP attribute mapped to user IDs in keystone. This must NOT be a multivalued attribute. User IDs are expected to be globally unique across keystone domains and URL-safe.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">user_mail_attribute</span></code> = <code class="docutils literal"><span class="pre">mail</span></code></td>
+<td>(String) The LDAP attribute mapped to user emails in keystone.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">user_name_attribute</span></code> = <code class="docutils literal"><span class="pre">sn</span></code></td>
+<td>(String) The LDAP attribute mapped to user names in keystone. User names are expected to be unique only within a keystone domain and are not expected to be URL-safe.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">user_objectclass</span></code> = <code class="docutils literal"><span class="pre">inetOrgPerson</span></code></td>
+<td>(String) The LDAP object class to use for users.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">user_pass_attribute</span></code> = <code class="docutils literal"><span class="pre">userPassword</span></code></td>
+<td>(String) The LDAP attribute mapped to user passwords in keystone.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">user_tree_dn</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) The search base to use for users. Defaults to the <cite>[ldap] suffix</cite> value.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-mapping"></span><table border="1" class="config-ref-table docutils" id="id15">
+<caption><span class="caption-text">Description of mapping configuration options</span><a class="headerlink" href="config-options.html#id15" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[identity_mapping]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">backward_compatible_ids</span></code> = <code class="docutils literal"><span class="pre">True</span></code></td>
+<td>(Boolean) The format of user and group IDs changed in Juno for backends that do not generate UUIDs (for example, LDAP), with keystone providing a hash mapping to the underlying attribute in LDAP. By default this mapping is disabled, which ensures that existing IDs will not change. Even when the mapping is enabled by using domain-specific drivers (<cite>[identity] domain_specific_drivers_enabled</cite>), any users and groups from the default domain being handled by LDAP will still not be mapped to ensure their IDs remain backward compatible. Setting this value to false will enable the new mapping for all backends, including the default LDAP driver. It is only guaranteed to be safe to enable this option if you do not already have assignments for users and groups from the default LDAP domain, and you consider it to be acceptable for Keystone to provide the different IDs to clients than it did previously (existing IDs in the API will suddenly change). Typically this means that the only time you can set this value to false is when configuring a fresh installation, although that is the recommended value.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">driver</span></code> = <code class="docutils literal"><span class="pre">sql</span></code></td>
+<td>(String) Entry point for the identity mapping backend driver in the <cite>keystone.identity.id_mapping</cite> namespace. Keystone only provides a <cite>sql</cite> driver, so there is no reason to change this unless you are providing a custom entry point.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">generator</span></code> = <code class="docutils literal"><span class="pre">sha256</span></code></td>
+<td>(String) Entry point for the public ID generator for user and group entities in the <cite>keystone.identity.id_generator</cite> namespace. The Keystone identity mapper only supports generators that produce 64 bytes or less. Keystone only provides a <cite>sha256</cite> entry point, so there is no reason to change this value unless you&#8217;re providing a custom entry point.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-memcache"></span><table border="1" class="config-ref-table docutils" id="id16">
+<caption><span class="caption-text">Description of memcache configuration options</span><a class="headerlink" href="config-options.html#id16" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[memcache]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">servers</span></code> = <code class="docutils literal"><span class="pre">localhost:11211</span></code></td>
+<td>(List) Memcache servers in the format of &#8220;host:port&#8221;.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">socket_timeout</span></code> = <code class="docutils literal"><span class="pre">3</span></code></td>
+<td>(Integer) Timeout in seconds for every call to a server. This is used by the key value store system (e.g. token pooled memcached persistence backend).</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-oauth"></span><table border="1" class="config-ref-table docutils" id="id17">
+<caption><span class="caption-text">Description of OAuth configuration options</span><a class="headerlink" href="config-options.html#id17" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[oauth1]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">access_token_duration</span></code> = <code class="docutils literal"><span class="pre">86400</span></code></td>
+<td>(Integer) Number of seconds for the OAuth Access Token to remain valid after being created. This is the amount of time the consumer has to interact with the service provider (which is typically keystone). Setting this option to zero means that access tokens will last forever.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">driver</span></code> = <code class="docutils literal"><span class="pre">sql</span></code></td>
+<td>(String) Entry point for the OAuth backend driver in the <cite>keystone.oauth1</cite> namespace. Typically, there is no reason to set this option unless you are providing a custom entry point.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">request_token_duration</span></code> = <code class="docutils literal"><span class="pre">28800</span></code></td>
+<td>(Integer) Number of seconds for the OAuth Request Token to remain valid after being created. This is the amount of time the user has to authorize the token. Setting this option to zero means that request tokens will last forever.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-os-inherit"></span><table border="1" class="config-ref-table docutils" id="id18">
+<caption><span class="caption-text">Description of os_inherit configuration options</span><a class="headerlink" href="config-options.html#id18" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[os_inherit]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">enabled</span></code> = <code class="docutils literal"><span class="pre">True</span></code></td>
+<td>(Boolean) DEPRECATED: role-assignment inheritance to projects from owning domain or from projects higher in the hierarchy can be optionally disabled. In the future, this option will be removed and the hierarchy will be always enabled. The option to enable the OS-INHERIT extension has been deprecated in the M release and will be removed in the O release. The OS-INHERIT extension will be enabled by default.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-policy"></span><table border="1" class="config-ref-table docutils" id="id19">
+<caption><span class="caption-text">Description of policy configuration options</span><a class="headerlink" href="config-options.html#id19" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[policy]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">driver</span></code> = <code class="docutils literal"><span class="pre">sql</span></code></td>
+<td>(String) Entry point for the policy backend driver in the <cite>keystone.policy</cite> namespace. Supplied drivers are <cite>rules</cite> (which does not support any CRUD operations for the v3 policy API) and <cite>sql</cite>. Typically, there is no reason to set this option unless you are providing a custom entry point.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">list_limit</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(Integer) Maximum number of entities that will be returned in a policy collection.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-revoke"></span><table border="1" class="config-ref-table docutils" id="id20">
+<caption><span class="caption-text">Description of revoke configuration options</span><a class="headerlink" href="config-options.html#id20" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[revoke]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">cache_time</span></code> = <code class="docutils literal"><span class="pre">3600</span></code></td>
+<td>(Integer) Time to cache the revocation list and the revocation events (in seconds). This has no effect unless global and <cite>[revoke] caching</cite> are both enabled.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">caching</span></code> = <code class="docutils literal"><span class="pre">True</span></code></td>
+<td>(Boolean) Toggle for revocation event caching. This has no effect unless global caching is enabled.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">driver</span></code> = <code class="docutils literal"><span class="pre">sql</span></code></td>
+<td>(String) Entry point for the token revocation backend driver in the <cite>keystone.revoke</cite> namespace. Keystone only provides a <cite>sql</cite> driver, so there is no reason to set this option unless you are providing a custom entry point.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">expiration_buffer</span></code> = <code class="docutils literal"><span class="pre">1800</span></code></td>
+<td>(Integer) The number of seconds after a token has expired before a corresponding revocation event may be purged from the backend.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-role"></span><table border="1" class="config-ref-table docutils" id="id21">
+<caption><span class="caption-text">Description of role configuration options</span><a class="headerlink" href="config-options.html#id21" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[role]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">cache_time</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(Integer) Time to cache role data, in seconds. This has no effect unless both global caching and <cite>[role] caching</cite> are enabled.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">caching</span></code> = <code class="docutils literal"><span class="pre">True</span></code></td>
+<td>(Boolean) Toggle for role caching. This has no effect unless global caching is enabled. In a typical deployment, there is no reason to disable this.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">driver</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) Entry point for the role backend driver in the <cite>keystone.role</cite> namespace. Keystone only provides a <cite>sql</cite> driver, so there&#8217;s no reason to change this unless you are providing a custom entry point.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">list_limit</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(Integer) Maximum number of entities that will be returned in a role collection. This may be useful to tune if you have a large number of discrete roles in your deployment.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-saml"></span><table border="1" class="config-ref-table docutils" id="id22">
+<caption><span class="caption-text">Description of SAML configuration options</span><a class="headerlink" href="config-options.html#id22" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[saml]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">assertion_expiration_time</span></code> = <code class="docutils literal"><span class="pre">3600</span></code></td>
+<td>(Integer) Determines the lifetime for any SAML assertions generated by keystone, using <cite>NotOnOrAfter</cite> attributes.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">certfile</span></code> = <code class="docutils literal"><span class="pre">/etc/keystone/ssl/certs/signing_cert.pem</span></code></td>
+<td>(String) Absolute path to the public certificate file to use for SAML signing. The value cannot contain a comma (<cite>,</cite>).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">idp_contact_company</span></code> = <code class="docutils literal"><span class="pre">Example,</span> <span class="pre">Inc.</span></code></td>
+<td>(String) This is the company name of the identity provider&#8217;s contact person.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">idp_contact_email</span></code> = <code class="docutils literal"><span class="pre">support&#64;example.com</span></code></td>
+<td>(String) This is the email address of the identity provider&#8217;s contact person.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">idp_contact_name</span></code> = <code class="docutils literal"><span class="pre">SAML</span> <span class="pre">Identity</span> <span class="pre">Provider</span> <span class="pre">Support</span></code></td>
+<td>(String) This is the given name of the identity provider&#8217;s contact person.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">idp_contact_surname</span></code> = <code class="docutils literal"><span class="pre">Support</span></code></td>
+<td>(String) This is the surname of the identity provider&#8217;s contact person.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">idp_contact_telephone</span></code> = <code class="docutils literal"><span class="pre">+1</span> <span class="pre">800</span> <span class="pre">555</span> <span class="pre">0100</span></code></td>
+<td>(String) This is the telephone number of the identity provider&#8217;s contact person.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">idp_contact_type</span></code> = <code class="docutils literal"><span class="pre">other</span></code></td>
+<td>(String) This is the type of contact that best describes the identity provider&#8217;s contact person.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">idp_entity_id</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(URI) This is the unique entity identifier of the identity provider (keystone) to use when generating SAML assertions. This value is required to generate identity provider metadata and must be a URI (a URL is recommended). For example: <cite>https://keystone.example.com/v3/OS-FEDERATION/saml2/idp</cite>.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">idp_lang</span></code> = <code class="docutils literal"><span class="pre">en</span></code></td>
+<td>(String) This is the language used by the identity provider&#8217;s organization.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">idp_metadata_path</span></code> = <code class="docutils literal"><span class="pre">/etc/keystone/saml2_idp_metadata.xml</span></code></td>
+<td>(String) Absolute path to the identity provider metadata file. This file should be generated with the <cite>keystone-manage saml_idp_metadata</cite> command. There is typically no reason to change this value.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">idp_organization_display_name</span></code> = <code class="docutils literal"><span class="pre">OpenStack</span> <span class="pre">SAML</span> <span class="pre">Identity</span> <span class="pre">Provider</span></code></td>
+<td>(String) This is the name of the identity provider&#8217;s organization to be displayed.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">idp_organization_name</span></code> = <code class="docutils literal"><span class="pre">SAML</span> <span class="pre">Identity</span> <span class="pre">Provider</span></code></td>
+<td>(String) This is the name of the identity provider&#8217;s organization.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">idp_organization_url</span></code> = <code class="docutils literal"><span class="pre">https://example.com/</span></code></td>
+<td>(URI) This is the URL of the identity provider&#8217;s organization. The URL referenced here should be useful to humans.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">idp_sso_endpoint</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(URI) This is the single sign-on (SSO) service location of the identity provider which accepts HTTP POST requests. A value is required to generate identity provider metadata. For example: <cite>https://keystone.example.com/v3/OS-FEDERATION/saml2/sso</cite>.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">keyfile</span></code> = <code class="docutils literal"><span class="pre">/etc/keystone/ssl/private/signing_key.pem</span></code></td>
+<td>(String) Absolute path to the private key file to use for SAML signing. The value cannot contain a comma (<cite>,</cite>).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">relay_state_prefix</span></code> = <code class="docutils literal"><span class="pre">ss:mem:</span></code></td>
+<td>(String) The prefix of the RelayState SAML attribute to use when generating enhanced client and proxy (ECP) assertions. In a typical deployment, there is no reason to change this value.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">xmlsec1_binary</span></code> = <code class="docutils literal"><span class="pre">xmlsec1</span></code></td>
+<td>(String) Name of, or absolute path to, the binary to be used for XML signing. Although only the XML Security Library (<cite>xmlsec1</cite>) is supported, it may have a non-standard name or path on your system. If keystone cannot find the binary itself, you may need to install the appropriate package, use this option to specify an absolute path, or adjust keystone&#8217;s PATH environment variable.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-security"></span><table border="1" class="config-ref-table docutils" id="id23">
+<caption><span class="caption-text">Description of security configuration options</span><a class="headerlink" href="config-options.html#id23" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[DEFAULT]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">crypt_strength</span></code> = <code class="docutils literal"><span class="pre">10000</span></code></td>
+<td>(Integer) The value passed as the keyword &#8220;rounds&#8221; to passlib&#8217;s encrypt method. This option represents a trade off between security and performance. Higher values lead to slower performance, but higher security. Changing this option will only affect newly created passwords as existing password hashes already have a fixed number of rounds applied, so it is safe to tune this option in a running cluster. For more information, see <a class="reference external" href="https://pythonhosted.org/passlib/password_hash_api.html#choosing-the-right-rounds-value">https://pythonhosted.org/passlib/password_hash_api.html#choosing-the-right-rounds-value</a></td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-token"></span><table border="1" class="config-ref-table docutils" id="id24">
+<caption><span class="caption-text">Description of token configuration options</span><a class="headerlink" href="config-options.html#id24" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[token]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">allow_expired_window</span></code> = <code class="docutils literal"><span class="pre">172800</span></code></td>
+<td>(Integer) This controls the number of seconds that a token can be retrieved for beyond the built-in expiry time. This allows long running operations to succeed. Defaults to two days.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">allow_rescope_scoped_token</span></code> = <code class="docutils literal"><span class="pre">True</span></code></td>
+<td>(Boolean) This toggles whether scoped tokens may be be re-scoped to a new project or domain, thereby preventing users from exchanging a scoped token (including those with a default project scope) for any other token. This forces users to either authenticate for unscoped tokens (and later exchange that unscoped token for tokens with a more specific scope) or to provide their credentials in every request for a scoped token to avoid re-scoping altogether.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">bind</span></code> =</td>
+<td>(List) This is a list of external authentication mechanisms which should add token binding metadata to tokens, such as <cite>kerberos</cite> or <cite>x509</cite>. Binding metadata is enforced according to the <cite>[token] enforce_token_bind</cite> option.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">cache_on_issue</span></code> = <code class="docutils literal"><span class="pre">True</span></code></td>
+<td>(Boolean) Enable storing issued token data to token validation cache so that first token validation doesn&#8217;t actually cause full validation cycle. This option has no effect unless global caching and token caching are enabled.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">cache_time</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(Integer) The number of seconds to cache token creation and validation data. This has no effect unless both global and <cite>[token] caching</cite> are enabled.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">caching</span></code> = <code class="docutils literal"><span class="pre">True</span></code></td>
+<td>(Boolean) Toggle for caching token creation and validation data. This has no effect unless global caching is enabled.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">driver</span></code> = <code class="docutils literal"><span class="pre">sql</span></code></td>
+<td>(String) Entry point for the token persistence backend driver in the <cite>keystone.token.persistence</cite> namespace. Keystone provides <cite>kvs</cite> and <cite>sql</cite> drivers. The <cite>kvs</cite> backend depends on the configuration in the <cite>[kvs]</cite> section. The <cite>sql</cite> option (default) depends on the options in your <cite>[database]</cite> section. If you&#8217;re using the <cite>fernet</cite> <cite>[token] provider</cite>, this backend will not be utilized to persist tokens at all.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">enforce_token_bind</span></code> = <code class="docutils literal"><span class="pre">permissive</span></code></td>
+<td>(String) This controls the token binding enforcement policy on tokens presented to keystone with token binding metadata (as specified by the <cite>[token] bind</cite> option). <cite>disabled</cite> completely bypasses token binding validation. <cite>permissive</cite> and <cite>strict</cite> do not require tokens to have binding metadata (but will validate it if present), whereas <cite>required</cite> will always demand tokens to having binding metadata. <cite>permissive</cite> will allow unsupported binding metadata to pass through without validation (usually to be validated at another time by another component), whereas <cite>strict</cite> and <cite>required</cite> will demand that the included binding metadata be supported by keystone.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">expiration</span></code> = <code class="docutils literal"><span class="pre">3600</span></code></td>
+<td>(Integer) The amount of time that a token should remain valid (in seconds). Drastically reducing this value may break &#8220;long-running&#8221; operations that involve multiple services to coordinate together, and will force users to authenticate with keystone more frequently. Drastically increasing this value will increase load on the <cite>[token] driver</cite>, as more tokens will be simultaneously valid. Keystone tokens are also bearer tokens, so a shorter duration will also reduce the potential security impact of a compromised token.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">infer_roles</span></code> = <code class="docutils literal"><span class="pre">True</span></code></td>
+<td>(Boolean) This controls whether roles should be included with tokens that are not directly assigned to the token&#8217;s scope, but are instead linked implicitly to other role assignments.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">provider</span></code> = <code class="docutils literal"><span class="pre">fernet</span></code></td>
+<td>(String) Entry point for the token provider in the <cite>keystone.token.provider</cite> namespace. The token provider controls the token construction, validation, and revocation operations. Keystone includes <cite>fernet</cite> and <cite>uuid</cite> token providers. <cite>uuid</cite> tokens must be persisted (using the backend specified in the <cite>[token] driver</cite> option), but do not require any extra configuration or setup. <cite>fernet</cite> tokens do not need to be persisted at all, but require that you run <cite>keystone-manage fernet_setup</cite> (also see the <cite>keystone-manage fernet_rotate</cite> command).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">revoke_by_id</span></code> = <code class="docutils literal"><span class="pre">True</span></code></td>
+<td>(Boolean) This toggles support for revoking individual tokens by the token identifier and thus various token enumeration operations (such as listing all tokens issued to a specific user). These operations are used to determine the list of tokens to consider revoked. Do not disable this option if you&#8217;re using the <cite>kvs</cite> <cite>[revoke] driver</cite>.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-tokenless"></span><table border="1" class="config-ref-table docutils" id="id25">
+<caption><span class="caption-text">Description of Tokenless Authorization configuration options</span><a class="headerlink" href="config-options.html#id25" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[tokenless_auth]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">issuer_attribute</span></code> = <code class="docutils literal"><span class="pre">SSL_CLIENT_I_DN</span></code></td>
+<td>(String) The name of the WSGI environment variable used to pass the issuer of the client certificate to keystone. This attribute is used as an identity provider ID for the X.509 tokenless authorization along with the protocol to look up its corresponding mapping. In a typical deployment, there is no reason to change this value.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">protocol</span></code> = <code class="docutils literal"><span class="pre">x509</span></code></td>
+<td>(String) The federated protocol ID used to represent X.509 tokenless authorization. This is used in combination with the value of <cite>[tokenless_auth] issuer_attribute</cite> to find a corresponding federated mapping. In a typical deployment, there is no reason to change this value.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">trusted_issuer</span></code> = <code class="docutils literal"><span class="pre">[]</span></code></td>
+<td>(Multi-valued) The list of distinguished names which identify trusted issuers of client certificates allowed to use X.509 tokenless authorization. If the option is absent then no certificates will be allowed. The format for the values of a distinguished name (DN) must be separated by a comma and contain no spaces. Furthermore, because an individual DN may contain commas, this configuration option may be repeated multiple times to represent multiple values. For example, keystone.conf would include two consecutive lines in order to trust two different DNs, such as <cite>trusted_issuer = CN=john,OU=keystone,O=openstack</cite> and <cite>trusted_issuer = CN=mary,OU=eng,O=abc</cite>.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-trust"></span><table border="1" class="config-ref-table docutils" id="id26">
+<caption><span class="caption-text">Description of trust configuration options</span><a class="headerlink" href="config-options.html#id26" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[trust]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">allow_redelegation</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Allows authorization to be redelegated from one user to another, effectively chaining trusts together. When disabled, the <cite>remaining_uses</cite> attribute of a trust is constrained to be zero.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">driver</span></code> = <code class="docutils literal"><span class="pre">sql</span></code></td>
+<td>(String) Entry point for the trust backend driver in the <cite>keystone.trust</cite> namespace. Keystone only provides a <cite>sql</cite> driver, so there is no reason to change this unless you are providing a custom entry point.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">enabled</span></code> = <code class="docutils literal"><span class="pre">True</span></code></td>
+<td>(Boolean) Delegation and impersonation features using trusts can be optionally disabled.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">max_redelegation_count</span></code> = <code class="docutils literal"><span class="pre">3</span></code></td>
+<td>(Integer) Maximum number of times that authorization can be redelegated from one user to another in a chain of trusts. This number may be reduced further for a specific trust.</td>
+</tr>
+</tbody>
+</table>
+<span id="keystone-redis"></span><table border="1" class="config-ref-table docutils" id="id27">
+<caption><span class="caption-text">Description of Redis configuration options</span><a class="headerlink" href="config-options.html#id27" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[matchmaker_redis]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">check_timeout</span></code> = <code class="docutils literal"><span class="pre">20000</span></code></td>
+<td>(Integer) Time in ms to wait before the transaction is killed.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">host</span></code> = <code class="docutils literal"><span class="pre">127.0.0.1</span></code></td>
+<td><p class="first">(String) Host to locate redis.</p>
+<ul class="last">
+<li><p class="first"><strong>Deprecated</strong></p>
+<p>Replaced by [DEFAULT]/transport_url</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">password</span></code> =</td>
+<td><p class="first">(String) Password for Redis server (optional).</p>
+<ul class="last">
+<li><p class="first"><strong>Deprecated</strong></p>
+<p>Replaced by [DEFAULT]/transport_url</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">port</span></code> = <code class="docutils literal"><span class="pre">6379</span></code></td>
+<td><p class="first">(Port number) Use this port to connect to redis host.</p>
+<ul class="last">
+<li><p class="first"><strong>Deprecated</strong></p>
+<p>Replaced by [DEFAULT]/transport_url</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">sentinel_group_name</span></code> = <code class="docutils literal"><span class="pre">oslo-messaging-zeromq</span></code></td>
+<td>(String) Redis replica set name.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sentinel_hosts</span></code> =</td>
+<td><p class="first">(List) List of Redis Sentinel hosts (fault tolerance mode), e.g., [host:port, host1:port ... ]</p>
+<ul class="last">
+<li><p class="first"><strong>Deprecated</strong></p>
+<p>Replaced by [DEFAULT]/transport_url</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">socket_timeout</span></code> = <code class="docutils literal"><span class="pre">10000</span></code></td>
+<td>(Integer) Timeout in ms on blocking socket operations.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">wait_timeout</span></code> = <code class="docutils literal"><span class="pre">2000</span></code></td>
+<td>(Integer) Time in ms to wait between connection attempts.</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="domain-specific-identity-drivers">
+<h2>Domain-specific Identity drivers<a class="headerlink" href="config-options.html#domain-specific-identity-drivers" title="Permalink to this headline">¶</a></h2>
+<p>The Identity service supports domain-specific Identity drivers
+installed on an SQL or LDAP back end, and supports domain-specific
+Identity configuration options, which are stored in domain-specific
+configuration files. See the
+<a class="reference external" href="https://docs.openstack.org/admin-guide/identity-domain-specific-config.html">Admin guide Identity Management Chapter</a>
+for more information.</p>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="federated-identity.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Federated Identity"></i></a>
+          
+          
+            <a href="samples/index.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Identity service sample configuration files"></i></a>
+          
+            <a id="logABugLink3" href="config-options.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:41</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="../_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="config-options.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="../index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../config-overview.html">OpenStack configuration overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common-configurations.html">Common configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../application-catalog.html">Application Catalog service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bare-metal.html">Bare Metal service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../block-storage.html">Block Storage service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clustering.html">Clustering service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compute.html">Compute service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dashboard.html">Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data-processing.html">Data Processing service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../database.html">Database service</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../identity.html">Identity service</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="api.html">Identity API configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="token-provider.html">Token provider</a></li>
+<li class="toctree-l2"><a class="reference internal" href="federated-identity.html">Federated Identity</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="config-options.html#">Additional configuration options for Identity service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="samples/index.html">Identity service sample configuration files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="caching.html">Caching layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tables/conf-changes/keystone.html">New, updated, and deprecated options in Ocata for Identity service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../image.html">Image service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../message.html">Message service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking.html">Networking service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../object-storage.html">Object Storage service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../orchestration.html">Orchestration service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shared-file-systems.html">Shared File Systems service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../telemetry.html">Telemetry service</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../policy-yaml-file.html">The policy.yaml file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../policy-json-file.html">The policy.json file</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="../_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="../_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="../_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="../_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="../_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "identity/config-options" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/config-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "Additional configuration options for Identity service in Configuration Reference";
+    var fieldTags = "config-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:41";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

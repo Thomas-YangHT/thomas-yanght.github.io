@@ -1,0 +1,785 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: Dell EMC Unity driver</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="../../_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="../../_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="../../_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="../../_static/css/combined.css" rel="stylesheet">
+<link href="../../_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" href="../../_static/sphinxmark.css" type="text/css" />
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>Dell EMC Unity driver</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="dell-storagecenter-driver.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Dell Storage Center Fibre Channel and iSCSI drivers"></i></a>
+    
+    
+    <a href="dothill-driver.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Dot Hill AssuredSAN Fibre Channel and iSCSI drivers"></i></a>
+    
+    <a id="logABugLink1" href="dell-emc-unity-driver.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:41</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="../../index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="dell-emc-unity-driver.html#">Dell EMC Unity driver</a><ul>
+<li><a class="reference internal" href="dell-emc-unity-driver.html#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="dell-emc-unity-driver.html#supported-operations">Supported operations</a></li>
+<li><a class="reference internal" href="dell-emc-unity-driver.html#driver-configuration">Driver configuration</a></li>
+<li><a class="reference internal" href="dell-emc-unity-driver.html#driver-options">Driver options</a><ul>
+<li><a class="reference internal" href="dell-emc-unity-driver.html#fc-or-iscsi-ports-option">FC or iSCSI ports option</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="dell-emc-unity-driver.html#live-migration-integration">Live migration integration</a></li>
+<li><a class="reference internal" href="dell-emc-unity-driver.html#thin-and-thick-provisioning">Thin and thick provisioning</a></li>
+<li><a class="reference internal" href="dell-emc-unity-driver.html#qos-support">QoS support</a></li>
+<li><a class="reference internal" href="dell-emc-unity-driver.html#auto-zoning-support">Auto-zoning support</a></li>
+<li><a class="reference internal" href="dell-emc-unity-driver.html#solution-for-lunz-device">Solution for LUNZ device</a></li>
+<li><a class="reference internal" href="dell-emc-unity-driver.html#efficient-non-disruptive-volume-backup">Efficient non-disruptive volume backup</a></li>
+<li><a class="reference internal" href="dell-emc-unity-driver.html#troubleshooting">Troubleshooting</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="dell-emc-unity-driver">
+<h1>Dell EMC Unity driver<a class="headerlink" href="dell-emc-unity-driver.html#dell-emc-unity-driver" title="Permalink to this headline">¶</a></h1>
+<p>Unity driver has been integrated in the OpenStack Block Storage project since
+the Ocata release. The driver is built on the top of Block Storage framework
+and a Dell EMC distributed Python package
+<a class="reference external" href="https://pypi.python.org/pypi/storops">storops</a>.</p>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="dell-emc-unity-driver.html#prerequisites" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="53%" />
+<col width="47%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Software</th>
+<th class="head">Version</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Unity OE</td>
+<td>4.1.X</td>
+</tr>
+<tr class="row-odd"><td>OpenStack</td>
+<td>Ocata</td>
+</tr>
+<tr class="row-even"><td>storops</td>
+<td>0.4.15 or newer</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="supported-operations">
+<h2>Supported operations<a class="headerlink" href="dell-emc-unity-driver.html#supported-operations" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Create, delete, attach, and detach volumes.</li>
+<li>Create, list, and delete volume snapshots.</li>
+<li>Create a volume from a snapshot.</li>
+<li>Copy an image to a volume.</li>
+<li>Create an image from a volume.</li>
+<li>Clone a volume.</li>
+<li>Extend a volume.</li>
+<li>Migrate a volume.</li>
+<li>Get volume statistics.</li>
+<li>Efficient non-disruptive volume backup.</li>
+</ul>
+</div>
+<div class="section" id="driver-configuration">
+<h2>Driver configuration<a class="headerlink" href="dell-emc-unity-driver.html#driver-configuration" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The following instructions should all be performed on Black Storage
+nodes.</p>
+</div>
+<ol class="arabic">
+<li><p class="first">Install <cite>storops</cite> from pypi:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">#</span> pip install storops
+</pre></div>
+</div>
+</li>
+<li><p class="first">Add the following content into <code class="docutils literal"><span class="pre">/etc/cinder/cinder.conf</span></code>:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[DEFAULT]</span>
+<span class="na">enabled_backends</span> <span class="o">=</span> <span class="s">unity</span>
+
+<span class="k">[unity]</span>
+<span class="c1"># Storage protocol</span>
+<span class="na">storage_protocol</span> <span class="o">=</span> <span class="s">iSCSI</span>
+<span class="c1"># Unisphere IP</span>
+<span class="na">san_ip</span> <span class="o">=</span> <span class="s">&lt;SAN IP&gt;</span>
+<span class="c1"># Unisphere username and password</span>
+<span class="na">san_login</span> <span class="o">=</span> <span class="s">&lt;SAN LOGIN&gt;</span>
+<span class="na">san_password</span> <span class="o">=</span> <span class="s">&lt;SAN PASSWORD&gt;</span>
+<span class="c1"># Volume driver name</span>
+<span class="na">volume_driver</span> <span class="o">=</span> <span class="s">cinder.volume.drivers.dell_emc.unity.Driver</span>
+<span class="c1"># backend&#39;s name</span>
+<span class="na">volume_backend_name</span> <span class="o">=</span> <span class="s">Storage_ISCSI_01</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">These are minimal options for Unity driver, for more options,
+see <a class="reference internal" href="dell-emc-unity-driver.html#driver-options">Driver options</a>.</p>
+</div>
+</li>
+</ol>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">(<strong>Optional</strong>) If you require multipath based data access, perform
+below steps on both Block Storage and Compute nodes.</p>
+</div>
+<ol class="arabic">
+<li><p class="first">Install <code class="docutils literal"><span class="pre">sysfsutils</span></code>, <code class="docutils literal"><span class="pre">sg3-utils</span></code> and <code class="docutils literal"><span class="pre">multipath-tools</span></code>:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">#</span> apt-get install multipath-tools sg3-utils sysfsutils
+</pre></div>
+</div>
+</li>
+<li><p class="first">(Required for FC driver in case <a class="reference internal" href="dell-emc-unity-driver.html#auto-zoning-support">Auto-zoning Support</a> is disabled) Zone the
+FC ports of Compute nodes with Unity FC target ports.</p>
+</li>
+<li><p class="first">Enable Unity storage optimized multipath configuration:</p>
+<p>Add the following content into <code class="docutils literal"><span class="pre">/etc/multipath.conf</span></code></p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>blacklist {
+    # Skip the files uner /dev that are definitely not FC/iSCSI devices
+    # Different system may need different customization
+    devnode &quot;^(ram|raw|loop|fd|md|dm-|sr|scd|st)[0-9]*&quot;
+    devnode &quot;^hd[a-z][0-9]*&quot;
+    devnode &quot;^cciss!c[0-9]d[0-9]*[p[0-9]*]&quot;
+
+    # Skip LUNZ device from VNX/Unity
+    device {
+        vendor &quot;DGC&quot;
+        product &quot;LUNZ&quot;
+    }
+}
+
+defaults {
+    user_friendly_names no
+    flush_on_last_del yes
+}
+
+devices {
+    # Device attributed for EMC CLARiiON and VNX/Unity series ALUA
+    device {
+        vendor &quot;DGC&quot;
+        product &quot;.*&quot;
+        product_blacklist &quot;LUNZ&quot;
+        path_grouping_policy group_by_prio
+        path_selector &quot;round-robin 0&quot;
+        path_checker emc_clariion
+        features &quot;0&quot;
+        no_path_retry 12
+        hardware_handler &quot;1 alua&quot;
+        prio alua
+        failback immediate
+    }
+}
+</pre></div>
+</div>
+</li>
+<li><p class="first">Restart the multipath service:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">#</span> service multipath-tools restart
+</pre></div>
+</div>
+</li>
+<li><p class="first">Enable multipath for image transfer in <code class="docutils literal"><span class="pre">/etc/cinder/cinder.conf</span></code>.</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">use_multipath_for_image_xfer</span> <span class="o">=</span> <span class="s">True</span>
+</pre></div>
+</div>
+<p>Restart the <code class="docutils literal"><span class="pre">cinder-volume</span></code> service to load the change.</p>
+</li>
+<li><p class="first">Enable multipath for volume attache/detach in <code class="docutils literal"><span class="pre">/etc/nova/nova.conf</span></code>.</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[libvirt]</span>
+<span class="na">...</span>
+<span class="na">volume_use_multipath</span> <span class="o">=</span> <span class="s">True</span>
+<span class="na">...</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Restart the <code class="docutils literal"><span class="pre">nova-compute</span></code> service.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="driver-options">
+<h2>Driver options<a class="headerlink" href="dell-emc-unity-driver.html#driver-options" title="Permalink to this headline">¶</a></h2>
+<span id="cinder-dell-emc-unity"></span><table border="1" class="config-ref-table docutils" id="id2">
+<caption><span class="caption-text">Description of Dell EMC Unity volume driver configuration options</span><a class="headerlink" href="dell-emc-unity-driver.html#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[DEFAULT]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">unity_io_ports</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(List) A comma-separated list of iSCSI or FC ports to be used. Each port can be Unix-style glob expressions.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">unity_storage_pool_names</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(List) A comma-separated list of storage pool names to be used.</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="fc-or-iscsi-ports-option">
+<h3>FC or iSCSI ports option<a class="headerlink" href="dell-emc-unity-driver.html#fc-or-iscsi-ports-option" title="Permalink to this headline">¶</a></h3>
+<p>Specify the list of FC or iSCSI ports to be used to perform the IO. Wild card
+character is supported.
+For iSCSI ports, use the following format:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">unity_io_ports</span> <span class="o">=</span> <span class="s">spa_eth2, spb_eth2, *_eth3</span>
+</pre></div>
+</div>
+<p>For FC ports, use the following format:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">unity_io_ports</span> <span class="o">=</span> <span class="s">spa_iom_0_fc0, spb_iom_0_fc0, *_iom_0_fc1</span>
+</pre></div>
+</div>
+<p>List the port ID with the <strong class="command">uemcli</strong> command:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> uemcli /net/port/eth show -output csv
+<span class="go">...</span>
+<span class="go">&quot;spa_eth2&quot;,&quot;SP A Ethernet Port 2&quot;,&quot;spa&quot;,&quot;file, net, iscsi&quot;, ...</span>
+<span class="go">&quot;spb_eth2&quot;,&quot;SP B Ethernet Port 2&quot;,&quot;spb&quot;,&quot;file, net, iscsi&quot;, ...</span>
+<span class="go">...</span>
+
+<span class="gp">$</span> uemcli /net/port/fc show -output csv
+<span class="go">...</span>
+<span class="go">&quot;spa_iom_0_fc0&quot;,&quot;SP A I/O Module 0 FC Port 0&quot;,&quot;spa&quot;, ...</span>
+<span class="go">&quot;spb_iom_0_fc0&quot;,&quot;SP B I/O Module 0 FC Port 0&quot;,&quot;spb&quot;, ...</span>
+<span class="go">...</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="live-migration-integration">
+<h2>Live migration integration<a class="headerlink" href="dell-emc-unity-driver.html#live-migration-integration" title="Permalink to this headline">¶</a></h2>
+<p>It is suggested to have multipath configured on Compute nodes for robust data
+access in VM instances live migration scenario. Once <code class="docutils literal"><span class="pre">user_friendly_names</span> <span class="pre">no</span></code>
+is set in defaults section of <code class="docutils literal"><span class="pre">/etc/multipath.conf</span></code>, Compute nodes will use
+the WWID as the alias for the multipath devices.</p>
+<p>To enable multipath in live migration:</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Make sure <a class="reference internal" href="dell-emc-unity-driver.html#driver-configuration">Driver configuration</a> steps are performed before
+following steps.</p>
+</div>
+<ol class="arabic">
+<li><p class="first">Set multipath in <code class="docutils literal"><span class="pre">/etc/nova/nova.conf</span></code>:</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>[libvirt]
+...
+volume_use_multipath = True
+...
+</pre></div>
+</div>
+<p>Restart <cite>nova-compute</cite> service.</p>
+</li>
+<li><p class="first">Set <code class="docutils literal"><span class="pre">user_friendly_names</span> <span class="pre">no</span></code> in <code class="docutils literal"><span class="pre">/etc/multipath.conf</span></code></p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>...
+defaults {
+    user_friendly_names no
+}
+...
+</pre></div>
+</div>
+</li>
+<li><p class="first">Restart the <code class="docutils literal"><span class="pre">multipath-tools</span></code> service.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="thin-and-thick-provisioning">
+<h2>Thin and thick provisioning<a class="headerlink" href="dell-emc-unity-driver.html#thin-and-thick-provisioning" title="Permalink to this headline">¶</a></h2>
+<p>Only thin volume provisioning is supported in Unity volume driver.</p>
+</div>
+<div class="section" id="qos-support">
+<h2>QoS support<a class="headerlink" href="dell-emc-unity-driver.html#qos-support" title="Permalink to this headline">¶</a></h2>
+<p>Unity driver supports <code class="docutils literal"><span class="pre">maxBWS</span></code> and <code class="docutils literal"><span class="pre">maxIOPS</span></code> specs for the back-end
+consumer type. <code class="docutils literal"><span class="pre">maxBWS</span></code> represents the <code class="docutils literal"><span class="pre">Maximum</span> <span class="pre">IO/S</span></code> absolute limit,
+<code class="docutils literal"><span class="pre">maxIOPS</span></code> represents the <code class="docutils literal"><span class="pre">Maximum</span> <span class="pre">Bandwidth</span> <span class="pre">(KBPS)</span></code> absolute limit on the
+Unity respectively.</p>
+</div>
+<div class="section" id="auto-zoning-support">
+<h2>Auto-zoning support<a class="headerlink" href="dell-emc-unity-driver.html#auto-zoning-support" title="Permalink to this headline">¶</a></h2>
+<p>Unity volume driver supports auto-zoning, and share the same configuration
+guide for other vendors. Refer to <a class="reference internal" href="../fc-zoning.html#fc-zone-manager"><span class="std std-ref">Fibre Channel Zone Manager</span></a>
+for detailed configuration steps.</p>
+</div>
+<div class="section" id="solution-for-lunz-device">
+<h2>Solution for LUNZ device<a class="headerlink" href="dell-emc-unity-driver.html#solution-for-lunz-device" title="Permalink to this headline">¶</a></h2>
+<p>The EMC host team also found LUNZ on all of the hosts, EMC best practice is to
+present a LUN with HLU 0 to clear any LUNZ devices as they can cause issues on
+the host. See KB <a class="reference external" href="https://support.emc.com/kb/463402">LUNZ Device</a>.</p>
+<p>To workaround this issue, Unity driver creates a <cite>Dummy LUN</cite> (if not present),
+and adds it to each host to occupy the <cite>HLU 0</cite> during volume attachment.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This <cite>Dummy LUN</cite> is shared among all hosts connected to the Unity.</p>
+</div>
+</div>
+<div class="section" id="efficient-non-disruptive-volume-backup">
+<h2>Efficient non-disruptive volume backup<a class="headerlink" href="dell-emc-unity-driver.html#efficient-non-disruptive-volume-backup" title="Permalink to this headline">¶</a></h2>
+<p>The default implementation in Block Storage for non-disruptive volume backup is
+not efficient since a cloned volume will be created during backup.</p>
+<p>An effective approach to backups is to create a snapshot for the volume and
+connect this snapshot to the Block Storage host for volume backup.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Set <code class="docutils literal"><span class="pre">backup_use_same_host</span></code> to <code class="docutils literal"><span class="pre">true</span></code> to enable the efficient
+backup.</p>
+</div>
+</div>
+<div class="section" id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="dell-emc-unity-driver.html#troubleshooting" title="Permalink to this headline">¶</a></h2>
+<p>To troubleshoot a failure in OpenStack deployment, the best way is to enable
+verbose and debug log, at the same time, leverage the build-in <a class="reference internal" href="dell-emc-unity-driver.html#request-id" id="id1">[request_id]</a> to
+track specific Block Storage command logs.</p>
+<ol class="arabic">
+<li><p class="first">Enable verbose log, set following in <code class="docutils literal"><span class="pre">/etc/cinder/cinder.conf</span></code> and restart
+all Block Storage services:</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>[DEFAULT]
+
+...
+
+debug = True
+verbose = True
+
+...
+</pre></div>
+</div>
+<p>If other projects (usually Compute) are also involved, set <cite>debug</cite>
+and <code class="docutils literal"><span class="pre">verbose</span></code> to <code class="docutils literal"><span class="pre">True</span></code>.</p>
+</li>
+<li><p class="first">use <code class="docutils literal"><span class="pre">--debug</span></code> to trigger any problematic Block Storage operation:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">#</span> cinder --debug create --name unity_vol1 <span class="m">100</span>
+</pre></div>
+</div>
+<p>You will see the request ID from the console, for example:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">DEBUG:keystoneauth:REQ: curl -g -i -X POST</span>
+<span class="go">http://192.168.1.9:8776/v2/e50d22bdb5a34078a8bfe7be89324078/volumes -H</span>
+<span class="go">&quot;User-Agent: python-cinderclient&quot; -H &quot;Content-Type: application/json&quot; -H</span>
+<span class="go">&quot;Accept: application/json&quot; -H &quot;X-Auth-Token:</span>
+<span class="go">{SHA1}bf4a85ad64302b67a39ad7c6f695a9630f39ab0e&quot; -d &#39;{&quot;volume&quot;: {&quot;status&quot;:</span>
+<span class="go">&quot;creating&quot;, &quot;user_id&quot;: null, &quot;name&quot;: &quot;unity_vol1&quot;, &quot;imageRef&quot;: null,</span>
+<span class="go">&quot;availability_zone&quot;: null, &quot;description&quot;: null, &quot;multiattach&quot;: false,</span>
+<span class="go">&quot;attach_status&quot;: &quot;detached&quot;, &quot;volume_type&quot;: null, &quot;metadata&quot;: {},</span>
+<span class="go">&quot;consistencygroup_id&quot;: null, &quot;source_volid&quot;: null, &quot;snapshot_id&quot;: null,</span>
+<span class="go">&quot;project_id&quot;: null, &quot;source_replica&quot;: null, &quot;size&quot;: 10}}&#39;</span>
+<span class="go">DEBUG:keystoneauth:RESP: [202] X-Compute-Request-Id:</span>
+<span class="go">req-3a459e0e-871a-49f9-9796-b63cc48b5015 Content-Type: application/json</span>
+<span class="go">Content-Length: 804 X-Openstack-Request-Id:</span>
+<span class="go">req-3a459e0e-871a-49f9-9796-b63cc48b5015 Date: Mon, 12 Dec 2016 09:31:44 GMT</span>
+<span class="go">Connection: keep-alive</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Use commands like <code class="docutils literal"><span class="pre">grep</span></code>, <code class="docutils literal"><span class="pre">awk</span></code> to find the error related to the Block
+Storage operations.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">#</span> grep <span class="s2">&quot;req-3a459e0e-871a-49f9-9796-b63cc48b5015&quot;</span> cinder-volume.log
+</pre></div>
+</div>
+</li>
+</ol>
+<table class="docutils citation" frame="void" id="request-id" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="dell-emc-unity-driver.html#id1">[request_id]</a></td><td><a class="reference external" href="https://specs.openstack.org/openstack/openstack-specs/specs/return-request-id.html">Return request ID to caller</a></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="dell-storagecenter-driver.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Dell Storage Center Fibre Channel and iSCSI drivers"></i></a>
+          
+          
+            <a href="dothill-driver.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Dot Hill AssuredSAN Fibre Channel and iSCSI drivers"></i></a>
+          
+            <a id="logABugLink3" href="dell-emc-unity-driver.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:41</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="../../_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="dell-emc-unity-driver.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="../../index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../config-overview.html">OpenStack configuration overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../common-configurations.html">Common configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../application-catalog.html">Application Catalog service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bare-metal.html">Bare Metal service</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../block-storage.html">Block Storage service</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../block-storage-overview.html">Introduction to the Block Storage service</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../volume-drivers.html">Volume drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../backup-drivers.html">Backup drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../schedulers.html">Block Storage schedulers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logs.html">Log files used by Block Storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fc-zoning.html">Fibre Channel Zone Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../nested-quota.html">Nested quotas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../volume-encryption.html">Volume encryption supported by the key manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config-options.html">Additional options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../samples/index.html">Block Storage service sample configuration files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tables/conf-changes/cinder.html">New, updated, and deprecated options in Ocata for Block Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../clustering.html">Clustering service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compute.html">Compute service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dashboard.html">Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data-processing.html">Data Processing service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../database.html">Database service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../identity.html">Identity service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image.html">Image service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../message.html">Message service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking.html">Networking service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../object-storage.html">Object Storage service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../orchestration.html">Orchestration service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared-file-systems.html">Shared File Systems service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../telemetry.html">Telemetry service</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../policy-yaml-file.html">The policy.yaml file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../policy-json-file.html">The policy.json file</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="../../_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="../../_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="../../_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="../../_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="../../_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "block-storage/drivers/dell-emc-unity-driver" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/config-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "Dell EMC Unity driver in Configuration Reference";
+    var fieldTags = "config-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:41";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

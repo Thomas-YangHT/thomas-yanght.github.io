@@ -1,0 +1,707 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: trove-manage command-line client</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>trove-manage command-line client</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="trove.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Database service (trove) command-line client"></i></a>
+    
+    
+    <a href="designate.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: DNS service (designate) command-line client"></i></a>
+    
+    <a id="logABugLink1" href="trove-manage.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="trove-manage.html#">trove-manage command-line client</a><ul>
+<li><a class="reference internal" href="trove-manage.html#trove-manage-usage">trove-manage usage</a></li>
+<li><a class="reference internal" href="trove-manage.html#trove-manage-optional-arguments">trove-manage optional arguments</a></li>
+<li><a class="reference internal" href="trove-manage.html#trove-manage-datastore-update">trove-manage datastore_update</a></li>
+<li><a class="reference internal" href="trove-manage.html#trove-manage-datastore-version-flavor-add">trove-manage datastore_version_flavor_add</a></li>
+<li><a class="reference internal" href="trove-manage.html#trove-manage-datastore-version-flavor-delete">trove-manage datastore_version_flavor_delete</a></li>
+<li><a class="reference internal" href="trove-manage.html#trove-manage-datastore-version-update">trove-manage datastore_version_update</a></li>
+<li><a class="reference internal" href="trove-manage.html#trove-manage-db-downgrade">trove-manage db_downgrade</a></li>
+<li><a class="reference internal" href="trove-manage.html#trove-manage-db-load-datastore-config-parameters">trove-manage db_load_datastore_config_parameters</a></li>
+<li><a class="reference internal" href="trove-manage.html#trove-manage-db-recreate">trove-manage db_recreate</a></li>
+<li><a class="reference internal" href="trove-manage.html#trove-manage-db-sync">trove-manage db_sync</a></li>
+<li><a class="reference internal" href="trove-manage.html#trove-manage-db-upgrade">trove-manage db_upgrade</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="trove-manage-command-line-client">
+<h1>trove-manage command-line client<a class="headerlink" href="trove-manage.html#trove-manage-command-line-client" title="Permalink to this headline">¶</a></h1>
+<p>The <strong class="command">trove-manage</strong> client is the command-line interface (CLI)
+for the Database Management Utility API and its extensions.</p>
+<p>This chapter documents <strong class="command">trove-manage</strong> version <code class="docutils literal"><span class="pre">5.0.1</span></code>.</p>
+<p>For help on a specific <strong class="command">trove-manage</strong> command, enter:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> trove-manage COMMAND --help
+</pre></div>
+</div>
+<div class="section" id="trove-manage-usage">
+<span id="trove-manage-command-usage"></span><h2>trove-manage usage<a class="headerlink" href="trove-manage.html#trove-manage-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove-manage [-h] [--config-dir DIR] [--config-file PATH] [--debug]</span>
+<span class="go">                    [--log-config-append PATH] [--log-date-format DATE_FORMAT]</span>
+<span class="go">                    [--log-dir LOG_DIR] [--log-file PATH] [--nodebug]</span>
+<span class="go">                    [--nouse-syslog] [--noverbose] [--nowatch-log-file]</span>
+<span class="go">                    [--syslog-log-facility SYSLOG_LOG_FACILITY] [--use-syslog]</span>
+<span class="go">                    [--verbose] [--version] [--watch-log-file]</span>
+
+<span class="go">                    {db_sync,db_upgrade,db_downgrade,datastore_update,</span>
+<span class="go">                    datastore_version_update,db_recreate,</span>
+<span class="go">                    db_load_datastore_config_parameters,</span>
+<span class="go">                    datastore_version_flavor_add,</span>
+<span class="go">                    datastore_version_flavor_delete}</span>
+<span class="go">                    ...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="trove-manage-optional-arguments">
+<span id="trove-manage-command-options"></span><h2>trove-manage optional arguments<a class="headerlink" href="trove-manage.html#trove-manage-optional-arguments" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--config-dir</span> <span class="pre">DIR</span></code></dt>
+<dd>Path to a config directory to pull <code class="docutils literal"><span class="pre">*.conf</span></code> files from.
+This file set is sorted, so as to provide a predictable parse order
+if individual options are over-ridden. The set is parsed after
+the file(s) specified via previous --config-file,
+arguments hence over-ridden options in the directory take precedence.</dd>
+<dt><code class="docutils literal"><span class="pre">--config-file</span> <span class="pre">PATH</span></code></dt>
+<dd>Path to a config file to use. Multiple config files can be specified,
+with values in later files taking precedence.
+The default files used are: <code class="docutils literal"><span class="pre">None</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--debug,</span> <span class="pre">-d</span></code></dt>
+<dd>Print debugging output (set logging level to <code class="docutils literal"><span class="pre">DEBUG</span></code>
+instead of default <code class="docutils literal"><span class="pre">INFO</span></code> level).</dd>
+<dt><code class="docutils literal"><span class="pre">--log-config-append</span> <span class="pre">PATH,</span> <span class="pre">--log_config</span> <span class="pre">PATH</span></code></dt>
+<dd>The name of a logging configuration file.
+This file is appended to any existing logging configuration files.
+For details about logging configuration files, see the Python logging
+module documentation. Note that when logging configuration files are
+used then all logging configuration is set in the configuration file
+and other logging configuration options are ignored (for example,
+<code class="docutils literal"><span class="pre">logging_context_format_string</span></code>).</dd>
+<dt><code class="docutils literal"><span class="pre">--log-date-format</span> <span class="pre">DATE_FORMAT</span></code></dt>
+<dd>Format string for <code class="docutils literal"><span class="pre">%(asctime)s</span></code> in log records. Default: <code class="docutils literal"><span class="pre">None</span></code>.
+This option is ignored if <code class="docutils literal"><span class="pre">log_config_append</span></code> is set.</dd>
+<dt><code class="docutils literal"><span class="pre">--log-dir</span> <span class="pre">LOG_DIR,</span> <span class="pre">--logdir</span> <span class="pre">LOG_DIR</span></code></dt>
+<dd>(Optional) The base directory used for relative <code class="docutils literal"><span class="pre">--log-file</span></code> paths.
+This option is ignored if <code class="docutils literal"><span class="pre">log_config_append</span></code> is set.</dd>
+<dt><code class="docutils literal"><span class="pre">--log-file</span> <span class="pre">PATH,</span> <span class="pre">--logfile</span> <span class="pre">PATH</span></code></dt>
+<dd>(Optional) Name of log file to send logging output to. If no default
+is set, logging will go to stderr as defined by <code class="docutils literal"><span class="pre">use_stderr</span></code>.
+This option is ignored if <code class="docutils literal"><span class="pre">log_config_append</span></code> is set.</dd>
+<dt><code class="docutils literal"><span class="pre">--nodebug</span></code></dt>
+<dd>The inverse of --debug</dd>
+<dt><code class="docutils literal"><span class="pre">--nouse-syslog</span></code></dt>
+<dd>The inverse of --use-syslog</dd>
+<dt><code class="docutils literal"><span class="pre">--nouse-syslog-rfc-format</span></code></dt>
+<dd>The inverse of --use-syslog-rfc-format</dd>
+<dt><code class="docutils literal"><span class="pre">--noverbose</span></code></dt>
+<dd>The inverse of --verbose</dd>
+<dt><code class="docutils literal"><span class="pre">--syslog-log-facility</span> <span class="pre">SYSLOG_LOG_FACILITY</span></code></dt>
+<dd>Syslog facility to receive log lines.
+This option is ignored if <code class="docutils literal"><span class="pre">log_config_append</span></code> is set.</dd>
+<dt><code class="docutils literal"><span class="pre">--use-syslog</span></code></dt>
+<dd>Use syslog for logging. Existing syslog format is
+<strong>DEPRECATED</strong> and will be changed later to honor RFC5424.
+This option is ignored if <code class="docutils literal"><span class="pre">log_config_append</span></code> is set.</dd>
+<dt><code class="docutils literal"><span class="pre">--verbose,</span> <span class="pre">-v</span></code></dt>
+<dd>If set to false, the logging level will be set to <code class="docutils literal"><span class="pre">WARNING</span></code>
+instead of the default <code class="docutils literal"><span class="pre">INFO</span></code> level.</dd>
+<dt><code class="docutils literal"><span class="pre">--version</span></code></dt>
+<dd>show program's version number and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--watch-log-file</span></code></dt>
+<dd>Uses logging handler designed to watch file system.
+When log file is moved or removed this handler will open a new log
+file with specified path instantaneously. It makes sense only if
+<code class="docutils literal"><span class="pre">log_file</span></code> option is specified and Linux platform is used.
+This option is ignored if <code class="docutils literal"><span class="pre">log_config_append</span></code> is set.</dd>
+</dl>
+</div>
+<div class="section" id="trove-manage-datastore-update">
+<h2>trove-manage datastore_update<a class="headerlink" href="trove-manage.html#trove-manage-datastore-update" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove-manage datastore_update [-h] datastore_name default_version</span>
+</pre></div>
+</div>
+<p>Add or update a datastore.
+If the datastore already exists, the default version will be updated.</p>
+<p><strong>positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">datastore_name</span></code></dt>
+<dd>Name of the datastore.</dd>
+<dt><code class="docutils literal"><span class="pre">default_version</span></code></dt>
+<dd>Name or ID of an existing datastore version to set as the default.
+When adding a new datastore, use an empty string.</dd>
+</dl>
+<p><strong>optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="trove-manage-datastore-version-flavor-add">
+<h2>trove-manage datastore_version_flavor_add<a class="headerlink" href="trove-manage.html#trove-manage-datastore-version-flavor-add" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove-manage datastore_version_flavor_add [-h]</span>
+<span class="go">                                                 datastore_name</span>
+<span class="go">                                                 datastore_version_name</span>
+<span class="go">                                                 flavor_ids</span>
+</pre></div>
+</div>
+<p><strong>positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">datastore_name</span></code></dt>
+<dd>Name of the datastore.</dd>
+<dt><code class="docutils literal"><span class="pre">datastore_version_name</span></code></dt>
+<dd>Name of the datastore version.</dd>
+<dt><code class="docutils literal"><span class="pre">flavor_ids</span></code></dt>
+<dd>Comma separated list of flavor ids.</dd>
+</dl>
+<p><strong>optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="trove-manage-datastore-version-flavor-delete">
+<h2>trove-manage datastore_version_flavor_delete<a class="headerlink" href="trove-manage.html#trove-manage-datastore-version-flavor-delete" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove-manage datastore_version_flavor_delete [-h]</span>
+<span class="go">                                                    datastore_name</span>
+<span class="go">                                                    datastore_version_name</span>
+<span class="go">                                                    flavor_id</span>
+</pre></div>
+</div>
+<p><strong>positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">datastore_name</span></code></dt>
+<dd>Name of the datastore.</dd>
+<dt><code class="docutils literal"><span class="pre">datastore_version_name</span></code></dt>
+<dd>Name of the datastore version.</dd>
+<dt><code class="docutils literal"><span class="pre">flavor_id</span></code></dt>
+<dd>The flavor to be deleted for a given datastore and datastore version.</dd>
+</dl>
+<p><strong>optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="trove-manage-datastore-version-update">
+<h2>trove-manage datastore_version_update<a class="headerlink" href="trove-manage.html#trove-manage-datastore-version-update" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove-manage datastore_version_update [-h]</span>
+<span class="go">                                             datastore version_name manager</span>
+<span class="go">                                             image_id packages active</span>
+</pre></div>
+</div>
+<p>Add or update a datastore version. If the datastore version already exists,
+all values except the datastore name and version will be updated.</p>
+<p><strong>positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">datastore</span></code></dt>
+<dd>Name of the datastore.</dd>
+<dt><code class="docutils literal"><span class="pre">version_name</span></code></dt>
+<dd>Name of the datastore version.</dd>
+<dt><code class="docutils literal"><span class="pre">manager</span></code></dt>
+<dd>Name of the manager that will administer the datastore version.</dd>
+<dt><code class="docutils literal"><span class="pre">image_id</span></code></dt>
+<dd>ID of the image used to create an instance of the datastore version.</dd>
+<dt><code class="docutils literal"><span class="pre">packages</span></code></dt>
+<dd>Packages required by the datastore version that are installed on
+the guest image.</dd>
+<dt><code class="docutils literal"><span class="pre">active</span></code></dt>
+<dd>Whether the datastore version is active or not.
+Accepted values are <code class="docutils literal"><span class="pre">0</span></code> and <code class="docutils literal"><span class="pre">1</span></code>.</dd>
+</dl>
+<p><strong>optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="trove-manage-db-downgrade">
+<h2>trove-manage db_downgrade<a class="headerlink" href="trove-manage.html#trove-manage-db-downgrade" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove-manage db_downgrade [-h] [--repo_path REPO_PATH] version</span>
+</pre></div>
+</div>
+<p>Downgrade the database to the specified version.</p>
+<p><strong>positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">version</span></code></dt>
+<dd>Target version.</dd>
+</dl>
+<p><strong>optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--repo_path</span> <span class="pre">REPO_PATH</span></code></dt>
+<dd>SQLAlchemy Migrate repository path.</dd>
+</dl>
+</div>
+<div class="section" id="trove-manage-db-load-datastore-config-parameters">
+<h2>trove-manage db_load_datastore_config_parameters<a class="headerlink" href="trove-manage.html#trove-manage-db-load-datastore-config-parameters" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove-manage db_load_datastore_config_parameters [-h]</span>
+<span class="go">                                                        datastore</span>
+<span class="go">                                                        datastore_version</span>
+<span class="go">                                                        config_file_location</span>
+</pre></div>
+</div>
+<p>Loads configuration group parameter validation rules for a datastore version
+into the database.</p>
+<p><strong>positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">datastore</span></code></dt>
+<dd>Name of the datastore.</dd>
+<dt><code class="docutils literal"><span class="pre">datastore_version</span></code></dt>
+<dd>Name of the datastore version.</dd>
+<dt><code class="docutils literal"><span class="pre">config_file_location</span></code></dt>
+<dd>Fully qualified file path to the configuration group
+parameter validation rules.</dd>
+</dl>
+<p><strong>optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="trove-manage-db-recreate">
+<h2>trove-manage db_recreate<a class="headerlink" href="trove-manage.html#trove-manage-db-recreate" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove-manage db_recreate [-h] [--repo_path REPO_PATH]</span>
+</pre></div>
+</div>
+<p>Drop the database and recreate it.</p>
+<p><strong>optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--repo_path</span> <span class="pre">REPO_PATH</span></code></dt>
+<dd>SQLAlchemy Migrate repository path.</dd>
+</dl>
+</div>
+<div class="section" id="trove-manage-db-sync">
+<h2>trove-manage db_sync<a class="headerlink" href="trove-manage.html#trove-manage-db-sync" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove-manage db_sync [-h] [--repo_path REPO_PATH]</span>
+</pre></div>
+</div>
+<p>Populate the database structure</p>
+<p><strong>optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--repo_path</span> <span class="pre">REPO_PATH</span></code></dt>
+<dd>SQLAlchemy Migrate repository path.</dd>
+</dl>
+</div>
+<div class="section" id="trove-manage-db-upgrade">
+<h2>trove-manage db_upgrade<a class="headerlink" href="trove-manage.html#trove-manage-db-upgrade" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: trove-manage db_upgrade [-h] [--version VERSION]</span>
+<span class="go">                               [--repo_path REPO_PATH]</span>
+</pre></div>
+</div>
+<p>Upgrade the database to the specified version.</p>
+<p><strong>optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--version</span> <span class="pre">VERSION</span></code></dt>
+<dd>Target version. Defaults to the latest version.</dd>
+<dt><code class="docutils literal"><span class="pre">--repo_path</span> <span class="pre">REPO_PATH</span></code></dt>
+<dd>SQLAlchemy Migrate repository path.</dd>
+</dl>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="trove.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Database service (trove) command-line client"></i></a>
+          
+          
+            <a href="designate.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: DNS service (designate) command-line client"></i></a>
+          
+            <a id="logABugLink3" href="trove-manage.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="trove-manage.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="murano.html">Application Catalog service (murano) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="freezer.html">Backup, Restore, and Disaster Recovery service (freezer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ironic.html">Bare Metal service (ironic) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cinder.html">Block Storage service (cinder) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="senlin.html">Clustering service (senlin) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute service (nova) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnum.html">Container Infrastructure Management service (magnum) command-line client</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="database.html">Database service (trove) command-line clients</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="trove.html">Database service (trove) command-line client</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="trove-manage.html#">trove-manage command-line client</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="designate.html">DNS service (designate) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image service (glance) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watcher.html">Infrastructure Optimization service (watcher) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barbican.html">Key Manager service (barbican) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monasca.html">Monitoring (monasca) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networking.html">Networking service (neutron) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tacker.html">NFV Orchestration service (tacker) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="swift.html">Object Storage service (swift) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heat.html">Orchestration service (heat) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloudkitty.html">Rating service (cloudkitty) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vitrage.html">RCA (Root Cause Analysis) service (vitrage) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manila.html">Shared File Systems service (manila) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solum.html">Software Development Lifecycle Automation service (solum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aodh.html">Telemetry Alarming service (aodh) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ceilometer.html">Telemetry Data Collection service (ceilometer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gnocchi.html">A time series storage and resources index service (gnocchi) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mistral.html">Workflow service (mistral) command-line client</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "trove-manage" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/cli-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "trove-manage command-line client in Command-Line Interface Reference";
+    var fieldTags = "cli-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:39";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

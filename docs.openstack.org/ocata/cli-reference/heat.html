@@ -1,0 +1,1687 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: Orchestration service (heat) command-line client</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>Orchestration service (heat) command-line client</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="swift.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Object Storage service (swift) command-line client"></i></a>
+    
+    
+    <a href="cloudkitty.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Rating service (cloudkitty) command-line client"></i></a>
+    
+    <a id="logABugLink1" href="heat.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="heat.html#">Orchestration service (heat) command-line client</a><ul>
+<li><a class="reference internal" href="heat.html#heat-usage">heat usage</a></li>
+<li><a class="reference internal" href="heat.html#heat-optional-arguments">heat optional arguments</a><ul>
+<li><a class="reference internal" href="heat.html#heat-action-check">heat action-check</a></li>
+<li><a class="reference internal" href="heat.html#heat-action-resume">heat action-resume</a></li>
+<li><a class="reference internal" href="heat.html#heat-action-suspend">heat action-suspend</a></li>
+<li><a class="reference internal" href="heat.html#heat-build-info">heat build-info</a></li>
+<li><a class="reference internal" href="heat.html#heat-config-create">heat config-create</a></li>
+<li><a class="reference internal" href="heat.html#heat-config-delete">heat config-delete</a></li>
+<li><a class="reference internal" href="heat.html#heat-config-list">heat config-list</a></li>
+<li><a class="reference internal" href="heat.html#heat-config-show">heat config-show</a></li>
+<li><a class="reference internal" href="heat.html#heat-deployment-create">heat deployment-create</a></li>
+<li><a class="reference internal" href="heat.html#heat-deployment-delete">heat deployment-delete</a></li>
+<li><a class="reference internal" href="heat.html#heat-deployment-list">heat deployment-list</a></li>
+<li><a class="reference internal" href="heat.html#heat-deployment-metadata-show">heat deployment-metadata-show</a></li>
+<li><a class="reference internal" href="heat.html#heat-deployment-output-show">heat deployment-output-show</a></li>
+<li><a class="reference internal" href="heat.html#heat-deployment-show">heat deployment-show</a></li>
+<li><a class="reference internal" href="heat.html#heat-event-list">heat event-list</a></li>
+<li><a class="reference internal" href="heat.html#heat-event-show">heat event-show</a></li>
+<li><a class="reference internal" href="heat.html#heat-hook-clear">heat hook-clear</a></li>
+<li><a class="reference internal" href="heat.html#heat-hook-poll">heat hook-poll</a></li>
+<li><a class="reference internal" href="heat.html#heat-output-list">heat output-list</a></li>
+<li><a class="reference internal" href="heat.html#heat-output-show">heat output-show</a></li>
+<li><a class="reference internal" href="heat.html#heat-resource-list">heat resource-list</a></li>
+<li><a class="reference internal" href="heat.html#heat-resource-mark-unhealthy">heat resource-mark-unhealthy</a></li>
+<li><a class="reference internal" href="heat.html#heat-resource-metadata">heat resource-metadata</a></li>
+<li><a class="reference internal" href="heat.html#heat-resource-show">heat resource-show</a></li>
+<li><a class="reference internal" href="heat.html#heat-resource-signal">heat resource-signal</a></li>
+<li><a class="reference internal" href="heat.html#heat-resource-type-list">heat resource-type-list</a></li>
+<li><a class="reference internal" href="heat.html#heat-resource-type-show">heat resource-type-show</a></li>
+<li><a class="reference internal" href="heat.html#heat-resource-type-template">heat resource-type-template</a></li>
+<li><a class="reference internal" href="heat.html#heat-service-list">heat service-list</a></li>
+<li><a class="reference internal" href="heat.html#heat-snapshot-delete">heat snapshot-delete</a></li>
+<li><a class="reference internal" href="heat.html#heat-snapshot-list">heat snapshot-list</a></li>
+<li><a class="reference internal" href="heat.html#heat-snapshot-show">heat snapshot-show</a></li>
+<li><a class="reference internal" href="heat.html#heat-stack-abandon">heat stack-abandon</a></li>
+<li><a class="reference internal" href="heat.html#heat-stack-adopt">heat stack-adopt</a></li>
+<li><a class="reference internal" href="heat.html#heat-stack-cancel-update">heat stack-cancel-update</a></li>
+<li><a class="reference internal" href="heat.html#heat-stack-create">heat stack-create</a></li>
+<li><a class="reference internal" href="heat.html#heat-stack-delete">heat stack-delete</a></li>
+<li><a class="reference internal" href="heat.html#heat-stack-list">heat stack-list</a></li>
+<li><a class="reference internal" href="heat.html#heat-stack-preview">heat stack-preview</a></li>
+<li><a class="reference internal" href="heat.html#heat-stack-restore">heat stack-restore</a></li>
+<li><a class="reference internal" href="heat.html#heat-stack-show">heat stack-show</a></li>
+<li><a class="reference internal" href="heat.html#heat-stack-snapshot">heat stack-snapshot</a></li>
+<li><a class="reference internal" href="heat.html#heat-stack-update">heat stack-update</a></li>
+<li><a class="reference internal" href="heat.html#heat-template-function-list">heat template-function-list</a></li>
+<li><a class="reference internal" href="heat.html#heat-template-show">heat template-show</a></li>
+<li><a class="reference internal" href="heat.html#heat-template-validate">heat template-validate</a></li>
+<li><a class="reference internal" href="heat.html#heat-template-version-list">heat template-version-list</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="orchestration-service-heat-command-line-client">
+<h1>Orchestration service (heat) command-line client<a class="headerlink" href="heat.html#orchestration-service-heat-command-line-client" title="Permalink to this headline">¶</a></h1>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The heat CLI is deprecated
+in favor of python-openstackclient.</p>
+</div>
+<p>The heat client is the command-line interface (CLI) for
+the Orchestration service (heat) API and its extensions.</p>
+<p>This chapter documents <strong class="command">heat</strong> version <code class="docutils literal"><span class="pre">1.8.0</span></code>.</p>
+<p>For help on a specific <strong class="command">heat</strong> command, enter:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> heat <span class="nb">help</span> COMMAND
+</pre></div>
+</div>
+<div class="section" id="heat-usage">
+<span id="heat-command-usage"></span><h2>heat usage<a class="headerlink" href="heat.html#heat-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat [--version] [-d] [-v] [--api-timeout API_TIMEOUT]</span>
+<span class="go">            [--os-no-client-auth] [--heat-url HEAT_URL]</span>
+<span class="go">            [--heat-api-version HEAT_API_VERSION] [--include-password] [-k]</span>
+<span class="go">            [--os-cert OS_CERT] [--cert-file OS_CERT] [--os-key OS_KEY]</span>
+<span class="go">            [--key-file OS_KEY] [--os-cacert &lt;ca-certificate-file&gt;]</span>
+<span class="go">            [--ca-file OS_CACERT] [--os-username OS_USERNAME]</span>
+<span class="go">            [--os-user-id OS_USER_ID] [--os-user-domain-id OS_USER_DOMAIN_ID]</span>
+<span class="go">            [--os-user-domain-name OS_USER_DOMAIN_NAME]</span>
+<span class="go">            [--os-project-id OS_PROJECT_ID]</span>
+<span class="go">            [--os-project-name OS_PROJECT_NAME]</span>
+<span class="go">            [--os-project-domain-id OS_PROJECT_DOMAIN_ID]</span>
+<span class="go">            [--os-project-domain-name OS_PROJECT_DOMAIN_NAME]</span>
+<span class="go">            [--os-password OS_PASSWORD] [--os-tenant-id OS_TENANT_ID]</span>
+<span class="go">            [--os-tenant-name OS_TENANT_NAME] [--os-auth-url OS_AUTH_URL]</span>
+<span class="go">            [--os-region-name OS_REGION_NAME] [--os-auth-token OS_AUTH_TOKEN]</span>
+<span class="go">            [--os-service-type OS_SERVICE_TYPE]</span>
+<span class="go">            [--os-endpoint-type OS_ENDPOINT_TYPE] [--profile HMAC_KEY]</span>
+<span class="go">            &lt;subcommand&gt; ...</span>
+</pre></div>
+</div>
+<p><strong>Subcommands:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">action-check</span></code></dt>
+<dd>Check that stack resources are in expected states.</dd>
+<dt><code class="docutils literal"><span class="pre">action-resume</span></code></dt>
+<dd>Resume the stack.</dd>
+<dt><code class="docutils literal"><span class="pre">action-suspend</span></code></dt>
+<dd>Suspend the stack.</dd>
+<dt><code class="docutils literal"><span class="pre">build-info</span></code></dt>
+<dd>Retrieve build information.</dd>
+<dt><code class="docutils literal"><span class="pre">config-create</span></code></dt>
+<dd>Create a software configuration.</dd>
+<dt><code class="docutils literal"><span class="pre">config-delete</span></code></dt>
+<dd>Delete the software configuration(s).</dd>
+<dt><code class="docutils literal"><span class="pre">config-list</span></code></dt>
+<dd>List software configs.</dd>
+<dt><code class="docutils literal"><span class="pre">config-show</span></code></dt>
+<dd>View details of a software configuration.</dd>
+<dt><code class="docutils literal"><span class="pre">deployment-create</span></code></dt>
+<dd>Create a software deployment.</dd>
+<dt><code class="docutils literal"><span class="pre">deployment-delete</span></code></dt>
+<dd>Delete the software deployment(s).</dd>
+<dt><code class="docutils literal"><span class="pre">deployment-list</span></code></dt>
+<dd>List software deployments.</dd>
+<dt><code class="docutils literal"><span class="pre">deployment-metadata-show</span></code></dt>
+<dd>Get deployment configuration metadata for the
+specified server.</dd>
+<dt><code class="docutils literal"><span class="pre">deployment-output-show</span></code></dt>
+<dd>Show a specific deployment output.</dd>
+<dt><code class="docutils literal"><span class="pre">deployment-show</span></code></dt>
+<dd>Show the details of a software deployment.</dd>
+<dt><code class="docutils literal"><span class="pre">event</span></code></dt>
+<dd><strong>DEPRECATED!</strong></dd>
+<dt><code class="docutils literal"><span class="pre">event-list</span></code></dt>
+<dd>List events for a stack.</dd>
+<dt><code class="docutils literal"><span class="pre">event-show</span></code></dt>
+<dd>Describe the event.</dd>
+<dt><code class="docutils literal"><span class="pre">hook-clear</span></code></dt>
+<dd>Clear hooks on a given stack.</dd>
+<dt><code class="docutils literal"><span class="pre">hook-poll</span></code></dt>
+<dd>List resources with pending hook for a stack.</dd>
+<dt><code class="docutils literal"><span class="pre">output-list</span></code></dt>
+<dd>Show available outputs.</dd>
+<dt><code class="docutils literal"><span class="pre">output-show</span></code></dt>
+<dd>Show a specific stack output.</dd>
+<dt><code class="docutils literal"><span class="pre">resource-list</span></code></dt>
+<dd>Show list of resources belonging to a stack.</dd>
+<dt><code class="docutils literal"><span class="pre">resource-mark-unhealthy</span></code></dt>
+<dd>Set resource's health.</dd>
+<dt><code class="docutils literal"><span class="pre">resource-metadata</span></code></dt>
+<dd>List resource metadata.</dd>
+<dt><code class="docutils literal"><span class="pre">resource-show</span></code></dt>
+<dd>Describe the resource.</dd>
+<dt><code class="docutils literal"><span class="pre">resource-signal</span></code></dt>
+<dd>Send a signal to a resource.</dd>
+<dt><code class="docutils literal"><span class="pre">resource-template</span></code></dt>
+<dd><strong>DEPRECATED!</strong></dd>
+<dt><code class="docutils literal"><span class="pre">resource-type-list</span></code></dt>
+<dd>List the available resource types.</dd>
+<dt><code class="docutils literal"><span class="pre">resource-type-show</span></code></dt>
+<dd>Show the resource type.</dd>
+<dt><code class="docutils literal"><span class="pre">resource-type-template</span></code></dt>
+<dd>Generate a template based on a resource type.</dd>
+<dt><code class="docutils literal"><span class="pre">service-list</span></code></dt>
+<dd>List the Heat engines.</dd>
+<dt><code class="docutils literal"><span class="pre">snapshot-delete</span></code></dt>
+<dd>Delete a snapshot of a stack.</dd>
+<dt><code class="docutils literal"><span class="pre">snapshot-list</span></code></dt>
+<dd>List the snapshots of a stack.</dd>
+<dt><code class="docutils literal"><span class="pre">snapshot-show</span></code></dt>
+<dd>Show a snapshot of a stack.</dd>
+<dt><code class="docutils literal"><span class="pre">stack-abandon</span></code></dt>
+<dd>Abandon the stack.</dd>
+<dt><code class="docutils literal"><span class="pre">stack-adopt</span></code></dt>
+<dd>Adopt a stack.</dd>
+<dt><code class="docutils literal"><span class="pre">stack-cancel-update</span></code></dt>
+<dd>Cancel currently running update of the stack.</dd>
+<dt><code class="docutils literal"><span class="pre">stack-create</span></code></dt>
+<dd>Create the stack.</dd>
+<dt><code class="docutils literal"><span class="pre">stack-delete</span></code></dt>
+<dd>Delete the stack(s).</dd>
+<dt><code class="docutils literal"><span class="pre">stack-list</span></code></dt>
+<dd>List the user's stacks.</dd>
+<dt><code class="docutils literal"><span class="pre">stack-preview</span></code></dt>
+<dd>Preview the stack.</dd>
+<dt><code class="docutils literal"><span class="pre">stack-restore</span></code></dt>
+<dd>Restore a snapshot of a stack.</dd>
+<dt><code class="docutils literal"><span class="pre">stack-show</span></code></dt>
+<dd>Describe the stack.</dd>
+<dt><code class="docutils literal"><span class="pre">stack-snapshot</span></code></dt>
+<dd>Make a snapshot of a stack.</dd>
+<dt><code class="docutils literal"><span class="pre">stack-update</span></code></dt>
+<dd>Update the stack.</dd>
+<dt><code class="docutils literal"><span class="pre">template-function-list</span></code></dt>
+<dd>List the available functions.</dd>
+<dt><code class="docutils literal"><span class="pre">template-show</span></code></dt>
+<dd>Get the template for the specified stack.</dd>
+<dt><code class="docutils literal"><span class="pre">template-validate</span></code></dt>
+<dd>Validate a template with parameters.</dd>
+<dt><code class="docutils literal"><span class="pre">template-version-list</span></code></dt>
+<dd>List the available template versions.</dd>
+<dt><code class="docutils literal"><span class="pre">bash-completion</span></code></dt>
+<dd>Prints all of the commands and options to stdout.</dd>
+<dt><code class="docutils literal"><span class="pre">help</span></code></dt>
+<dd>Display help about this program or one of its
+subcommands.</dd>
+</dl>
+</div>
+<div class="section" id="heat-optional-arguments">
+<span id="heat-command-options"></span><h2>heat optional arguments<a class="headerlink" href="heat.html#heat-optional-arguments" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--version</span></code></dt>
+<dd>Shows the client version and exits.</dd>
+<dt><code class="docutils literal"><span class="pre">-d,</span> <span class="pre">--debug</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[HEATCLIENT_DEBUG]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></dt>
+<dd>Print more verbose output.</dd>
+<dt><code class="docutils literal"><span class="pre">--api-timeout</span> <span class="pre">API_TIMEOUT</span></code></dt>
+<dd>Number of seconds to wait for an API response,
+defaults to system socket timeout</dd>
+<dt><code class="docutils literal"><span class="pre">--os-no-client-auth</span></code></dt>
+<dd>Do not contact keystone for a token. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_NO_CLIENT_AUTH]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--heat-url</span> <span class="pre">HEAT_URL</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[HEAT_URL]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--heat-api-version</span> <span class="pre">HEAT_API_VERSION</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[HEAT_API_VERSION]</span></code> or 1.</dd>
+<dt><code class="docutils literal"><span class="pre">--include-password</span></code></dt>
+<dd>Send os-username and os-password to heat.</dd>
+<dt><code class="docutils literal"><span class="pre">-k,</span> <span class="pre">--insecure</span></code></dt>
+<dd>Explicitly allow heatclient to perform &quot;insecure SSL&quot;
+(https) requests. The server's certificate will not be
+verified against any certificate authorities. This
+option should be used with caution.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-cert</span> <span class="pre">OS_CERT</span></code></dt>
+<dd>Path of certificate file to use in SSL connection.
+This file can optionally be prepended with the private
+key.</dd>
+<dt><code class="docutils literal"><span class="pre">--cert-file</span> <span class="pre">OS_CERT</span></code></dt>
+<dd><strong>DEPRECATED!</strong> Use --os-cert.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-key</span> <span class="pre">OS_KEY</span></code></dt>
+<dd>Path of client key to use in SSL connection. This
+option is not necessary if your key is prepended to
+your cert file.</dd>
+<dt><code class="docutils literal"><span class="pre">--key-file</span> <span class="pre">OS_KEY</span></code></dt>
+<dd><strong>DEPRECATED!</strong> Use --os-key.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-cacert</span> <span class="pre">&lt;ca-certificate-file&gt;</span></code></dt>
+<dd>Path of CA TLS certificate(s) used to verify the
+remote server's certificate. Without this option
+glance looks for the default system CA certificates.</dd>
+<dt><code class="docutils literal"><span class="pre">--ca-file</span> <span class="pre">OS_CACERT</span></code></dt>
+<dd><strong>DEPRECATED!</strong> Use --os-cacert.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-username</span> <span class="pre">OS_USERNAME</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USERNAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-id</span> <span class="pre">OS_USER_ID</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USER_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-id</span> <span class="pre">OS_USER_DOMAIN_ID</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USER_DOMAIN_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-name</span> <span class="pre">OS_USER_DOMAIN_NAME</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USER_DOMAIN_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-id</span> <span class="pre">OS_PROJECT_ID</span></code></dt>
+<dd>Another way to specify tenant ID. This option is
+mutually exclusive with --os-tenant-id. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_PROJECT_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-name</span> <span class="pre">OS_PROJECT_NAME</span></code></dt>
+<dd>Another way to specify tenant name. This option is
+mutually exclusive with --os-tenant-name. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_PROJECT_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-id</span> <span class="pre">OS_PROJECT_DOMAIN_ID</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_DOMAIN_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-name</span> <span class="pre">OS_PROJECT_DOMAIN_NAME</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_DOMAIN_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-password</span> <span class="pre">OS_PASSWORD</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PASSWORD]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-id</span> <span class="pre">OS_TENANT_ID</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TENANT_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-name</span> <span class="pre">OS_TENANT_NAME</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TENANT_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-url</span> <span class="pre">OS_AUTH_URL</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_AUTH_URL]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-region-name</span> <span class="pre">OS_REGION_NAME</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_REGION_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-token</span> <span class="pre">OS_AUTH_TOKEN</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_AUTH_TOKEN]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-service-type</span> <span class="pre">OS_SERVICE_TYPE</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_SERVICE_TYPE]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-endpoint-type</span> <span class="pre">OS_ENDPOINT_TYPE</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_ENDPOINT_TYPE]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--profile</span> <span class="pre">HMAC_KEY</span></code></dt>
+<dd>HMAC key to use for encrypting context data for
+performance profiling of operation. This key should be
+the value of HMAC key configured in osprofiler
+middleware in heat, it is specified in the paste
+configuration (/etc/heat/api-paste.ini). Without the
+key, profiling will not be triggered even if
+osprofiler is enabled on server side.</dd>
+</dl>
+<div class="section" id="heat-action-check">
+<span id="id1"></span><h3>heat action-check<a class="headerlink" href="heat.html#heat-action-check" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat action-check &lt;NAME or ID&gt;</span>
+</pre></div>
+</div>
+<p>Check that stack resources are in expected states.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack to check.</dd>
+</dl>
+</div>
+<div class="section" id="heat-action-resume">
+<span id="id2"></span><h3>heat action-resume<a class="headerlink" href="heat.html#heat-action-resume" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat action-resume &lt;NAME or ID&gt;</span>
+</pre></div>
+</div>
+<p>Resume the stack.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack to resume.</dd>
+</dl>
+</div>
+<div class="section" id="heat-action-suspend">
+<span id="id3"></span><h3>heat action-suspend<a class="headerlink" href="heat.html#heat-action-suspend" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat action-suspend &lt;NAME or ID&gt;</span>
+</pre></div>
+</div>
+<p>Suspend the stack.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack to suspend.</dd>
+</dl>
+</div>
+<div class="section" id="heat-build-info">
+<span id="id4"></span><h3>heat build-info<a class="headerlink" href="heat.html#heat-build-info" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat build-info</span>
+</pre></div>
+</div>
+<p>Retrieve build information.</p>
+</div>
+<div class="section" id="heat-config-create">
+<span id="id5"></span><h3>heat config-create<a class="headerlink" href="heat.html#heat-config-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat config-create [-f &lt;FILE or URL&gt;] [-c &lt;FILE or URL&gt;]</span>
+<span class="go">                          [-g &lt;GROUP_NAME&gt;]</span>
+<span class="go">                          &lt;CONFIG_NAME&gt;</span>
+</pre></div>
+</div>
+<p>Create a software configuration.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CONFIG_NAME&gt;</span></code></dt>
+<dd>Name of the configuration to create.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;FILE</span> <span class="pre">or</span> <span class="pre">URL&gt;,</span> <span class="pre">--definition-file</span> <span class="pre">&lt;FILE</span> <span class="pre">or</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>Path to JSON/YAML containing map defining &lt;inputs&gt;,
+&lt;outputs&gt;, and &lt;options&gt;.</dd>
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">&lt;FILE</span> <span class="pre">or</span> <span class="pre">URL&gt;,</span> <span class="pre">--config-file</span> <span class="pre">&lt;FILE</span> <span class="pre">or</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>Path to configuration script/data.</dd>
+<dt><code class="docutils literal"><span class="pre">-g</span> <span class="pre">&lt;GROUP_NAME&gt;,</span> <span class="pre">--group</span> <span class="pre">&lt;GROUP_NAME&gt;</span></code></dt>
+<dd>Group name of configuration tool expected by the
+config.</dd>
+</dl>
+</div>
+<div class="section" id="heat-config-delete">
+<span id="id6"></span><h3>heat config-delete<a class="headerlink" href="heat.html#heat-config-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat config-delete &lt;ID&gt; [&lt;ID&gt; ...]</span>
+</pre></div>
+</div>
+<p>Delete the software configuration(s).</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>ID of the configuration(s) to delete.</dd>
+</dl>
+</div>
+<div class="section" id="heat-config-list">
+<span id="id7"></span><h3>heat config-list<a class="headerlink" href="heat.html#heat-config-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat config-list [-l &lt;LIMIT&gt;] [-m &lt;ID&gt;]</span>
+</pre></div>
+</div>
+<p>List software configs.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;LIMIT&gt;,</span> <span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></dt>
+<dd>Limit the number of configs returned.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;ID&gt;,</span> <span class="pre">--marker</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Return configs that appear after the given config ID.</dd>
+</dl>
+</div>
+<div class="section" id="heat-config-show">
+<span id="id8"></span><h3>heat config-show<a class="headerlink" href="heat.html#heat-config-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat config-show [-c] &lt;ID&gt;</span>
+</pre></div>
+</div>
+<p>View details of a software configuration.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>ID of the config.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-c,</span> <span class="pre">--config-only</span></code></dt>
+<dd>Only display the value of the &lt;config&gt; property.</dd>
+</dl>
+</div>
+<div class="section" id="heat-deployment-create">
+<span id="id9"></span><h3>heat deployment-create<a class="headerlink" href="heat.html#heat-deployment-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat deployment-create [-i &lt;KEY=VALUE&gt;] [-a &lt;ACTION&gt;] [-c &lt;CONFIG&gt;] -s</span>
+<span class="go">                              &lt;SERVER&gt; [-t &lt;TRANSPORT&gt;]</span>
+<span class="go">                              [--container &lt;CONTAINER_NAME&gt;]</span>
+<span class="go">                              [--timeout &lt;TIMEOUT&gt;]</span>
+<span class="go">                              &lt;DEPLOY_NAME&gt;</span>
+</pre></div>
+</div>
+<p>Create a software deployment.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;DEPLOY_NAME&gt;</span></code></dt>
+<dd>Name of the derived config associated with this
+deployment. This is used to apply a sort order to the
+list of configurations currently deployed to the
+server.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-i</span> <span class="pre">&lt;KEY=VALUE&gt;,</span> <span class="pre">--input-value</span> <span class="pre">&lt;KEY=VALUE&gt;</span></code></dt>
+<dd>Input value to set on the deployment. This can be
+specified multiple times.</dd>
+<dt><code class="docutils literal"><span class="pre">-a</span> <span class="pre">&lt;ACTION&gt;,</span> <span class="pre">--action</span> <span class="pre">&lt;ACTION&gt;</span></code></dt>
+<dd>Name of action for this deployment. Can be a custom
+action, or one of: CREATE, UPDATE, DELETE, SUSPEND,
+RESUME</dd>
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">&lt;CONFIG&gt;,</span> <span class="pre">--config</span> <span class="pre">&lt;CONFIG&gt;</span></code></dt>
+<dd>ID of the configuration to deploy.</dd>
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">&lt;SERVER&gt;,</span> <span class="pre">--server</span> <span class="pre">&lt;SERVER&gt;</span></code></dt>
+<dd>ID of the server being deployed to.</dd>
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">&lt;TRANSPORT&gt;,</span> <span class="pre">--signal-transport</span> <span class="pre">&lt;TRANSPORT&gt;</span></code></dt>
+<dd>How the server should signal to heat with the
+deployment output values. TEMP_URL_SIGNAL will create
+a Swift TempURL to be signaled via HTTP PUT. NO_SIGNAL
+will result in the resource going to the COMPLETE
+state without waiting for any signal.</dd>
+<dt><code class="docutils literal"><span class="pre">--container</span> <span class="pre">&lt;CONTAINER_NAME&gt;</span></code></dt>
+<dd>Optional name of container to store TEMP_URL_SIGNAL
+objects in. If not specified a container will be
+created with a name derived from the DEPLOY_NAME</dd>
+<dt><code class="docutils literal"><span class="pre">--timeout</span> <span class="pre">&lt;TIMEOUT&gt;</span></code></dt>
+<dd>Deployment timeout in minutes.</dd>
+</dl>
+</div>
+<div class="section" id="heat-deployment-delete">
+<span id="id10"></span><h3>heat deployment-delete<a class="headerlink" href="heat.html#heat-deployment-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat deployment-delete &lt;ID&gt; [&lt;ID&gt; ...]</span>
+</pre></div>
+</div>
+<p>Delete the software deployment(s).</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>ID of the deployment(s) to delete.</dd>
+</dl>
+</div>
+<div class="section" id="heat-deployment-list">
+<span id="id11"></span><h3>heat deployment-list<a class="headerlink" href="heat.html#heat-deployment-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat deployment-list [-s &lt;SERVER&gt;]</span>
+</pre></div>
+</div>
+<p>List software deployments.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">&lt;SERVER&gt;,</span> <span class="pre">--server</span> <span class="pre">&lt;SERVER&gt;</span></code></dt>
+<dd>ID of the server to fetch deployments for.</dd>
+</dl>
+</div>
+<div class="section" id="heat-deployment-metadata-show">
+<span id="id12"></span><h3>heat deployment-metadata-show<a class="headerlink" href="heat.html#heat-deployment-metadata-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat deployment-metadata-show &lt;ID&gt;</span>
+</pre></div>
+</div>
+<p>Get deployment configuration metadata for the specified server.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>ID of the server to fetch deployments for.</dd>
+</dl>
+</div>
+<div class="section" id="heat-deployment-output-show">
+<span id="id13"></span><h3>heat deployment-output-show<a class="headerlink" href="heat.html#heat-deployment-output-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat deployment-output-show [-a] [-F &lt;FORMAT&gt;] &lt;ID&gt; [&lt;OUTPUT NAME&gt;]</span>
+</pre></div>
+</div>
+<p>Show a specific deployment output.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>ID deployment to show the output for.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;OUTPUT</span> <span class="pre">NAME&gt;</span></code></dt>
+<dd>Name of an output to display.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-a,</span> <span class="pre">--all</span></code></dt>
+<dd>Display all deployment outputs.</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">&lt;FORMAT&gt;,</span> <span class="pre">--format</span> <span class="pre">&lt;FORMAT&gt;</span></code></dt>
+<dd>The output value format, one of: raw, json</dd>
+</dl>
+</div>
+<div class="section" id="heat-deployment-show">
+<span id="id14"></span><h3>heat deployment-show<a class="headerlink" href="heat.html#heat-deployment-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat deployment-show &lt;ID&gt;</span>
+</pre></div>
+</div>
+<p>Show the details of a software deployment.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>ID of the deployment.</dd>
+</dl>
+</div>
+<div class="section" id="heat-event-list">
+<span id="id15"></span><h3>heat event-list<a class="headerlink" href="heat.html#heat-event-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat event-list [-r &lt;RESOURCE&gt;] [-f &lt;KEY1=VALUE1;KEY2=VALUE2...&gt;]</span>
+<span class="go">                       [-l &lt;LIMIT&gt;] [-m &lt;ID&gt;] [-n &lt;DEPTH&gt;] [-F &lt;FORMAT&gt;]</span>
+<span class="go">                       &lt;NAME or ID&gt;</span>
+</pre></div>
+</div>
+<p>List events for a stack.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack to show the events for.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-r</span> <span class="pre">&lt;RESOURCE&gt;,</span> <span class="pre">--resource</span> <span class="pre">&lt;RESOURCE&gt;</span></code></dt>
+<dd>Name of the resource to filter events by.</dd>
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;KEY1=VALUE1;KEY2=VALUE2...&gt;,</span> <span class="pre">--filters</span> <span class="pre">&lt;KEY1=VALUE1;KEY2=VALUE2...&gt;</span></code></dt>
+<dd>Filter parameters to apply on returned events. This
+can be specified multiple times, or once with
+parameters separated by a semicolon.</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;LIMIT&gt;,</span> <span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></dt>
+<dd>Limit the number of events returned.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;ID&gt;,</span> <span class="pre">--marker</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Only return events that appear after the given event
+ID.</dd>
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">&lt;DEPTH&gt;,</span> <span class="pre">--nested-depth</span> <span class="pre">&lt;DEPTH&gt;</span></code></dt>
+<dd>Depth of nested stacks from which to display events.
+Note this cannot be specified with --resource.</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">&lt;FORMAT&gt;,</span> <span class="pre">--format</span> <span class="pre">&lt;FORMAT&gt;</span></code></dt>
+<dd>The output value format, one of: log, table</dd>
+</dl>
+</div>
+<div class="section" id="heat-event-show">
+<span id="id16"></span><h3>heat event-show<a class="headerlink" href="heat.html#heat-event-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat event-show &lt;NAME or ID&gt; &lt;RESOURCE&gt; &lt;EVENT&gt;</span>
+</pre></div>
+</div>
+<p>Describe the event.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack to show the events for.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;RESOURCE&gt;</span></code></dt>
+<dd>Name of the resource the event belongs to.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;EVENT&gt;</span></code></dt>
+<dd>ID of event to display details for.</dd>
+</dl>
+</div>
+<div class="section" id="heat-hook-clear">
+<span id="id17"></span><h3>heat hook-clear<a class="headerlink" href="heat.html#heat-hook-clear" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat hook-clear [--pre-create] [--pre-update] [--pre-delete]</span>
+<span class="go">                       &lt;NAME or ID&gt; &lt;RESOURCE&gt; [&lt;RESOURCE&gt; ...]</span>
+</pre></div>
+</div>
+<p>Clear hooks on a given stack.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of the stack these resources belong to.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;RESOURCE&gt;</span></code></dt>
+<dd>Resource names with hooks to clear. Resources in nested stacks
+can be set using slash as a separator:
+nested_stack/another/my_resource. You can use wildcards to
+match multiple stacks or resources:
+nested_stack/an*/*_resource</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--pre-create</span></code></dt>
+<dd>Clear the pre-create hooks (optional)</dd>
+<dt><code class="docutils literal"><span class="pre">--pre-update</span></code></dt>
+<dd>Clear the pre-update hooks (optional)</dd>
+<dt><code class="docutils literal"><span class="pre">--pre-delete</span></code></dt>
+<dd>Clear the pre-delete hooks (optional)</dd>
+</dl>
+</div>
+<div class="section" id="heat-hook-poll">
+<span id="id18"></span><h3>heat hook-poll<a class="headerlink" href="heat.html#heat-hook-poll" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat hook-poll [-n &lt;DEPTH&gt;] &lt;NAME or ID&gt;</span>
+</pre></div>
+</div>
+<p>List resources with pending hook for a stack.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack to show the pending hooks for.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">&lt;DEPTH&gt;,</span> <span class="pre">--nested-depth</span> <span class="pre">&lt;DEPTH&gt;</span></code></dt>
+<dd>Depth of nested stacks from which to display hooks.</dd>
+</dl>
+</div>
+<div class="section" id="heat-output-list">
+<span id="id19"></span><h3>heat output-list<a class="headerlink" href="heat.html#heat-output-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat output-list &lt;NAME or ID&gt;</span>
+</pre></div>
+</div>
+<p>Show available outputs.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack to query.</dd>
+</dl>
+</div>
+<div class="section" id="heat-output-show">
+<span id="id20"></span><h3>heat output-show<a class="headerlink" href="heat.html#heat-output-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat output-show [-F &lt;FORMAT&gt;] [-a] [--with-detail]</span>
+<span class="go">                        &lt;NAME or ID&gt; [&lt;OUTPUT NAME&gt;]</span>
+</pre></div>
+</div>
+<p>Show a specific stack output.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack to query.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;OUTPUT</span> <span class="pre">NAME&gt;</span></code></dt>
+<dd>Name of an output to display.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">&lt;FORMAT&gt;,</span> <span class="pre">--format</span> <span class="pre">&lt;FORMAT&gt;</span></code></dt>
+<dd>The output value format, one of: json, raw.</dd>
+<dt><code class="docutils literal"><span class="pre">-a,</span> <span class="pre">--all</span></code></dt>
+<dd>Display all stack outputs.</dd>
+<dt><code class="docutils literal"><span class="pre">--with-detail</span></code></dt>
+<dd>Enable detail information presented, like key and
+description.</dd>
+</dl>
+</div>
+<div class="section" id="heat-resource-list">
+<span id="id21"></span><h3>heat resource-list<a class="headerlink" href="heat.html#heat-resource-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat resource-list [-n &lt;DEPTH&gt;] [--with-detail] [-f &lt;KEY=VALUE&gt;]</span>
+<span class="go">                          &lt;NAME or ID&gt;</span>
+</pre></div>
+</div>
+<p>Show list of resources belonging to a stack.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack to show the resources for.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">&lt;DEPTH&gt;,</span> <span class="pre">--nested-depth</span> <span class="pre">&lt;DEPTH&gt;</span></code></dt>
+<dd>Depth of nested stacks from which to display
+resources.</dd>
+<dt><code class="docutils literal"><span class="pre">--with-detail</span></code></dt>
+<dd>Enable detail information presented for each resource
+in resources list.</dd>
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;KEY=VALUE&gt;,</span> <span class="pre">--filter</span> <span class="pre">&lt;KEY=VALUE&gt;</span></code></dt>
+<dd>Filter parameters to apply on returned resources based
+on their name, status, type, action, id and
+physical_resource_id. This can be specified multiple
+times.</dd>
+</dl>
+</div>
+<div class="section" id="heat-resource-mark-unhealthy">
+<span id="id22"></span><h3>heat resource-mark-unhealthy<a class="headerlink" href="heat.html#heat-resource-mark-unhealthy" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat resource-mark-unhealthy [--reset] &lt;NAME or ID&gt; &lt;RESOURCE&gt; [reason]</span>
+</pre></div>
+</div>
+<p>Set resource's health.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack the resource belongs to.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;RESOURCE&gt;</span></code></dt>
+<dd>Name or physical ID of the resource.</dd>
+<dt><code class="docutils literal"><span class="pre">reason</span></code></dt>
+<dd>Reason for state change.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--reset</span></code></dt>
+<dd>Set the resource as healthy.</dd>
+</dl>
+</div>
+<div class="section" id="heat-resource-metadata">
+<span id="id23"></span><h3>heat resource-metadata<a class="headerlink" href="heat.html#heat-resource-metadata" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat resource-metadata &lt;NAME or ID&gt; &lt;RESOURCE&gt;</span>
+</pre></div>
+</div>
+<p>List resource metadata.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack to show the resource metadata for.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;RESOURCE&gt;</span></code></dt>
+<dd>Name of the resource to show the metadata for.</dd>
+</dl>
+</div>
+<div class="section" id="heat-resource-show">
+<span id="id24"></span><h3>heat resource-show<a class="headerlink" href="heat.html#heat-resource-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat resource-show [-a &lt;ATTRIBUTE&gt;] &lt;NAME or ID&gt; &lt;RESOURCE&gt;</span>
+</pre></div>
+</div>
+<p>Describe the resource.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack to show the resource for.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;RESOURCE&gt;</span></code></dt>
+<dd>Name of the resource to show the details for.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-a</span> <span class="pre">&lt;ATTRIBUTE&gt;,</span> <span class="pre">--with-attr</span> <span class="pre">&lt;ATTRIBUTE&gt;</span></code></dt>
+<dd>Attribute to show, it can be specified multiple times.</dd>
+</dl>
+</div>
+<div class="section" id="heat-resource-signal">
+<span id="id25"></span><h3>heat resource-signal<a class="headerlink" href="heat.html#heat-resource-signal" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat resource-signal [-D &lt;DATA&gt;] [-f &lt;FILE&gt;] &lt;NAME or ID&gt; &lt;RESOURCE&gt;</span>
+</pre></div>
+</div>
+<p>Send a signal to a resource.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack the resource belongs to.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;RESOURCE&gt;</span></code></dt>
+<dd>Name of the resource to signal.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-D</span> <span class="pre">&lt;DATA&gt;,</span> <span class="pre">--data</span> <span class="pre">&lt;DATA&gt;</span></code></dt>
+<dd>JSON Data to send to the signal handler.</dd>
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;FILE&gt;,</span> <span class="pre">--data-file</span> <span class="pre">&lt;FILE&gt;</span></code></dt>
+<dd>File containing JSON data to send to the signal
+handler.</dd>
+</dl>
+</div>
+<div class="section" id="heat-resource-type-list">
+<span id="id26"></span><h3>heat resource-type-list<a class="headerlink" href="heat.html#heat-resource-type-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat resource-type-list [-f &lt;KEY1=VALUE1;KEY2=VALUE2...&gt;]</span>
+</pre></div>
+</div>
+<p>List the available resource types.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;KEY1=VALUE1;KEY2=VALUE2...&gt;,</span> <span class="pre">--filters</span> <span class="pre">&lt;KEY1=VALUE1;KEY2=VALUE2...&gt;</span></code></dt>
+<dd>Filter parameters to apply on returned resource types.
+This can be specified multiple times, or once with
+parameters separated by a semicolon. It can be any of
+name, version and support_status</dd>
+</dl>
+</div>
+<div class="section" id="heat-resource-type-show">
+<span id="id27"></span><h3>heat resource-type-show<a class="headerlink" href="heat.html#heat-resource-type-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat resource-type-show &lt;RESOURCE_TYPE&gt;</span>
+</pre></div>
+</div>
+<p>Show the resource type.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;RESOURCE_TYPE&gt;</span></code></dt>
+<dd>Resource type to get the details for.</dd>
+</dl>
+</div>
+<div class="section" id="heat-resource-type-template">
+<span id="id28"></span><h3>heat resource-type-template<a class="headerlink" href="heat.html#heat-resource-type-template" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat resource-type-template [-t &lt;TEMPLATE_TYPE&gt;] [-F &lt;FORMAT&gt;]</span>
+<span class="go">                                   &lt;RESOURCE_TYPE&gt;</span>
+</pre></div>
+</div>
+<p>Generate a template based on a resource type.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;RESOURCE_TYPE&gt;</span></code></dt>
+<dd>Resource type to generate a template for.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">&lt;TEMPLATE_TYPE&gt;,</span> <span class="pre">--template-type</span> <span class="pre">&lt;TEMPLATE_TYPE&gt;</span></code></dt>
+<dd>Template type to generate, hot or cfn.</dd>
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">&lt;FORMAT&gt;,</span> <span class="pre">--format</span> <span class="pre">&lt;FORMAT&gt;</span></code></dt>
+<dd>The template output format, one of: yaml, json.</dd>
+</dl>
+</div>
+<div class="section" id="heat-service-list">
+<span id="id29"></span><h3>heat service-list<a class="headerlink" href="heat.html#heat-service-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat service-list</span>
+</pre></div>
+</div>
+<p>List the Heat engines.</p>
+</div>
+<div class="section" id="heat-snapshot-delete">
+<span id="id30"></span><h3>heat snapshot-delete<a class="headerlink" href="heat.html#heat-snapshot-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat snapshot-delete &lt;NAME or ID&gt; &lt;SNAPSHOT&gt;</span>
+</pre></div>
+</div>
+<p>Delete a snapshot of a stack.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of the stack containing the snapshot.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;SNAPSHOT&gt;</span></code></dt>
+<dd>The ID of the snapshot to delete.</dd>
+</dl>
+</div>
+<div class="section" id="heat-snapshot-list">
+<span id="id31"></span><h3>heat snapshot-list<a class="headerlink" href="heat.html#heat-snapshot-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat snapshot-list &lt;NAME or ID&gt;</span>
+</pre></div>
+</div>
+<p>List the snapshots of a stack.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of the stack containing the snapshots.</dd>
+</dl>
+</div>
+<div class="section" id="heat-snapshot-show">
+<span id="id32"></span><h3>heat snapshot-show<a class="headerlink" href="heat.html#heat-snapshot-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat snapshot-show &lt;NAME or ID&gt; &lt;SNAPSHOT&gt;</span>
+</pre></div>
+</div>
+<p>Show a snapshot of a stack.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of the stack containing the snapshot.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;SNAPSHOT&gt;</span></code></dt>
+<dd>The ID of the snapshot to show.</dd>
+</dl>
+</div>
+<div class="section" id="heat-stack-abandon">
+<span id="id33"></span><h3>heat stack-abandon<a class="headerlink" href="heat.html#heat-stack-abandon" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat stack-abandon [-O &lt;FILE&gt;] &lt;NAME or ID&gt;</span>
+</pre></div>
+</div>
+<p>Abandon the stack. This will delete the record of the stack from Heat, but
+will not delete any of the underlying resources. Prints an adoptable JSON
+representation of the stack to stdout or a file on success.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack to abandon.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-O</span> <span class="pre">&lt;FILE&gt;,</span> <span class="pre">--output-file</span> <span class="pre">&lt;FILE&gt;</span></code></dt>
+<dd>file to output abandon result. If the option is
+specified, the result will be output into &lt;FILE&gt;.</dd>
+</dl>
+</div>
+<div class="section" id="heat-stack-adopt">
+<span id="id34"></span><h3>heat stack-adopt<a class="headerlink" href="heat.html#heat-stack-adopt" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat stack-adopt [-e &lt;FILE or URL&gt;] [-c &lt;TIMEOUT&gt;] [-t &lt;TIMEOUT&gt;]</span>
+<span class="go">                        [-a &lt;FILE or URL&gt;] [-r]</span>
+<span class="go">                        [-P &lt;KEY1=VALUE1;KEY2=VALUE2...&gt;]</span>
+<span class="go">                        &lt;STACK_NAME&gt;</span>
+</pre></div>
+</div>
+<p>Adopt a stack.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;STACK_NAME&gt;</span></code></dt>
+<dd>Name of the stack to adopt.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-e</span> <span class="pre">&lt;FILE</span> <span class="pre">or</span> <span class="pre">URL&gt;,</span> <span class="pre">--environment-file</span> <span class="pre">&lt;FILE</span> <span class="pre">or</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>Path to the environment, it can be specified multiple
+times.</dd>
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">&lt;TIMEOUT&gt;,</span> <span class="pre">--create-timeout</span> <span class="pre">&lt;TIMEOUT&gt;</span></code></dt>
+<dd>Stack creation timeout in minutes. <strong>DEPRECATED</strong> use
+--timeout instead.</dd>
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">&lt;TIMEOUT&gt;,</span> <span class="pre">--timeout</span> <span class="pre">&lt;TIMEOUT&gt;</span></code></dt>
+<dd>Stack creation timeout in minutes.</dd>
+<dt><code class="docutils literal"><span class="pre">-a</span> <span class="pre">&lt;FILE</span> <span class="pre">or</span> <span class="pre">URL&gt;,</span> <span class="pre">--adopt-file</span> <span class="pre">&lt;FILE</span> <span class="pre">or</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>Path to adopt stack data file.</dd>
+<dt><code class="docutils literal"><span class="pre">-r,</span> <span class="pre">--enable-rollback</span></code></dt>
+<dd>Enable rollback on create/update failure.</dd>
+<dt><code class="docutils literal"><span class="pre">-P</span> <span class="pre">&lt;KEY1=VALUE1;KEY2=VALUE2...&gt;,</span> <span class="pre">--parameters</span> <span class="pre">&lt;KEY1=VALUE1;KEY2=VALUE2...&gt;</span></code></dt>
+<dd>Parameter values used to create the stack. This can be
+specified multiple times, or once with parameters
+separated by a semicolon.</dd>
+</dl>
+</div>
+<div class="section" id="heat-stack-cancel-update">
+<span id="id35"></span><h3>heat stack-cancel-update<a class="headerlink" href="heat.html#heat-stack-cancel-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat stack-cancel-update &lt;NAME or ID&gt;</span>
+</pre></div>
+</div>
+<p>Cancel currently running update of the stack.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack to cancel update for.</dd>
+</dl>
+</div>
+<div class="section" id="heat-stack-create">
+<span id="id36"></span><h3>heat stack-create<a class="headerlink" href="heat.html#heat-stack-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat stack-create [-f &lt;FILE&gt;] [-e &lt;FILE or URL&gt;]</span>
+<span class="go">                         [--pre-create &lt;RESOURCE&gt;] [-u &lt;URL&gt;] [-o &lt;URL&gt;]</span>
+<span class="go">                         [-c &lt;TIMEOUT&gt;] [-t &lt;TIMEOUT&gt;] [-r]</span>
+<span class="go">                         [-P &lt;KEY1=VALUE1;KEY2=VALUE2...&gt;] [-Pf &lt;KEY=FILE&gt;]</span>
+<span class="go">                         [--poll [SECONDS]] [--tags &lt;TAG1,TAG2&gt;]</span>
+<span class="go">                         &lt;STACK_NAME&gt;</span>
+</pre></div>
+</div>
+<p>Create the stack.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;STACK_NAME&gt;</span></code></dt>
+<dd>Name of the stack to create.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;FILE&gt;,</span> <span class="pre">--template-file</span> <span class="pre">&lt;FILE&gt;</span></code></dt>
+<dd>Path to the template.</dd>
+<dt><code class="docutils literal"><span class="pre">-e</span> <span class="pre">&lt;FILE</span> <span class="pre">or</span> <span class="pre">URL&gt;,</span> <span class="pre">--environment-file</span> <span class="pre">&lt;FILE</span> <span class="pre">or</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>Path to the environment, it can be specified multiple
+times.</dd>
+<dt><code class="docutils literal"><span class="pre">--pre-create</span> <span class="pre">&lt;RESOURCE&gt;</span></code></dt>
+<dd>Name of a resource to set a pre-create hook to.
+Resources in nested stacks can be set using slash as a
+separator: nested_stack/another/my_resource. You can
+use wildcards to match multiple stacks or resources:
+nested_stack/an*/*_resource. This can be specified
+multiple times</dd>
+<dt><code class="docutils literal"><span class="pre">-u</span> <span class="pre">&lt;URL&gt;,</span> <span class="pre">--template-url</span> <span class="pre">&lt;URL&gt;</span></code></dt>
+<dd>URL of template.</dd>
+<dt><code class="docutils literal"><span class="pre">-o</span> <span class="pre">&lt;URL&gt;,</span> <span class="pre">--template-object</span> <span class="pre">&lt;URL&gt;</span></code></dt>
+<dd>URL to retrieve template object (e.g. from swift).</dd>
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">&lt;TIMEOUT&gt;,</span> <span class="pre">--create-timeout</span> <span class="pre">&lt;TIMEOUT&gt;</span></code></dt>
+<dd>Stack creation timeout in minutes. <strong>DEPRECATED</strong> use
+--timeout instead.</dd>
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">&lt;TIMEOUT&gt;,</span> <span class="pre">--timeout</span> <span class="pre">&lt;TIMEOUT&gt;</span></code></dt>
+<dd>Stack creation timeout in minutes.</dd>
+<dt><code class="docutils literal"><span class="pre">-r,</span> <span class="pre">--enable-rollback</span></code></dt>
+<dd>Enable rollback on create/update failure.</dd>
+<dt><code class="docutils literal"><span class="pre">-P</span> <span class="pre">&lt;KEY1=VALUE1;KEY2=VALUE2...&gt;,</span> <span class="pre">--parameters</span> <span class="pre">&lt;KEY1=VALUE1;KEY2=VALUE2...&gt;</span></code></dt>
+<dd>Parameter values used to create the stack. This can be
+specified multiple times, or once with parameters
+separated by a semicolon.</dd>
+<dt><code class="docutils literal"><span class="pre">-Pf</span> <span class="pre">&lt;KEY=FILE&gt;,</span> <span class="pre">--parameter-file</span> <span class="pre">&lt;KEY=FILE&gt;</span></code></dt>
+<dd>Parameter values from file used to create the stack.
+This can be specified multiple times. Parameter value
+would be the content of the file</dd>
+<dt><code class="docutils literal"><span class="pre">--poll</span> <span class="pre">[SECONDS]</span></code></dt>
+<dd>Poll and report events until stack completes. Optional
+poll interval in seconds can be provided as argument,
+default 5.</dd>
+<dt><code class="docutils literal"><span class="pre">--tags</span> <span class="pre">&lt;TAG1,TAG2&gt;</span></code></dt>
+<dd>A list of tags to associate with the stack.</dd>
+</dl>
+</div>
+<div class="section" id="heat-stack-delete">
+<span id="id37"></span><h3>heat stack-delete<a class="headerlink" href="heat.html#heat-stack-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat stack-delete [-y] &lt;NAME or ID&gt; [&lt;NAME or ID&gt; ...]</span>
+</pre></div>
+</div>
+<p>Delete the stack(s).</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack(s) to delete.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-y,</span> <span class="pre">--yes</span></code></dt>
+<dd>Skip yes/no prompt (assume yes).</dd>
+</dl>
+</div>
+<div class="section" id="heat-stack-list">
+<span id="id38"></span><h3>heat stack-list<a class="headerlink" href="heat.html#heat-stack-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat stack-list [-s] [-n] [-a] [-f &lt;KEY1=VALUE1;KEY2=VALUE2...&gt;]</span>
+<span class="go">                       [-t &lt;TAG1,TAG2...&gt;] [--tags-any &lt;TAG1,TAG2...&gt;]</span>
+<span class="go">                       [--not-tags &lt;TAG1,TAG2...&gt;]</span>
+<span class="go">                       [--not-tags-any &lt;TAG1,TAG2...&gt;] [-l &lt;LIMIT&gt;] [-m &lt;ID&gt;]</span>
+<span class="go">                       [-k &lt;KEY1;KEY2...&gt;] [-d [asc|desc]] [-g] [-o]</span>
+</pre></div>
+</div>
+<p>List the user's stacks.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-s,</span> <span class="pre">--show-deleted</span></code></dt>
+<dd>Include soft-deleted stacks in the stack listing.</dd>
+<dt><code class="docutils literal"><span class="pre">-n,</span> <span class="pre">--show-nested</span></code></dt>
+<dd>Include nested stacks in the stack listing.</dd>
+<dt><code class="docutils literal"><span class="pre">-a,</span> <span class="pre">--show-hidden</span></code></dt>
+<dd>Include hidden stacks in the stack listing.</dd>
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;KEY1=VALUE1;KEY2=VALUE2...&gt;,</span> <span class="pre">--filters</span> <span class="pre">&lt;KEY1=VALUE1;KEY2=VALUE2...&gt;</span></code></dt>
+<dd>Filter parameters to apply on returned stacks. This
+can be specified multiple times, or once with
+parameters separated by a semicolon.</dd>
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">&lt;TAG1,TAG2...&gt;,</span> <span class="pre">--tags</span> <span class="pre">&lt;TAG1,TAG2...&gt;</span></code></dt>
+<dd>Show stacks containing these tags. If multiple tags
+are passed, they will be combined using the AND
+boolean expression.</dd>
+<dt><code class="docutils literal"><span class="pre">--tags-any</span> <span class="pre">&lt;TAG1,TAG2...&gt;</span></code></dt>
+<dd>Show stacks containing these tags, If multiple tags
+are passed, they will be combined using the OR boolean
+expression.</dd>
+<dt><code class="docutils literal"><span class="pre">--not-tags</span> <span class="pre">&lt;TAG1,TAG2...&gt;</span></code></dt>
+<dd>Show stacks not containing these tags, If multiple
+tags are passed, they will be combined using the AND
+boolean expression.</dd>
+<dt><code class="docutils literal"><span class="pre">--not-tags-any</span> <span class="pre">&lt;TAG1,TAG2...&gt;</span></code></dt>
+<dd>Show stacks not containing these tags, If multiple
+tags are passed, they will be combined using the OR
+boolean expression.</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;LIMIT&gt;,</span> <span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></dt>
+<dd>Limit the number of stacks returned.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;ID&gt;,</span> <span class="pre">--marker</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Only return stacks that appear after the given stack
+ID.</dd>
+<dt><code class="docutils literal"><span class="pre">-k</span> <span class="pre">&lt;KEY1;KEY2...&gt;,</span> <span class="pre">--sort-keys</span> <span class="pre">&lt;KEY1;KEY2...&gt;</span></code></dt>
+<dd>List of keys for sorting the returned stacks. This can
+be specified multiple times or once with keys
+separated by semicolons. Valid sorting keys include
+&quot;stack_name&quot;, &quot;stack_status&quot;, &quot;creation_time&quot; and
+&quot;updated_time&quot;.</dd>
+<dt><code class="docutils literal"><span class="pre">-d</span> <span class="pre">[asc|desc],</span> <span class="pre">--sort-dir</span> <span class="pre">[asc|desc]</span></code></dt>
+<dd>Sorting direction (either &quot;asc&quot; or &quot;desc&quot;) for the
+sorting keys.</dd>
+<dt><code class="docutils literal"><span class="pre">-g,</span> <span class="pre">--global-tenant</span></code></dt>
+<dd>Display stacks from all tenants. Operation only
+authorized for users who match the policy in heat's
+policy.json.</dd>
+<dt><code class="docutils literal"><span class="pre">-o,</span> <span class="pre">--show-owner</span></code></dt>
+<dd>Display stack owner information. This is automatically
+enabled when using --global-tenant.</dd>
+</dl>
+</div>
+<div class="section" id="heat-stack-preview">
+<span id="id39"></span><h3>heat stack-preview<a class="headerlink" href="heat.html#heat-stack-preview" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat stack-preview [-f &lt;FILE&gt;] [-e &lt;FILE or URL&gt;] [-u &lt;URL&gt;] [-o &lt;URL&gt;]</span>
+<span class="go">                          [-t &lt;TIMEOUT&gt;] [-r]</span>
+<span class="go">                          [-P &lt;KEY1=VALUE1;KEY2=VALUE2...&gt;] [-Pf &lt;KEY=FILE&gt;]</span>
+<span class="go">                          [--tags &lt;TAG1,TAG2&gt;]</span>
+<span class="go">                          &lt;STACK_NAME&gt;</span>
+</pre></div>
+</div>
+<p>Preview the stack.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;STACK_NAME&gt;</span></code></dt>
+<dd>Name of the stack to preview.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;FILE&gt;,</span> <span class="pre">--template-file</span> <span class="pre">&lt;FILE&gt;</span></code></dt>
+<dd>Path to the template.</dd>
+<dt><code class="docutils literal"><span class="pre">-e</span> <span class="pre">&lt;FILE</span> <span class="pre">or</span> <span class="pre">URL&gt;,</span> <span class="pre">--environment-file</span> <span class="pre">&lt;FILE</span> <span class="pre">or</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>Path to the environment, it can be specified multiple
+times.</dd>
+<dt><code class="docutils literal"><span class="pre">-u</span> <span class="pre">&lt;URL&gt;,</span> <span class="pre">--template-url</span> <span class="pre">&lt;URL&gt;</span></code></dt>
+<dd>URL of template.</dd>
+<dt><code class="docutils literal"><span class="pre">-o</span> <span class="pre">&lt;URL&gt;,</span> <span class="pre">--template-object</span> <span class="pre">&lt;URL&gt;</span></code></dt>
+<dd>URL to retrieve template object (e.g. from swift)</dd>
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">&lt;TIMEOUT&gt;,</span> <span class="pre">--timeout</span> <span class="pre">&lt;TIMEOUT&gt;</span></code></dt>
+<dd>Stack creation timeout in minutes. This is only used
+during validation in preview.</dd>
+<dt><code class="docutils literal"><span class="pre">-r,</span> <span class="pre">--enable-rollback</span></code></dt>
+<dd>Enable rollback on failure. This option is not used
+during preview and exists only for symmetry with
+stack-create.</dd>
+<dt><code class="docutils literal"><span class="pre">-P</span> <span class="pre">&lt;KEY1=VALUE1;KEY2=VALUE2...&gt;,</span> <span class="pre">--parameters</span> <span class="pre">&lt;KEY1=VALUE1;KEY2=VALUE2...&gt;</span></code></dt>
+<dd>Parameter values used to preview the stack. This can
+be specified multiple times, or once with parameters
+separated by semicolon.</dd>
+<dt><code class="docutils literal"><span class="pre">-Pf</span> <span class="pre">&lt;KEY=FILE&gt;,</span> <span class="pre">--parameter-file</span> <span class="pre">&lt;KEY=FILE&gt;</span></code></dt>
+<dd>Parameter values from file used to create the stack.
+This can be specified multiple times. Parameter value
+would be the content of the file</dd>
+<dt><code class="docutils literal"><span class="pre">--tags</span> <span class="pre">&lt;TAG1,TAG2&gt;</span></code></dt>
+<dd>A list of tags to associate with the stack.</dd>
+</dl>
+</div>
+<div class="section" id="heat-stack-restore">
+<span id="id40"></span><h3>heat stack-restore<a class="headerlink" href="heat.html#heat-stack-restore" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat stack-restore &lt;NAME or ID&gt; &lt;SNAPSHOT&gt;</span>
+</pre></div>
+</div>
+<p>Restore a snapshot of a stack.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of the stack containing the snapshot.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;SNAPSHOT&gt;</span></code></dt>
+<dd>The ID of the snapshot to restore.</dd>
+</dl>
+</div>
+<div class="section" id="heat-stack-show">
+<span id="id41"></span><h3>heat stack-show<a class="headerlink" href="heat.html#heat-stack-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat stack-show [--no-resolve-outputs] &lt;NAME or ID&gt;</span>
+</pre></div>
+</div>
+<p>Describe the stack.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack to describe.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--no-resolve-outputs</span></code></dt>
+<dd>Do not resolve outputs of the stack.</dd>
+</dl>
+</div>
+<div class="section" id="heat-stack-snapshot">
+<span id="id42"></span><h3>heat stack-snapshot<a class="headerlink" href="heat.html#heat-stack-snapshot" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat stack-snapshot [-n &lt;NAME&gt;] &lt;NAME or ID&gt;</span>
+</pre></div>
+</div>
+<p>Make a snapshot of a stack.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack to snapshot.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">&lt;NAME&gt;,</span> <span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>If specified, the name given to the snapshot.</dd>
+</dl>
+</div>
+<div class="section" id="heat-stack-update">
+<span id="id43"></span><h3>heat stack-update<a class="headerlink" href="heat.html#heat-stack-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat stack-update [-f &lt;FILE&gt;] [-e &lt;FILE or URL&gt;]</span>
+<span class="go">                         [--pre-update &lt;RESOURCE&gt;] [-u &lt;URL&gt;] [-o &lt;URL&gt;]</span>
+<span class="go">                         [-t &lt;TIMEOUT&gt;] [-r] [--rollback &lt;VALUE&gt;] [-y] [-n]</span>
+<span class="go">                         [-P &lt;KEY1=VALUE1;KEY2=VALUE2...&gt;] [-Pf &lt;KEY=FILE&gt;]</span>
+<span class="go">                         [-x] [-c &lt;PARAMETER&gt;] [--tags &lt;TAG1,TAG2&gt;]</span>
+<span class="go">                         &lt;NAME or ID&gt;</span>
+</pre></div>
+</div>
+<p>Update the stack.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack to update.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;FILE&gt;,</span> <span class="pre">--template-file</span> <span class="pre">&lt;FILE&gt;</span></code></dt>
+<dd>Path to the template.</dd>
+<dt><code class="docutils literal"><span class="pre">-e</span> <span class="pre">&lt;FILE</span> <span class="pre">or</span> <span class="pre">URL&gt;,</span> <span class="pre">--environment-file</span> <span class="pre">&lt;FILE</span> <span class="pre">or</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>Path to the environment, it can be specified multiple
+times.</dd>
+<dt><code class="docutils literal"><span class="pre">--pre-update</span> <span class="pre">&lt;RESOURCE&gt;</span></code></dt>
+<dd>Name of a resource to set a pre-update hook to.
+Resources in nested stacks can be set using slash as a
+separator: nested_stack/another/my_resource. You can
+use wildcards to match multiple stacks or resources:
+nested_stack/an*/*_resource. This can be specified
+multiple times</dd>
+<dt><code class="docutils literal"><span class="pre">-u</span> <span class="pre">&lt;URL&gt;,</span> <span class="pre">--template-url</span> <span class="pre">&lt;URL&gt;</span></code></dt>
+<dd>URL of template.</dd>
+<dt><code class="docutils literal"><span class="pre">-o</span> <span class="pre">&lt;URL&gt;,</span> <span class="pre">--template-object</span> <span class="pre">&lt;URL&gt;</span></code></dt>
+<dd>URL to retrieve template object (e.g. from swift).</dd>
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">&lt;TIMEOUT&gt;,</span> <span class="pre">--timeout</span> <span class="pre">&lt;TIMEOUT&gt;</span></code></dt>
+<dd>Stack update timeout in minutes.</dd>
+<dt><code class="docutils literal"><span class="pre">-r,</span> <span class="pre">--enable-rollback</span></code></dt>
+<dd><strong>DEPRECATED!</strong> Use --rollback argument instead. Enable
+rollback on stack update failure. NOTE: default
+behavior is now to use the rollback value of existing
+stack.</dd>
+<dt><code class="docutils literal"><span class="pre">--rollback</span> <span class="pre">&lt;VALUE&gt;</span></code></dt>
+<dd>Set rollback on update failure. Values ('1', 't',
+'true', 'on', 'y', 'yes') set rollback to enabled.
+Values ('0', 'f', 'false', 'off', 'n', 'no') set
+rollback to disabled. Default is to use the value of
+existing stack to be updated.</dd>
+<dt><code class="docutils literal"><span class="pre">-y,</span> <span class="pre">--dry-run</span></code></dt>
+<dd>Do not actually perform the stack update, but show
+what would be changed</dd>
+<dt><code class="docutils literal"><span class="pre">-n,</span> <span class="pre">--show-nested</span></code></dt>
+<dd>Show nested stacks when performing --dry-run</dd>
+<dt><code class="docutils literal"><span class="pre">-P</span> <span class="pre">&lt;KEY1=VALUE1;KEY2=VALUE2...&gt;,</span> <span class="pre">--parameters</span> <span class="pre">&lt;KEY1=VALUE1;KEY2=VALUE2...&gt;</span></code></dt>
+<dd>Parameter values used to create the stack. This can be
+specified multiple times, or once with parameters
+separated by a semicolon.</dd>
+<dt><code class="docutils literal"><span class="pre">-Pf</span> <span class="pre">&lt;KEY=FILE&gt;,</span> <span class="pre">--parameter-file</span> <span class="pre">&lt;KEY=FILE&gt;</span></code></dt>
+<dd>Parameter values from file used to create the stack.
+This can be specified multiple times. Parameter value
+would be the content of the file</dd>
+<dt><code class="docutils literal"><span class="pre">-x,</span> <span class="pre">--existing</span></code></dt>
+<dd>Re-use the template, parameters and environment of the
+current stack. If the template argument is omitted
+then the existing template is used. If no
+--environment-file is specified then the existing
+environment is used. Parameters specified in
+--parameters will patch over the existing values in
+the current stack. Parameters omitted will keep the
+existing values.</dd>
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">&lt;PARAMETER&gt;,</span> <span class="pre">--clear-parameter</span> <span class="pre">&lt;PARAMETER&gt;</span></code></dt>
+<dd>Remove the parameters from the set of parameters of
+current stack for the stack-update. The default value
+in the template will be used. This can be specified
+multiple times.</dd>
+<dt><code class="docutils literal"><span class="pre">--tags</span> <span class="pre">&lt;TAG1,TAG2&gt;</span></code></dt>
+<dd>An updated list of tags to associate with the stack.</dd>
+</dl>
+</div>
+<div class="section" id="heat-template-function-list">
+<span id="id44"></span><h3>heat template-function-list<a class="headerlink" href="heat.html#heat-template-function-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat template-function-list &lt;TEMPLATE_VERSION&gt;</span>
+</pre></div>
+</div>
+<p>List the available functions.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;TEMPLATE_VERSION&gt;</span></code></dt>
+<dd>Template version to get the functions for.</dd>
+</dl>
+</div>
+<div class="section" id="heat-template-show">
+<span id="id45"></span><h3>heat template-show<a class="headerlink" href="heat.html#heat-template-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat template-show &lt;NAME or ID&gt;</span>
+</pre></div>
+</div>
+<p>Get the template for the specified stack.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of stack to get the template for.</dd>
+</dl>
+</div>
+<div class="section" id="heat-template-validate">
+<span id="id46"></span><h3>heat template-validate<a class="headerlink" href="heat.html#heat-template-validate" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat template-validate [-u &lt;URL&gt;] [-f &lt;FILE&gt;] [-e &lt;FILE or URL&gt;]</span>
+<span class="go">                              [-o &lt;URL&gt;] [-n]</span>
+<span class="go">                              [-P &lt;KEY1=VALUE1;KEY2=VALUE2...&gt;]</span>
+<span class="go">                              [-I &lt;ERR1,ERR2...&gt;]</span>
+</pre></div>
+</div>
+<p>Validate a template with parameters.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-u</span> <span class="pre">&lt;URL&gt;,</span> <span class="pre">--template-url</span> <span class="pre">&lt;URL&gt;</span></code></dt>
+<dd>URL of template.</dd>
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;FILE&gt;,</span> <span class="pre">--template-file</span> <span class="pre">&lt;FILE&gt;</span></code></dt>
+<dd>Path to the template.</dd>
+<dt><code class="docutils literal"><span class="pre">-e</span> <span class="pre">&lt;FILE</span> <span class="pre">or</span> <span class="pre">URL&gt;,</span> <span class="pre">--environment-file</span> <span class="pre">&lt;FILE</span> <span class="pre">or</span> <span class="pre">URL&gt;</span></code></dt>
+<dd>Path to the environment, it can be specified multiple
+times.</dd>
+<dt><code class="docutils literal"><span class="pre">-o</span> <span class="pre">&lt;URL&gt;,</span> <span class="pre">--template-object</span> <span class="pre">&lt;URL&gt;</span></code></dt>
+<dd>URL to retrieve template object (e.g. from swift).</dd>
+<dt><code class="docutils literal"><span class="pre">-n,</span> <span class="pre">--show-nested</span></code></dt>
+<dd>Resolve parameters from nested templates as well.</dd>
+<dt><code class="docutils literal"><span class="pre">-P</span> <span class="pre">&lt;KEY1=VALUE1;KEY2=VALUE2...&gt;,</span> <span class="pre">--parameters</span> <span class="pre">&lt;KEY1=VALUE1;KEY2=VALUE2...&gt;</span></code></dt>
+<dd>Parameter values for the template. This can be
+specified multiple times, or once with parameters
+separated by a semicolon.</dd>
+<dt><code class="docutils literal"><span class="pre">-I</span> <span class="pre">&lt;ERR1,ERR2...&gt;,</span> <span class="pre">--ignore-errors</span> <span class="pre">&lt;ERR1,ERR2...&gt;</span></code></dt>
+<dd>List of heat errors to ignore.</dd>
+</dl>
+</div>
+<div class="section" id="heat-template-version-list">
+<span id="id47"></span><h3>heat template-version-list<a class="headerlink" href="heat.html#heat-template-version-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: heat template-version-list</span>
+</pre></div>
+</div>
+<p>List the available template versions.</p>
+</div>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="swift.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Object Storage service (swift) command-line client"></i></a>
+          
+          
+            <a href="cloudkitty.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Rating service (cloudkitty) command-line client"></i></a>
+          
+            <a id="logABugLink3" href="heat.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="heat.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="murano.html">Application Catalog service (murano) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="freezer.html">Backup, Restore, and Disaster Recovery service (freezer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ironic.html">Bare Metal service (ironic) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cinder.html">Block Storage service (cinder) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="senlin.html">Clustering service (senlin) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute service (nova) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnum.html">Container Infrastructure Management service (magnum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database service (trove) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="designate.html">DNS service (designate) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image service (glance) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watcher.html">Infrastructure Optimization service (watcher) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barbican.html">Key Manager service (barbican) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monasca.html">Monitoring (monasca) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networking.html">Networking service (neutron) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tacker.html">NFV Orchestration service (tacker) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="swift.html">Object Storage service (swift) command-line client</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="heat.html#">Orchestration service (heat) command-line client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="heat.html#heat-usage">heat usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="heat.html#heat-optional-arguments">heat optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cloudkitty.html">Rating service (cloudkitty) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vitrage.html">RCA (Root Cause Analysis) service (vitrage) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manila.html">Shared File Systems service (manila) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solum.html">Software Development Lifecycle Automation service (solum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aodh.html">Telemetry Alarming service (aodh) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ceilometer.html">Telemetry Data Collection service (ceilometer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gnocchi.html">A time series storage and resources index service (gnocchi) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mistral.html">Workflow service (mistral) command-line client</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "heat" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/cli-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "Orchestration service (heat) command-line client in Command-Line Interface Reference";
+    var fieldTags = "cli-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:39";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,784 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: NEC Storage M series driver</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="../../_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="../../_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="../../_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="../../_static/css/combined.css" rel="stylesheet">
+<link href="../../_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" href="../../_static/sphinxmark.css" type="text/css" />
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>NEC Storage M series driver</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="lenovo-driver.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Lenovo Fibre Channel and iSCSI drivers"></i></a>
+    
+    
+    <a href="netapp-volume-driver.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: NetApp unified driver"></i></a>
+    
+    <a id="logABugLink1" href="nec-storage-m-series-driver.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:41</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="../../index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="nec-storage-m-series-driver.html#">NEC Storage M series driver</a><ul>
+<li><a class="reference internal" href="nec-storage-m-series-driver.html#system-requirements">System requirements</a></li>
+<li><a class="reference internal" href="nec-storage-m-series-driver.html#supported-operations">Supported operations</a></li>
+<li><a class="reference internal" href="nec-storage-m-series-driver.html#preparation">Preparation</a></li>
+<li><a class="reference internal" href="nec-storage-m-series-driver.html#configuration">Configuration</a><ul>
+<li><a class="reference internal" href="nec-storage-m-series-driver.html#required-options">Required options</a></li>
+<li><a class="reference internal" href="nec-storage-m-series-driver.html#timeout-configuration">Timeout configuration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="nec-storage-m-series-driver.html#configuration-example-for-etc-cinder-cinder-conf">Configuration example for /etc/cinder/cinder.conf</a><ul>
+<li><a class="reference internal" href="nec-storage-m-series-driver.html#when-using-one-config-group">When using one config-group</a></li>
+<li><a class="reference internal" href="nec-storage-m-series-driver.html#when-using-multi-config-group-multi-backend">When using multi config-group (multi-backend)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="nec-storage-m-series-driver">
+<h1>NEC Storage M series driver<a class="headerlink" href="nec-storage-m-series-driver.html#nec-storage-m-series-driver" title="Permalink to this headline">¶</a></h1>
+<p>NEC Storage M series are dual-controller disk arrays which support
+online maintenance.
+This driver supports both iSCSI and Fibre Channel.</p>
+<div class="section" id="system-requirements">
+<h2>System requirements<a class="headerlink" href="nec-storage-m-series-driver.html#system-requirements" title="Permalink to this headline">¶</a></h2>
+<p>Supported models:</p>
+<ul class="simple">
+<li>NEC Storage M110, M310, M510 and M710 (SSD/HDD hybrid)</li>
+<li>NEC Storage M310F and M710F (all flash)</li>
+</ul>
+<p>Requirements:</p>
+<ul class="simple">
+<li>Storage control software (firmware) revision 0950 or later</li>
+<li>NEC Storage DynamicDataReplication license</li>
+<li>(Optional) NEC Storage IO Load Manager license for QoS</li>
+</ul>
+</div>
+<div class="section" id="supported-operations">
+<h2>Supported operations<a class="headerlink" href="nec-storage-m-series-driver.html#supported-operations" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Create, delete, attach, and detach volumes.</li>
+<li>Create, list, and delete volume snapshots.</li>
+<li>Create a volume from a snapshot.</li>
+<li>Copy an image to a volume.</li>
+<li>Clone a volume.</li>
+<li>Extend a volume.</li>
+<li>Get volume statistics.</li>
+</ul>
+</div>
+<div class="section" id="preparation">
+<h2>Preparation<a class="headerlink" href="nec-storage-m-series-driver.html#preparation" title="Permalink to this headline">¶</a></h2>
+<p>Below is minimum preparation to a disk array.
+For details of each command, see the NEC Storage Manager Command Reference
+(IS052).</p>
+<ul class="simple">
+<li>Common (iSCSI and Fibre Channel)<ol class="arabic">
+<li>Initial setup<ul>
+<li>Set IP addresses for management and BMC with the network configuration
+tool.</li>
+<li>Enter license keys. (iSMcfg licenserelease)</li>
+</ul>
+</li>
+<li>Create pools<ul>
+<li>Create pools for volumes. (iSMcfg poolbind)</li>
+<li>Create pools for snapshots. (iSMcfg poolbind)</li>
+</ul>
+</li>
+<li>Create system volumes<ul>
+<li>Create a Replication Reserved Volume (RSV) in one of pools.
+(iSMcfg ldbind)</li>
+<li>Create Snapshot Reserve Areas (SRAs) in each snapshot pool.
+(iSMcfg srabind)</li>
+</ul>
+</li>
+<li>(Optional) Register SSH public key</li>
+</ol>
+</li>
+<li>iSCSI only<ol class="arabic">
+<li>Set IP addresses of each iSCSI port. (iSMcfg setiscsiport)</li>
+<li>Create a LD Set with setting multi-target mode on. (iSMcfg addldset)</li>
+<li>Register initiator names of each node. (iSMcfg addldsetinitiator)</li>
+</ol>
+</li>
+<li>Fibre Channel only<ol class="arabic">
+<li>Start access control. (iSMcfg startacc)</li>
+<li>Create a LD Set. (iSMcfg addldset)</li>
+<li>Register WWPNs of each node. (iSMcfg addldsetpath)</li>
+</ol>
+</li>
+</ul>
+</div>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="nec-storage-m-series-driver.html#configuration" title="Permalink to this headline">¶</a></h2>
+<p>Set the following in your <code class="docutils literal"><span class="pre">cinder.conf</span></code>, and use the following options
+to configure it.</p>
+<p>If you use Fibre Channel:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[Storage1]</span>
+<span class="na">volume_driver</span> <span class="o">=</span> <span class="s">cinder.volume.drivers.nec.volume.MStorageFCDriver</span>
+</pre></div>
+</div>
+<p>If you use iSCSI:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[Storage1]</span>
+<span class="na">volume_driver</span> <span class="o">=</span> <span class="s">cinder.volume.drivers.nec.volume.MStorageISCSIDriver</span>
+</pre></div>
+</div>
+<p>Also, set <code class="docutils literal"><span class="pre">volume_backend_name</span></code>.</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[DEFAULT]</span>
+<span class="na">volume_backend_name</span> <span class="o">=</span> <span class="s">Storage1</span>
+</pre></div>
+</div>
+<p>This table shows configuration options for NEC Storage M series driver.</p>
+<span id="cinder-nec-m"></span><table border="1" class="config-ref-table docutils" id="id1">
+<caption><span class="caption-text">Description of NEC Storage M series driver configuration options</span><a class="headerlink" href="nec-storage-m-series-driver.html#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[DEFAULT]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">nec_actual_free_capacity</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Return actual free capacity.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">nec_backend_max_ld_count</span></code> = <code class="docutils literal"><span class="pre">1024</span></code></td>
+<td>(Integer) Maximum number of managing sessions.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">nec_backup_ldname_format</span></code> = <code class="docutils literal"><span class="pre">LX:%s</span></code></td>
+<td>(String) M-Series Storage LD name format for snapshots.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">nec_backup_pools</span></code> =</td>
+<td>(List) M-Series Storage backup pool number to be used.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">nec_diskarray_name</span></code> =</td>
+<td>(String) Diskarray name of M-Series Storage.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">nec_iscsi_portals_per_cont</span></code> = <code class="docutils literal"><span class="pre">1</span></code></td>
+<td>(Integer) Number of iSCSI portals.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">nec_ismcli_fip</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(IP) FIP address of M-Series Storage iSMCLI.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">nec_ismcli_password</span></code> =</td>
+<td>(String) Password for M-Series Storage iSMCLI.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">nec_ismcli_privkey</span></code> =</td>
+<td>(String) Filename of RSA private key for M-Series Storage iSMCLI.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">nec_ismcli_user</span></code> =</td>
+<td>(String) User name for M-Series Storage iSMCLI.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">nec_ismview_alloptimize</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Use legacy iSMCLI command with optimization.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">nec_ismview_dir</span></code> = <code class="docutils literal"><span class="pre">/tmp/nec/cinder</span></code></td>
+<td>(String) Output path of iSMview file.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">nec_ldname_format</span></code> = <code class="docutils literal"><span class="pre">LX:%s</span></code></td>
+<td>(String) M-Series Storage LD name format for volumes.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">nec_ldset</span></code> =</td>
+<td>(String) M-Series Storage LD Set name for Compute Node.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">nec_ldset_for_controller_node</span></code> =</td>
+<td>(String) M-Series Storage LD Set name for Controller Node.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">nec_pools</span></code> =</td>
+<td>(List) M-Series Storage pool numbers list to be used.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">nec_queryconfig_view</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Use legacy iSMCLI command.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">nec_ssh_pool_port_number</span></code> = <code class="docutils literal"><span class="pre">22</span></code></td>
+<td>(Integer) Port number of ssh pool.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">nec_unpairthread_timeout</span></code> = <code class="docutils literal"><span class="pre">3600</span></code></td>
+<td>(Integer) Timeout value of Unpairthread.</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="required-options">
+<h3>Required options<a class="headerlink" href="nec-storage-m-series-driver.html#required-options" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">nec_ismcli_fip</span></code></dt>
+<dd>FIP address of M-Series Storage.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">nec_ismcli_user</span></code></dt>
+<dd>User name for M-Series Storage iSMCLI.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">nec_ismcli_password</span></code></dt>
+<dd>Password for M-Series Storage iSMCLI.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">nec_ismcli_privkey</span></code></dt>
+<dd>RSA secret key file name for iSMCLI (for public key authentication only).
+Encrypted RSA secret key file cannot be specified.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">nec_diskarray_name</span></code></dt>
+<dd>Diskarray name of M-Series Storage.
+This parameter must be specified to configure multiple groups
+(multi back end) by using the same storage device (storage
+device that has the same <code class="docutils literal"><span class="pre">nec_ismcli_fip</span></code>). Specify the disk
+array name targeted by the relevant config-group for this
+parameter.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">nec_backup_pools</span></code></dt>
+<dd>Specify a pool number where snapshots are created.</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="timeout-configuration">
+<h3>Timeout configuration<a class="headerlink" href="nec-storage-m-series-driver.html#timeout-configuration" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">rpc_response_timeout</span></code></dt>
+<dd><p class="first">Set the timeout value in seconds. If three or more volumes can be created
+at the same time, the reference value is 30 seconds multiplied by the
+number of volumes created at the same time.
+Also, Specify nova parameters below in <code class="docutils literal"><span class="pre">nova.conf</span></code> file.</p>
+<div class="last highlight-ini"><div class="highlight"><pre><span></span><span class="k">[DEFAULT]</span>
+<span class="na">block_device_allocate_retries</span> <span class="o">=</span> <span class="s">120</span>
+<span class="na">block_device_allocate_retries_interval</span> <span class="o">=</span> <span class="s">10</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">timeout</span> <span class="pre">server</span> <span class="pre">(HAProxy</span> <span class="pre">configuration)</span></code></dt>
+<dd><p class="first">In addition, you need to edit the following value in the HAProxy
+configuration file (<code class="docutils literal"><span class="pre">/etc/haproxy/haproxy.cfg</span></code>) in an environment where
+HAProxy is used.</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">timeout server</span> <span class="o">=</span> <span class="s">600 #Specify a value greater than rpc_response_timeout.</span>
+</pre></div>
+</div>
+<p>Run the <strong class="command">service haproxy reload</strong> command after editing the
+value to reload the HAProxy settings.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The OpenStack environment set up using Red Hat OpenStack Platform
+Director may be set to use HAProxy.</p>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="configuration-example-for-etc-cinder-cinder-conf">
+<h2>Configuration example for /etc/cinder/cinder.conf<a class="headerlink" href="nec-storage-m-series-driver.html#configuration-example-for-etc-cinder-cinder-conf" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="when-using-one-config-group">
+<h3>When using one config-group<a class="headerlink" href="nec-storage-m-series-driver.html#when-using-one-config-group" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">When using <code class="docutils literal"><span class="pre">nec_ismcli_password</span></code> to authenticate iSMCLI
+(Password authentication):</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[DEFAULT]</span>
+<span class="na">enabled_backends</span> <span class="o">=</span> <span class="s">Storage1</span>
+
+<span class="k">[Storage1]</span>
+<span class="na">volume_driver</span> <span class="o">=</span> <span class="s">cinder.volume.drivers.nec.volume.MStorageISCSIDriver</span>
+<span class="na">volume_backend_name</span> <span class="o">=</span> <span class="s">Storage1</span>
+<span class="na">nec_ismcli_fip</span> <span class="o">=</span> <span class="s">192.168.1.10</span>
+<span class="na">nec_ismcli_user</span> <span class="o">=</span> <span class="s">sysadmin</span>
+<span class="na">nec_ismcli_password</span> <span class="o">=</span> <span class="s">sys123</span>
+<span class="na">nec_pools</span> <span class="o">=</span> <span class="s">0</span>
+<span class="na">nec_backup_pools</span> <span class="o">=</span> <span class="s">1</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">When using <code class="docutils literal"><span class="pre">nec_ismcli_privkey</span></code> to authenticate iSMCLI
+(Public key authentication):</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[DEFAULT]</span>
+<span class="na">enabled_backends</span> <span class="o">=</span> <span class="s">Storage1</span>
+
+<span class="k">[Storage1]</span>
+<span class="na">volume_driver</span> <span class="o">=</span> <span class="s">cinder.volume.drivers.nec.volume.MStorageISCSIDriver</span>
+<span class="na">volume_backend_name</span> <span class="o">=</span> <span class="s">Storage1</span>
+<span class="na">nec_ismcli_fip</span> <span class="o">=</span> <span class="s">192.168.1.10</span>
+<span class="na">nec_ismcli_user</span> <span class="o">=</span> <span class="s">sysadmin</span>
+<span class="na">nec_ismcli_privkey</span> <span class="o">=</span> <span class="s">/etc/cinder/id_rsa</span>
+<span class="na">nec_pools</span> <span class="o">=</span> <span class="s">0</span>
+<span class="na">nec_backup_pools</span> <span class="o">=</span> <span class="s">1</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="when-using-multi-config-group-multi-backend">
+<h3>When using multi config-group (multi-backend)<a class="headerlink" href="nec-storage-m-series-driver.html#when-using-multi-config-group-multi-backend" title="Permalink to this headline">¶</a></h3>
+<ul>
+<li><p class="first">Four config-groups (backends)</p>
+<p>Storage1, Storage2, Storage3, Storage4</p>
+</li>
+<li><p class="first">Two disk arrays</p>
+<dl class="docutils">
+<dt>200000255C3A21CC(192.168.1.10)</dt>
+<dd><p class="first last">Example for using config-group, Storage1 and Storage2</p>
+</dd>
+<dt>2000000991000316(192.168.1.20)</dt>
+<dd><p class="first last">Example for using config-group, Storage3 and Storage4</p>
+</dd>
+</dl>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[DEFAULT]</span>
+<span class="na">enabled_backends</span> <span class="o">=</span> <span class="s">Storage1,Storage2,Storage3,Storage4</span>
+
+<span class="k">[Storage1]</span>
+<span class="na">volume_driver</span> <span class="o">=</span> <span class="s">cinder.volume.drivers.nec.volume.MStorageISCSIDriver</span>
+<span class="na">volume_backend_name</span> <span class="o">=</span> <span class="s">Gold</span>
+<span class="na">nec_ismcli_fip</span> <span class="o">=</span> <span class="s">192.168.1.10</span>
+<span class="na">nec_ismcli_user</span> <span class="o">=</span> <span class="s">sysadmin</span>
+<span class="na">nec_ismcli_password</span> <span class="o">=</span> <span class="s">sys123</span>
+<span class="na">nec_pools</span> <span class="o">=</span> <span class="s">0</span>
+<span class="na">nec_backup_pools</span> <span class="o">=</span> <span class="s">2</span>
+<span class="na">nec_diskarray_name</span> <span class="o">=</span> <span class="s">200000255C3A21CC</span>
+
+<span class="k">[Storage2]</span>
+<span class="na">volume_driver</span> <span class="o">=</span> <span class="s">cinder.volume.drivers.nec.volume.MStorageISCSIDriver</span>
+<span class="na">volume_backend_name</span> <span class="o">=</span> <span class="s">Silver</span>
+<span class="na">nec_ismcli_fip</span> <span class="o">=</span> <span class="s">192.168.1.10</span>
+<span class="na">nec_ismcli_user</span> <span class="o">=</span> <span class="s">sysadmin</span>
+<span class="na">nec_ismcli_password</span> <span class="o">=</span> <span class="s">sys123</span>
+<span class="na">nec_pools</span> <span class="o">=</span> <span class="s">1</span>
+<span class="na">nec_backup_pools</span> <span class="o">=</span> <span class="s">3</span>
+<span class="na">nec_diskarray_name</span> <span class="o">=</span> <span class="s">200000255C3A21CC</span>
+
+<span class="k">[Storage3]</span>
+<span class="na">volume_driver</span> <span class="o">=</span> <span class="s">cinder.volume.drivers.nec.volume.MStorageISCSIDriver</span>
+<span class="na">volume_backend_name</span> <span class="o">=</span> <span class="s">Gold</span>
+<span class="na">nec_ismcli_fip</span> <span class="o">=</span> <span class="s">192.168.1.20</span>
+<span class="na">nec_ismcli_user</span> <span class="o">=</span> <span class="s">sysadmin</span>
+<span class="na">nec_ismcli_password</span> <span class="o">=</span> <span class="s">sys123</span>
+<span class="na">nec_pools</span> <span class="o">=</span> <span class="s">0</span>
+<span class="na">nec_backup_pools</span> <span class="o">=</span> <span class="s">2</span>
+<span class="na">nec_diskarray_name</span> <span class="o">=</span> <span class="s">2000000991000316</span>
+
+<span class="k">[Storage4]</span>
+<span class="na">volume_driver</span> <span class="o">=</span> <span class="s">cinder.volume.drivers.nec.volume.MStorageISCSIDriver</span>
+<span class="na">volume_backend_name</span> <span class="o">=</span> <span class="s">Silver</span>
+<span class="na">nec_ismcli_fip</span> <span class="o">=</span> <span class="s">192.168.1.20</span>
+<span class="na">nec_ismcli_user</span> <span class="o">=</span> <span class="s">sysadmin</span>
+<span class="na">nec_ismcli_password</span> <span class="o">=</span> <span class="s">sys123</span>
+<span class="na">nec_pools</span> <span class="o">=</span> <span class="s">1</span>
+<span class="na">nec_backup_pools</span> <span class="o">=</span> <span class="s">3</span>
+<span class="na">nec_diskarray_name</span> <span class="o">=</span> <span class="s">2000000991000316</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="lenovo-driver.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Lenovo Fibre Channel and iSCSI drivers"></i></a>
+          
+          
+            <a href="netapp-volume-driver.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: NetApp unified driver"></i></a>
+          
+            <a id="logABugLink3" href="nec-storage-m-series-driver.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:41</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="../../_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="nec-storage-m-series-driver.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="../../index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../config-overview.html">OpenStack configuration overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../common-configurations.html">Common configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../application-catalog.html">Application Catalog service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bare-metal.html">Bare Metal service</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../block-storage.html">Block Storage service</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../block-storage-overview.html">Introduction to the Block Storage service</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../volume-drivers.html">Volume drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../backup-drivers.html">Backup drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../schedulers.html">Block Storage schedulers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logs.html">Log files used by Block Storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fc-zoning.html">Fibre Channel Zone Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../nested-quota.html">Nested quotas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../volume-encryption.html">Volume encryption supported by the key manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config-options.html">Additional options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../samples/index.html">Block Storage service sample configuration files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tables/conf-changes/cinder.html">New, updated, and deprecated options in Ocata for Block Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../clustering.html">Clustering service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compute.html">Compute service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dashboard.html">Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data-processing.html">Data Processing service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../database.html">Database service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../identity.html">Identity service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image.html">Image service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../message.html">Message service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking.html">Networking service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../object-storage.html">Object Storage service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../orchestration.html">Orchestration service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared-file-systems.html">Shared File Systems service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../telemetry.html">Telemetry service</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../policy-yaml-file.html">The policy.yaml file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../policy-json-file.html">The policy.json file</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="../../_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="../../_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="../../_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="../../_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="../../_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "block-storage/drivers/nec-storage-m-series-driver" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/config-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "NEC Storage M series driver in Configuration Reference";
+    var fieldTags = "config-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:41";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,713 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: Share migration</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>Share migration</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="shared-file-systems-quotas.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Quotas and limits"></i></a>
+    
+    
+    <a href="shared-file-systems-share-types.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Share types"></i></a>
+    
+    <a id="logABugLink1" href="shared-file-systems-share-migration.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:38</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="shared-file-systems-share-migration.html#">Share migration</a><ul>
+<li><a class="reference internal" href="shared-file-systems-share-migration.html#use-cases">Use cases</a></li>
+<li><a class="reference internal" href="shared-file-systems-share-migration.html#migration-workflows">Migration workflows</a></li>
+<li><a class="reference internal" href="shared-file-systems-share-migration.html#using-the-migration-apis">Using the migration APIs</a><ul>
+<li><a class="reference internal" href="shared-file-systems-share-migration.html#the-parameters">The parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="shared-file-systems-share-migration.html#configuration">Configuration</a></li>
+<li><a class="reference internal" href="shared-file-systems-share-migration.html#other-remarks">Other remarks</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="share-migration">
+<span id="shared-file-systems-share-migration"></span><h1>Share migration<a class="headerlink" href="shared-file-systems-share-migration.html#share-migration" title="Permalink to this headline">¶</a></h1>
+<p>Share migration is the feature that migrates a share between different storage
+pools.</p>
+<div class="section" id="use-cases">
+<h2>Use cases<a class="headerlink" href="shared-file-systems-share-migration.html#use-cases" title="Permalink to this headline">¶</a></h2>
+<p>As an administrator, you may want to migrate your share from one storage pool
+to another for several reasons. Examples include:</p>
+<ul class="simple">
+<li>Maintenance or evacuation<ul>
+<li>Evacuate a back end for hardware or software upgrades</li>
+<li>Evacuate a back end experiencing failures</li>
+<li>Evacuate a back end which is tagged end-of-life</li>
+</ul>
+</li>
+<li>Optimization<ul>
+<li>Defragment back ends to empty and be taken offline to conserve power</li>
+<li>Rebalance back ends to maximize available performance</li>
+<li>Move data and compute closer together to reduce network utilization and
+decrease latency or increase bandwidth</li>
+</ul>
+</li>
+<li>Moving shares<ul>
+<li>Migrate from old hardware generation to a newer generation</li>
+<li>Migrate from one vendor to another</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="migration-workflows">
+<h2>Migration workflows<a class="headerlink" href="shared-file-systems-share-migration.html#migration-workflows" title="Permalink to this headline">¶</a></h2>
+<p>Moving shares across different storage pools is generally expected to be a
+disruptive operation that disconnects existing clients when the source ceases
+to exist. For this reason, share migration is implemented in a 2-phase approach
+that allows the administrator to control the timing of the disruption. The
+first phase performs data copy while users retain access to the share. When
+copying is complete, the second phase may be triggered to perform a switchover
+that may include a last sync and deleting the source, generally requiring users
+to reconnect to continue accessing the share.</p>
+<p>In order to migrate a share, one of two possible mechanisms may be employed,
+which provide different capabilities and affect how the disruption occurs with
+regards to user access during data copy phase and disconnection during
+switchover phase. Those two mechanisms are:</p>
+<ul class="simple">
+<li>Driver-assisted migration: This mechanism is intended to make use of driver
+optimizations to migrate shares between pools of the same storage vendor.
+This mechanism allows migrating shares nondisruptively while the source
+remains writable, preserving all filesystem metadata and snapshots. The
+migration workload is performed in the storage back end.</li>
+<li>Host-assisted migration: This mechanism is intended to migrate shares in an
+agnostic manner between two different pools, regardless of storage vendor.
+The implementation for this mechanism does not offer the same properties
+found in driver-assisted migration. In host-assisted migration, the source
+remains readable, snapshots must be deleted prior to starting the migration,
+filesystem metadata may be lost, and the clients will get disconnected by the
+end of migration. The migration workload is performed by the Data Service,
+which is a dedicated manila service for intensive data operations.</li>
+</ul>
+<p>When starting a migration, driver-assisted migration is attempted first. If
+the shared file system service detects it is not possible to perform the
+driver-assisted migration, it proceeds to attempt host-assisted migration.</p>
+</div>
+<div class="section" id="using-the-migration-apis">
+<h2>Using the migration APIs<a class="headerlink" href="shared-file-systems-share-migration.html#using-the-migration-apis" title="Permalink to this headline">¶</a></h2>
+<p>The commands to interact with the share migration API are:</p>
+<ul>
+<li><p class="first"><code class="docutils literal"><span class="pre">migration_start</span></code>: starts a migration while retaining access to the share.
+Migration is paused and waits for <code class="docutils literal"><span class="pre">migration_complete</span></code> invocation when it
+has copied all data and is ready to take down the source share.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> manila migration-start share_1 ubuntu@generic2#GENERIC2 --writable False --preserve-snapshots False --preserve-metadata False --nondisruptive False
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This command has no output.</p>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">migration_complete</span></code>: completes a migration, removing the source share and
+setting the destination share instance to <code class="docutils literal"><span class="pre">available</span></code>.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> manila migration-complete share_1
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This command has no output.</p>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">migration_get_progress</span></code>: obtains migration progress information of a
+share.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> manila migration-get-progress share_1
+
+<span class="go">+----------------+--------------------------+</span>
+<span class="go">| Property       | Value                    |</span>
+<span class="go">+----------------+--------------------------+</span>
+<span class="go">| task_state     | data_copying_in_progress |</span>
+<span class="go">| total_progress | 37                       |</span>
+<span class="go">+----------------+--------------------------+</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">migration_cancel</span></code>: cancels an in-progress migration of a share.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> manila migration-cancel share_1
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This command has no output.</p>
+</div>
+</li>
+</ul>
+<div class="section" id="the-parameters">
+<h3>The parameters<a class="headerlink" href="shared-file-systems-share-migration.html#the-parameters" title="Permalink to this headline">¶</a></h3>
+<p>To start a migration, an administrator should specify several parameters. Among
+those, two of them are key for the migration.</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">share</span></code>: The share that will be migrated.</li>
+<li><code class="docutils literal"><span class="pre">destination_pool</span></code>: The destination pool to which the share should be
+migrated to, in format <a class="reference external" href="mailto:host&#37;&#52;&#48;backend#pool">host<span>&#64;</span>backend#pool</a>.</li>
+</ul>
+<p>Several other parameters, referred to here as <code class="docutils literal"><span class="pre">driver-assisted</span> <span class="pre">parameters</span></code>,
+<em>must</em> be specified in the <code class="docutils literal"><span class="pre">migration_start</span></code> API. They are:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">preserve_metadata</span></code>: whether preservation of filesystem metadata should be
+enforced for this migration.</li>
+<li><code class="docutils literal"><span class="pre">preserve_snapshots</span></code>: whether preservation of snapshots should be enforced
+for this migration.</li>
+<li><code class="docutils literal"><span class="pre">writable</span></code>: whether the source share remaining writable should be enforced
+for this migration.</li>
+<li><code class="docutils literal"><span class="pre">nondisruptive</span></code>: whether it should be enforced to keep clients connected
+throughout the migration.</li>
+</ul>
+<p>Specifying any of the boolean parameters above as <code class="docutils literal"><span class="pre">True</span></code> will disallow a
+host-assisted migration.</p>
+<p>In order to appropriately move a share to a different storage pool, it may be
+required to change one or more share properties, such as the share type, share
+network, or availability zone. To accomplish this, use the optional parameters:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">new_share_type_id</span></code>: Specify the ID of the share type that should be set in
+the migrated share.</li>
+<li><code class="docutils literal"><span class="pre">new_share_network_id</span></code>: Specify the ID of the share network that should be
+set in the migrated share.</li>
+</ul>
+<p>If driver-assisted migration should not be attempted, you may provide the
+optional parameter:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">force_host_assisted_migration</span></code>: whether driver-assisted migration attempt
+should be skipped. If this option is set to <code class="docutils literal"><span class="pre">True</span></code>, all driver-assisted
+options must be set to <code class="docutils literal"><span class="pre">False</span></code>.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="shared-file-systems-share-migration.html#configuration" title="Permalink to this headline">¶</a></h2>
+<p>For share migration to work in the cloud, there are several configuration
+requirements that need to be met:</p>
+<p>For driver-assisted migration: it is necessary that the configuration of all
+back end stanzas is present in the file manila.conf of all manila-share nodes.
+Also, network connectivity between the nodes running manila-share service and
+their respective storage back ends is required.</p>
+<p>For host-assisted migration: it is necessary that the Data Service
+(manila-data) is installed and configured in a node connected to the cloud&#8217;s
+administrator network. The drivers pertaining to the source back end and
+destination back end involved in the migration should be able to provide shares
+that can be accessed from the administrator network. This can easily be
+accomplished if the driver supports <code class="docutils literal"><span class="pre">admin_only</span></code> export locations, else it is
+up to the administrator to set up means of connectivity.</p>
+<p>In order for the Data Service to mount the source and destination instances, it
+must use manila share access APIs to grant access to mount the instances.
+The access rule type varies according to the share protocol, so there are a few
+config options to set the access value for each type:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">data_node_access_ip</span></code>: For IP-based access type, provide the value of the
+IP of the Data Service node in the administrator network. For NFS shares,
+drivers should always add rules with the &#8220;no_root_squash&#8221; property.</li>
+<li><code class="docutils literal"><span class="pre">data_node_access_cert</span></code>: For certificate-based access type, provide the
+value of the certificate name that grants access to the Data Service.</li>
+<li><code class="docutils literal"><span class="pre">data_node_access_admin_user</span></code>: For user-based access type, provide the
+value of a username that grants access and administrator privileges to the
+files in the share.</li>
+<li><code class="docutils literal"><span class="pre">data_node_mount_options</span></code>: Provide the value of a mapping of protocol name
+to respective mount options. The Data Service makes use of mount command
+templates that by default have a dedicated field to inserting mount options
+parameter. The default value for this config option already includes the
+username and password parameters for CIFS shares and NFS v3 enforcing
+parameter for NFS shares.</li>
+<li><code class="docutils literal"><span class="pre">mount_tmp_location</span></code>: Provide the value of a string representing the path
+where the share instances used in migration should be temporarily mounted.
+The default value is <code class="docutils literal"><span class="pre">/tmp/</span></code>.</li>
+<li><code class="docutils literal"><span class="pre">check_hash</span></code>: This boolean config option value determines whether the hash
+of all files copied in migration should be validated. Setting this option
+increases the time it takes to migrate files, and is recommended for
+ultra-dependable systems. It defaults to disabled.</li>
+</ul>
+<p>The configuration options above are respective to the Data Service only and
+should be defined the <code class="docutils literal"><span class="pre">DEFAULT</span></code> group of the <code class="docutils literal"><span class="pre">manila.conf</span></code> configuration
+file. Also, the Data Service node must have all the protocol-related libraries
+pre-installed to be able to run the mount commands for each protocol.</p>
+<p>You may need to change some driver-specific configuration options from their
+default value to work with specific drivers. If so, they must be set under the
+driver configuration stanza in <code class="docutils literal"><span class="pre">manila.conf</span></code>. See a detailed description for
+each one below:</p>
+<ul>
+<li><p class="first"><code class="docutils literal"><span class="pre">migration_ignore_files</span></code>: Provide value as a list containing the names of
+files or folders to be ignored during migration for a specific driver. The
+default value is a list containing only <code class="docutils literal"><span class="pre">lost+found</span></code> folder.</p>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">share_mount_template</span></code>: Provide a string that defines the template for the
+mount command for a specific driver. The template should contain the
+following entries to be formatted by the code:</p>
+<ul class="simple">
+<li>proto: The share protocol. Automatically formatted by the Data Service.</li>
+<li>options: The mount options to be formatted by the Data Service according to
+the data_node_mount_options config option.</li>
+<li>export: The export path of the share. Automatically formatted by the Data
+Service with the share&#8217;s <code class="docutils literal"><span class="pre">admin_only</span></code> export location.</li>
+<li>path: The path to mount the share. Automatically formatted by the Data
+Serivce according to the mount_tmp_location config option.</li>
+</ul>
+<p>The default value for this config option is:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mount</span> <span class="o">-</span><span class="n">vt</span> <span class="o">%</span><span class="p">(</span><span class="n">proto</span><span class="p">)</span><span class="n">s</span> <span class="o">%</span><span class="p">(</span><span class="n">options</span><span class="p">)</span><span class="n">s</span> <span class="o">%</span><span class="p">(</span><span class="n">export</span><span class="p">)</span><span class="n">s</span> <span class="o">%</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="n">s</span><span class="o">.</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">share_unmount_template</span></code>: Provide the value of a string that defines the
+template for the unmount command for a specific driver. The template should
+contain the path of where the shares are mounted, according to the
+<code class="docutils literal"><span class="pre">mount_tmp_location</span></code> config option, to be formatted automatically by the
+Data Service. The default value for this config option is:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">umount</span> <span class="o">-</span><span class="n">v</span> <span class="o">%</span><span class="p">(</span><span class="n">path</span><span class="p">)</span><span class="n">s</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">protocol_access_mapping</span></code>: Provide the value of a mapping of access rule
+type to protocols supported. The default value specifies IP and user based
+access types mapped to NFS and CIFS respectively, which are the combinations
+supported by manila. If a certain driver uses a different protocol for IP or
+user access types, or is not included in the default mapping, it should be
+specified in this configuration option.</p>
+</li>
+</ul>
+</div>
+<div class="section" id="other-remarks">
+<h2>Other remarks<a class="headerlink" href="shared-file-systems-share-migration.html#other-remarks" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>There is no need to manually add any of the previously existing access rules
+after a migration is complete, they will be persisted on the destination
+after the migration.</li>
+<li>Once migration of a share has started, the user will see the status
+<code class="docutils literal"><span class="pre">migrating</span></code> and it will block other share actions, such as adding or
+removing access rules, creating or deleting snapshots, resizing, among
+others.</li>
+<li>The destination share instance export locations, although it may exist from
+the beginning of a host-assisted migration, are not visible nor accessible as
+access rules cannot be added.</li>
+<li>During a host-assisted migration, an access rule granting access to the Data
+Service will be added and displayed by querying the <code class="docutils literal"><span class="pre">access-list</span></code> API. This
+access rule should not be tampered with, it will otherwise cause migration to
+fail.</li>
+<li>Resources allocated are cleaned up automatically when a migration fails,
+except if this failure occurs during the 2nd phase of a driver-assisted
+migration. Each step in migration is saved to the field <code class="docutils literal"><span class="pre">task_state</span></code>
+present in the Share model. If for any reason the state is not set to
+<code class="docutils literal"><span class="pre">migration_error</span></code> during a failure, it will need to be reset using the
+<code class="docutils literal"><span class="pre">reset-task-state</span></code> API.</li>
+<li>It is advised that the node running the Data Service is well secured, since
+it will be mounting shares with highest privileges, temporarily exposing user
+data to whoever has access to this node.</li>
+<li>The two mechanisms of migration are affected differently by service restarts:<ul>
+<li>If performing a host-assisted migration, all services may be restarted
+except for the manila-data service when performing the copy (the
+<code class="docutils literal"><span class="pre">task_state</span></code> field value starts with <code class="docutils literal"><span class="pre">data_copying_</span></code>). In other steps
+of the host-assisted migration, both the source and destination
+manila-share services should not be restarted.</li>
+<li>If performing a driver-assisted migration, the migration is affected
+minimally by driver restarts if the <code class="docutils literal"><span class="pre">task_state</span></code> is
+<code class="docutils literal"><span class="pre">migration_driver_in_progress</span></code>, while the copy is being done in the
+back end. Otherwise, the source and destination manila-share services
+should not be restarted.</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="shared-file-systems-quotas.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Quotas and limits"></i></a>
+          
+          
+            <a href="shared-file-systems-share-types.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Share types"></i></a>
+          
+            <a id="logABugLink3" href="shared-file-systems-share-migration.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:38</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="shared-file-systems-share-migration.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="common/conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common/get-started-with-openstack.html">Get started with OpenStack</a></li>
+<li class="toctree-l1"><a class="reference internal" href="identity-management.html">Identity management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dashboard.html">Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute</a></li>
+<li class="toctree-l1"><a class="reference internal" href="objectstorage.html">Object Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="blockstorage.html">Block Storage</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="shared-file-systems.html">Shared File Systems</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="shared-file-systems-intro.html">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shared-file-systems-key-concepts.html">Key concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shared-file-systems-share-management.html">Share management</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="shared-file-systems-share-migration.html#">Share migration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shared-file-systems-share-types.html">Share types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shared-file-systems-snapshots.html">Share snapshots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shared-file-systems-security-services.html">Security services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shared-file-systems-cgroups.html">Consistency groups</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shared-file-systems-share-replication.html">Share replication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shared-file-systems-multi-backend.html">Multi-storage configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shared-file-systems-networking.html">Networking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shared-file-systems-troubleshoot.html">Troubleshoot Shared File Systems service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="networking.html">Networking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="telemetry.html">Telemetry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="baremetal.html">Bare Metal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="orchestration.html">Orchestration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">OpenStack command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cross-project.html">Cross-project features</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="firewalls-default-ports.html">Firewalls and default ports</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common/app-support.html">Community support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="common/glossary.html">Glossary</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "shared-file-systems-share-migration" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/admin-guide/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "Share migration in Administrator Guide";
+    var fieldTags = "admin-guide";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:38";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

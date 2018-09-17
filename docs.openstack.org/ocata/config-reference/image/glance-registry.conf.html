@@ -1,0 +1,2702 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: glance-registry.conf</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="../_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="../_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="../_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="../_static/css/combined.css" rel="stylesheet">
+<link href="../_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" href="../_static/sphinxmark.css" type="text/css" />
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>glance-registry.conf</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="glance-manage.conf.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: glance-manage.conf"></i></a>
+    
+    
+    <a href="glance-registry-paste.ini.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: glance-registry-paste.ini"></i></a>
+    
+    <a id="logABugLink1" href="glance-registry.conf.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:41</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="../index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="glance-registry.conf.html#">glance-registry.conf</a></li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="glance-registry-conf">
+<h1>glance-registry.conf<a class="headerlink" href="glance-registry.conf.html#glance-registry-conf" title="Permalink to this headline">¶</a></h1>
+<p>Configuration for the Image service&#8217;s registry, which stores the metadata about
+images, is found in the <code class="docutils literal"><span class="pre">glance-registry.conf</span></code> file.</p>
+<p>This file must be modified after installation.</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[DEFAULT]</span>
+
+<span class="c1">#</span>
+<span class="c1"># From glance.registry</span>
+<span class="c1">#</span>
+
+<span class="c1">#</span>
+<span class="c1"># Set the image owner to tenant or the authenticated user.</span>
+<span class="c1">#</span>
+<span class="c1"># Assign a boolean value to determine the owner of an image. When set to</span>
+<span class="c1"># True, the owner of the image is the tenant. When set to False, the</span>
+<span class="c1"># owner of the image will be the authenticated user issuing the request.</span>
+<span class="c1"># Setting it to False makes the image private to the associated user and</span>
+<span class="c1"># sharing with other users within the same tenant (or &quot;project&quot;)</span>
+<span class="c1"># requires explicit image sharing via image membership.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * True</span>
+<span class="c1">#     * False</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (boolean value)</span>
+<span class="c1">#owner_is_tenant = true</span>
+
+<span class="c1">#</span>
+<span class="c1"># Role used to identify an authenticated user as administrator.</span>
+<span class="c1">#</span>
+<span class="c1"># Provide a string value representing a Keystone role to identify an</span>
+<span class="c1"># administrative user. Users with this role will be granted</span>
+<span class="c1"># administrative privileges. The default value for this option is</span>
+<span class="c1"># &#39;admin&#39;.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * A string value which is a valid Keystone role</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (string value)</span>
+<span class="c1">#admin_role = admin</span>
+
+<span class="c1">#</span>
+<span class="c1"># Allow limited access to unauthenticated users.</span>
+<span class="c1">#</span>
+<span class="c1"># Assign a boolean to determine API access for unathenticated</span>
+<span class="c1"># users. When set to False, the API cannot be accessed by</span>
+<span class="c1"># unauthenticated users. When set to True, unauthenticated users can</span>
+<span class="c1"># access the API with read-only privileges. This however only applies</span>
+<span class="c1"># when using ContextMiddleware.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * True</span>
+<span class="c1">#     * False</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (boolean value)</span>
+<span class="c1">#allow_anonymous_access = false</span>
+
+<span class="c1">#</span>
+<span class="c1"># Limit the request ID length.</span>
+<span class="c1">#</span>
+<span class="c1"># Provide  an integer value to limit the length of the request ID to</span>
+<span class="c1"># the specified length. The default value is 64. Users can change this</span>
+<span class="c1"># to any ineteger value between 0 and 16384 however keeping in mind that</span>
+<span class="c1"># a larger value may flood the logs.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * Integer value between 0 and 16384</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (integer value)</span>
+<span class="c1"># Minimum value: 0</span>
+<span class="c1">#max_request_id_length = 64</span>
+
+<span class="c1">#</span>
+<span class="c1"># Allow users to add additional/custom properties to images.</span>
+<span class="c1">#</span>
+<span class="c1"># Glance defines a standard set of properties (in its schema) that</span>
+<span class="c1"># appear on every image. These properties are also known as</span>
+<span class="c1"># ``base properties``. In addition to these properties, Glance</span>
+<span class="c1"># allows users to add custom properties to images. These are known</span>
+<span class="c1"># as ``additional properties``.</span>
+<span class="c1">#</span>
+<span class="c1"># By default, this configuration option is set to ``True`` and users</span>
+<span class="c1"># are allowed to add additional properties. The number of additional</span>
+<span class="c1"># properties that can be added to an image can be controlled via</span>
+<span class="c1"># ``image_property_quota`` configuration option.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * True</span>
+<span class="c1">#     * False</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * image_property_quota</span>
+<span class="c1">#</span>
+<span class="c1">#  (boolean value)</span>
+<span class="c1">#allow_additional_image_properties = true</span>
+
+<span class="c1">#</span>
+<span class="c1"># Maximum number of image members per image.</span>
+<span class="c1">#</span>
+<span class="c1"># This limits the maximum of users an image can be shared with. Any negative</span>
+<span class="c1"># value is interpreted as unlimited.</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (integer value)</span>
+<span class="c1">#image_member_quota = 128</span>
+
+<span class="c1">#</span>
+<span class="c1"># Maximum number of properties allowed on an image.</span>
+<span class="c1">#</span>
+<span class="c1"># This enforces an upper limit on the number of additional properties an image</span>
+<span class="c1"># can have. Any negative value is interpreted as unlimited.</span>
+<span class="c1">#</span>
+<span class="c1"># NOTE: This won&#39;t have any impact if additional properties are disabled. Please</span>
+<span class="c1"># refer to ``allow_additional_image_properties``.</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * ``allow_additional_image_properties``</span>
+<span class="c1">#</span>
+<span class="c1">#  (integer value)</span>
+<span class="c1">#image_property_quota = 128</span>
+
+<span class="c1">#</span>
+<span class="c1"># Maximum number of tags allowed on an image.</span>
+<span class="c1">#</span>
+<span class="c1"># Any negative value is interpreted as unlimited.</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (integer value)</span>
+<span class="c1">#image_tag_quota = 128</span>
+
+<span class="c1">#</span>
+<span class="c1"># Maximum number of locations allowed on an image.</span>
+<span class="c1">#</span>
+<span class="c1"># Any negative value is interpreted as unlimited.</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (integer value)</span>
+<span class="c1">#image_location_quota = 10</span>
+
+<span class="c1">#</span>
+<span class="c1"># Python module path of data access API.</span>
+<span class="c1">#</span>
+<span class="c1"># Specifies the path to the API to use for accessing the data model.</span>
+<span class="c1"># This option determines how the image catalog data will be accessed.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * glance.db.sqlalchemy.api</span>
+<span class="c1">#     * glance.db.registry.api</span>
+<span class="c1">#     * glance.db.simple.api</span>
+<span class="c1">#</span>
+<span class="c1"># If this option is set to ``glance.db.sqlalchemy.api`` then the image</span>
+<span class="c1"># catalog data is stored in and read from the database via the</span>
+<span class="c1"># SQLAlchemy Core and ORM APIs.</span>
+<span class="c1">#</span>
+<span class="c1"># Setting this option to ``glance.db.registry.api`` will force all</span>
+<span class="c1"># database access requests to be routed through the Registry service.</span>
+<span class="c1"># This avoids data access from the Glance API nodes for an added layer</span>
+<span class="c1"># of security, scalability and manageability.</span>
+<span class="c1">#</span>
+<span class="c1"># NOTE: In v2 OpenStack Images API, the registry service is optional.</span>
+<span class="c1"># In order to use the Registry API in v2, the option</span>
+<span class="c1"># ``enable_v2_registry`` must be set to ``True``.</span>
+<span class="c1">#</span>
+<span class="c1"># Finally, when this configuration option is set to</span>
+<span class="c1"># ``glance.db.simple.api``, image catalog data is stored in and read</span>
+<span class="c1"># from an in-memory data structure. This is primarily used for testing.</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * enable_v2_api</span>
+<span class="c1">#     * enable_v2_registry</span>
+<span class="c1">#</span>
+<span class="c1">#  (string value)</span>
+<span class="c1">#data_api = glance.db.sqlalchemy.api</span>
+
+<span class="c1">#</span>
+<span class="c1"># The default number of results to return for a request.</span>
+<span class="c1">#</span>
+<span class="c1"># Responses to certain API requests, like list images, may return</span>
+<span class="c1"># multiple items. The number of results returned can be explicitly</span>
+<span class="c1"># controlled by specifying the ``limit`` parameter in the API request.</span>
+<span class="c1"># However, if a ``limit`` parameter is not specified, this</span>
+<span class="c1"># configuration value will be used as the default number of results to</span>
+<span class="c1"># be returned for any API request.</span>
+<span class="c1">#</span>
+<span class="c1"># NOTES:</span>
+<span class="c1">#     * The value of this configuration option may not be greater than</span>
+<span class="c1">#       the value specified by ``api_limit_max``.</span>
+<span class="c1">#     * Setting this to a very large value may slow down database</span>
+<span class="c1">#       queries and increase response times. Setting this to a</span>
+<span class="c1">#       very low value may result in poor user experience.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * Any positive integer</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * api_limit_max</span>
+<span class="c1">#</span>
+<span class="c1">#  (integer value)</span>
+<span class="c1"># Minimum value: 1</span>
+<span class="c1">#limit_param_default = 25</span>
+
+<span class="c1">#</span>
+<span class="c1"># Maximum number of results that could be returned by a request.</span>
+<span class="c1">#</span>
+<span class="c1"># As described in the help text of ``limit_param_default``, some</span>
+<span class="c1"># requests may return multiple results. The number of results to be</span>
+<span class="c1"># returned are governed either by the ``limit`` parameter in the</span>
+<span class="c1"># request or the ``limit_param_default`` configuration option.</span>
+<span class="c1"># The value in either case, can&#39;t be greater than the absolute maximum</span>
+<span class="c1"># defined by this configuration option. Anything greater than this</span>
+<span class="c1"># value is trimmed down to the maximum value defined here.</span>
+<span class="c1">#</span>
+<span class="c1"># NOTE: Setting this to a very large value may slow down database</span>
+<span class="c1">#       queries and increase response times. Setting this to a</span>
+<span class="c1">#       very low value may result in poor user experience.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * Any positive integer</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * limit_param_default</span>
+<span class="c1">#</span>
+<span class="c1">#  (integer value)</span>
+<span class="c1"># Minimum value: 1</span>
+<span class="c1">#api_limit_max = 1000</span>
+
+<span class="c1">#</span>
+<span class="c1"># Show direct image location when returning an image.</span>
+<span class="c1">#</span>
+<span class="c1"># This configuration option indicates whether to show the direct image</span>
+<span class="c1"># location when returning image details to the user. The direct image</span>
+<span class="c1"># location is where the image data is stored in backend storage. This</span>
+<span class="c1"># image location is shown under the image property ``direct_url``.</span>
+<span class="c1">#</span>
+<span class="c1"># When multiple image locations exist for an image, the best location</span>
+<span class="c1"># is displayed based on the location strategy indicated by the</span>
+<span class="c1"># configuration option ``location_strategy``.</span>
+<span class="c1">#</span>
+<span class="c1"># NOTES:</span>
+<span class="c1">#     * Revealing image locations can present a GRAVE SECURITY RISK as</span>
+<span class="c1">#       image locations can sometimes include credentials. Hence, this</span>
+<span class="c1">#       is set to ``False`` by default. Set this to ``True`` with</span>
+<span class="c1">#       EXTREME CAUTION and ONLY IF you know what you are doing!</span>
+<span class="c1">#     * If an operator wishes to avoid showing any image location(s)</span>
+<span class="c1">#       to the user, then both this option and</span>
+<span class="c1">#       ``show_multiple_locations`` MUST be set to ``False``.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * True</span>
+<span class="c1">#     * False</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * show_multiple_locations</span>
+<span class="c1">#     * location_strategy</span>
+<span class="c1">#</span>
+<span class="c1">#  (boolean value)</span>
+<span class="c1">#show_image_direct_url = false</span>
+
+<span class="c1"># DEPRECATED:</span>
+<span class="c1"># Show all image locations when returning an image.</span>
+<span class="c1">#</span>
+<span class="c1"># This configuration option indicates whether to show all the image</span>
+<span class="c1"># locations when returning image details to the user. When multiple</span>
+<span class="c1"># image locations exist for an image, the locations are ordered based</span>
+<span class="c1"># on the location strategy indicated by the configuration opt</span>
+<span class="c1"># ``location_strategy``. The image locations are shown under the</span>
+<span class="c1"># image property ``locations``.</span>
+<span class="c1">#</span>
+<span class="c1"># NOTES:</span>
+<span class="c1">#     * Revealing image locations can present a GRAVE SECURITY RISK as</span>
+<span class="c1">#       image locations can sometimes include credentials. Hence, this</span>
+<span class="c1">#       is set to ``False`` by default. Set this to ``True`` with</span>
+<span class="c1">#       EXTREME CAUTION and ONLY IF you know what you are doing!</span>
+<span class="c1">#     * If an operator wishes to avoid showing any image location(s)</span>
+<span class="c1">#       to the user, then both this option and</span>
+<span class="c1">#       ``show_image_direct_url`` MUST be set to ``False``.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * True</span>
+<span class="c1">#     * False</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * show_image_direct_url</span>
+<span class="c1">#     * location_strategy</span>
+<span class="c1">#</span>
+<span class="c1">#  (boolean value)</span>
+<span class="c1"># This option is deprecated for removal since Newton.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: This option will be removed in the Pike release or later because the</span>
+<span class="c1"># same functionality can be achieved with greater granularity by using policies.</span>
+<span class="c1"># Please see the Newton release notes for more information.</span>
+<span class="c1">#show_multiple_locations = false</span>
+
+<span class="c1">#</span>
+<span class="c1"># Maximum size of image a user can upload in bytes.</span>
+<span class="c1">#</span>
+<span class="c1"># An image upload greater than the size mentioned here would result</span>
+<span class="c1"># in an image creation failure. This configuration option defaults to</span>
+<span class="c1"># 1099511627776 bytes (1 TiB).</span>
+<span class="c1">#</span>
+<span class="c1"># NOTES:</span>
+<span class="c1">#     * This value should only be increased after careful</span>
+<span class="c1">#       consideration and must be set less than or equal to</span>
+<span class="c1">#       8 EiB (9223372036854775808).</span>
+<span class="c1">#     * This value must be set with careful consideration of the</span>
+<span class="c1">#       backend storage capacity. Setting this to a very low value</span>
+<span class="c1">#       may result in a large number of image failures. And, setting</span>
+<span class="c1">#       this to a very large value may result in faster consumption</span>
+<span class="c1">#       of storage. Hence, this must be set according to the nature of</span>
+<span class="c1">#       images created and storage capacity available.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * Any positive number less than or equal to 9223372036854775808</span>
+<span class="c1">#</span>
+<span class="c1">#  (integer value)</span>
+<span class="c1"># Minimum value: 1</span>
+<span class="c1"># Maximum value: 9223372036854775808</span>
+<span class="c1">#image_size_cap = 1099511627776</span>
+
+<span class="c1">#</span>
+<span class="c1"># Maximum amount of image storage per tenant.</span>
+<span class="c1">#</span>
+<span class="c1"># This enforces an upper limit on the cumulative storage consumed by all images</span>
+<span class="c1"># of a tenant across all stores. This is a per-tenant limit.</span>
+<span class="c1">#</span>
+<span class="c1"># The default unit for this configuration option is Bytes. However, storage</span>
+<span class="c1"># units can be specified using case-sensitive literals ``B``, ``KB``, ``MB``,</span>
+<span class="c1"># ``GB`` and ``TB`` representing Bytes, KiloBytes, MegaBytes, GigaBytes and</span>
+<span class="c1"># TeraBytes respectively. Note that there should not be any space between the</span>
+<span class="c1"># value and unit. Value ``0`` signifies no quota enforcement. Negative values</span>
+<span class="c1"># are invalid and result in errors.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * A string that is a valid concatenation of a non-negative integer</span>
+<span class="c1">#       representing the storage value and an optional string literal</span>
+<span class="c1">#       representing storage units as mentioned above.</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (string value)</span>
+<span class="c1">#user_storage_quota = 0</span>
+
+<span class="c1">#</span>
+<span class="c1"># Deploy the v1 OpenStack Images API.</span>
+<span class="c1">#</span>
+<span class="c1"># When this option is set to ``True``, Glance service will respond to</span>
+<span class="c1"># requests on registered endpoints conforming to the v1 OpenStack</span>
+<span class="c1"># Images API.</span>
+<span class="c1">#</span>
+<span class="c1"># NOTES:</span>
+<span class="c1">#     * If this option is enabled, then ``enable_v1_registry`` must</span>
+<span class="c1">#       also be set to ``True`` to enable mandatory usage of Registry</span>
+<span class="c1">#       service with v1 API.</span>
+<span class="c1">#</span>
+<span class="c1">#     * If this option is disabled, then the ``enable_v1_registry``</span>
+<span class="c1">#       option, which is enabled by default, is also recommended</span>
+<span class="c1">#       to be disabled.</span>
+<span class="c1">#</span>
+<span class="c1">#     * This option is separate from ``enable_v2_api``, both v1 and v2</span>
+<span class="c1">#       OpenStack Images API can be deployed independent of each</span>
+<span class="c1">#       other.</span>
+<span class="c1">#</span>
+<span class="c1">#     * If deploying only the v2 Images API, this option, which is</span>
+<span class="c1">#       enabled by default, should be disabled.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * True</span>
+<span class="c1">#     * False</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * enable_v1_registry</span>
+<span class="c1">#     * enable_v2_api</span>
+<span class="c1">#</span>
+<span class="c1">#  (boolean value)</span>
+<span class="c1">#enable_v1_api = true</span>
+
+<span class="c1">#</span>
+<span class="c1"># Deploy the v2 OpenStack Images API.</span>
+<span class="c1">#</span>
+<span class="c1"># When this option is set to ``True``, Glance service will respond</span>
+<span class="c1"># to requests on registered endpoints conforming to the v2 OpenStack</span>
+<span class="c1"># Images API.</span>
+<span class="c1">#</span>
+<span class="c1"># NOTES:</span>
+<span class="c1">#     * If this option is disabled, then the ``enable_v2_registry``</span>
+<span class="c1">#       option, which is enabled by default, is also recommended</span>
+<span class="c1">#       to be disabled.</span>
+<span class="c1">#</span>
+<span class="c1">#     * This option is separate from ``enable_v1_api``, both v1 and v2</span>
+<span class="c1">#       OpenStack Images API can be deployed independent of each</span>
+<span class="c1">#       other.</span>
+<span class="c1">#</span>
+<span class="c1">#     * If deploying only the v1 Images API, this option, which is</span>
+<span class="c1">#       enabled by default, should be disabled.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * True</span>
+<span class="c1">#     * False</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * enable_v2_registry</span>
+<span class="c1">#     * enable_v1_api</span>
+<span class="c1">#</span>
+<span class="c1">#  (boolean value)</span>
+<span class="c1">#enable_v2_api = true</span>
+
+<span class="c1">#</span>
+<span class="c1"># Deploy the v1 API Registry service.</span>
+<span class="c1">#</span>
+<span class="c1"># When this option is set to ``True``, the Registry service</span>
+<span class="c1"># will be enabled in Glance for v1 API requests.</span>
+<span class="c1">#</span>
+<span class="c1"># NOTES:</span>
+<span class="c1">#     * Use of Registry is mandatory in v1 API, so this option must</span>
+<span class="c1">#       be set to ``True`` if the ``enable_v1_api`` option is enabled.</span>
+<span class="c1">#</span>
+<span class="c1">#     * If deploying only the v2 OpenStack Images API, this option,</span>
+<span class="c1">#       which is enabled by default, should be disabled.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * True</span>
+<span class="c1">#     * False</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * enable_v1_api</span>
+<span class="c1">#</span>
+<span class="c1">#  (boolean value)</span>
+<span class="c1">#enable_v1_registry = true</span>
+
+<span class="c1">#</span>
+<span class="c1"># Deploy the v2 API Registry service.</span>
+<span class="c1">#</span>
+<span class="c1"># When this option is set to ``True``, the Registry service</span>
+<span class="c1"># will be enabled in Glance for v2 API requests.</span>
+<span class="c1">#</span>
+<span class="c1"># NOTES:</span>
+<span class="c1">#     * Use of Registry is optional in v2 API, so this option</span>
+<span class="c1">#       must only be enabled if both ``enable_v2_api`` is set to</span>
+<span class="c1">#       ``True`` and the ``data_api`` option is set to</span>
+<span class="c1">#       ``glance.db.registry.api``.</span>
+<span class="c1">#</span>
+<span class="c1">#     * If deploying only the v1 OpenStack Images API, this option,</span>
+<span class="c1">#       which is enabled by default, should be disabled.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * True</span>
+<span class="c1">#     * False</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * enable_v2_api</span>
+<span class="c1">#     * data_api</span>
+<span class="c1">#</span>
+<span class="c1">#  (boolean value)</span>
+<span class="c1">#enable_v2_registry = true</span>
+
+<span class="c1">#</span>
+<span class="c1"># Host address of the pydev server.</span>
+<span class="c1">#</span>
+<span class="c1"># Provide a string value representing the hostname or IP of the</span>
+<span class="c1"># pydev server to use for debugging. The pydev server listens for</span>
+<span class="c1"># debug connections on this address, facilitating remote debugging</span>
+<span class="c1"># in Glance.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * Valid hostname</span>
+<span class="c1">#     * Valid IP address</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (string value)</span>
+<span class="c1">#pydev_worker_debug_host = localhost</span>
+
+<span class="c1">#</span>
+<span class="c1"># Port number that the pydev server will listen on.</span>
+<span class="c1">#</span>
+<span class="c1"># Provide a port number to bind the pydev server to. The pydev</span>
+<span class="c1"># process accepts debug connections on this port and facilitates</span>
+<span class="c1"># remote debugging in Glance.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * A valid port number</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (port value)</span>
+<span class="c1"># Minimum value: 0</span>
+<span class="c1"># Maximum value: 65535</span>
+<span class="c1">#pydev_worker_debug_port = 5678</span>
+
+<span class="c1">#</span>
+<span class="c1"># AES key for encrypting store location metadata.</span>
+<span class="c1">#</span>
+<span class="c1"># Provide a string value representing the AES cipher to use for</span>
+<span class="c1"># encrypting Glance store metadata.</span>
+<span class="c1">#</span>
+<span class="c1"># NOTE: The AES key to use must be set to a random string of length</span>
+<span class="c1"># 16, 24 or 32 bytes.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * String value representing a valid AES key</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (string value)</span>
+<span class="c1">#metadata_encryption_key = &lt;None&gt;</span>
+
+<span class="c1">#</span>
+<span class="c1"># Digest algorithm to use for digital signature.</span>
+<span class="c1">#</span>
+<span class="c1"># Provide a string value representing the digest algorithm to</span>
+<span class="c1"># use for generating digital signatures. By default, ``sha256``</span>
+<span class="c1"># is used.</span>
+<span class="c1">#</span>
+<span class="c1"># To get a list of the available algorithms supported by the version</span>
+<span class="c1"># of OpenSSL on your platform, run the command:</span>
+<span class="c1"># ``openssl list-message-digest-algorithms``.</span>
+<span class="c1"># Examples are &#39;sha1&#39;, &#39;sha256&#39;, and &#39;sha512&#39;.</span>
+<span class="c1">#</span>
+<span class="c1"># NOTE: ``digest_algorithm`` is not related to Glance&#39;s image signing</span>
+<span class="c1"># and verification. It is only used to sign the universally unique</span>
+<span class="c1"># identifier (UUID) as a part of the certificate file and key file</span>
+<span class="c1"># validation.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * An OpenSSL message digest algorithm identifier</span>
+<span class="c1">#</span>
+<span class="c1"># Relation options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (string value)</span>
+<span class="c1">#digest_algorithm = sha256</span>
+
+<span class="c1">#</span>
+<span class="c1"># IP address to bind the glance servers to.</span>
+<span class="c1">#</span>
+<span class="c1"># Provide an IP address to bind the glance server to. The default</span>
+<span class="c1"># value is ``0.0.0.0``.</span>
+<span class="c1">#</span>
+<span class="c1"># Edit this option to enable the server to listen on one particular</span>
+<span class="c1"># IP address on the network card. This facilitates selection of a</span>
+<span class="c1"># particular network interface for the server.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * A valid IPv4 address</span>
+<span class="c1">#     * A valid IPv6 address</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (string value)</span>
+<span class="c1">#bind_host = 0.0.0.0</span>
+
+<span class="c1">#</span>
+<span class="c1"># Port number on which the server will listen.</span>
+<span class="c1">#</span>
+<span class="c1"># Provide a valid port number to bind the server&#39;s socket to. This</span>
+<span class="c1"># port is then set to identify processes and forward network messages</span>
+<span class="c1"># that arrive at the server. The default bind_port value for the API</span>
+<span class="c1"># server is 9292 and for the registry server is 9191.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * A valid port number (0 to 65535)</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (port value)</span>
+<span class="c1"># Minimum value: 0</span>
+<span class="c1"># Maximum value: 65535</span>
+<span class="c1">#bind_port = &lt;None&gt;</span>
+
+<span class="c1">#</span>
+<span class="c1"># Set the number of incoming connection requests.</span>
+<span class="c1">#</span>
+<span class="c1"># Provide a positive integer value to limit the number of requests in</span>
+<span class="c1"># the backlog queue. The default queue size is 4096.</span>
+<span class="c1">#</span>
+<span class="c1"># An incoming connection to a TCP listener socket is queued before a</span>
+<span class="c1"># connection can be established with the server. Setting the backlog</span>
+<span class="c1"># for a TCP socket ensures a limited queue size for incoming traffic.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * Positive integer</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (integer value)</span>
+<span class="c1"># Minimum value: 1</span>
+<span class="c1">#backlog = 4096</span>
+
+<span class="c1">#</span>
+<span class="c1"># Set the wait time before a connection recheck.</span>
+<span class="c1">#</span>
+<span class="c1"># Provide a positive integer value representing time in seconds which</span>
+<span class="c1"># is set as the idle wait time before a TCP keep alive packet can be</span>
+<span class="c1"># sent to the host. The default value is 600 seconds.</span>
+<span class="c1">#</span>
+<span class="c1"># Setting ``tcp_keepidle`` helps verify at regular intervals that a</span>
+<span class="c1"># connection is intact and prevents frequent TCP connection</span>
+<span class="c1"># reestablishment.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * Positive integer value representing time in seconds</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (integer value)</span>
+<span class="c1"># Minimum value: 1</span>
+<span class="c1">#tcp_keepidle = 600</span>
+
+<span class="c1">#</span>
+<span class="c1"># Absolute path to the CA file.</span>
+<span class="c1">#</span>
+<span class="c1"># Provide a string value representing a valid absolute path to</span>
+<span class="c1"># the Certificate Authority file to use for client authentication.</span>
+<span class="c1">#</span>
+<span class="c1"># A CA file typically contains necessary trusted certificates to</span>
+<span class="c1"># use for the client authentication. This is essential to ensure</span>
+<span class="c1"># that a secure connection is established to the server via the</span>
+<span class="c1"># internet.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * Valid absolute path to the CA file</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (string value)</span>
+<span class="c1">#ca_file = /etc/ssl/cafile</span>
+
+<span class="c1">#</span>
+<span class="c1"># Absolute path to the certificate file.</span>
+<span class="c1">#</span>
+<span class="c1"># Provide a string value representing a valid absolute path to the</span>
+<span class="c1"># certificate file which is required to start the API service</span>
+<span class="c1"># securely.</span>
+<span class="c1">#</span>
+<span class="c1"># A certificate file typically is a public key container and includes</span>
+<span class="c1"># the server&#39;s public key, server name, server information and the</span>
+<span class="c1"># signature which was a result of the verification process using the</span>
+<span class="c1"># CA certificate. This is required for a secure connection</span>
+<span class="c1"># establishment.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * Valid absolute path to the certificate file</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (string value)</span>
+<span class="c1">#cert_file = /etc/ssl/certs</span>
+
+<span class="c1">#</span>
+<span class="c1"># Absolute path to a private key file.</span>
+<span class="c1">#</span>
+<span class="c1"># Provide a string value representing a valid absolute path to a</span>
+<span class="c1"># private key file which is required to establish the client-server</span>
+<span class="c1"># connection.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * Absolute path to the private key file</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (string value)</span>
+<span class="c1">#key_file = /etc/ssl/key/key-file.pem</span>
+
+<span class="c1"># DEPRECATED: The HTTP header used to determine the scheme for the original</span>
+<span class="c1"># request, even if it was removed by an SSL terminating proxy. Typical value is</span>
+<span class="c1"># &quot;HTTP_X_FORWARDED_PROTO&quot;. (string value)</span>
+<span class="c1"># This option is deprecated for removal.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: Use the http_proxy_to_wsgi middleware instead.</span>
+<span class="c1">#secure_proxy_ssl_header = &lt;None&gt;</span>
+
+<span class="c1">#</span>
+<span class="c1"># Number of Glance worker processes to start.</span>
+<span class="c1">#</span>
+<span class="c1"># Provide a non-negative integer value to set the number of child</span>
+<span class="c1"># process workers to service requests. By default, the number of CPUs</span>
+<span class="c1"># available is set as the value for ``workers``.</span>
+<span class="c1">#</span>
+<span class="c1"># Each worker process is made to listen on the port set in the</span>
+<span class="c1"># configuration file and contains a greenthread pool of size 1000.</span>
+<span class="c1">#</span>
+<span class="c1"># NOTE: Setting the number of workers to zero, triggers the creation</span>
+<span class="c1"># of a single API process with a greenthread pool of size 1000.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * 0</span>
+<span class="c1">#     * Positive integer value (typically equal to the number of CPUs)</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (integer value)</span>
+<span class="c1"># Minimum value: 0</span>
+<span class="c1">#workers = &lt;None&gt;</span>
+
+<span class="c1">#</span>
+<span class="c1"># Maximum line size of message headers.</span>
+<span class="c1">#</span>
+<span class="c1"># Provide an integer value representing a length to limit the size of</span>
+<span class="c1"># message headers. The default value is 16384.</span>
+<span class="c1">#</span>
+<span class="c1"># NOTE: ``max_header_line`` may need to be increased when using large</span>
+<span class="c1"># tokens (typically those generated by the Keystone v3 API with big</span>
+<span class="c1"># service catalogs). However, it is to be kept in mind that larger</span>
+<span class="c1"># values for ``max_header_line`` would flood the logs.</span>
+<span class="c1">#</span>
+<span class="c1"># Setting ``max_header_line`` to 0 sets no limit for the line size of</span>
+<span class="c1"># message headers.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * 0</span>
+<span class="c1">#     * Positive integer</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (integer value)</span>
+<span class="c1"># Minimum value: 0</span>
+<span class="c1">#max_header_line = 16384</span>
+
+<span class="c1">#</span>
+<span class="c1"># Set keep alive option for HTTP over TCP.</span>
+<span class="c1">#</span>
+<span class="c1"># Provide a boolean value to determine sending of keep alive packets.</span>
+<span class="c1"># If set to ``False``, the server returns the header</span>
+<span class="c1"># &quot;Connection: close&quot;. If set to ``True``, the server returns a</span>
+<span class="c1"># &quot;Connection: Keep-Alive&quot; in its responses. This enables retention of</span>
+<span class="c1"># the same TCP connection for HTTP conversations instead of opening a</span>
+<span class="c1"># new one with each new request.</span>
+<span class="c1">#</span>
+<span class="c1"># This option must be set to ``False`` if the client socket connection</span>
+<span class="c1"># needs to be closed explicitly after the response is received and</span>
+<span class="c1"># read successfully by the client.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * True</span>
+<span class="c1">#     * False</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (boolean value)</span>
+<span class="c1">#http_keepalive = true</span>
+
+<span class="c1">#</span>
+<span class="c1"># Timeout for client connections&#39; socket operations.</span>
+<span class="c1">#</span>
+<span class="c1"># Provide a valid integer value representing time in seconds to set</span>
+<span class="c1"># the period of wait before an incoming connection can be closed. The</span>
+<span class="c1"># default value is 900 seconds.</span>
+<span class="c1">#</span>
+<span class="c1"># The value zero implies wait forever.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * Zero</span>
+<span class="c1">#     * Positive integer</span>
+<span class="c1">#</span>
+<span class="c1"># Related options:</span>
+<span class="c1">#     * None</span>
+<span class="c1">#</span>
+<span class="c1">#  (integer value)</span>
+<span class="c1"># Minimum value: 0</span>
+<span class="c1">#client_socket_timeout = 900</span>
+
+<span class="c1">#</span>
+<span class="c1"># From oslo.log</span>
+<span class="c1">#</span>
+
+<span class="c1"># If set to true, the logging level will be set to DEBUG instead of the default</span>
+<span class="c1"># INFO level. (boolean value)</span>
+<span class="c1"># Note: This option can be changed without restarting.</span>
+<span class="c1">#debug = false</span>
+
+<span class="c1"># DEPRECATED: If set to false, the logging level will be set to WARNING instead</span>
+<span class="c1"># of the default INFO level. (boolean value)</span>
+<span class="c1"># This option is deprecated for removal.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1">#verbose = true</span>
+
+<span class="c1"># The name of a logging configuration file. This file is appended to any</span>
+<span class="c1"># existing logging configuration files. For details about logging configuration</span>
+<span class="c1"># files, see the Python logging module documentation. Note that when logging</span>
+<span class="c1"># configuration files are used then all logging configuration is set in the</span>
+<span class="c1"># configuration file and other logging configuration options are ignored (for</span>
+<span class="c1"># example, logging_context_format_string). (string value)</span>
+<span class="c1"># Note: This option can be changed without restarting.</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/log_config</span>
+<span class="c1">#log_config_append = &lt;None&gt;</span>
+
+<span class="c1"># Defines the format string for %%(asctime)s in log records. Default:</span>
+<span class="c1"># %(default)s . This option is ignored if log_config_append is set. (string</span>
+<span class="c1"># value)</span>
+<span class="c1">#log_date_format = %Y-%m-%d %H:%M:%S</span>
+
+<span class="c1"># (Optional) Name of log file to send logging output to. If no default is set,</span>
+<span class="c1"># logging will go to stderr as defined by use_stderr. This option is ignored if</span>
+<span class="c1"># log_config_append is set. (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/logfile</span>
+<span class="c1">#log_file = &lt;None&gt;</span>
+
+<span class="c1"># (Optional) The base directory used for relative log_file  paths. This option</span>
+<span class="c1"># is ignored if log_config_append is set. (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/logdir</span>
+<span class="c1">#log_dir = &lt;None&gt;</span>
+
+<span class="c1"># Uses logging handler designed to watch file system. When log file is moved or</span>
+<span class="c1"># removed this handler will open a new log file with specified path</span>
+<span class="c1"># instantaneously. It makes sense only if log_file option is specified and Linux</span>
+<span class="c1"># platform is used. This option is ignored if log_config_append is set. (boolean</span>
+<span class="c1"># value)</span>
+<span class="c1">#watch_log_file = false</span>
+
+<span class="c1"># Use syslog for logging. Existing syslog format is DEPRECATED and will be</span>
+<span class="c1"># changed later to honor RFC5424. This option is ignored if log_config_append is</span>
+<span class="c1"># set. (boolean value)</span>
+<span class="c1">#use_syslog = false</span>
+
+<span class="c1"># Syslog facility to receive log lines. This option is ignored if</span>
+<span class="c1"># log_config_append is set. (string value)</span>
+<span class="c1">#syslog_log_facility = LOG_USER</span>
+
+<span class="c1"># Log output to standard error. This option is ignored if log_config_append is</span>
+<span class="c1"># set. (boolean value)</span>
+<span class="c1">#use_stderr = false</span>
+
+<span class="c1"># Format string to use for log messages with context. (string value)</span>
+<span class="c1">#logging_context_format_string = %(asctime)s.%(msecs)03d %(process)d %(levelname)s %(name)s [%(request_id)s %(user_identity)s] %(instance)s%(message)s</span>
+
+<span class="c1"># Format string to use for log messages when context is undefined. (string</span>
+<span class="c1"># value)</span>
+<span class="c1">#logging_default_format_string = %(asctime)s.%(msecs)03d %(process)d %(levelname)s %(name)s [-] %(instance)s%(message)s</span>
+
+<span class="c1"># Additional data to append to log message when logging level for the message is</span>
+<span class="c1"># DEBUG. (string value)</span>
+<span class="c1">#logging_debug_format_suffix = %(funcName)s %(pathname)s:%(lineno)d</span>
+
+<span class="c1"># Prefix each line of exception output with this format. (string value)</span>
+<span class="c1">#logging_exception_prefix = %(asctime)s.%(msecs)03d %(process)d ERROR %(name)s %(instance)s</span>
+
+<span class="c1"># Defines the format string for %(user_identity)s that is used in</span>
+<span class="c1"># logging_context_format_string. (string value)</span>
+<span class="c1">#logging_user_identity_format = %(user)s %(tenant)s %(domain)s %(user_domain)s %(project_domain)s</span>
+
+<span class="c1"># List of package logging levels in logger=LEVEL pairs. This option is ignored</span>
+<span class="c1"># if log_config_append is set. (list value)</span>
+<span class="c1">#default_log_levels = amqp=WARN,amqplib=WARN,boto=WARN,qpid=WARN,sqlalchemy=WARN,suds=INFO,oslo.messaging=INFO,iso8601=WARN,requests.packages.urllib3.connectionpool=WARN,urllib3.connectionpool=WARN,websocket=WARN,requests.packages.urllib3.util.retry=WARN,urllib3.util.retry=WARN,keystonemiddleware=WARN,routes.middleware=WARN,stevedore=WARN,taskflow=WARN,keystoneauth=WARN,oslo.cache=INFO,dogpile.core.dogpile=INFO</span>
+
+<span class="c1"># Enables or disables publication of error events. (boolean value)</span>
+<span class="c1">#publish_errors = false</span>
+
+<span class="c1"># The format for an instance that is passed with the log message. (string value)</span>
+<span class="c1">#instance_format = &quot;[instance: %(uuid)s] &quot;</span>
+
+<span class="c1"># The format for an instance UUID that is passed with the log message. (string</span>
+<span class="c1"># value)</span>
+<span class="c1">#instance_uuid_format = &quot;[instance: %(uuid)s] &quot;</span>
+
+<span class="c1"># Interval, number of seconds, of log rate limiting. (integer value)</span>
+<span class="c1">#rate_limit_interval = 0</span>
+
+<span class="c1"># Maximum number of logged messages per rate_limit_interval. (integer value)</span>
+<span class="c1">#rate_limit_burst = 0</span>
+
+<span class="c1"># Log level name used by rate limiting: CRITICAL, ERROR, INFO, WARNING, DEBUG or</span>
+<span class="c1"># empty string. Logs with level greater or equal to rate_limit_except_level are</span>
+<span class="c1"># not filtered. An empty string means that all levels are filtered. (string</span>
+<span class="c1"># value)</span>
+<span class="c1">#rate_limit_except_level = CRITICAL</span>
+
+<span class="c1"># Enables or disables fatal status of deprecations. (boolean value)</span>
+<span class="c1">#fatal_deprecations = false</span>
+
+<span class="c1">#</span>
+<span class="c1"># From oslo.messaging</span>
+<span class="c1">#</span>
+
+<span class="c1"># Size of RPC connection pool. (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_conn_pool_size</span>
+<span class="c1">#rpc_conn_pool_size = 30</span>
+
+<span class="c1"># The pool size limit for connections expiration policy (integer value)</span>
+<span class="c1">#conn_pool_min_size = 2</span>
+
+<span class="c1"># The time-to-live in sec of idle connections in the pool (integer value)</span>
+<span class="c1">#conn_pool_ttl = 1200</span>
+
+<span class="c1"># ZeroMQ bind address. Should be a wildcard (*), an ethernet interface, or IP.</span>
+<span class="c1"># The &quot;host&quot; option should point or resolve to this address. (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_bind_address</span>
+<span class="c1">#rpc_zmq_bind_address = *</span>
+
+<span class="c1"># MatchMaker driver. (string value)</span>
+<span class="c1"># Allowed values: redis, sentinel, dummy</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_matchmaker</span>
+<span class="c1">#rpc_zmq_matchmaker = redis</span>
+
+<span class="c1"># Number of ZeroMQ contexts, defaults to 1. (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_contexts</span>
+<span class="c1">#rpc_zmq_contexts = 1</span>
+
+<span class="c1"># Maximum number of ingress messages to locally buffer per topic. Default is</span>
+<span class="c1"># unlimited. (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_topic_backlog</span>
+<span class="c1">#rpc_zmq_topic_backlog = &lt;None&gt;</span>
+
+<span class="c1"># Directory for holding IPC sockets. (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_ipc_dir</span>
+<span class="c1">#rpc_zmq_ipc_dir = /var/run/openstack</span>
+
+<span class="c1"># Name of this node. Must be a valid hostname, FQDN, or IP address. Must match</span>
+<span class="c1"># &quot;host&quot; option, if running Nova. (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_host</span>
+<span class="c1">#rpc_zmq_host = localhost</span>
+
+<span class="c1"># Number of seconds to wait before all pending messages will be sent after</span>
+<span class="c1"># closing a socket. The default value of -1 specifies an infinite linger period.</span>
+<span class="c1"># The value of 0 specifies no linger period. Pending messages shall be discarded</span>
+<span class="c1"># immediately when the socket is closed. Positive values specify an upper bound</span>
+<span class="c1"># for the linger period. (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_cast_timeout</span>
+<span class="c1">#zmq_linger = -1</span>
+
+<span class="c1"># The default number of seconds that poll should wait. Poll raises timeout</span>
+<span class="c1"># exception when timeout expired. (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_poll_timeout</span>
+<span class="c1">#rpc_poll_timeout = 1</span>
+
+<span class="c1"># Expiration timeout in seconds of a name service record about existing target (</span>
+<span class="c1"># &lt; 0 means no timeout). (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/zmq_target_expire</span>
+<span class="c1">#zmq_target_expire = 300</span>
+
+<span class="c1"># Update period in seconds of a name service record about existing target.</span>
+<span class="c1"># (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/zmq_target_update</span>
+<span class="c1">#zmq_target_update = 180</span>
+
+<span class="c1"># Use PUB/SUB pattern for fanout methods. PUB/SUB always uses proxy. (boolean</span>
+<span class="c1"># value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/use_pub_sub</span>
+<span class="c1">#use_pub_sub = false</span>
+
+<span class="c1"># Use ROUTER remote proxy. (boolean value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/use_router_proxy</span>
+<span class="c1">#use_router_proxy = false</span>
+
+<span class="c1"># This option makes direct connections dynamic or static. It makes sense only</span>
+<span class="c1"># with use_router_proxy=False which means to use direct connections for direct</span>
+<span class="c1"># message types (ignored otherwise). (boolean value)</span>
+<span class="c1">#use_dynamic_connections = false</span>
+
+<span class="c1"># How many additional connections to a host will be made for failover reasons.</span>
+<span class="c1"># This option is actual only in dynamic connections mode. (integer value)</span>
+<span class="c1">#zmq_failover_connections = 2</span>
+
+<span class="c1"># Minimal port number for random ports range. (port value)</span>
+<span class="c1"># Minimum value: 0</span>
+<span class="c1"># Maximum value: 65535</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_min_port</span>
+<span class="c1">#rpc_zmq_min_port = 49153</span>
+
+<span class="c1"># Maximal port number for random ports range. (integer value)</span>
+<span class="c1"># Minimum value: 1</span>
+<span class="c1"># Maximum value: 65536</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_max_port</span>
+<span class="c1">#rpc_zmq_max_port = 65536</span>
+
+<span class="c1"># Number of retries to find free port number before fail with ZMQBindError.</span>
+<span class="c1"># (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_bind_port_retries</span>
+<span class="c1">#rpc_zmq_bind_port_retries = 100</span>
+
+<span class="c1"># Default serialization mechanism for serializing/deserializing</span>
+<span class="c1"># outgoing/incoming messages (string value)</span>
+<span class="c1"># Allowed values: json, msgpack</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_serialization</span>
+<span class="c1">#rpc_zmq_serialization = json</span>
+
+<span class="c1"># This option configures round-robin mode in zmq socket. True means not keeping</span>
+<span class="c1"># a queue when server side disconnects. False means to keep queue and messages</span>
+<span class="c1"># even if server is disconnected, when the server appears we send all</span>
+<span class="c1"># accumulated messages to it. (boolean value)</span>
+<span class="c1">#zmq_immediate = true</span>
+
+<span class="c1"># Enable/disable TCP keepalive (KA) mechanism. The default value of -1 (or any</span>
+<span class="c1"># other negative value) means to skip any overrides and leave it to OS default;</span>
+<span class="c1"># 0 and 1 (or any other positive value) mean to disable and enable the option</span>
+<span class="c1"># respectively. (integer value)</span>
+<span class="c1">#zmq_tcp_keepalive = -1</span>
+
+<span class="c1"># The duration between two keepalive transmissions in idle condition. The unit</span>
+<span class="c1"># is platform dependent, for example, seconds in Linux, milliseconds in Windows</span>
+<span class="c1"># etc. The default value of -1 (or any other negative value and 0) means to skip</span>
+<span class="c1"># any overrides and leave it to OS default. (integer value)</span>
+<span class="c1">#zmq_tcp_keepalive_idle = -1</span>
+
+<span class="c1"># The number of retransmissions to be carried out before declaring that remote</span>
+<span class="c1"># end is not available. The default value of -1 (or any other negative value and</span>
+<span class="c1"># 0) means to skip any overrides and leave it to OS default. (integer value)</span>
+<span class="c1">#zmq_tcp_keepalive_cnt = -1</span>
+
+<span class="c1"># The duration between two successive keepalive retransmissions, if</span>
+<span class="c1"># acknowledgement to the previous keepalive transmission is not received. The</span>
+<span class="c1"># unit is platform dependent, for example, seconds in Linux, milliseconds in</span>
+<span class="c1"># Windows etc. The default value of -1 (or any other negative value and 0) means</span>
+<span class="c1"># to skip any overrides and leave it to OS default. (integer value)</span>
+<span class="c1">#zmq_tcp_keepalive_intvl = -1</span>
+
+<span class="c1"># Maximum number of (green) threads to work concurrently. (integer value)</span>
+<span class="c1">#rpc_thread_pool_size = 100</span>
+
+<span class="c1"># Expiration timeout in seconds of a sent/received message after which it is not</span>
+<span class="c1"># tracked anymore by a client/server. (integer value)</span>
+<span class="c1">#rpc_message_ttl = 300</span>
+
+<span class="c1"># Wait for message acknowledgements from receivers. This mechanism works only</span>
+<span class="c1"># via proxy without PUB/SUB. (boolean value)</span>
+<span class="c1">#rpc_use_acks = false</span>
+
+<span class="c1"># Number of seconds to wait for an ack from a cast/call. After each retry</span>
+<span class="c1"># attempt this timeout is multiplied by some specified multiplier. (integer</span>
+<span class="c1"># value)</span>
+<span class="c1">#rpc_ack_timeout_base = 15</span>
+
+<span class="c1"># Number to multiply base ack timeout by after each retry attempt. (integer</span>
+<span class="c1"># value)</span>
+<span class="c1">#rpc_ack_timeout_multiplier = 2</span>
+
+<span class="c1"># Default number of message sending attempts in case of any problems occurred:</span>
+<span class="c1"># positive value N means at most N retries, 0 means no retries, None or -1 (or</span>
+<span class="c1"># any other negative values) mean to retry forever. This option is used only if</span>
+<span class="c1"># acknowledgments are enabled. (integer value)</span>
+<span class="c1">#rpc_retry_attempts = 3</span>
+
+<span class="c1"># List of publisher hosts SubConsumer can subscribe on. This option has higher</span>
+<span class="c1"># priority then the default publishers list taken from the matchmaker. (list</span>
+<span class="c1"># value)</span>
+<span class="c1">#subscribe_on =</span>
+
+<span class="c1"># Size of executor thread pool. (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_thread_pool_size</span>
+<span class="c1">#executor_thread_pool_size = 64</span>
+
+<span class="c1"># Seconds to wait for a response from a call. (integer value)</span>
+<span class="c1">#rpc_response_timeout = 60</span>
+
+<span class="c1"># A URL representing the messaging driver to use and its full configuration.</span>
+<span class="c1"># (string value)</span>
+<span class="c1">#transport_url = &lt;None&gt;</span>
+
+<span class="c1"># DEPRECATED: The messaging driver to use, defaults to rabbit. Other drivers</span>
+<span class="c1"># include amqp and zmq. (string value)</span>
+<span class="c1"># This option is deprecated for removal.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: Replaced by [DEFAULT]/transport_url</span>
+<span class="c1">#rpc_backend = rabbit</span>
+
+<span class="c1"># The default exchange under which topics are scoped. May be overridden by an</span>
+<span class="c1"># exchange name specified in the transport_url option. (string value)</span>
+<span class="c1">#control_exchange = openstack</span>
+
+
+<span class="k">[database]</span>
+
+<span class="c1">#</span>
+<span class="c1"># From oslo.db</span>
+<span class="c1">#</span>
+
+<span class="c1"># DEPRECATED: The file name to use with SQLite. (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/sqlite_db</span>
+<span class="c1"># This option is deprecated for removal.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: Should use config option connection or slave_connection to connect the</span>
+<span class="c1"># database.</span>
+<span class="c1">#sqlite_db = oslo.sqlite</span>
+
+<span class="c1"># If True, SQLite uses synchronous mode. (boolean value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/sqlite_synchronous</span>
+<span class="c1">#sqlite_synchronous = true</span>
+
+<span class="c1"># The back end to use for the database. (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/db_backend</span>
+<span class="c1">#backend = sqlalchemy</span>
+
+<span class="c1"># The SQLAlchemy connection string to use to connect to the database. (string</span>
+<span class="c1"># value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/sql_connection</span>
+<span class="c1"># Deprecated group/name - [DATABASE]/sql_connection</span>
+<span class="c1"># Deprecated group/name - [sql]/connection</span>
+<span class="c1">#connection = &lt;None&gt;</span>
+
+<span class="c1"># The SQLAlchemy connection string to use to connect to the slave database.</span>
+<span class="c1"># (string value)</span>
+<span class="c1">#slave_connection = &lt;None&gt;</span>
+
+<span class="c1"># The SQL mode to be used for MySQL sessions. This option, including the</span>
+<span class="c1"># default, overrides any server-set SQL mode. To use whatever SQL mode is set by</span>
+<span class="c1"># the server configuration, set this to no value. Example: mysql_sql_mode=</span>
+<span class="c1"># (string value)</span>
+<span class="c1">#mysql_sql_mode = TRADITIONAL</span>
+
+<span class="c1"># Timeout before idle SQL connections are reaped. (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/sql_idle_timeout</span>
+<span class="c1"># Deprecated group/name - [DATABASE]/sql_idle_timeout</span>
+<span class="c1"># Deprecated group/name - [sql]/idle_timeout</span>
+<span class="c1">#idle_timeout = 3600</span>
+
+<span class="c1"># Minimum number of SQL connections to keep open in a pool. (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/sql_min_pool_size</span>
+<span class="c1"># Deprecated group/name - [DATABASE]/sql_min_pool_size</span>
+<span class="c1">#min_pool_size = 1</span>
+
+<span class="c1"># Maximum number of SQL connections to keep open in a pool. Setting a value of 0</span>
+<span class="c1"># indicates no limit. (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/sql_max_pool_size</span>
+<span class="c1"># Deprecated group/name - [DATABASE]/sql_max_pool_size</span>
+<span class="c1">#max_pool_size = 5</span>
+
+<span class="c1"># Maximum number of database connection retries during startup. Set to -1 to</span>
+<span class="c1"># specify an infinite retry count. (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/sql_max_retries</span>
+<span class="c1"># Deprecated group/name - [DATABASE]/sql_max_retries</span>
+<span class="c1">#max_retries = 10</span>
+
+<span class="c1"># Interval between retries of opening a SQL connection. (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/sql_retry_interval</span>
+<span class="c1"># Deprecated group/name - [DATABASE]/reconnect_interval</span>
+<span class="c1">#retry_interval = 10</span>
+
+<span class="c1"># If set, use this value for max_overflow with SQLAlchemy. (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/sql_max_overflow</span>
+<span class="c1"># Deprecated group/name - [DATABASE]/sqlalchemy_max_overflow</span>
+<span class="c1">#max_overflow = 50</span>
+
+<span class="c1"># Verbosity of SQL debugging information: 0=None, 100=Everything. (integer</span>
+<span class="c1"># value)</span>
+<span class="c1"># Minimum value: 0</span>
+<span class="c1"># Maximum value: 100</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/sql_connection_debug</span>
+<span class="c1">#connection_debug = 0</span>
+
+<span class="c1"># Add Python stack traces to SQL as comment strings. (boolean value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/sql_connection_trace</span>
+<span class="c1">#connection_trace = false</span>
+
+<span class="c1"># If set, use this value for pool_timeout with SQLAlchemy. (integer value)</span>
+<span class="c1"># Deprecated group/name - [DATABASE]/sqlalchemy_pool_timeout</span>
+<span class="c1">#pool_timeout = &lt;None&gt;</span>
+
+<span class="c1"># Enable the experimental use of database reconnect on connection lost. (boolean</span>
+<span class="c1"># value)</span>
+<span class="c1">#use_db_reconnect = false</span>
+
+<span class="c1"># Seconds between retries of a database transaction. (integer value)</span>
+<span class="c1">#db_retry_interval = 1</span>
+
+<span class="c1"># If True, increases the interval between retries of a database operation up to</span>
+<span class="c1"># db_max_retry_interval. (boolean value)</span>
+<span class="c1">#db_inc_retry_interval = true</span>
+
+<span class="c1"># If db_inc_retry_interval is set, the maximum seconds between retries of a</span>
+<span class="c1"># database operation. (integer value)</span>
+<span class="c1">#db_max_retry_interval = 10</span>
+
+<span class="c1"># Maximum retries in case of connection error or deadlock error before error is</span>
+<span class="c1"># raised. Set to -1 to specify an infinite retry count. (integer value)</span>
+<span class="c1">#db_max_retries = 20</span>
+
+<span class="c1">#</span>
+<span class="c1"># From oslo.db.concurrency</span>
+<span class="c1">#</span>
+
+<span class="c1"># Enable the experimental use of thread pooling for all DB API calls (boolean</span>
+<span class="c1"># value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/dbapi_use_tpool</span>
+<span class="c1">#use_tpool = false</span>
+
+
+<span class="k">[keystone_authtoken]</span>
+
+<span class="c1">#</span>
+<span class="c1"># From keystonemiddleware.auth_token</span>
+<span class="c1">#</span>
+
+<span class="c1"># Complete &quot;public&quot; Identity API endpoint. This endpoint should not be an</span>
+<span class="c1"># &quot;admin&quot; endpoint, as it should be accessible by all end users. Unauthenticated</span>
+<span class="c1"># clients are redirected to this endpoint to authenticate. Although this</span>
+<span class="c1"># endpoint should  ideally be unversioned, client support in the wild varies.</span>
+<span class="c1"># If you&#39;re using a versioned v2 endpoint here, then this  should *not* be the</span>
+<span class="c1"># same endpoint the service user utilizes  for validating tokens, because normal</span>
+<span class="c1"># end users may not be  able to reach that endpoint. (string value)</span>
+<span class="c1">#auth_uri = &lt;None&gt;</span>
+
+<span class="c1"># API version of the admin Identity API endpoint. (string value)</span>
+<span class="c1">#auth_version = &lt;None&gt;</span>
+
+<span class="c1"># Do not handle authorization requests within the middleware, but delegate the</span>
+<span class="c1"># authorization decision to downstream WSGI components. (boolean value)</span>
+<span class="c1">#delay_auth_decision = false</span>
+
+<span class="c1"># Request timeout value for communicating with Identity API server. (integer</span>
+<span class="c1"># value)</span>
+<span class="c1">#http_connect_timeout = &lt;None&gt;</span>
+
+<span class="c1"># How many times are we trying to reconnect when communicating with Identity API</span>
+<span class="c1"># Server. (integer value)</span>
+<span class="c1">#http_request_max_retries = 3</span>
+
+<span class="c1"># Request environment key where the Swift cache object is stored. When</span>
+<span class="c1"># auth_token middleware is deployed with a Swift cache, use this option to have</span>
+<span class="c1"># the middleware share a caching backend with swift. Otherwise, use the</span>
+<span class="c1"># ``memcached_servers`` option instead. (string value)</span>
+<span class="c1">#cache = &lt;None&gt;</span>
+
+<span class="c1"># Required if identity server requires client certificate (string value)</span>
+<span class="c1">#certfile = &lt;None&gt;</span>
+
+<span class="c1"># Required if identity server requires client certificate (string value)</span>
+<span class="c1">#keyfile = &lt;None&gt;</span>
+
+<span class="c1"># A PEM encoded Certificate Authority to use when verifying HTTPs connections.</span>
+<span class="c1"># Defaults to system CAs. (string value)</span>
+<span class="c1">#cafile = &lt;None&gt;</span>
+
+<span class="c1"># Verify HTTPS connections. (boolean value)</span>
+<span class="c1">#insecure = false</span>
+
+<span class="c1"># The region in which the identity server can be found. (string value)</span>
+<span class="c1">#region_name = &lt;None&gt;</span>
+
+<span class="c1"># DEPRECATED: Directory used to cache files related to PKI tokens. This option</span>
+<span class="c1"># has been deprecated in the Ocata release and will be removed in the P release.</span>
+<span class="c1"># (string value)</span>
+<span class="c1"># This option is deprecated for removal since Ocata.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: PKI token format is no longer supported.</span>
+<span class="c1">#signing_dir = &lt;None&gt;</span>
+
+<span class="c1"># Optionally specify a list of memcached server(s) to use for caching. If left</span>
+<span class="c1"># undefined, tokens will instead be cached in-process. (list value)</span>
+<span class="c1"># Deprecated group/name - [keystone_authtoken]/memcache_servers</span>
+<span class="c1">#memcached_servers = &lt;None&gt;</span>
+
+<span class="c1"># In order to prevent excessive effort spent validating tokens, the middleware</span>
+<span class="c1"># caches previously-seen tokens for a configurable duration (in seconds). Set to</span>
+<span class="c1"># -1 to disable caching completely. (integer value)</span>
+<span class="c1">#token_cache_time = 300</span>
+
+<span class="c1"># DEPRECATED: Determines the frequency at which the list of revoked tokens is</span>
+<span class="c1"># retrieved from the Identity service (in seconds). A high number of revocation</span>
+<span class="c1"># events combined with a low cache duration may significantly reduce</span>
+<span class="c1"># performance. Only valid for PKI tokens. This option has been deprecated in the</span>
+<span class="c1"># Ocata release and will be removed in the P release. (integer value)</span>
+<span class="c1"># This option is deprecated for removal since Ocata.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: PKI token format is no longer supported.</span>
+<span class="c1">#revocation_cache_time = 10</span>
+
+<span class="c1"># (Optional) If defined, indicate whether token data should be authenticated or</span>
+<span class="c1"># authenticated and encrypted. If MAC, token data is authenticated (with HMAC)</span>
+<span class="c1"># in the cache. If ENCRYPT, token data is encrypted and authenticated in the</span>
+<span class="c1"># cache. If the value is not one of these options or empty, auth_token will</span>
+<span class="c1"># raise an exception on initialization. (string value)</span>
+<span class="c1"># Allowed values: None, MAC, ENCRYPT</span>
+<span class="c1">#memcache_security_strategy = None</span>
+
+<span class="c1"># (Optional, mandatory if memcache_security_strategy is defined) This string is</span>
+<span class="c1"># used for key derivation. (string value)</span>
+<span class="c1">#memcache_secret_key = &lt;None&gt;</span>
+
+<span class="c1"># (Optional) Number of seconds memcached server is considered dead before it is</span>
+<span class="c1"># tried again. (integer value)</span>
+<span class="c1">#memcache_pool_dead_retry = 300</span>
+
+<span class="c1"># (Optional) Maximum total number of open connections to every memcached server.</span>
+<span class="c1"># (integer value)</span>
+<span class="c1">#memcache_pool_maxsize = 10</span>
+
+<span class="c1"># (Optional) Socket timeout in seconds for communicating with a memcached</span>
+<span class="c1"># server. (integer value)</span>
+<span class="c1">#memcache_pool_socket_timeout = 3</span>
+
+<span class="c1"># (Optional) Number of seconds a connection to memcached is held unused in the</span>
+<span class="c1"># pool before it is closed. (integer value)</span>
+<span class="c1">#memcache_pool_unused_timeout = 60</span>
+
+<span class="c1"># (Optional) Number of seconds that an operation will wait to get a memcached</span>
+<span class="c1"># client connection from the pool. (integer value)</span>
+<span class="c1">#memcache_pool_conn_get_timeout = 10</span>
+
+<span class="c1"># (Optional) Use the advanced (eventlet safe) memcached client pool. The</span>
+<span class="c1"># advanced pool will only work under python 2.x. (boolean value)</span>
+<span class="c1">#memcache_use_advanced_pool = false</span>
+
+<span class="c1"># (Optional) Indicate whether to set the X-Service-Catalog header. If False,</span>
+<span class="c1"># middleware will not ask for service catalog on token validation and will not</span>
+<span class="c1"># set the X-Service-Catalog header. (boolean value)</span>
+<span class="c1">#include_service_catalog = true</span>
+
+<span class="c1"># Used to control the use and type of token binding. Can be set to: &quot;disabled&quot;</span>
+<span class="c1"># to not check token binding. &quot;permissive&quot; (default) to validate binding</span>
+<span class="c1"># information if the bind type is of a form known to the server and ignore it if</span>
+<span class="c1"># not. &quot;strict&quot; like &quot;permissive&quot; but if the bind type is unknown the token will</span>
+<span class="c1"># be rejected. &quot;required&quot; any form of token binding is needed to be allowed.</span>
+<span class="c1"># Finally the name of a binding method that must be present in tokens. (string</span>
+<span class="c1"># value)</span>
+<span class="c1">#enforce_token_bind = permissive</span>
+
+<span class="c1"># DEPRECATED: If true, the revocation list will be checked for cached tokens.</span>
+<span class="c1"># This requires that PKI tokens are configured on the identity server. (boolean</span>
+<span class="c1"># value)</span>
+<span class="c1"># This option is deprecated for removal since Ocata.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: PKI token format is no longer supported.</span>
+<span class="c1">#check_revocations_for_cached = false</span>
+
+<span class="c1"># DEPRECATED: Hash algorithms to use for hashing PKI tokens. This may be a</span>
+<span class="c1"># single algorithm or multiple. The algorithms are those supported by Python</span>
+<span class="c1"># standard hashlib.new(). The hashes will be tried in the order given, so put</span>
+<span class="c1"># the preferred one first for performance. The result of the first hash will be</span>
+<span class="c1"># stored in the cache. This will typically be set to multiple values only while</span>
+<span class="c1"># migrating from a less secure algorithm to a more secure one. Once all the old</span>
+<span class="c1"># tokens are expired this option should be set to a single value for better</span>
+<span class="c1"># performance. (list value)</span>
+<span class="c1"># This option is deprecated for removal since Ocata.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: PKI token format is no longer supported.</span>
+<span class="c1">#hash_algorithms = md5</span>
+
+<span class="c1"># A choice of roles that must be present in a service token. Service tokens are</span>
+<span class="c1"># allowed to request that an expired token can be used and so this check should</span>
+<span class="c1"># tightly control that only actual services should be sending this token. Roles</span>
+<span class="c1"># here are applied as an ANY check so any role in this list must be present. For</span>
+<span class="c1"># backwards compatibility reasons this currently only affects the allow_expired</span>
+<span class="c1"># check. (list value)</span>
+<span class="c1">#service_token_roles = service</span>
+
+<span class="c1"># For backwards compatibility reasons we must let valid service tokens pass that</span>
+<span class="c1"># don&#39;t pass the service_token_roles check as valid. Setting this true will</span>
+<span class="c1"># become the default in a future release and should be enabled if possible.</span>
+<span class="c1"># (boolean value)</span>
+<span class="c1">#service_token_roles_required = false</span>
+
+<span class="c1"># Authentication type to load (string value)</span>
+<span class="c1"># Deprecated group/name - [keystone_authtoken]/auth_plugin</span>
+<span class="c1">#auth_type = &lt;None&gt;</span>
+
+<span class="c1"># Config Section from which to load plugin specific options (string value)</span>
+<span class="c1">#auth_section = &lt;None&gt;</span>
+
+
+<span class="k">[matchmaker_redis]</span>
+
+<span class="c1">#</span>
+<span class="c1"># From oslo.messaging</span>
+<span class="c1">#</span>
+
+<span class="c1"># DEPRECATED: Host to locate redis. (string value)</span>
+<span class="c1"># This option is deprecated for removal.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: Replaced by [DEFAULT]/transport_url</span>
+<span class="c1">#host = 127.0.0.1</span>
+
+<span class="c1"># DEPRECATED: Use this port to connect to redis host. (port value)</span>
+<span class="c1"># Minimum value: 0</span>
+<span class="c1"># Maximum value: 65535</span>
+<span class="c1"># This option is deprecated for removal.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: Replaced by [DEFAULT]/transport_url</span>
+<span class="c1">#port = 6379</span>
+
+<span class="c1"># DEPRECATED: Password for Redis server (optional). (string value)</span>
+<span class="c1"># This option is deprecated for removal.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: Replaced by [DEFAULT]/transport_url</span>
+<span class="c1">#password =</span>
+
+<span class="c1"># DEPRECATED: List of Redis Sentinel hosts (fault tolerance mode), e.g.,</span>
+<span class="c1"># [host:port, host1:port ... ] (list value)</span>
+<span class="c1"># This option is deprecated for removal.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: Replaced by [DEFAULT]/transport_url</span>
+<span class="c1">#sentinel_hosts =</span>
+
+<span class="c1"># Redis replica set name. (string value)</span>
+<span class="c1">#sentinel_group_name = oslo-messaging-zeromq</span>
+
+<span class="c1"># Time in ms to wait between connection attempts. (integer value)</span>
+<span class="c1">#wait_timeout = 2000</span>
+
+<span class="c1"># Time in ms to wait before the transaction is killed. (integer value)</span>
+<span class="c1">#check_timeout = 20000</span>
+
+<span class="c1"># Timeout in ms on blocking socket operations. (integer value)</span>
+<span class="c1">#socket_timeout = 10000</span>
+
+
+<span class="k">[oslo_messaging_amqp]</span>
+
+<span class="c1">#</span>
+<span class="c1"># From oslo.messaging</span>
+<span class="c1">#</span>
+
+<span class="c1"># Name for the AMQP container. must be globally unique. Defaults to a generated</span>
+<span class="c1"># UUID (string value)</span>
+<span class="c1"># Deprecated group/name - [amqp1]/container_name</span>
+<span class="c1">#container_name = &lt;None&gt;</span>
+
+<span class="c1"># Timeout for inactive connections (in seconds) (integer value)</span>
+<span class="c1"># Deprecated group/name - [amqp1]/idle_timeout</span>
+<span class="c1">#idle_timeout = 0</span>
+
+<span class="c1"># Debug: dump AMQP frames to stdout (boolean value)</span>
+<span class="c1"># Deprecated group/name - [amqp1]/trace</span>
+<span class="c1">#trace = false</span>
+
+<span class="c1"># CA certificate PEM file used to verify the server&#39;s certificate (string value)</span>
+<span class="c1"># Deprecated group/name - [amqp1]/ssl_ca_file</span>
+<span class="c1">#ssl_ca_file =</span>
+
+<span class="c1"># Self-identifying certificate PEM file for client authentication (string value)</span>
+<span class="c1"># Deprecated group/name - [amqp1]/ssl_cert_file</span>
+<span class="c1">#ssl_cert_file =</span>
+
+<span class="c1"># Private key PEM file used to sign ssl_cert_file certificate (optional) (string</span>
+<span class="c1"># value)</span>
+<span class="c1"># Deprecated group/name - [amqp1]/ssl_key_file</span>
+<span class="c1">#ssl_key_file =</span>
+
+<span class="c1"># Password for decrypting ssl_key_file (if encrypted) (string value)</span>
+<span class="c1"># Deprecated group/name - [amqp1]/ssl_key_password</span>
+<span class="c1">#ssl_key_password = &lt;None&gt;</span>
+
+<span class="c1"># DEPRECATED: Accept clients using either SSL or plain TCP (boolean value)</span>
+<span class="c1"># Deprecated group/name - [amqp1]/allow_insecure_clients</span>
+<span class="c1"># This option is deprecated for removal.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: Not applicable - not a SSL server</span>
+<span class="c1">#allow_insecure_clients = false</span>
+
+<span class="c1"># Space separated list of acceptable SASL mechanisms (string value)</span>
+<span class="c1"># Deprecated group/name - [amqp1]/sasl_mechanisms</span>
+<span class="c1">#sasl_mechanisms =</span>
+
+<span class="c1"># Path to directory that contains the SASL configuration (string value)</span>
+<span class="c1"># Deprecated group/name - [amqp1]/sasl_config_dir</span>
+<span class="c1">#sasl_config_dir =</span>
+
+<span class="c1"># Name of configuration file (without .conf suffix) (string value)</span>
+<span class="c1"># Deprecated group/name - [amqp1]/sasl_config_name</span>
+<span class="c1">#sasl_config_name =</span>
+
+<span class="c1"># User name for message broker authentication (string value)</span>
+<span class="c1"># Deprecated group/name - [amqp1]/username</span>
+<span class="c1">#username =</span>
+
+<span class="c1"># Password for message broker authentication (string value)</span>
+<span class="c1"># Deprecated group/name - [amqp1]/password</span>
+<span class="c1">#password =</span>
+
+<span class="c1"># Seconds to pause before attempting to re-connect. (integer value)</span>
+<span class="c1"># Minimum value: 1</span>
+<span class="c1">#connection_retry_interval = 1</span>
+
+<span class="c1"># Increase the connection_retry_interval by this many seconds after each</span>
+<span class="c1"># unsuccessful failover attempt. (integer value)</span>
+<span class="c1"># Minimum value: 0</span>
+<span class="c1">#connection_retry_backoff = 2</span>
+
+<span class="c1"># Maximum limit for connection_retry_interval + connection_retry_backoff</span>
+<span class="c1"># (integer value)</span>
+<span class="c1"># Minimum value: 1</span>
+<span class="c1">#connection_retry_interval_max = 30</span>
+
+<span class="c1"># Time to pause between re-connecting an AMQP 1.0 link that failed due to a</span>
+<span class="c1"># recoverable error. (integer value)</span>
+<span class="c1"># Minimum value: 1</span>
+<span class="c1">#link_retry_delay = 10</span>
+
+<span class="c1"># The maximum number of attempts to re-send a reply message which failed due to</span>
+<span class="c1"># a recoverable error. (integer value)</span>
+<span class="c1"># Minimum value: -1</span>
+<span class="c1">#default_reply_retry = 0</span>
+
+<span class="c1"># The deadline for an rpc reply message delivery. (integer value)</span>
+<span class="c1"># Minimum value: 5</span>
+<span class="c1">#default_reply_timeout = 30</span>
+
+<span class="c1"># The deadline for an rpc cast or call message delivery. Only used when caller</span>
+<span class="c1"># does not provide a timeout expiry. (integer value)</span>
+<span class="c1"># Minimum value: 5</span>
+<span class="c1">#default_send_timeout = 30</span>
+
+<span class="c1"># The deadline for a sent notification message delivery. Only used when caller</span>
+<span class="c1"># does not provide a timeout expiry. (integer value)</span>
+<span class="c1"># Minimum value: 5</span>
+<span class="c1">#default_notify_timeout = 30</span>
+
+<span class="c1"># The duration to schedule a purge of idle sender links. Detach link after</span>
+<span class="c1"># expiry. (integer value)</span>
+<span class="c1"># Minimum value: 1</span>
+<span class="c1">#default_sender_link_timeout = 600</span>
+
+<span class="c1"># Indicates the addressing mode used by the driver.</span>
+<span class="c1"># Permitted values:</span>
+<span class="c1"># &#39;legacy&#39;   - use legacy non-routable addressing</span>
+<span class="c1"># &#39;routable&#39; - use routable addresses</span>
+<span class="c1"># &#39;dynamic&#39;  - use legacy addresses if the message bus does not support routing</span>
+<span class="c1"># otherwise use routable addressing (string value)</span>
+<span class="c1">#addressing_mode = dynamic</span>
+
+<span class="c1"># address prefix used when sending to a specific server (string value)</span>
+<span class="c1"># Deprecated group/name - [amqp1]/server_request_prefix</span>
+<span class="c1">#server_request_prefix = exclusive</span>
+
+<span class="c1"># address prefix used when broadcasting to all servers (string value)</span>
+<span class="c1"># Deprecated group/name - [amqp1]/broadcast_prefix</span>
+<span class="c1">#broadcast_prefix = broadcast</span>
+
+<span class="c1"># address prefix when sending to any server in group (string value)</span>
+<span class="c1"># Deprecated group/name - [amqp1]/group_request_prefix</span>
+<span class="c1">#group_request_prefix = unicast</span>
+
+<span class="c1"># Address prefix for all generated RPC addresses (string value)</span>
+<span class="c1">#rpc_address_prefix = openstack.org/om/rpc</span>
+
+<span class="c1"># Address prefix for all generated Notification addresses (string value)</span>
+<span class="c1">#notify_address_prefix = openstack.org/om/notify</span>
+
+<span class="c1"># Appended to the address prefix when sending a fanout message. Used by the</span>
+<span class="c1"># message bus to identify fanout messages. (string value)</span>
+<span class="c1">#multicast_address = multicast</span>
+
+<span class="c1"># Appended to the address prefix when sending to a particular RPC/Notification</span>
+<span class="c1"># server. Used by the message bus to identify messages sent to a single</span>
+<span class="c1"># destination. (string value)</span>
+<span class="c1">#unicast_address = unicast</span>
+
+<span class="c1"># Appended to the address prefix when sending to a group of consumers. Used by</span>
+<span class="c1"># the message bus to identify messages that should be delivered in a round-robin</span>
+<span class="c1"># fashion across consumers. (string value)</span>
+<span class="c1">#anycast_address = anycast</span>
+
+<span class="c1"># Exchange name used in notification addresses.</span>
+<span class="c1"># Exchange name resolution precedence:</span>
+<span class="c1"># Target.exchange if set</span>
+<span class="c1"># else default_notification_exchange if set</span>
+<span class="c1"># else control_exchange if set</span>
+<span class="c1"># else &#39;notify&#39; (string value)</span>
+<span class="c1">#default_notification_exchange = &lt;None&gt;</span>
+
+<span class="c1"># Exchange name used in RPC addresses.</span>
+<span class="c1"># Exchange name resolution precedence:</span>
+<span class="c1"># Target.exchange if set</span>
+<span class="c1"># else default_rpc_exchange if set</span>
+<span class="c1"># else control_exchange if set</span>
+<span class="c1"># else &#39;rpc&#39; (string value)</span>
+<span class="c1">#default_rpc_exchange = &lt;None&gt;</span>
+
+<span class="c1"># Window size for incoming RPC Reply messages. (integer value)</span>
+<span class="c1"># Minimum value: 1</span>
+<span class="c1">#reply_link_credit = 200</span>
+
+<span class="c1"># Window size for incoming RPC Request messages (integer value)</span>
+<span class="c1"># Minimum value: 1</span>
+<span class="c1">#rpc_server_credit = 100</span>
+
+<span class="c1"># Window size for incoming Notification messages (integer value)</span>
+<span class="c1"># Minimum value: 1</span>
+<span class="c1">#notify_server_credit = 100</span>
+
+<span class="c1"># Send messages of this type pre-settled.</span>
+<span class="c1"># Pre-settled messages will not receive acknowledgement</span>
+<span class="c1"># from the peer. Note well: pre-settled messages may be</span>
+<span class="c1"># silently discarded if the delivery fails.</span>
+<span class="c1"># Permitted values:</span>
+<span class="c1"># &#39;rpc-call&#39; - send RPC Calls pre-settled</span>
+<span class="c1"># &#39;rpc-reply&#39;- send RPC Replies pre-settled</span>
+<span class="c1"># &#39;rpc-cast&#39; - Send RPC Casts pre-settled</span>
+<span class="c1"># &#39;notify&#39;   - Send Notifications pre-settled</span>
+<span class="c1">#  (multi valued)</span>
+<span class="c1">#pre_settled = rpc-cast</span>
+<span class="c1">#pre_settled = rpc-reply</span>
+
+
+<span class="k">[oslo_messaging_kafka]</span>
+
+<span class="c1">#</span>
+<span class="c1"># From oslo.messaging</span>
+<span class="c1">#</span>
+
+<span class="c1"># DEPRECATED: Default Kafka broker Host (string value)</span>
+<span class="c1"># This option is deprecated for removal.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: Replaced by [DEFAULT]/transport_url</span>
+<span class="c1">#kafka_default_host = localhost</span>
+
+<span class="c1"># DEPRECATED: Default Kafka broker Port (port value)</span>
+<span class="c1"># Minimum value: 0</span>
+<span class="c1"># Maximum value: 65535</span>
+<span class="c1"># This option is deprecated for removal.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: Replaced by [DEFAULT]/transport_url</span>
+<span class="c1">#kafka_default_port = 9092</span>
+
+<span class="c1"># Max fetch bytes of Kafka consumer (integer value)</span>
+<span class="c1">#kafka_max_fetch_bytes = 1048576</span>
+
+<span class="c1"># Default timeout(s) for Kafka consumers (integer value)</span>
+<span class="c1">#kafka_consumer_timeout = 1.0</span>
+
+<span class="c1"># Pool Size for Kafka Consumers (integer value)</span>
+<span class="c1">#pool_size = 10</span>
+
+<span class="c1"># The pool size limit for connections expiration policy (integer value)</span>
+<span class="c1">#conn_pool_min_size = 2</span>
+
+<span class="c1"># The time-to-live in sec of idle connections in the pool (integer value)</span>
+<span class="c1">#conn_pool_ttl = 1200</span>
+
+<span class="c1"># Group id for Kafka consumer. Consumers in one group will coordinate message</span>
+<span class="c1"># consumption (string value)</span>
+<span class="c1">#consumer_group = oslo_messaging_consumer</span>
+
+<span class="c1"># Upper bound on the delay for KafkaProducer batching in seconds (floating point</span>
+<span class="c1"># value)</span>
+<span class="c1">#producer_batch_timeout = 0.0</span>
+
+<span class="c1"># Size of batch for the producer async send (integer value)</span>
+<span class="c1">#producer_batch_size = 16384</span>
+
+
+<span class="k">[oslo_messaging_notifications]</span>
+
+<span class="c1">#</span>
+<span class="c1"># From oslo.messaging</span>
+<span class="c1">#</span>
+
+<span class="c1"># The Drivers(s) to handle sending notifications. Possible values are messaging,</span>
+<span class="c1"># messagingv2, routing, log, test, noop (multi valued)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/notification_driver</span>
+<span class="c1">#driver =</span>
+
+<span class="c1"># A URL representing the messaging driver to use for notifications. If not set,</span>
+<span class="c1"># we fall back to the same configuration used for RPC. (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/notification_transport_url</span>
+<span class="c1">#transport_url = &lt;None&gt;</span>
+
+<span class="c1"># AMQP topic used for OpenStack notifications. (list value)</span>
+<span class="c1"># Deprecated group/name - [rpc_notifier2]/topics</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/notification_topics</span>
+<span class="c1">#topics = notifications</span>
+
+
+<span class="k">[oslo_messaging_rabbit]</span>
+
+<span class="c1">#</span>
+<span class="c1"># From oslo.messaging</span>
+<span class="c1">#</span>
+
+<span class="c1"># Use durable queues in AMQP. (boolean value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/amqp_durable_queues</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rabbit_durable_queues</span>
+<span class="c1">#amqp_durable_queues = false</span>
+
+<span class="c1"># Auto-delete queues in AMQP. (boolean value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/amqp_auto_delete</span>
+<span class="c1">#amqp_auto_delete = false</span>
+
+<span class="c1"># SSL version to use (valid only if SSL enabled). Valid values are TLSv1 and</span>
+<span class="c1"># SSLv23. SSLv2, SSLv3, TLSv1_1, and TLSv1_2 may be available on some</span>
+<span class="c1"># distributions. (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/kombu_ssl_version</span>
+<span class="c1">#kombu_ssl_version =</span>
+
+<span class="c1"># SSL key file (valid only if SSL enabled). (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/kombu_ssl_keyfile</span>
+<span class="c1">#kombu_ssl_keyfile =</span>
+
+<span class="c1"># SSL cert file (valid only if SSL enabled). (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/kombu_ssl_certfile</span>
+<span class="c1">#kombu_ssl_certfile =</span>
+
+<span class="c1"># SSL certification authority file (valid only if SSL enabled). (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/kombu_ssl_ca_certs</span>
+<span class="c1">#kombu_ssl_ca_certs =</span>
+
+<span class="c1"># How long to wait before reconnecting in response to an AMQP consumer cancel</span>
+<span class="c1"># notification. (floating point value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/kombu_reconnect_delay</span>
+<span class="c1">#kombu_reconnect_delay = 1.0</span>
+
+<span class="c1"># EXPERIMENTAL: Possible values are: gzip, bz2. If not set compression will not</span>
+<span class="c1"># be used. This option may not be available in future versions. (string value)</span>
+<span class="c1">#kombu_compression = &lt;None&gt;</span>
+
+<span class="c1"># How long to wait a missing client before abandoning to send it its replies.</span>
+<span class="c1"># This value should not be longer than rpc_response_timeout. (integer value)</span>
+<span class="c1"># Deprecated group/name - [oslo_messaging_rabbit]/kombu_reconnect_timeout</span>
+<span class="c1">#kombu_missing_consumer_retry_timeout = 60</span>
+
+<span class="c1"># Determines how the next RabbitMQ node is chosen in case the one we are</span>
+<span class="c1"># currently connected to becomes unavailable. Takes effect only if more than one</span>
+<span class="c1"># RabbitMQ node is provided in config. (string value)</span>
+<span class="c1"># Allowed values: round-robin, shuffle</span>
+<span class="c1">#kombu_failover_strategy = round-robin</span>
+
+<span class="c1"># DEPRECATED: The RabbitMQ broker address where a single node is used. (string</span>
+<span class="c1"># value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rabbit_host</span>
+<span class="c1"># This option is deprecated for removal.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: Replaced by [DEFAULT]/transport_url</span>
+<span class="c1">#rabbit_host = localhost</span>
+
+<span class="c1"># DEPRECATED: The RabbitMQ broker port where a single node is used. (port value)</span>
+<span class="c1"># Minimum value: 0</span>
+<span class="c1"># Maximum value: 65535</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rabbit_port</span>
+<span class="c1"># This option is deprecated for removal.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: Replaced by [DEFAULT]/transport_url</span>
+<span class="c1">#rabbit_port = 5672</span>
+
+<span class="c1"># DEPRECATED: RabbitMQ HA cluster host:port pairs. (list value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rabbit_hosts</span>
+<span class="c1"># This option is deprecated for removal.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: Replaced by [DEFAULT]/transport_url</span>
+<span class="c1">#rabbit_hosts = $rabbit_host:$rabbit_port</span>
+
+<span class="c1"># Connect over SSL for RabbitMQ. (boolean value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rabbit_use_ssl</span>
+<span class="c1">#rabbit_use_ssl = false</span>
+
+<span class="c1"># DEPRECATED: The RabbitMQ userid. (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rabbit_userid</span>
+<span class="c1"># This option is deprecated for removal.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: Replaced by [DEFAULT]/transport_url</span>
+<span class="c1">#rabbit_userid = guest</span>
+
+<span class="c1"># DEPRECATED: The RabbitMQ password. (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rabbit_password</span>
+<span class="c1"># This option is deprecated for removal.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: Replaced by [DEFAULT]/transport_url</span>
+<span class="c1">#rabbit_password = guest</span>
+
+<span class="c1"># The RabbitMQ login method. (string value)</span>
+<span class="c1"># Allowed values: PLAIN, AMQPLAIN, RABBIT-CR-DEMO</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rabbit_login_method</span>
+<span class="c1">#rabbit_login_method = AMQPLAIN</span>
+
+<span class="c1"># DEPRECATED: The RabbitMQ virtual host. (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rabbit_virtual_host</span>
+<span class="c1"># This option is deprecated for removal.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1"># Reason: Replaced by [DEFAULT]/transport_url</span>
+<span class="c1">#rabbit_virtual_host = /</span>
+
+<span class="c1"># How frequently to retry connecting with RabbitMQ. (integer value)</span>
+<span class="c1">#rabbit_retry_interval = 1</span>
+
+<span class="c1"># How long to backoff for between retries when connecting to RabbitMQ. (integer</span>
+<span class="c1"># value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rabbit_retry_backoff</span>
+<span class="c1">#rabbit_retry_backoff = 2</span>
+
+<span class="c1"># Maximum interval of RabbitMQ connection retries. Default is 30 seconds.</span>
+<span class="c1"># (integer value)</span>
+<span class="c1">#rabbit_interval_max = 30</span>
+
+<span class="c1"># DEPRECATED: Maximum number of RabbitMQ connection retries. Default is 0</span>
+<span class="c1"># (infinite retry count). (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rabbit_max_retries</span>
+<span class="c1"># This option is deprecated for removal.</span>
+<span class="c1"># Its value may be silently ignored in the future.</span>
+<span class="c1">#rabbit_max_retries = 0</span>
+
+<span class="c1"># Try to use HA queues in RabbitMQ (x-ha-policy: all). If you change this</span>
+<span class="c1"># option, you must wipe the RabbitMQ database. In RabbitMQ 3.0, queue mirroring</span>
+<span class="c1"># is no longer controlled by the x-ha-policy argument when declaring a queue. If</span>
+<span class="c1"># you just want to make sure that all queues (except those with auto-generated</span>
+<span class="c1"># names) are mirrored across all nodes, run: &quot;rabbitmqctl set_policy HA</span>
+<span class="c1"># &#39;^(?!amq\.).*&#39; &#39;{&quot;ha-mode&quot;: &quot;all&quot;}&#39; &quot; (boolean value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rabbit_ha_queues</span>
+<span class="c1">#rabbit_ha_queues = false</span>
+
+<span class="c1"># Positive integer representing duration in seconds for queue TTL (x-expires).</span>
+<span class="c1"># Queues which are unused for the duration of the TTL are automatically deleted.</span>
+<span class="c1"># The parameter affects only reply and fanout queues. (integer value)</span>
+<span class="c1"># Minimum value: 1</span>
+<span class="c1">#rabbit_transient_queues_ttl = 1800</span>
+
+<span class="c1"># Specifies the number of messages to prefetch. Setting to zero allows unlimited</span>
+<span class="c1"># messages. (integer value)</span>
+<span class="c1">#rabbit_qos_prefetch_count = 0</span>
+
+<span class="c1"># Number of seconds after which the Rabbit broker is considered down if</span>
+<span class="c1"># heartbeat&#39;s keep-alive fails (0 disable the heartbeat). EXPERIMENTAL (integer</span>
+<span class="c1"># value)</span>
+<span class="c1">#heartbeat_timeout_threshold = 60</span>
+
+<span class="c1"># How often times during the heartbeat_timeout_threshold we check the heartbeat.</span>
+<span class="c1"># (integer value)</span>
+<span class="c1">#heartbeat_rate = 2</span>
+
+<span class="c1"># Deprecated, use rpc_backend=kombu+memory or rpc_backend=fake (boolean value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/fake_rabbit</span>
+<span class="c1">#fake_rabbit = false</span>
+
+<span class="c1"># Maximum number of channels to allow (integer value)</span>
+<span class="c1">#channel_max = &lt;None&gt;</span>
+
+<span class="c1"># The maximum byte size for an AMQP frame (integer value)</span>
+<span class="c1">#frame_max = &lt;None&gt;</span>
+
+<span class="c1"># How often to send heartbeats for consumer&#39;s connections (integer value)</span>
+<span class="c1">#heartbeat_interval = 3</span>
+
+<span class="c1"># Enable SSL (boolean value)</span>
+<span class="c1">#ssl = &lt;None&gt;</span>
+
+<span class="c1"># Arguments passed to ssl.wrap_socket (dict value)</span>
+<span class="c1">#ssl_options = &lt;None&gt;</span>
+
+<span class="c1"># Set socket timeout in seconds for connection&#39;s socket (floating point value)</span>
+<span class="c1">#socket_timeout = 0.25</span>
+
+<span class="c1"># Set TCP_USER_TIMEOUT in seconds for connection&#39;s socket (floating point value)</span>
+<span class="c1">#tcp_user_timeout = 0.25</span>
+
+<span class="c1"># Set delay for reconnection to some host which has connection error (floating</span>
+<span class="c1"># point value)</span>
+<span class="c1">#host_connection_reconnect_delay = 0.25</span>
+
+<span class="c1"># Connection factory implementation (string value)</span>
+<span class="c1"># Allowed values: new, single, read_write</span>
+<span class="c1">#connection_factory = single</span>
+
+<span class="c1"># Maximum number of connections to keep queued. (integer value)</span>
+<span class="c1">#pool_max_size = 30</span>
+
+<span class="c1"># Maximum number of connections to create above `pool_max_size`. (integer value)</span>
+<span class="c1">#pool_max_overflow = 0</span>
+
+<span class="c1"># Default number of seconds to wait for a connections to available (integer</span>
+<span class="c1"># value)</span>
+<span class="c1">#pool_timeout = 30</span>
+
+<span class="c1"># Lifetime of a connection (since creation) in seconds or None for no recycling.</span>
+<span class="c1"># Expired connections are closed on acquire. (integer value)</span>
+<span class="c1">#pool_recycle = 600</span>
+
+<span class="c1"># Threshold at which inactive (since release) connections are considered stale</span>
+<span class="c1"># in seconds or None for no staleness. Stale connections are closed on acquire.</span>
+<span class="c1"># (integer value)</span>
+<span class="c1">#pool_stale = 60</span>
+
+<span class="c1"># Default serialization mechanism for serializing/deserializing</span>
+<span class="c1"># outgoing/incoming messages (string value)</span>
+<span class="c1"># Allowed values: json, msgpack</span>
+<span class="c1">#default_serializer_type = json</span>
+
+<span class="c1"># Persist notification messages. (boolean value)</span>
+<span class="c1">#notification_persistence = false</span>
+
+<span class="c1"># Exchange name for sending notifications (string value)</span>
+<span class="c1">#default_notification_exchange = ${control_exchange}_notification</span>
+
+<span class="c1"># Max number of not acknowledged message which RabbitMQ can send to notification</span>
+<span class="c1"># listener. (integer value)</span>
+<span class="c1">#notification_listener_prefetch_count = 100</span>
+
+<span class="c1"># Reconnecting retry count in case of connectivity problem during sending</span>
+<span class="c1"># notification, -1 means infinite retry. (integer value)</span>
+<span class="c1">#default_notification_retry_attempts = -1</span>
+
+<span class="c1"># Reconnecting retry delay in case of connectivity problem during sending</span>
+<span class="c1"># notification message (floating point value)</span>
+<span class="c1">#notification_retry_delay = 0.25</span>
+
+<span class="c1"># Time to live for rpc queues without consumers in seconds. (integer value)</span>
+<span class="c1">#rpc_queue_expiration = 60</span>
+
+<span class="c1"># Exchange name for sending RPC messages (string value)</span>
+<span class="c1">#default_rpc_exchange = ${control_exchange}_rpc</span>
+
+<span class="c1"># Exchange name for receiving RPC replies (string value)</span>
+<span class="c1">#rpc_reply_exchange = ${control_exchange}_rpc_reply</span>
+
+<span class="c1"># Max number of not acknowledged message which RabbitMQ can send to rpc</span>
+<span class="c1"># listener. (integer value)</span>
+<span class="c1">#rpc_listener_prefetch_count = 100</span>
+
+<span class="c1"># Max number of not acknowledged message which RabbitMQ can send to rpc reply</span>
+<span class="c1"># listener. (integer value)</span>
+<span class="c1">#rpc_reply_listener_prefetch_count = 100</span>
+
+<span class="c1"># Reconnecting retry count in case of connectivity problem during sending reply.</span>
+<span class="c1"># -1 means infinite retry during rpc_timeout (integer value)</span>
+<span class="c1">#rpc_reply_retry_attempts = -1</span>
+
+<span class="c1"># Reconnecting retry delay in case of connectivity problem during sending reply.</span>
+<span class="c1"># (floating point value)</span>
+<span class="c1">#rpc_reply_retry_delay = 0.25</span>
+
+<span class="c1"># Reconnecting retry count in case of connectivity problem during sending RPC</span>
+<span class="c1"># message, -1 means infinite retry. If actual retry attempts in not 0 the rpc</span>
+<span class="c1"># request could be processed more than one time (integer value)</span>
+<span class="c1">#default_rpc_retry_attempts = -1</span>
+
+<span class="c1"># Reconnecting retry delay in case of connectivity problem during sending RPC</span>
+<span class="c1"># message (floating point value)</span>
+<span class="c1">#rpc_retry_delay = 0.25</span>
+
+
+<span class="k">[oslo_messaging_zmq]</span>
+
+<span class="c1">#</span>
+<span class="c1"># From oslo.messaging</span>
+<span class="c1">#</span>
+
+<span class="c1"># ZeroMQ bind address. Should be a wildcard (*), an ethernet interface, or IP.</span>
+<span class="c1"># The &quot;host&quot; option should point or resolve to this address. (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_bind_address</span>
+<span class="c1">#rpc_zmq_bind_address = *</span>
+
+<span class="c1"># MatchMaker driver. (string value)</span>
+<span class="c1"># Allowed values: redis, sentinel, dummy</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_matchmaker</span>
+<span class="c1">#rpc_zmq_matchmaker = redis</span>
+
+<span class="c1"># Number of ZeroMQ contexts, defaults to 1. (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_contexts</span>
+<span class="c1">#rpc_zmq_contexts = 1</span>
+
+<span class="c1"># Maximum number of ingress messages to locally buffer per topic. Default is</span>
+<span class="c1"># unlimited. (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_topic_backlog</span>
+<span class="c1">#rpc_zmq_topic_backlog = &lt;None&gt;</span>
+
+<span class="c1"># Directory for holding IPC sockets. (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_ipc_dir</span>
+<span class="c1">#rpc_zmq_ipc_dir = /var/run/openstack</span>
+
+<span class="c1"># Name of this node. Must be a valid hostname, FQDN, or IP address. Must match</span>
+<span class="c1"># &quot;host&quot; option, if running Nova. (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_host</span>
+<span class="c1">#rpc_zmq_host = localhost</span>
+
+<span class="c1"># Number of seconds to wait before all pending messages will be sent after</span>
+<span class="c1"># closing a socket. The default value of -1 specifies an infinite linger period.</span>
+<span class="c1"># The value of 0 specifies no linger period. Pending messages shall be discarded</span>
+<span class="c1"># immediately when the socket is closed. Positive values specify an upper bound</span>
+<span class="c1"># for the linger period. (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_cast_timeout</span>
+<span class="c1">#zmq_linger = -1</span>
+
+<span class="c1"># The default number of seconds that poll should wait. Poll raises timeout</span>
+<span class="c1"># exception when timeout expired. (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_poll_timeout</span>
+<span class="c1">#rpc_poll_timeout = 1</span>
+
+<span class="c1"># Expiration timeout in seconds of a name service record about existing target (</span>
+<span class="c1"># &lt; 0 means no timeout). (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/zmq_target_expire</span>
+<span class="c1">#zmq_target_expire = 300</span>
+
+<span class="c1"># Update period in seconds of a name service record about existing target.</span>
+<span class="c1"># (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/zmq_target_update</span>
+<span class="c1">#zmq_target_update = 180</span>
+
+<span class="c1"># Use PUB/SUB pattern for fanout methods. PUB/SUB always uses proxy. (boolean</span>
+<span class="c1"># value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/use_pub_sub</span>
+<span class="c1">#use_pub_sub = false</span>
+
+<span class="c1"># Use ROUTER remote proxy. (boolean value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/use_router_proxy</span>
+<span class="c1">#use_router_proxy = false</span>
+
+<span class="c1"># This option makes direct connections dynamic or static. It makes sense only</span>
+<span class="c1"># with use_router_proxy=False which means to use direct connections for direct</span>
+<span class="c1"># message types (ignored otherwise). (boolean value)</span>
+<span class="c1">#use_dynamic_connections = false</span>
+
+<span class="c1"># How many additional connections to a host will be made for failover reasons.</span>
+<span class="c1"># This option is actual only in dynamic connections mode. (integer value)</span>
+<span class="c1">#zmq_failover_connections = 2</span>
+
+<span class="c1"># Minimal port number for random ports range. (port value)</span>
+<span class="c1"># Minimum value: 0</span>
+<span class="c1"># Maximum value: 65535</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_min_port</span>
+<span class="c1">#rpc_zmq_min_port = 49153</span>
+
+<span class="c1"># Maximal port number for random ports range. (integer value)</span>
+<span class="c1"># Minimum value: 1</span>
+<span class="c1"># Maximum value: 65536</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_max_port</span>
+<span class="c1">#rpc_zmq_max_port = 65536</span>
+
+<span class="c1"># Number of retries to find free port number before fail with ZMQBindError.</span>
+<span class="c1"># (integer value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_bind_port_retries</span>
+<span class="c1">#rpc_zmq_bind_port_retries = 100</span>
+
+<span class="c1"># Default serialization mechanism for serializing/deserializing</span>
+<span class="c1"># outgoing/incoming messages (string value)</span>
+<span class="c1"># Allowed values: json, msgpack</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/rpc_zmq_serialization</span>
+<span class="c1">#rpc_zmq_serialization = json</span>
+
+<span class="c1"># This option configures round-robin mode in zmq socket. True means not keeping</span>
+<span class="c1"># a queue when server side disconnects. False means to keep queue and messages</span>
+<span class="c1"># even if server is disconnected, when the server appears we send all</span>
+<span class="c1"># accumulated messages to it. (boolean value)</span>
+<span class="c1">#zmq_immediate = true</span>
+
+<span class="c1"># Enable/disable TCP keepalive (KA) mechanism. The default value of -1 (or any</span>
+<span class="c1"># other negative value) means to skip any overrides and leave it to OS default;</span>
+<span class="c1"># 0 and 1 (or any other positive value) mean to disable and enable the option</span>
+<span class="c1"># respectively. (integer value)</span>
+<span class="c1">#zmq_tcp_keepalive = -1</span>
+
+<span class="c1"># The duration between two keepalive transmissions in idle condition. The unit</span>
+<span class="c1"># is platform dependent, for example, seconds in Linux, milliseconds in Windows</span>
+<span class="c1"># etc. The default value of -1 (or any other negative value and 0) means to skip</span>
+<span class="c1"># any overrides and leave it to OS default. (integer value)</span>
+<span class="c1">#zmq_tcp_keepalive_idle = -1</span>
+
+<span class="c1"># The number of retransmissions to be carried out before declaring that remote</span>
+<span class="c1"># end is not available. The default value of -1 (or any other negative value and</span>
+<span class="c1"># 0) means to skip any overrides and leave it to OS default. (integer value)</span>
+<span class="c1">#zmq_tcp_keepalive_cnt = -1</span>
+
+<span class="c1"># The duration between two successive keepalive retransmissions, if</span>
+<span class="c1"># acknowledgement to the previous keepalive transmission is not received. The</span>
+<span class="c1"># unit is platform dependent, for example, seconds in Linux, milliseconds in</span>
+<span class="c1"># Windows etc. The default value of -1 (or any other negative value and 0) means</span>
+<span class="c1"># to skip any overrides and leave it to OS default. (integer value)</span>
+<span class="c1">#zmq_tcp_keepalive_intvl = -1</span>
+
+<span class="c1"># Maximum number of (green) threads to work concurrently. (integer value)</span>
+<span class="c1">#rpc_thread_pool_size = 100</span>
+
+<span class="c1"># Expiration timeout in seconds of a sent/received message after which it is not</span>
+<span class="c1"># tracked anymore by a client/server. (integer value)</span>
+<span class="c1">#rpc_message_ttl = 300</span>
+
+<span class="c1"># Wait for message acknowledgements from receivers. This mechanism works only</span>
+<span class="c1"># via proxy without PUB/SUB. (boolean value)</span>
+<span class="c1">#rpc_use_acks = false</span>
+
+<span class="c1"># Number of seconds to wait for an ack from a cast/call. After each retry</span>
+<span class="c1"># attempt this timeout is multiplied by some specified multiplier. (integer</span>
+<span class="c1"># value)</span>
+<span class="c1">#rpc_ack_timeout_base = 15</span>
+
+<span class="c1"># Number to multiply base ack timeout by after each retry attempt. (integer</span>
+<span class="c1"># value)</span>
+<span class="c1">#rpc_ack_timeout_multiplier = 2</span>
+
+<span class="c1"># Default number of message sending attempts in case of any problems occurred:</span>
+<span class="c1"># positive value N means at most N retries, 0 means no retries, None or -1 (or</span>
+<span class="c1"># any other negative values) mean to retry forever. This option is used only if</span>
+<span class="c1"># acknowledgments are enabled. (integer value)</span>
+<span class="c1">#rpc_retry_attempts = 3</span>
+
+<span class="c1"># List of publisher hosts SubConsumer can subscribe on. This option has higher</span>
+<span class="c1"># priority then the default publishers list taken from the matchmaker. (list</span>
+<span class="c1"># value)</span>
+<span class="c1">#subscribe_on =</span>
+
+
+<span class="k">[oslo_policy]</span>
+
+<span class="c1">#</span>
+<span class="c1"># From oslo.policy</span>
+<span class="c1">#</span>
+
+<span class="c1"># The file that defines policies. (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/policy_file</span>
+<span class="c1">#policy_file = policy.json</span>
+
+<span class="c1"># Default rule. Enforced when a requested rule is not found. (string value)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/policy_default_rule</span>
+<span class="c1">#policy_default_rule = default</span>
+
+<span class="c1"># Directories where policy configuration files are stored. They can be relative</span>
+<span class="c1"># to any directory in the search path defined by the config_dir option, or</span>
+<span class="c1"># absolute paths. The file defined by policy_file must exist for these</span>
+<span class="c1"># directories to be searched.  Missing or empty directories are ignored. (multi</span>
+<span class="c1"># valued)</span>
+<span class="c1"># Deprecated group/name - [DEFAULT]/policy_dirs</span>
+<span class="c1">#policy_dirs = policy.d</span>
+
+
+<span class="k">[paste_deploy]</span>
+
+<span class="c1">#</span>
+<span class="c1"># From glance.registry</span>
+<span class="c1">#</span>
+
+<span class="c1">#</span>
+<span class="c1"># Deployment flavor to use in the server application pipeline.</span>
+<span class="c1">#</span>
+<span class="c1"># Provide a string value representing the appropriate deployment</span>
+<span class="c1"># flavor used in the server application pipleline. This is typically</span>
+<span class="c1"># the partial name of a pipeline in the paste configuration file with</span>
+<span class="c1"># the service name removed.</span>
+<span class="c1">#</span>
+<span class="c1"># For example, if your paste section name in the paste configuration</span>
+<span class="c1"># file is [pipeline:glance-api-keystone], set ``flavor`` to</span>
+<span class="c1"># ``keystone``.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * String value representing a partial pipeline name.</span>
+<span class="c1">#</span>
+<span class="c1"># Related Options:</span>
+<span class="c1">#     * config_file</span>
+<span class="c1">#</span>
+<span class="c1">#  (string value)</span>
+<span class="c1">#flavor = keystone</span>
+
+<span class="c1">#</span>
+<span class="c1"># Name of the paste configuration file.</span>
+<span class="c1">#</span>
+<span class="c1"># Provide a string value representing the name of the paste</span>
+<span class="c1"># configuration file to use for configuring piplelines for</span>
+<span class="c1"># server application deployments.</span>
+<span class="c1">#</span>
+<span class="c1"># NOTES:</span>
+<span class="c1">#     * Provide the name or the path relative to the glance directory</span>
+<span class="c1">#       for the paste configuration file and not the absolute path.</span>
+<span class="c1">#     * The sample paste configuration file shipped with Glance need</span>
+<span class="c1">#       not be edited in most cases as it comes with ready-made</span>
+<span class="c1">#       pipelines for all common deployment flavors.</span>
+<span class="c1">#</span>
+<span class="c1"># If no value is specified for this option, the ``paste.ini`` file</span>
+<span class="c1"># with the prefix of the corresponding Glance service&#39;s configuration</span>
+<span class="c1"># file name will be searched for in the known configuration</span>
+<span class="c1"># directories. (For example, if this option is missing from or has no</span>
+<span class="c1"># value set in ``glance-api.conf``, the service will look for a file</span>
+<span class="c1"># named ``glance-api-paste.ini``.) If the paste configuration file is</span>
+<span class="c1"># not found, the service will not start.</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#     * A string value representing the name of the paste configuration</span>
+<span class="c1">#       file.</span>
+<span class="c1">#</span>
+<span class="c1"># Related Options:</span>
+<span class="c1">#     * flavor</span>
+<span class="c1">#</span>
+<span class="c1">#  (string value)</span>
+<span class="c1">#config_file = glance-api-paste.ini</span>
+
+
+<span class="k">[profiler]</span>
+
+<span class="c1">#</span>
+<span class="c1"># From glance.registry</span>
+<span class="c1">#</span>
+
+<span class="c1">#</span>
+<span class="c1"># Enables the profiling for all services on this node. Default value is False</span>
+<span class="c1"># (fully disable the profiling feature).</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#</span>
+<span class="c1"># * True: Enables the feature</span>
+<span class="c1"># * False: Disables the feature. The profiling cannot be started via this</span>
+<span class="c1"># project</span>
+<span class="c1"># operations. If the profiling is triggered by another project, this project</span>
+<span class="c1"># part</span>
+<span class="c1"># will be empty.</span>
+<span class="c1">#  (boolean value)</span>
+<span class="c1"># Deprecated group/name - [profiler]/profiler_enabled</span>
+<span class="c1">#enabled = false</span>
+
+<span class="c1">#</span>
+<span class="c1"># Enables SQL requests profiling in services. Default value is False (SQL</span>
+<span class="c1"># requests won&#39;t be traced).</span>
+<span class="c1">#</span>
+<span class="c1"># Possible values:</span>
+<span class="c1">#</span>
+<span class="c1"># * True: Enables SQL requests profiling. Each SQL query will be part of the</span>
+<span class="c1"># trace and can the be analyzed by how much time was spent for that.</span>
+<span class="c1"># * False: Disables SQL requests profiling. The spent time is only shown on a</span>
+<span class="c1"># higher level of operations. Single SQL queries cannot be analyzed this</span>
+<span class="c1"># way.</span>
+<span class="c1">#  (boolean value)</span>
+<span class="c1">#trace_sqlalchemy = false</span>
+
+<span class="c1">#</span>
+<span class="c1"># Secret key(s) to use for encrypting context data for performance profiling.</span>
+<span class="c1"># This string value should have the following format: &lt;key1&gt;[,&lt;key2&gt;,...&lt;keyn&gt;],</span>
+<span class="c1"># where each key is some random string. A user who triggers the profiling via</span>
+<span class="c1"># the REST API has to set one of these keys in the headers of the REST API call</span>
+<span class="c1"># to include profiling results of this node for this particular project.</span>
+<span class="c1">#</span>
+<span class="c1"># Both &quot;enabled&quot; flag and &quot;hmac_keys&quot; config options should be set to enable</span>
+<span class="c1"># profiling. Also, to generate correct profiling information across all services</span>
+<span class="c1"># at least one key needs to be consistent between OpenStack projects. This</span>
+<span class="c1"># ensures it can be used from client side to generate the trace, containing</span>
+<span class="c1"># information from all possible resources. (string value)</span>
+<span class="c1">#hmac_keys = SECRET_KEY</span>
+
+<span class="c1">#</span>
+<span class="c1"># Connection string for a notifier backend. Default value is messaging:// which</span>
+<span class="c1"># sets the notifier to oslo_messaging.</span>
+<span class="c1">#</span>
+<span class="c1"># Examples of possible values:</span>
+<span class="c1">#</span>
+<span class="c1"># * messaging://: use oslo_messaging driver for sending notifications.</span>
+<span class="c1"># * mongodb://127.0.0.1:27017 : use mongodb driver for sending notifications.</span>
+<span class="c1"># * elasticsearch://127.0.0.1:9200 : use elasticsearch driver for sending</span>
+<span class="c1"># notifications.</span>
+<span class="c1">#  (string value)</span>
+<span class="c1">#connection_string = messaging://</span>
+
+<span class="c1">#</span>
+<span class="c1"># Document type for notification indexing in elasticsearch.</span>
+<span class="c1">#  (string value)</span>
+<span class="c1">#es_doc_type = notification</span>
+
+<span class="c1">#</span>
+<span class="c1"># This parameter is a time value parameter (for example: es_scroll_time=2m),</span>
+<span class="c1"># indicating for how long the nodes that participate in the search will maintain</span>
+<span class="c1"># relevant resources in order to continue and support it.</span>
+<span class="c1">#  (string value)</span>
+<span class="c1">#es_scroll_time = 2m</span>
+
+<span class="c1">#</span>
+<span class="c1"># Elasticsearch splits large requests in batches. This parameter defines</span>
+<span class="c1"># maximum size of each batch (for example: es_scroll_size=10000).</span>
+<span class="c1">#  (integer value)</span>
+<span class="c1">#es_scroll_size = 10000</span>
+
+<span class="c1">#</span>
+<span class="c1"># Redissentinel provides a timeout option on the connections.</span>
+<span class="c1"># This parameter defines that timeout (for example: socket_timeout=0.1).</span>
+<span class="c1">#  (floating point value)</span>
+<span class="c1">#socket_timeout = 0.1</span>
+
+<span class="c1">#</span>
+<span class="c1"># Redissentinel uses a service name to identify a master redis service.</span>
+<span class="c1"># This parameter defines the name (for example:</span>
+<span class="c1"># sentinal_service_name=mymaster).</span>
+<span class="c1">#  (string value)</span>
+<span class="c1">#sentinel_service_name = mymaster</span>
+</pre></div>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="glance-manage.conf.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: glance-manage.conf"></i></a>
+          
+          
+            <a href="glance-registry-paste.ini.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: glance-registry-paste.ini"></i></a>
+          
+            <a id="logABugLink3" href="glance-registry.conf.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:41</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="../_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="glance-registry.conf.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="../index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../config-overview.html">OpenStack configuration overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common-configurations.html">Common configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../application-catalog.html">Application Catalog service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bare-metal.html">Bare Metal service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../block-storage.html">Block Storage service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clustering.html">Clustering service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compute.html">Compute service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dashboard.html">Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data-processing.html">Data Processing service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../database.html">Database service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../identity.html">Identity service</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../image.html">Image service</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="api.html">Image API configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backends.html">Configure back ends</a></li>
+<li class="toctree-l2"><a class="reference internal" href="config-options.html">Additional configuration options for Image service</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logs.html">Image log files</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="sample-configuration-files.html">Image service sample configuration files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tables/conf-changes/glance.html">New, updated, and deprecated options in Ocata for Image service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../message.html">Message service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking.html">Networking service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../object-storage.html">Object Storage service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../orchestration.html">Orchestration service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shared-file-systems.html">Shared File Systems service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../telemetry.html">Telemetry service</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../policy-yaml-file.html">The policy.yaml file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../policy-json-file.html">The policy.json file</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="../_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="../_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="../_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="../_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="../_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "image/glance-registry.conf" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/config-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "glance-registry.conf in Configuration Reference";
+    var fieldTags = "config-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:41";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

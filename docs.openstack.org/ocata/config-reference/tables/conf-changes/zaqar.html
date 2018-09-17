@@ -1,0 +1,1068 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: New, updated, and deprecated options in Ocata for Message service</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="../../_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="../../_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="../../_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="../../_static/css/combined.css" rel="stylesheet">
+<link href="../../_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" href="../../_static/sphinxmark.css" type="text/css" />
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>New, updated, and deprecated options in Ocata for Message service</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="../../message/logs.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Messaging log files"></i></a>
+    
+    
+    <a href="../../networking.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Networking service"></i></a>
+    
+    <a id="logABugLink1" href="zaqar.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:41</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="../../index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="zaqar.html#">New, updated, and deprecated options in Ocata for Message service</a></li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="new-updated-and-deprecated-options-in-ocata-for-message-service">
+<h1>New, updated, and deprecated options in Ocata for Message service<a class="headerlink" href="zaqar.html#new-updated-and-deprecated-options-in-ocata-for-message-service" title="Permalink to this headline">¶</a></h1>
+<table border="1" class="config-ref-table docutils" id="id1">
+<caption><span class="caption-text">New options</span><a class="headerlink" href="zaqar.html#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option = default value</th>
+<th class="head">(Type) Help string</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">conn_pool_min_size</span> <span class="pre">=</span> <span class="pre">2</span></code></td>
+<td>(IntOpt) The pool size limit for connections expiration policy</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">conn_pool_ttl</span> <span class="pre">=</span> <span class="pre">1200</span></code></td>
+<td>(IntOpt) The time-to-live in sec of idle connections in the pool</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">control_exchange</span> <span class="pre">=</span> <span class="pre">openstack</span></code></td>
+<td>(StrOpt) The default exchange under which topics are scoped. May be overridden by an exchange name specified in the transport_url option.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">executor_thread_pool_size</span> <span class="pre">=</span> <span class="pre">64</span></code></td>
+<td>(IntOpt) Size of executor thread pool.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_ack_timeout_base</span> <span class="pre">=</span> <span class="pre">15</span></code></td>
+<td>(IntOpt) Number of seconds to wait for an ack from a cast/call. After each retry attempt this timeout is multiplied by some specified multiplier.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_ack_timeout_multiplier</span> <span class="pre">=</span> <span class="pre">2</span></code></td>
+<td>(IntOpt) Number to multiply base ack timeout by after each retry attempt.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_backend</span> <span class="pre">=</span> <span class="pre">rabbit</span></code></td>
+<td>(StrOpt) The messaging driver to use, defaults to rabbit. Other drivers include amqp and zmq.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_conn_pool_size</span> <span class="pre">=</span> <span class="pre">30</span></code></td>
+<td>(IntOpt) Size of RPC connection pool.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_message_ttl</span> <span class="pre">=</span> <span class="pre">300</span></code></td>
+<td>(IntOpt) Expiration timeout in seconds of a sent/received message after which it is not tracked anymore by a client/server.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_poll_timeout</span> <span class="pre">=</span> <span class="pre">1</span></code></td>
+<td>(IntOpt) The default number of seconds that poll should wait. Poll raises timeout exception when timeout expired.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_response_timeout</span> <span class="pre">=</span> <span class="pre">60</span></code></td>
+<td>(IntOpt) Seconds to wait for a response from a call.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_retry_attempts</span> <span class="pre">=</span> <span class="pre">3</span></code></td>
+<td>(IntOpt) Default number of message sending attempts in case of any problems occurred: positive value N means at most N retries, 0 means no retries, None or -1 (or any other negative values) mean to retry forever. This option is used only if acknowledgments are enabled.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_thread_pool_size</span> <span class="pre">=</span> <span class="pre">100</span></code></td>
+<td>(IntOpt) Maximum number of (green) threads to work concurrently.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_use_acks</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Wait for message acknowledgements from receivers. This mechanism works only via proxy without PUB/SUB.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_zmq_bind_address</span> <span class="pre">=</span> <span class="pre">*</span></code></td>
+<td>(StrOpt) ZeroMQ bind address. Should be a wildcard (*), an ethernet interface, or IP. The &#8220;host&#8221; option should point or resolve to this address.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_zmq_bind_port_retries</span> <span class="pre">=</span> <span class="pre">100</span></code></td>
+<td>(IntOpt) Number of retries to find free port number before fail with ZMQBindError.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_zmq_contexts</span> <span class="pre">=</span> <span class="pre">1</span></code></td>
+<td>(IntOpt) Number of ZeroMQ contexts, defaults to 1.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_zmq_host</span> <span class="pre">=</span> <span class="pre">localhost</span></code></td>
+<td>(StrOpt) Name of this node. Must be a valid hostname, FQDN, or IP address. Must match &#8220;host&#8221; option, if running Nova.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_zmq_ipc_dir</span> <span class="pre">=</span> <span class="pre">/var/run/openstack</span></code></td>
+<td>(StrOpt) Directory for holding IPC sockets.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_zmq_matchmaker</span> <span class="pre">=</span> <span class="pre">redis</span></code></td>
+<td>(StrOpt) MatchMaker driver.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_zmq_max_port</span> <span class="pre">=</span> <span class="pre">65536</span></code></td>
+<td>(IntOpt) Maximal port number for random ports range.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_zmq_min_port</span> <span class="pre">=</span> <span class="pre">49153</span></code></td>
+<td>(PortOpt) Minimal port number for random ports range.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_zmq_serialization</span> <span class="pre">=</span> <span class="pre">json</span></code></td>
+<td>(StrOpt) Default serialization mechanism for serializing/deserializing outgoing/incoming messages</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">rpc_zmq_topic_backlog</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(IntOpt) Maximum number of ingress messages to locally buffer per topic. Default is unlimited.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">subscribe_on</span> <span class="pre">=</span></code></td>
+<td>(ListOpt) List of publisher hosts SubConsumer can subscribe on. This option has higher priority then the default publishers list taken from the matchmaker.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">transport_url</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) A URL representing the messaging driver to use and its full configuration.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">use_dynamic_connections</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) This option makes direct connections dynamic or static. It makes sense only with use_router_proxy=False which means to use direct connections for direct message types (ignored otherwise).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">use_pub_sub</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Use PUB/SUB pattern for fanout methods. PUB/SUB always uses proxy.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">use_router_proxy</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Use ROUTER remote proxy.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">zmq_failover_connections</span> <span class="pre">=</span> <span class="pre">2</span></code></td>
+<td>(IntOpt) How many additional connections to a host will be made for failover reasons. This option is actual only in dynamic connections mode.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">zmq_immediate</span> <span class="pre">=</span> <span class="pre">True</span></code></td>
+<td>(BoolOpt) This option configures round-robin mode in zmq socket. True means not keeping a queue when server side disconnects. False means to keep queue and messages even if server is disconnected, when the server appears we send all accumulated messages to it.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">zmq_linger</span> <span class="pre">=</span> <span class="pre">-1</span></code></td>
+<td>(IntOpt) Number of seconds to wait before all pending messages will be sent after closing a socket. The default value of -1 specifies an infinite linger period. The value of 0 specifies no linger period. Pending messages shall be discarded immediately when the socket is closed. Positive values specify an upper bound for the linger period.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">zmq_target_expire</span> <span class="pre">=</span> <span class="pre">300</span></code></td>
+<td>(IntOpt) Expiration timeout in seconds of a name service record about existing target ( &lt; 0 means no timeout).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">zmq_target_update</span> <span class="pre">=</span> <span class="pre">180</span></code></td>
+<td>(IntOpt) Update period in seconds of a name service record about existing target.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">zmq_tcp_keepalive</span> <span class="pre">=</span> <span class="pre">-1</span></code></td>
+<td>(IntOpt) Enable/disable TCP keepalive (KA) mechanism. The default value of -1 (or any other negative value) means to skip any overrides and leave it to OS default; 0 and 1 (or any other positive value) mean to disable and enable the option respectively.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">zmq_tcp_keepalive_cnt</span> <span class="pre">=</span> <span class="pre">-1</span></code></td>
+<td>(IntOpt) The number of retransmissions to be carried out before declaring that remote end is not available. The default value of -1 (or any other negative value and 0) means to skip any overrides and leave it to OS default.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">zmq_tcp_keepalive_idle</span> <span class="pre">=</span> <span class="pre">-1</span></code></td>
+<td>(IntOpt) The duration between two keepalive transmissions in idle condition. The unit is platform dependent, for example, seconds in Linux, milliseconds in Windows etc. The default value of -1 (or any other negative value and 0) means to skip any overrides and leave it to OS default.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">zmq_tcp_keepalive_intvl</span> <span class="pre">=</span> <span class="pre">-1</span></code></td>
+<td>(IntOpt) The duration between two successive keepalive retransmissions, if acknowledgement to the previous keepalive transmission is not received. The unit is platform dependent, for example, seconds in Linux, milliseconds in Windows etc. The default value of -1 (or any other negative value and 0) means to skip any overrides and leave it to OS default.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[drivers:message_store:swift]</span> <span class="pre">auth_url</span> <span class="pre">=</span> <span class="pre">http://127.0.0.1:5000/v3/</span></code></td>
+<td>(StrOpt) URI of Keystone endpoint to discover Swift</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[drivers:message_store:swift]</span> <span class="pre">insecure</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(StrOpt) Don&#8217;t check SSL certificate</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[drivers:message_store:swift]</span> <span class="pre">uri</span> <span class="pre">=</span> <span class="pre">swift://demo:nomoresecrete&#64;/demo</span></code></td>
+<td>(StrOpt) Custom URI describing the swift connection.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[matchmaker_redis]</span> <span class="pre">check_timeout</span> <span class="pre">=</span> <span class="pre">20000</span></code></td>
+<td>(IntOpt) Time in ms to wait before the transaction is killed.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[matchmaker_redis]</span> <span class="pre">host</span> <span class="pre">=</span> <span class="pre">127.0.0.1</span></code></td>
+<td>(StrOpt) Host to locate redis.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[matchmaker_redis]</span> <span class="pre">password</span> <span class="pre">=</span></code></td>
+<td>(StrOpt) Password for Redis server (optional).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[matchmaker_redis]</span> <span class="pre">port</span> <span class="pre">=</span> <span class="pre">6379</span></code></td>
+<td>(PortOpt) Use this port to connect to redis host.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[matchmaker_redis]</span> <span class="pre">sentinel_group_name</span> <span class="pre">=</span> <span class="pre">oslo-messaging-zeromq</span></code></td>
+<td>(StrOpt) Redis replica set name.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[matchmaker_redis]</span> <span class="pre">sentinel_hosts</span> <span class="pre">=</span></code></td>
+<td>(ListOpt) List of Redis Sentinel hosts (fault tolerance mode), e.g., [host:port, host1:port ... ]</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[matchmaker_redis]</span> <span class="pre">socket_timeout</span> <span class="pre">=</span> <span class="pre">10000</span></code></td>
+<td>(IntOpt) Timeout in ms on blocking socket operations.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[matchmaker_redis]</span> <span class="pre">wait_timeout</span> <span class="pre">=</span> <span class="pre">2000</span></code></td>
+<td>(IntOpt) Time in ms to wait between connection attempts.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[notification]</span> <span class="pre">external_confirmation_url</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) The confirmation page url that will be used in email subscription confirmation before notification.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[notification]</span> <span class="pre">subscription_confirmation_email_template</span> <span class="pre">=</span> <span class="pre">{'topic':</span> <span class="pre">'Zaqar</span> <span class="pre">Notification</span> <span class="pre">-</span> <span class="pre">Subscription</span> <span class="pre">Confirmation',</span> <span class="pre">'body':</span> <span class="pre">'You</span> <span class="pre">have</span> <span class="pre">chosen</span> <span class="pre">to</span> <span class="pre">subscribe</span> <span class="pre">to</span> <span class="pre">the</span> <span class="pre">queue:</span> <span class="pre">{0}.</span> <span class="pre">This</span> <span class="pre">queue</span> <span class="pre">belongs</span> <span class="pre">to</span> <span class="pre">project:</span> <span class="pre">{1}.</span> <span class="pre">To</span> <span class="pre">confirm</span> <span class="pre">this</span> <span class="pre">subscription,</span> <span class="pre">click</span> <span class="pre">or</span> <span class="pre">visit</span> <span class="pre">this</span> <span class="pre">link</span> <span class="pre">below:</span> <span class="pre">{2}',</span> <span class="pre">'sender':</span> <span class="pre">'Zaqar</span> <span class="pre">Notifications</span> <span class="pre">&lt;no-reply&#64;openstack.org&gt;'}</span></code></td>
+<td>(DictOpt) Defines the set of subscription confirmation email content, including topic, body and sender. There is a mapping is {0} -&gt; queue name, {1} -&gt;project id, {2}-&gt; confirm url in body string. User can use any of the three value. But they can&#8217;t use more than three.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[notification]</span> <span class="pre">unsubscribe_confirmation_email_template</span> <span class="pre">=</span> <span class="pre">{'topic':</span> <span class="pre">'Zaqar</span> <span class="pre">Notification</span> <span class="pre">-</span> <span class="pre">Unsubscribe</span> <span class="pre">Confirmation',</span> <span class="pre">'body':</span> <span class="pre">'You</span> <span class="pre">have</span> <span class="pre">unsubscribed</span> <span class="pre">successfully</span> <span class="pre">to</span> <span class="pre">the</span> <span class="pre">queue:</span> <span class="pre">{0}.</span> <span class="pre">This</span> <span class="pre">queue</span> <span class="pre">belongs</span> <span class="pre">to</span> <span class="pre">project:</span> <span class="pre">{1}.</span> <span class="pre">To</span> <span class="pre">resubscribe</span> <span class="pre">this</span> <span class="pre">subscription,</span> <span class="pre">click</span> <span class="pre">or</span> <span class="pre">visit</span> <span class="pre">this</span> <span class="pre">link</span> <span class="pre">below:</span> <span class="pre">{2}',</span> <span class="pre">'sender':</span> <span class="pre">'Zaqar</span> <span class="pre">Notifications</span> <span class="pre">&lt;no-reply&#64;openstack.org&gt;'}</span></code></td>
+<td>(DictOpt) Defines the set of unsubscribe confirmation email content, including topic, body and sender. There is a mapping is {0} -&gt; queue name, {1} -&gt;project id, {2}-&gt; confirm url in body string. User can use any of the three value. But they can&#8217;t use more than three.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_concurrency]</span> <span class="pre">disable_process_locking</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Enables or disables inter-process locks.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_concurrency]</span> <span class="pre">lock_path</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) Directory to use for lock files. For security, the specified directory should only be writable by the user running the processes that need locking. Defaults to environment variable OSLO_LOCK_PATH. If external locks are used, a lock path must be set.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">addressing_mode</span> <span class="pre">=</span> <span class="pre">dynamic</span></code></td>
+<td>(StrOpt) Indicates the addressing mode used by the driver. Permitted values: &#8216;legacy&#8217; - use legacy non-routable addressing &#8216;routable&#8217; - use routable addresses &#8216;dynamic&#8217; - use legacy addresses if the message bus does not support routing otherwise use routable addressing</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">allow_insecure_clients</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Accept clients using either SSL or plain TCP</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">anycast_address</span> <span class="pre">=</span> <span class="pre">anycast</span></code></td>
+<td>(StrOpt) Appended to the address prefix when sending to a group of consumers. Used by the message bus to identify messages that should be delivered in a round-robin fashion across consumers.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">broadcast_prefix</span> <span class="pre">=</span> <span class="pre">broadcast</span></code></td>
+<td>(StrOpt) address prefix used when broadcasting to all servers</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">connection_retry_backoff</span> <span class="pre">=</span> <span class="pre">2</span></code></td>
+<td>(IntOpt) Increase the connection_retry_interval by this many seconds after each unsuccessful failover attempt.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">connection_retry_interval</span> <span class="pre">=</span> <span class="pre">1</span></code></td>
+<td>(IntOpt) Seconds to pause before attempting to re-connect.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">connection_retry_interval_max</span> <span class="pre">=</span> <span class="pre">30</span></code></td>
+<td>(IntOpt) Maximum limit for connection_retry_interval + connection_retry_backoff</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">container_name</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) Name for the AMQP container. must be globally unique. Defaults to a generated UUID</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">default_notification_exchange</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) Exchange name used in notification addresses. Exchange name resolution precedence: Target.exchange if set else default_notification_exchange if set else control_exchange if set else &#8216;notify&#8217;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">default_notify_timeout</span> <span class="pre">=</span> <span class="pre">30</span></code></td>
+<td>(IntOpt) The deadline for a sent notification message delivery. Only used when caller does not provide a timeout expiry.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">default_reply_retry</span> <span class="pre">=</span> <span class="pre">0</span></code></td>
+<td>(IntOpt) The maximum number of attempts to re-send a reply message which failed due to a recoverable error.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">default_reply_timeout</span> <span class="pre">=</span> <span class="pre">30</span></code></td>
+<td>(IntOpt) The deadline for an rpc reply message delivery.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">default_rpc_exchange</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) Exchange name used in RPC addresses. Exchange name resolution precedence: Target.exchange if set else default_rpc_exchange if set else control_exchange if set else &#8216;rpc&#8217;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">default_send_timeout</span> <span class="pre">=</span> <span class="pre">30</span></code></td>
+<td>(IntOpt) The deadline for an rpc cast or call message delivery. Only used when caller does not provide a timeout expiry.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">default_sender_link_timeout</span> <span class="pre">=</span> <span class="pre">600</span></code></td>
+<td>(IntOpt) The duration to schedule a purge of idle sender links. Detach link after expiry.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">group_request_prefix</span> <span class="pre">=</span> <span class="pre">unicast</span></code></td>
+<td>(StrOpt) address prefix when sending to any server in group</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">idle_timeout</span> <span class="pre">=</span> <span class="pre">0</span></code></td>
+<td>(IntOpt) Timeout for inactive connections (in seconds)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">link_retry_delay</span> <span class="pre">=</span> <span class="pre">10</span></code></td>
+<td>(IntOpt) Time to pause between re-connecting an AMQP 1.0 link that failed due to a recoverable error.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">multicast_address</span> <span class="pre">=</span> <span class="pre">multicast</span></code></td>
+<td>(StrOpt) Appended to the address prefix when sending a fanout message. Used by the message bus to identify fanout messages.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">notify_address_prefix</span> <span class="pre">=</span> <span class="pre">openstack.org/om/notify</span></code></td>
+<td>(StrOpt) Address prefix for all generated Notification addresses</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">notify_server_credit</span> <span class="pre">=</span> <span class="pre">100</span></code></td>
+<td>(IntOpt) Window size for incoming Notification messages</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">password</span> <span class="pre">=</span></code></td>
+<td>(StrOpt) Password for message broker authentication</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">pre_settled</span> <span class="pre">=</span> <span class="pre">['rpc-cast',</span> <span class="pre">'rpc-reply']</span></code></td>
+<td>(MultiStrOpt) Send messages of this type pre-settled. Pre-settled messages will not receive acknowledgement from the peer. Note well: pre-settled messages may be silently discarded if the delivery fails. Permitted values: &#8216;rpc-call&#8217; - send RPC Calls pre-settled &#8216;rpc-reply&#8217;- send RPC Replies pre-settled &#8216;rpc-cast&#8217; - Send RPC Casts pre-settled &#8216;notify&#8217; - Send Notifications pre-settled</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">reply_link_credit</span> <span class="pre">=</span> <span class="pre">200</span></code></td>
+<td>(IntOpt) Window size for incoming RPC Reply messages.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">rpc_address_prefix</span> <span class="pre">=</span> <span class="pre">openstack.org/om/rpc</span></code></td>
+<td>(StrOpt) Address prefix for all generated RPC addresses</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">rpc_server_credit</span> <span class="pre">=</span> <span class="pre">100</span></code></td>
+<td>(IntOpt) Window size for incoming RPC Request messages</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">sasl_config_dir</span> <span class="pre">=</span></code></td>
+<td>(StrOpt) Path to directory that contains the SASL configuration</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">sasl_config_name</span> <span class="pre">=</span></code></td>
+<td>(StrOpt) Name of configuration file (without .conf suffix)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">sasl_mechanisms</span> <span class="pre">=</span></code></td>
+<td>(StrOpt) Space separated list of acceptable SASL mechanisms</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">server_request_prefix</span> <span class="pre">=</span> <span class="pre">exclusive</span></code></td>
+<td>(StrOpt) address prefix used when sending to a specific server</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">ssl_ca_file</span> <span class="pre">=</span></code></td>
+<td>(StrOpt) CA certificate PEM file used to verify the server&#8217;s certificate</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">ssl_cert_file</span> <span class="pre">=</span></code></td>
+<td>(StrOpt) Self-identifying certificate PEM file for client authentication</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">ssl_key_file</span> <span class="pre">=</span></code></td>
+<td>(StrOpt) Private key PEM file used to sign ssl_cert_file certificate (optional)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">ssl_key_password</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) Password for decrypting ssl_key_file (if encrypted)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">trace</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Debug: dump AMQP frames to stdout</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">unicast_address</span> <span class="pre">=</span> <span class="pre">unicast</span></code></td>
+<td>(StrOpt) Appended to the address prefix when sending to a particular RPC/Notification server. Used by the message bus to identify messages sent to a single destination.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_amqp]</span> <span class="pre">username</span> <span class="pre">=</span></code></td>
+<td>(StrOpt) User name for message broker authentication</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_kafka]</span> <span class="pre">conn_pool_min_size</span> <span class="pre">=</span> <span class="pre">2</span></code></td>
+<td>(IntOpt) The pool size limit for connections expiration policy</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_kafka]</span> <span class="pre">conn_pool_ttl</span> <span class="pre">=</span> <span class="pre">1200</span></code></td>
+<td>(IntOpt) The time-to-live in sec of idle connections in the pool</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_kafka]</span> <span class="pre">consumer_group</span> <span class="pre">=</span> <span class="pre">oslo_messaging_consumer</span></code></td>
+<td>(StrOpt) Group id for Kafka consumer. Consumers in one group will coordinate message consumption</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_kafka]</span> <span class="pre">kafka_consumer_timeout</span> <span class="pre">=</span> <span class="pre">1.0</span></code></td>
+<td>(IntOpt) Default timeout(s) for Kafka consumers</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_kafka]</span> <span class="pre">kafka_default_host</span> <span class="pre">=</span> <span class="pre">localhost</span></code></td>
+<td>(StrOpt) Default Kafka broker Host</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_kafka]</span> <span class="pre">kafka_default_port</span> <span class="pre">=</span> <span class="pre">9092</span></code></td>
+<td>(PortOpt) Default Kafka broker Port</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_kafka]</span> <span class="pre">kafka_max_fetch_bytes</span> <span class="pre">=</span> <span class="pre">1048576</span></code></td>
+<td>(IntOpt) Max fetch bytes of Kafka consumer</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_kafka]</span> <span class="pre">pool_size</span> <span class="pre">=</span> <span class="pre">10</span></code></td>
+<td>(IntOpt) Pool Size for Kafka Consumers</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_kafka]</span> <span class="pre">producer_batch_size</span> <span class="pre">=</span> <span class="pre">16384</span></code></td>
+<td>(IntOpt) Size of batch for the producer async send</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_kafka]</span> <span class="pre">producer_batch_timeout</span> <span class="pre">=</span> <span class="pre">0.0</span></code></td>
+<td>(FloatOpt) Upper bound on the delay for KafkaProducer batching in seconds</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_notifications]</span> <span class="pre">driver</span> <span class="pre">=</span> <span class="pre">[]</span></code></td>
+<td>(MultiStrOpt) The Drivers(s) to handle sending notifications. Possible values are messaging, messagingv2, routing, log, test, noop</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_notifications]</span> <span class="pre">topics</span> <span class="pre">=</span> <span class="pre">notifications</span></code></td>
+<td>(ListOpt) AMQP topic used for OpenStack notifications.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_notifications]</span> <span class="pre">transport_url</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) A URL representing the messaging driver to use for notifications. If not set, we fall back to the same configuration used for RPC.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">amqp_auto_delete</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Auto-delete queues in AMQP.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">amqp_durable_queues</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Use durable queues in AMQP.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">channel_max</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(IntOpt) Maximum number of channels to allow</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">connection_factory</span> <span class="pre">=</span> <span class="pre">single</span></code></td>
+<td>(StrOpt) Connection factory implementation</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">default_notification_exchange</span> <span class="pre">=</span> <span class="pre">${control_exchange}_notification</span></code></td>
+<td>(StrOpt) Exchange name for sending notifications</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">default_notification_retry_attempts</span> <span class="pre">=</span> <span class="pre">-1</span></code></td>
+<td>(IntOpt) Reconnecting retry count in case of connectivity problem during sending notification, -1 means infinite retry.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">default_rpc_exchange</span> <span class="pre">=</span> <span class="pre">${control_exchange}_rpc</span></code></td>
+<td>(StrOpt) Exchange name for sending RPC messages</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">default_rpc_retry_attempts</span> <span class="pre">=</span> <span class="pre">-1</span></code></td>
+<td>(IntOpt) Reconnecting retry count in case of connectivity problem during sending RPC message, -1 means infinite retry. If actual retry attempts in not 0 the rpc request could be processed more than one time</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">default_serializer_type</span> <span class="pre">=</span> <span class="pre">json</span></code></td>
+<td>(StrOpt) Default serialization mechanism for serializing/deserializing outgoing/incoming messages</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">fake_rabbit</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Deprecated, use rpc_backend=kombu+memory or rpc_backend=fake</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">frame_max</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(IntOpt) The maximum byte size for an AMQP frame</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">heartbeat_interval</span> <span class="pre">=</span> <span class="pre">3</span></code></td>
+<td>(IntOpt) How often to send heartbeats for consumer&#8217;s connections</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">heartbeat_rate</span> <span class="pre">=</span> <span class="pre">2</span></code></td>
+<td>(IntOpt) How often times during the heartbeat_timeout_threshold we check the heartbeat.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">heartbeat_timeout_threshold</span> <span class="pre">=</span> <span class="pre">60</span></code></td>
+<td>(IntOpt) Number of seconds after which the Rabbit broker is considered down if heartbeat&#8217;s keep-alive fails (0 disable the heartbeat). EXPERIMENTAL</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">host_connection_reconnect_delay</span> <span class="pre">=</span> <span class="pre">0.25</span></code></td>
+<td>(FloatOpt) Set delay for reconnection to some host which has connection error</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">kombu_compression</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(StrOpt) EXPERIMENTAL: Possible values are: gzip, bz2. If not set compression will not be used. This option may not be available in future versions.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">kombu_failover_strategy</span> <span class="pre">=</span> <span class="pre">round-robin</span></code></td>
+<td>(StrOpt) Determines how the next RabbitMQ node is chosen in case the one we are currently connected to becomes unavailable. Takes effect only if more than one RabbitMQ node is provided in config.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">kombu_missing_consumer_retry_timeout</span> <span class="pre">=</span> <span class="pre">60</span></code></td>
+<td>(IntOpt) How long to wait a missing client before abandoning to send it its replies. This value should not be longer than rpc_response_timeout.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">kombu_reconnect_delay</span> <span class="pre">=</span> <span class="pre">1.0</span></code></td>
+<td>(FloatOpt) How long to wait before reconnecting in response to an AMQP consumer cancel notification.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">kombu_ssl_ca_certs</span> <span class="pre">=</span></code></td>
+<td>(StrOpt) SSL certification authority file (valid only if SSL enabled).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">kombu_ssl_certfile</span> <span class="pre">=</span></code></td>
+<td>(StrOpt) SSL cert file (valid only if SSL enabled).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">kombu_ssl_keyfile</span> <span class="pre">=</span></code></td>
+<td>(StrOpt) SSL key file (valid only if SSL enabled).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">kombu_ssl_version</span> <span class="pre">=</span></code></td>
+<td>(StrOpt) SSL version to use (valid only if SSL enabled). Valid values are TLSv1 and SSLv23. SSLv2, SSLv3, TLSv1_1, and TLSv1_2 may be available on some distributions.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">notification_listener_prefetch_count</span> <span class="pre">=</span> <span class="pre">100</span></code></td>
+<td>(IntOpt) Max number of not acknowledged message which RabbitMQ can send to notification listener.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">notification_persistence</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Persist notification messages.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">notification_retry_delay</span> <span class="pre">=</span> <span class="pre">0.25</span></code></td>
+<td>(FloatOpt) Reconnecting retry delay in case of connectivity problem during sending notification message</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">pool_max_overflow</span> <span class="pre">=</span> <span class="pre">0</span></code></td>
+<td>(IntOpt) Maximum number of connections to create above <cite>pool_max_size</cite>.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">pool_max_size</span> <span class="pre">=</span> <span class="pre">30</span></code></td>
+<td>(IntOpt) Maximum number of connections to keep queued.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">pool_recycle</span> <span class="pre">=</span> <span class="pre">600</span></code></td>
+<td>(IntOpt) Lifetime of a connection (since creation) in seconds or None for no recycling. Expired connections are closed on acquire.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">pool_stale</span> <span class="pre">=</span> <span class="pre">60</span></code></td>
+<td>(IntOpt) Threshold at which inactive (since release) connections are considered stale in seconds or None for no staleness. Stale connections are closed on acquire.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">pool_timeout</span> <span class="pre">=</span> <span class="pre">30</span></code></td>
+<td>(IntOpt) Default number of seconds to wait for a connections to available</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rabbit_ha_queues</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Try to use HA queues in RabbitMQ (x-ha-policy: all). If you change this option, you must wipe the RabbitMQ database. In RabbitMQ 3.0, queue mirroring is no longer controlled by the x-ha-policy argument when declaring a queue. If you just want to make sure that all queues (except those with auto-generated names) are mirrored across all nodes, run: &#8220;rabbitmqctl set_policy HA &#8216;^(?!amq.).*&#8217; &#8216;{&#8220;ha-mode&#8221;: &#8220;all&#8221;}&#8217; &#8220;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rabbit_host</span> <span class="pre">=</span> <span class="pre">localhost</span></code></td>
+<td>(StrOpt) The RabbitMQ broker address where a single node is used.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rabbit_hosts</span> <span class="pre">=</span> <span class="pre">$rabbit_host:$rabbit_port</span></code></td>
+<td>(ListOpt) RabbitMQ HA cluster host:port pairs.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rabbit_interval_max</span> <span class="pre">=</span> <span class="pre">30</span></code></td>
+<td>(IntOpt) Maximum interval of RabbitMQ connection retries. Default is 30 seconds.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rabbit_login_method</span> <span class="pre">=</span> <span class="pre">AMQPLAIN</span></code></td>
+<td>(StrOpt) The RabbitMQ login method.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rabbit_max_retries</span> <span class="pre">=</span> <span class="pre">0</span></code></td>
+<td>(IntOpt) Maximum number of RabbitMQ connection retries. Default is 0 (infinite retry count).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rabbit_password</span> <span class="pre">=</span> <span class="pre">guest</span></code></td>
+<td>(StrOpt) The RabbitMQ password.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rabbit_port</span> <span class="pre">=</span> <span class="pre">5672</span></code></td>
+<td>(PortOpt) The RabbitMQ broker port where a single node is used.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rabbit_qos_prefetch_count</span> <span class="pre">=</span> <span class="pre">0</span></code></td>
+<td>(IntOpt) Specifies the number of messages to prefetch. Setting to zero allows unlimited messages.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rabbit_retry_backoff</span> <span class="pre">=</span> <span class="pre">2</span></code></td>
+<td>(IntOpt) How long to backoff for between retries when connecting to RabbitMQ.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rabbit_retry_interval</span> <span class="pre">=</span> <span class="pre">1</span></code></td>
+<td>(IntOpt) How frequently to retry connecting with RabbitMQ.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rabbit_transient_queues_ttl</span> <span class="pre">=</span> <span class="pre">1800</span></code></td>
+<td>(IntOpt) Positive integer representing duration in seconds for queue TTL (x-expires). Queues which are unused for the duration of the TTL are automatically deleted. The parameter affects only reply and fanout queues.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rabbit_use_ssl</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Connect over SSL for RabbitMQ.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rabbit_userid</span> <span class="pre">=</span> <span class="pre">guest</span></code></td>
+<td>(StrOpt) The RabbitMQ userid.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rabbit_virtual_host</span> <span class="pre">=</span> <span class="pre">/</span></code></td>
+<td>(StrOpt) The RabbitMQ virtual host.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rpc_listener_prefetch_count</span> <span class="pre">=</span> <span class="pre">100</span></code></td>
+<td>(IntOpt) Max number of not acknowledged message which RabbitMQ can send to rpc listener.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rpc_queue_expiration</span> <span class="pre">=</span> <span class="pre">60</span></code></td>
+<td>(IntOpt) Time to live for rpc queues without consumers in seconds.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rpc_reply_exchange</span> <span class="pre">=</span> <span class="pre">${control_exchange}_rpc_reply</span></code></td>
+<td>(StrOpt) Exchange name for receiving RPC replies</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rpc_reply_listener_prefetch_count</span> <span class="pre">=</span> <span class="pre">100</span></code></td>
+<td>(IntOpt) Max number of not acknowledged message which RabbitMQ can send to rpc reply listener.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rpc_reply_retry_attempts</span> <span class="pre">=</span> <span class="pre">-1</span></code></td>
+<td>(IntOpt) Reconnecting retry count in case of connectivity problem during sending reply. -1 means infinite retry during rpc_timeout</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rpc_reply_retry_delay</span> <span class="pre">=</span> <span class="pre">0.25</span></code></td>
+<td>(FloatOpt) Reconnecting retry delay in case of connectivity problem during sending reply.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">rpc_retry_delay</span> <span class="pre">=</span> <span class="pre">0.25</span></code></td>
+<td>(FloatOpt) Reconnecting retry delay in case of connectivity problem during sending RPC message</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">socket_timeout</span> <span class="pre">=</span> <span class="pre">0.25</span></code></td>
+<td>(FloatOpt) Set socket timeout in seconds for connection&#8217;s socket</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">ssl</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(BoolOpt) Enable SSL</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">ssl_options</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(DictOpt) Arguments passed to ssl.wrap_socket</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_rabbit]</span> <span class="pre">tcp_user_timeout</span> <span class="pre">=</span> <span class="pre">0.25</span></code></td>
+<td>(FloatOpt) Set TCP_USER_TIMEOUT in seconds for connection&#8217;s socket</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">rpc_ack_timeout_base</span> <span class="pre">=</span> <span class="pre">15</span></code></td>
+<td>(IntOpt) Number of seconds to wait for an ack from a cast/call. After each retry attempt this timeout is multiplied by some specified multiplier.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">rpc_ack_timeout_multiplier</span> <span class="pre">=</span> <span class="pre">2</span></code></td>
+<td>(IntOpt) Number to multiply base ack timeout by after each retry attempt.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">rpc_message_ttl</span> <span class="pre">=</span> <span class="pre">300</span></code></td>
+<td>(IntOpt) Expiration timeout in seconds of a sent/received message after which it is not tracked anymore by a client/server.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">rpc_poll_timeout</span> <span class="pre">=</span> <span class="pre">1</span></code></td>
+<td>(IntOpt) The default number of seconds that poll should wait. Poll raises timeout exception when timeout expired.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">rpc_retry_attempts</span> <span class="pre">=</span> <span class="pre">3</span></code></td>
+<td>(IntOpt) Default number of message sending attempts in case of any problems occurred: positive value N means at most N retries, 0 means no retries, None or -1 (or any other negative values) mean to retry forever. This option is used only if acknowledgments are enabled.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">rpc_thread_pool_size</span> <span class="pre">=</span> <span class="pre">100</span></code></td>
+<td>(IntOpt) Maximum number of (green) threads to work concurrently.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">rpc_use_acks</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Wait for message acknowledgements from receivers. This mechanism works only via proxy without PUB/SUB.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">rpc_zmq_bind_address</span> <span class="pre">=</span> <span class="pre">*</span></code></td>
+<td>(StrOpt) ZeroMQ bind address. Should be a wildcard (*), an ethernet interface, or IP. The &#8220;host&#8221; option should point or resolve to this address.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">rpc_zmq_bind_port_retries</span> <span class="pre">=</span> <span class="pre">100</span></code></td>
+<td>(IntOpt) Number of retries to find free port number before fail with ZMQBindError.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">rpc_zmq_contexts</span> <span class="pre">=</span> <span class="pre">1</span></code></td>
+<td>(IntOpt) Number of ZeroMQ contexts, defaults to 1.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">rpc_zmq_host</span> <span class="pre">=</span> <span class="pre">localhost</span></code></td>
+<td>(StrOpt) Name of this node. Must be a valid hostname, FQDN, or IP address. Must match &#8220;host&#8221; option, if running Nova.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">rpc_zmq_ipc_dir</span> <span class="pre">=</span> <span class="pre">/var/run/openstack</span></code></td>
+<td>(StrOpt) Directory for holding IPC sockets.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">rpc_zmq_matchmaker</span> <span class="pre">=</span> <span class="pre">redis</span></code></td>
+<td>(StrOpt) MatchMaker driver.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">rpc_zmq_max_port</span> <span class="pre">=</span> <span class="pre">65536</span></code></td>
+<td>(IntOpt) Maximal port number for random ports range.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">rpc_zmq_min_port</span> <span class="pre">=</span> <span class="pre">49153</span></code></td>
+<td>(PortOpt) Minimal port number for random ports range.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">rpc_zmq_serialization</span> <span class="pre">=</span> <span class="pre">json</span></code></td>
+<td>(StrOpt) Default serialization mechanism for serializing/deserializing outgoing/incoming messages</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">rpc_zmq_topic_backlog</span> <span class="pre">=</span> <span class="pre">None</span></code></td>
+<td>(IntOpt) Maximum number of ingress messages to locally buffer per topic. Default is unlimited.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">subscribe_on</span> <span class="pre">=</span></code></td>
+<td>(ListOpt) List of publisher hosts SubConsumer can subscribe on. This option has higher priority then the default publishers list taken from the matchmaker.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">use_dynamic_connections</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) This option makes direct connections dynamic or static. It makes sense only with use_router_proxy=False which means to use direct connections for direct message types (ignored otherwise).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">use_pub_sub</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Use PUB/SUB pattern for fanout methods. PUB/SUB always uses proxy.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">use_router_proxy</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Use ROUTER remote proxy.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">zmq_failover_connections</span> <span class="pre">=</span> <span class="pre">2</span></code></td>
+<td>(IntOpt) How many additional connections to a host will be made for failover reasons. This option is actual only in dynamic connections mode.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">zmq_immediate</span> <span class="pre">=</span> <span class="pre">True</span></code></td>
+<td>(BoolOpt) This option configures round-robin mode in zmq socket. True means not keeping a queue when server side disconnects. False means to keep queue and messages even if server is disconnected, when the server appears we send all accumulated messages to it.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">zmq_linger</span> <span class="pre">=</span> <span class="pre">-1</span></code></td>
+<td>(IntOpt) Number of seconds to wait before all pending messages will be sent after closing a socket. The default value of -1 specifies an infinite linger period. The value of 0 specifies no linger period. Pending messages shall be discarded immediately when the socket is closed. Positive values specify an upper bound for the linger period.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">zmq_target_expire</span> <span class="pre">=</span> <span class="pre">300</span></code></td>
+<td>(IntOpt) Expiration timeout in seconds of a name service record about existing target ( &lt; 0 means no timeout).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">zmq_target_update</span> <span class="pre">=</span> <span class="pre">180</span></code></td>
+<td>(IntOpt) Update period in seconds of a name service record about existing target.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">zmq_tcp_keepalive</span> <span class="pre">=</span> <span class="pre">-1</span></code></td>
+<td>(IntOpt) Enable/disable TCP keepalive (KA) mechanism. The default value of -1 (or any other negative value) means to skip any overrides and leave it to OS default; 0 and 1 (or any other positive value) mean to disable and enable the option respectively.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">zmq_tcp_keepalive_cnt</span> <span class="pre">=</span> <span class="pre">-1</span></code></td>
+<td>(IntOpt) The number of retransmissions to be carried out before declaring that remote end is not available. The default value of -1 (or any other negative value and 0) means to skip any overrides and leave it to OS default.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">zmq_tcp_keepalive_idle</span> <span class="pre">=</span> <span class="pre">-1</span></code></td>
+<td>(IntOpt) The duration between two keepalive transmissions in idle condition. The unit is platform dependent, for example, seconds in Linux, milliseconds in Windows etc. The default value of -1 (or any other negative value and 0) means to skip any overrides and leave it to OS default.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[oslo_messaging_zmq]</span> <span class="pre">zmq_tcp_keepalive_intvl</span> <span class="pre">=</span> <span class="pre">-1</span></code></td>
+<td>(IntOpt) The duration between two successive keepalive retransmissions, if acknowledgement to the previous keepalive transmission is not received. The unit is platform dependent, for example, seconds in Linux, milliseconds in Windows etc. The default value of -1 (or any other negative value and 0) means to skip any overrides and leave it to OS default.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">connection_string</span> <span class="pre">=</span> <span class="pre">messaging://</span></code></td>
+<td>(StrOpt) Connection string for a notifier backend. Default value is messaging:// which sets the notifier to oslo_messaging. Examples of possible values: * messaging://: use oslo_messaging driver for sending notifications. * mongodb://127.0.0.1:27017 : use mongodb driver for sending notifications. * elasticsearch://127.0.0.1:9200 : use elasticsearch driver for sending notifications.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">enabled</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Enables the profiling for all services on this node. Default value is False (fully disable the profiling feature). Possible values: * True: Enables the feature * False: Disables the feature. The profiling cannot be started via this project operations. If the profiling is triggered by another project, this project part will be empty.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">es_doc_type</span> <span class="pre">=</span> <span class="pre">notification</span></code></td>
+<td>(StrOpt) Document type for notification indexing in elasticsearch.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">es_scroll_size</span> <span class="pre">=</span> <span class="pre">10000</span></code></td>
+<td>(IntOpt) Elasticsearch splits large requests in batches. This parameter defines maximum size of each batch (for example: es_scroll_size=10000).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">es_scroll_time</span> <span class="pre">=</span> <span class="pre">2m</span></code></td>
+<td>(StrOpt) This parameter is a time value parameter (for example: es_scroll_time=2m), indicating for how long the nodes that participate in the search will maintain relevant resources in order to continue and support it.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">hmac_keys</span> <span class="pre">=</span> <span class="pre">SECRET_KEY</span></code></td>
+<td>(StrOpt) Secret key(s) to use for encrypting context data for performance profiling. This string value should have the following format: &lt;key1&gt;[,&lt;key2&gt;,...&lt;keyn&gt;], where each key is some random string. A user who triggers the profiling via the REST API has to set one of these keys in the headers of the REST API call to include profiling results of this node for this particular project. Both &#8220;enabled&#8221; flag and &#8220;hmac_keys&#8221; config options should be set to enable profiling. Also, to generate correct profiling information across all services at least one key needs to be consistent between OpenStack projects. This ensures it can be used from client side to generate the trace, containing information from all possible resources.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">sentinel_service_name</span> <span class="pre">=</span> <span class="pre">mymaster</span></code></td>
+<td>(StrOpt) Redissentinel uses a service name to identify a master redis service. This parameter defines the name (for example: sentinal_service_name=mymaster).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">socket_timeout</span> <span class="pre">=</span> <span class="pre">0.1</span></code></td>
+<td>(FloatOpt) Redissentinel provides a timeout option on the connections. This parameter defines that timeout (for example: socket_timeout=0.1).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">trace_management_store</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) If False doesn&#8217;t trace any management store requests.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">trace_message_store</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) If False doesn&#8217;t trace any message store requests.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">trace_sqlalchemy</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) Enables SQL requests profiling in services. Default value is False (SQL requests won&#8217;t be traced). Possible values: * True: Enables SQL requests profiling. Each SQL query will be part of the trace and can the be analyzed by how much time was spent for that. * False: Disables SQL requests profiling. The spent time is only shown on a higher level of operations. Single SQL queries cannot be analyzed this way.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[profiler]</span> <span class="pre">trace_wsgi_transport</span> <span class="pre">=</span> <span class="pre">False</span></code></td>
+<td>(BoolOpt) If False doesn&#8217;t trace any transport requests.Please note that it doesn&#8217;t work for websocket now.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">[transport]</span> <span class="pre">max_flavors_per_page</span> <span class="pre">=</span> <span class="pre">20</span></code></td>
+<td>(IntOpt) Defines the maximum number of flavors per page.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[transport]</span> <span class="pre">max_pools_per_page</span> <span class="pre">=</span> <span class="pre">20</span></code></td>
+<td>(IntOpt) Defines the maximum number of pools per page.</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="config-ref-table docutils" id="id2">
+<caption><span class="caption-text">Deprecated options</span><a class="headerlink" href="zaqar.html#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Deprecated option</th>
+<th class="head">New Option</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">[DEFAULT]</span> <span class="pre">use_syslog</span></code></td>
+<td><code class="docutils literal"><span class="pre">None</span></code></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="../../message/logs.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Messaging log files"></i></a>
+          
+          
+            <a href="../../networking.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Networking service"></i></a>
+          
+            <a id="logABugLink3" href="zaqar.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:41</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="../../_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="zaqar.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="../../index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../config-overview.html">OpenStack configuration overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../common-configurations.html">Common configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../application-catalog.html">Application Catalog service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bare-metal.html">Bare Metal service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../block-storage.html">Block Storage service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../clustering.html">Clustering service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compute.html">Compute service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dashboard.html">Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data-processing.html">Data Processing service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../database.html">Database service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../identity.html">Identity service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image.html">Image service</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../message.html">Message service</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../message/zaqar-conf.html">Overview of zaqar.conf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../message/api.html">Message API configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../message/zaqar-drivers.html">Drivers options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../message/zaqar-storage-drivers.html">Storage drivers options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../message/zaqar-transport-drivers.html">Transport drivers options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../message/zaqar-notifications.html">Notifications options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../message/zaqar-authentication.html">Authentication and authorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../message/zaqar-pooling.html">Pooling options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../message/logs.html">Messaging log files</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="zaqar.html#">New, updated, and deprecated options in Ocata for Message service</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking.html">Networking service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../object-storage.html">Object Storage service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../orchestration.html">Orchestration service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared-file-systems.html">Shared File Systems service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../telemetry.html">Telemetry service</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../policy-yaml-file.html">The policy.yaml file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../policy-json-file.html">The policy.json file</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="../../_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="../../_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="../../_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="../../_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="../../_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "tables/conf-changes/zaqar" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/config-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "New, updated, and deprecated options in Ocata for Message service in Configuration Reference";
+    var fieldTags = "config-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:41";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,1252 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: Rating service (cloudkitty) command-line client</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>Rating service (cloudkitty) command-line client</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="heat.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Orchestration service (heat) command-line client"></i></a>
+    
+    
+    <a href="vitrage.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: RCA (Root Cause Analysis) service (vitrage) command-line client"></i></a>
+    
+    <a id="logABugLink1" href="cloudkitty.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="cloudkitty.html#">Rating service (cloudkitty) command-line client</a><ul>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-usage">cloudkitty usage</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-optional-arguments">cloudkitty optional arguments</a><ul>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-collector-mapping-create">cloudkitty collector-mapping-create</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-collector-mapping-delete">cloudkitty collector-mapping-delete</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-collector-mapping-get">cloudkitty collector-mapping-get</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-collector-mapping-list">cloudkitty collector-mapping-list</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-collector-state-disable">cloudkitty collector-state-disable</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-collector-state-enable">cloudkitty collector-state-enable</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-collector-state-get">cloudkitty collector-state-get</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-hashmap-field-create">cloudkitty hashmap-field-create</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-hashmap-field-delete">cloudkitty hashmap-field-delete</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-hashmap-field-list">cloudkitty hashmap-field-list</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-hashmap-group-create">cloudkitty hashmap-group-create</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-hashmap-group-delete">cloudkitty hashmap-group-delete</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-hashmap-group-list">cloudkitty hashmap-group-list</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-hashmap-mapping-create">cloudkitty hashmap-mapping-create</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-hashmap-mapping-delete">cloudkitty hashmap-mapping-delete</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-hashmap-mapping-list">cloudkitty hashmap-mapping-list</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-hashmap-mapping-update">cloudkitty hashmap-mapping-update</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-hashmap-service-create">cloudkitty hashmap-service-create</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-hashmap-service-delete">cloudkitty hashmap-service-delete</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-hashmap-service-list">cloudkitty hashmap-service-list</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-hashmap-threshold-create">cloudkitty hashmap-threshold-create</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-hashmap-threshold-delete">cloudkitty hashmap-threshold-delete</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-hashmap-threshold-get">cloudkitty hashmap-threshold-get</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-hashmap-threshold-group">cloudkitty hashmap-threshold-group</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-hashmap-threshold-list">cloudkitty hashmap-threshold-list</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-hashmap-threshold-update">cloudkitty hashmap-threshold-update</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-info-config-get">cloudkitty info-config-get</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-info-service-get">cloudkitty info-service-get</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-module-disable">cloudkitty module-disable</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-module-enable">cloudkitty module-enable</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-module-list">cloudkitty module-list</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-module-set-priority">cloudkitty module-set-priority</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-pyscripts-script-create">cloudkitty pyscripts-script-create</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-pyscripts-script-delete">cloudkitty pyscripts-script-delete</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-pyscripts-script-get">cloudkitty pyscripts-script-get</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-pyscripts-script-get-data">cloudkitty pyscripts-script-get-data</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-pyscripts-script-list">cloudkitty pyscripts-script-list</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-pyscripts-script-update">cloudkitty pyscripts-script-update</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-report-tenant-list">cloudkitty report-tenant-list</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-storage-dataframe-list">cloudkitty storage-dataframe-list</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-summary-get">cloudkitty summary-get</a></li>
+<li><a class="reference internal" href="cloudkitty.html#cloudkitty-total-get">cloudkitty total-get</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="rating-service-cloudkitty-command-line-client">
+<h1>Rating service (cloudkitty) command-line client<a class="headerlink" href="cloudkitty.html#rating-service-cloudkitty-command-line-client" title="Permalink to this headline">¶</a></h1>
+<p>The cloudkitty client is the command-line interface (CLI) for
+the Rating service (cloudkitty) API and its extensions.</p>
+<p>This chapter documents <strong class="command">cloudkitty</strong> version <code class="docutils literal"><span class="pre">1.0.0</span></code>.</p>
+<p>For help on a specific <strong class="command">cloudkitty</strong> command, enter:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> cloudkitty <span class="nb">help</span> COMMAND
+</pre></div>
+</div>
+<div class="section" id="cloudkitty-usage">
+<span id="cloudkitty-command-usage"></span><h2>cloudkitty usage<a class="headerlink" href="cloudkitty.html#cloudkitty-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty [--version] [-d] [-v] [--timeout TIMEOUT]</span>
+<span class="go">                  [--cloudkitty-url &lt;CLOUDKITTY_URL&gt;]</span>
+<span class="go">                  [--cloudkitty-api-version CLOUDKITTY_API_VERSION]</span>
+<span class="go">                  [--os-tenant-id &lt;tenant-id&gt;]</span>
+<span class="go">                  [--os-region-name &lt;region-name&gt;]</span>
+<span class="go">                  [--os-auth-token &lt;auth-token&gt;]</span>
+<span class="go">                  [--os-service-type &lt;service-type&gt;]</span>
+<span class="go">                  [--os-endpoint-type &lt;endpoint-type&gt;] [--os-cacert &lt;cacert&gt;]</span>
+<span class="go">                  [--os-insecure &lt;insecure&gt;] [--os-cert-file &lt;cert-file&gt;]</span>
+<span class="go">                  [--os-key-file &lt;key-file&gt;] [--os-cert &lt;cert&gt;]</span>
+<span class="go">                  [--os-key &lt;key&gt;] [--os-project-name &lt;project-name&gt;]</span>
+<span class="go">                  [--os-project-id &lt;project-id&gt;]</span>
+<span class="go">                  [--os-project-domain-id &lt;project-domain-id&gt;]</span>
+<span class="go">                  [--os-project-domain-name &lt;project-domain-name&gt;]</span>
+<span class="go">                  [--os-user-id &lt;user-id&gt;]</span>
+<span class="go">                  [--os-user-domain-id &lt;user-domain-id&gt;]</span>
+<span class="go">                  [--os-user-domain-name &lt;user-domain-name&gt;]</span>
+<span class="go">                  [--os-endpoint &lt;endpoint&gt;] [--os-auth-system &lt;auth-system&gt;]</span>
+<span class="go">                  [--os-username &lt;username&gt;] [--os-password &lt;password&gt;]</span>
+<span class="go">                  [--os-tenant-name &lt;tenant-name&gt;] [--os-token &lt;token&gt;]</span>
+<span class="go">                  [--os-auth-url &lt;auth-url&gt;]</span>
+<span class="go">                  &lt;subcommand&gt; ...</span>
+</pre></div>
+</div>
+<p><strong>Subcommands:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">info-config-get</span></code></dt>
+<dd>Get cloudkitty configuration.</dd>
+<dt><code class="docutils literal"><span class="pre">info-service-get</span></code></dt>
+<dd>Get service info.</dd>
+<dt><code class="docutils literal"><span class="pre">module-disable</span></code></dt>
+<dd>Disable a module.</dd>
+<dt><code class="docutils literal"><span class="pre">module-enable</span></code></dt>
+<dd>Enable a module.</dd>
+<dt><code class="docutils literal"><span class="pre">module-list</span></code></dt>
+<dd>List the samples for this meters.</dd>
+<dt><code class="docutils literal"><span class="pre">module-set-priority</span></code></dt>
+<dd>Set module priority.</dd>
+<dt><code class="docutils literal"><span class="pre">collector-mapping-create</span></code></dt>
+<dd>Create collector mapping.</dd>
+<dt><code class="docutils literal"><span class="pre">collector-mapping-delete</span></code></dt>
+<dd>Delete collector mapping.</dd>
+<dt><code class="docutils literal"><span class="pre">collector-mapping-get</span></code></dt>
+<dd>Show collector mapping detail.</dd>
+<dt><code class="docutils literal"><span class="pre">collector-mapping-list</span></code></dt>
+<dd>List collector mapping.</dd>
+<dt><code class="docutils literal"><span class="pre">collector-state-disable</span></code></dt>
+<dd>Disable collector state.</dd>
+<dt><code class="docutils literal"><span class="pre">collector-state-enable</span></code></dt>
+<dd>Enable collector state.</dd>
+<dt><code class="docutils literal"><span class="pre">collector-state-get</span></code></dt>
+<dd>Show collector state.</dd>
+<dt><code class="docutils literal"><span class="pre">report-tenant-list</span></code></dt>
+<dd>List tenant report.</dd>
+<dt><code class="docutils literal"><span class="pre">summary-get</span></code></dt>
+<dd>Get summary report.</dd>
+<dt><code class="docutils literal"><span class="pre">total-get</span></code></dt>
+<dd>Get total reports.</dd>
+<dt><code class="docutils literal"><span class="pre">storage-dataframe-list</span></code></dt>
+<dd>List dataframes.</dd>
+<dt><code class="docutils literal"><span class="pre">hashmap-field-create</span></code></dt>
+<dd>Create a field.</dd>
+<dt><code class="docutils literal"><span class="pre">hashmap-field-delete</span></code></dt>
+<dd>Delete a field.</dd>
+<dt><code class="docutils literal"><span class="pre">hashmap-field-list</span></code></dt>
+<dd>List fields.</dd>
+<dt><code class="docutils literal"><span class="pre">hashmap-group-create</span></code></dt>
+<dd>Create a group.</dd>
+<dt><code class="docutils literal"><span class="pre">hashmap-group-delete</span></code></dt>
+<dd>Delete a group.</dd>
+<dt><code class="docutils literal"><span class="pre">hashmap-group-list</span></code></dt>
+<dd>List groups.</dd>
+<dt><code class="docutils literal"><span class="pre">hashmap-mapping-create</span></code></dt>
+<dd>Create a mapping.</dd>
+<dt><code class="docutils literal"><span class="pre">hashmap-mapping-delete</span></code></dt>
+<dd>Delete a mapping.</dd>
+<dt><code class="docutils literal"><span class="pre">hashmap-mapping-list</span></code></dt>
+<dd>List mappings.</dd>
+<dt><code class="docutils literal"><span class="pre">hashmap-mapping-update</span></code></dt>
+<dd>Update a mapping.</dd>
+<dt><code class="docutils literal"><span class="pre">hashmap-service-create</span></code></dt>
+<dd>Create a service.</dd>
+<dt><code class="docutils literal"><span class="pre">hashmap-service-delete</span></code></dt>
+<dd>Delete a service.</dd>
+<dt><code class="docutils literal"><span class="pre">hashmap-service-list</span></code></dt>
+<dd>List services.</dd>
+<dt><code class="docutils literal"><span class="pre">hashmap-threshold-create</span></code></dt>
+<dd>Create a mapping.</dd>
+<dt><code class="docutils literal"><span class="pre">hashmap-threshold-delete</span></code></dt>
+<dd>Delete a threshold.</dd>
+<dt><code class="docutils literal"><span class="pre">hashmap-threshold-get</span></code></dt>
+<dd>Get a threshold.</dd>
+<dt><code class="docutils literal"><span class="pre">hashmap-threshold-group</span></code></dt>
+<dd>Get a threshold group.</dd>
+<dt><code class="docutils literal"><span class="pre">hashmap-threshold-list</span></code></dt>
+<dd>List thresholds.</dd>
+<dt><code class="docutils literal"><span class="pre">hashmap-threshold-update</span></code></dt>
+<dd>Update a threshold.</dd>
+<dt><code class="docutils literal"><span class="pre">pyscripts-script-create</span></code></dt>
+<dd>Create a script.</dd>
+<dt><code class="docutils literal"><span class="pre">pyscripts-script-delete</span></code></dt>
+<dd>Delete a script.</dd>
+<dt><code class="docutils literal"><span class="pre">pyscripts-script-get</span></code></dt>
+<dd>Get script.</dd>
+<dt><code class="docutils literal"><span class="pre">pyscripts-script-get-data</span></code></dt>
+<dd>Get script data.</dd>
+<dt><code class="docutils literal"><span class="pre">pyscripts-script-list</span></code></dt>
+<dd>List scripts.</dd>
+<dt><code class="docutils literal"><span class="pre">pyscripts-script-update</span></code></dt>
+<dd>Update a mapping.</dd>
+<dt><code class="docutils literal"><span class="pre">bash-completion</span></code></dt>
+<dd>Prints all of the commands and options to
+stdout.</dd>
+<dt><code class="docutils literal"><span class="pre">help</span></code></dt>
+<dd>Display help about this program or one of its
+subcommands.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-optional-arguments">
+<span id="cloudkitty-command-options"></span><h2>cloudkitty optional arguments<a class="headerlink" href="cloudkitty.html#cloudkitty-optional-arguments" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--version</span></code></dt>
+<dd>show program's version number and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-d,</span> <span class="pre">--debug</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[CLOUDKITTYCLIENT_DEBUG]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></dt>
+<dd>Print more verbose output.</dd>
+<dt><code class="docutils literal"><span class="pre">--timeout</span> <span class="pre">TIMEOUT</span></code></dt>
+<dd>Number of seconds to wait for a response.</dd>
+<dt><code class="docutils literal"><span class="pre">--cloudkitty-url</span> <span class="pre">&lt;CLOUDKITTY_URL&gt;</span></code></dt>
+<dd><strong>DEPRECATED</strong>, use --os-endpoint instead.
+Defaults to <code class="docutils literal"><span class="pre">env[CLOUDKITTY_URL]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--cloudkitty-api-version</span> <span class="pre">CLOUDKITTY_API_VERSION</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[CLOUDKITTY_API_VERSION]</span></code> or 1.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-id</span> <span class="pre">&lt;tenant-id&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TENANT_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-region-name</span> <span class="pre">&lt;region-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_REGION_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-token</span> <span class="pre">&lt;auth-token&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_AUTH_TOKEN]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-service-type</span> <span class="pre">&lt;service-type&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_SERVICE_TYPE]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-endpoint-type</span> <span class="pre">&lt;endpoint-type&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_ENDPOINT_TYPE]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-cacert</span> <span class="pre">&lt;cacert&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_CACERT]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-insecure</span> <span class="pre">&lt;insecure&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_INSECURE]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-cert-file</span> <span class="pre">&lt;cert-file&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_CERT_FILE]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-key-file</span> <span class="pre">&lt;key-file&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_KEY_FILE]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-cert</span> <span class="pre">&lt;cert&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_CERT]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-key</span> <span class="pre">&lt;key&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_KEY]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-name</span> <span class="pre">&lt;project-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-id</span> <span class="pre">&lt;project-id&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-id</span> <span class="pre">&lt;project-domain-id&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_DOMAIN_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-name</span> <span class="pre">&lt;project-domain-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_DOMAIN_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-id</span> <span class="pre">&lt;user-id&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USER_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-id</span> <span class="pre">&lt;user-domain-id&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USER_DOMAIN_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-name</span> <span class="pre">&lt;user-domain-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USER_DOMAIN_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-endpoint</span> <span class="pre">&lt;endpoint&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_ENDPOINT]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-system</span> <span class="pre">&lt;auth-system&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_AUTH_SYSTEM]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-username</span> <span class="pre">&lt;username&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USERNAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-password</span> <span class="pre">&lt;password&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PASSWORD]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-name</span> <span class="pre">&lt;tenant-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TENANT_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-token</span> <span class="pre">&lt;token&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TOKEN]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-url</span> <span class="pre">&lt;auth-url&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_AUTH_URL]</span></code>.</dd>
+</dl>
+<div class="section" id="cloudkitty-collector-mapping-create">
+<span id="id1"></span><h3>cloudkitty collector-mapping-create<a class="headerlink" href="cloudkitty.html#cloudkitty-collector-mapping-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty collector-mapping-create -c COLLECTOR -s SERVICE</span>
+</pre></div>
+</div>
+<p>Create collector mapping.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">COLLECTOR,</span> <span class="pre">--collector</span> <span class="pre">COLLECTOR</span></code></dt>
+<dd>Map a service to this collector. required.</dd>
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">SERVICE,</span> <span class="pre">--service</span> <span class="pre">SERVICE</span></code></dt>
+<dd>Map a collector to this service. required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-collector-mapping-delete">
+<span id="id2"></span><h3>cloudkitty collector-mapping-delete<a class="headerlink" href="cloudkitty.html#cloudkitty-collector-mapping-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty collector-mapping-delete -s SERVICE</span>
+</pre></div>
+</div>
+<p>Delete collector mapping.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">SERVICE,</span> <span class="pre">--service</span> <span class="pre">SERVICE</span></code></dt>
+<dd>Filter on this service. required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-collector-mapping-get">
+<span id="id3"></span><h3>cloudkitty collector-mapping-get<a class="headerlink" href="cloudkitty.html#cloudkitty-collector-mapping-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty collector-mapping-get -s SERVICE</span>
+</pre></div>
+</div>
+<p>Show collector mapping detail.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">SERVICE,</span> <span class="pre">--service</span> <span class="pre">SERVICE</span></code></dt>
+<dd>Which service to get the mapping for.
+required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-collector-mapping-list">
+<span id="id4"></span><h3>cloudkitty collector-mapping-list<a class="headerlink" href="cloudkitty.html#cloudkitty-collector-mapping-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty collector-mapping-list [-c COLLECTOR]</span>
+</pre></div>
+</div>
+<p>List collector mapping.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">COLLECTOR,</span> <span class="pre">--collector</span> <span class="pre">COLLECTOR</span></code></dt>
+<dd>Collector name to filter on. Defaults to None.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-collector-state-disable">
+<span id="id5"></span><h3>cloudkitty collector-state-disable<a class="headerlink" href="cloudkitty.html#cloudkitty-collector-state-disable" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty collector-state-disable -n NAME</span>
+</pre></div>
+</div>
+<p>Disable collector state.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">NAME,</span> <span class="pre">--name</span> <span class="pre">NAME</span></code></dt>
+<dd>Name of the collector. required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-collector-state-enable">
+<span id="id6"></span><h3>cloudkitty collector-state-enable<a class="headerlink" href="cloudkitty.html#cloudkitty-collector-state-enable" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty collector-state-enable -n NAME</span>
+</pre></div>
+</div>
+<p>Enable collector state.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">NAME,</span> <span class="pre">--name</span> <span class="pre">NAME</span></code></dt>
+<dd>Name of the collector. required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-collector-state-get">
+<span id="id7"></span><h3>cloudkitty collector-state-get<a class="headerlink" href="cloudkitty.html#cloudkitty-collector-state-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty collector-state-get -n NAME</span>
+</pre></div>
+</div>
+<p>Show collector state.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">NAME,</span> <span class="pre">--name</span> <span class="pre">NAME</span></code></dt>
+<dd>Name of the collector. required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-hashmap-field-create">
+<span id="id8"></span><h3>cloudkitty hashmap-field-create<a class="headerlink" href="cloudkitty.html#cloudkitty-hashmap-field-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty hashmap-field-create -n NAME -s SERVICE_ID</span>
+</pre></div>
+</div>
+<p>Create a field.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">NAME,</span> <span class="pre">--name</span> <span class="pre">NAME</span></code></dt>
+<dd>Field name required.</dd>
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">SERVICE_ID,</span> <span class="pre">--service-id</span> <span class="pre">SERVICE_ID</span></code></dt>
+<dd>Service id required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-hashmap-field-delete">
+<span id="id9"></span><h3>cloudkitty hashmap-field-delete<a class="headerlink" href="cloudkitty.html#cloudkitty-hashmap-field-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty hashmap-field-delete -f FIELD_ID</span>
+</pre></div>
+</div>
+<p>Delete a field.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">FIELD_ID,</span> <span class="pre">--field-id</span> <span class="pre">FIELD_ID</span></code></dt>
+<dd>Field uuid required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-hashmap-field-list">
+<span id="id10"></span><h3>cloudkitty hashmap-field-list<a class="headerlink" href="cloudkitty.html#cloudkitty-hashmap-field-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty hashmap-field-list -s SERVICE_ID</span>
+</pre></div>
+</div>
+<p>List fields.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">SERVICE_ID,</span> <span class="pre">--service-id</span> <span class="pre">SERVICE_ID</span></code></dt>
+<dd>Service id required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-hashmap-group-create">
+<span id="id11"></span><h3>cloudkitty hashmap-group-create<a class="headerlink" href="cloudkitty.html#cloudkitty-hashmap-group-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty hashmap-group-create -n NAME</span>
+</pre></div>
+</div>
+<p>Create a group.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">NAME,</span> <span class="pre">--name</span> <span class="pre">NAME</span></code></dt>
+<dd>Group name required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-hashmap-group-delete">
+<span id="id12"></span><h3>cloudkitty hashmap-group-delete<a class="headerlink" href="cloudkitty.html#cloudkitty-hashmap-group-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty hashmap-group-delete -g GROUP_ID [-r RECURSIVE]</span>
+</pre></div>
+</div>
+<p>Delete a group.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-g</span> <span class="pre">GROUP_ID,</span> <span class="pre">--group-id</span> <span class="pre">GROUP_ID</span></code></dt>
+<dd>Group uuid required.</dd>
+<dt><code class="docutils literal"><span class="pre">-r</span> <span class="pre">RECURSIVE,</span> <span class="pre">--recursive</span> <span class="pre">RECURSIVE</span></code></dt>
+<dd>Delete the group's mappings Defaults to False.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-hashmap-group-list">
+<span id="id13"></span><h3>cloudkitty hashmap-group-list<a class="headerlink" href="cloudkitty.html#cloudkitty-hashmap-group-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty hashmap-group-list</span>
+</pre></div>
+</div>
+<p>List groups.</p>
+</div>
+<div class="section" id="cloudkitty-hashmap-mapping-create">
+<span id="id14"></span><h3>cloudkitty hashmap-mapping-create<a class="headerlink" href="cloudkitty.html#cloudkitty-hashmap-mapping-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty hashmap-mapping-create [-s SERVICE_ID] [-f FIELD_ID] -c COST</span>
+<span class="go">                                         [-v VALUE] [-t TYPE] [-g GROUP_ID]</span>
+<span class="go">                                         [-p PROJECT_ID]</span>
+</pre></div>
+</div>
+<p>Create a mapping.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">SERVICE_ID,</span> <span class="pre">--service-id</span> <span class="pre">SERVICE_ID</span></code></dt>
+<dd>Service id.</dd>
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">FIELD_ID,</span> <span class="pre">--field-id</span> <span class="pre">FIELD_ID</span></code></dt>
+<dd>Field id.</dd>
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">COST,</span> <span class="pre">--cost</span> <span class="pre">COST</span></code></dt>
+<dd>Mapping cost required.</dd>
+<dt><code class="docutils literal"><span class="pre">-v</span> <span class="pre">VALUE,</span> <span class="pre">--value</span> <span class="pre">VALUE</span></code></dt>
+<dd>Mapping value.</dd>
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">TYPE,</span> <span class="pre">--type</span> <span class="pre">TYPE</span></code></dt>
+<dd>Mapping type (flat, rate).</dd>
+<dt><code class="docutils literal"><span class="pre">-g</span> <span class="pre">GROUP_ID,</span> <span class="pre">--group-id</span> <span class="pre">GROUP_ID</span></code></dt>
+<dd>Group id.</dd>
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">PROJECT_ID,</span> <span class="pre">--project-id</span> <span class="pre">PROJECT_ID</span></code></dt>
+<dd>Project/tenant id.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-hashmap-mapping-delete">
+<span id="id15"></span><h3>cloudkitty hashmap-mapping-delete<a class="headerlink" href="cloudkitty.html#cloudkitty-hashmap-mapping-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty hashmap-mapping-delete -m MAPPING_ID</span>
+</pre></div>
+</div>
+<p>Delete a mapping.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">MAPPING_ID,</span> <span class="pre">--mapping-id</span> <span class="pre">MAPPING_ID</span></code></dt>
+<dd>Mapping uuid required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-hashmap-mapping-list">
+<span id="id16"></span><h3>cloudkitty hashmap-mapping-list<a class="headerlink" href="cloudkitty.html#cloudkitty-hashmap-mapping-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty hashmap-mapping-list [-s SERVICE_ID] [-f FIELD_ID]</span>
+<span class="go">                                       [-g GROUP_ID] [-p PROJECT_ID]</span>
+</pre></div>
+</div>
+<p>List mappings.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">SERVICE_ID,</span> <span class="pre">--service-id</span> <span class="pre">SERVICE_ID</span></code></dt>
+<dd>Service id.</dd>
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">FIELD_ID,</span> <span class="pre">--field-id</span> <span class="pre">FIELD_ID</span></code></dt>
+<dd>Field id.</dd>
+<dt><code class="docutils literal"><span class="pre">-g</span> <span class="pre">GROUP_ID,</span> <span class="pre">--group-id</span> <span class="pre">GROUP_ID</span></code></dt>
+<dd>Group id.</dd>
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">PROJECT_ID,</span> <span class="pre">--project-id</span> <span class="pre">PROJECT_ID</span></code></dt>
+<dd>Project/tenant id.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-hashmap-mapping-update">
+<span id="id17"></span><h3>cloudkitty hashmap-mapping-update<a class="headerlink" href="cloudkitty.html#cloudkitty-hashmap-mapping-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty hashmap-mapping-update -m MAPPING_ID [-c COST] [-v VALUE]</span>
+<span class="go">                                         [-t TYPE] [-g GROUP_ID]</span>
+<span class="go">                                         [-p PROJECT_ID]</span>
+</pre></div>
+</div>
+<p>Update a mapping.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">MAPPING_ID,</span> <span class="pre">--mapping-id</span> <span class="pre">MAPPING_ID</span></code></dt>
+<dd>Mapping id required.</dd>
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">COST,</span> <span class="pre">--cost</span> <span class="pre">COST</span></code></dt>
+<dd>Mapping cost.</dd>
+<dt><code class="docutils literal"><span class="pre">-v</span> <span class="pre">VALUE,</span> <span class="pre">--value</span> <span class="pre">VALUE</span></code></dt>
+<dd>Mapping value.</dd>
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">TYPE,</span> <span class="pre">--type</span> <span class="pre">TYPE</span></code></dt>
+<dd>Mapping type (flat, rate).</dd>
+<dt><code class="docutils literal"><span class="pre">-g</span> <span class="pre">GROUP_ID,</span> <span class="pre">--group-id</span> <span class="pre">GROUP_ID</span></code></dt>
+<dd>Group id.</dd>
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">PROJECT_ID,</span> <span class="pre">--project-id</span> <span class="pre">PROJECT_ID</span></code></dt>
+<dd>Project/tenant id.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-hashmap-service-create">
+<span id="id18"></span><h3>cloudkitty hashmap-service-create<a class="headerlink" href="cloudkitty.html#cloudkitty-hashmap-service-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty hashmap-service-create -n NAME</span>
+</pre></div>
+</div>
+<p>Create a service.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">NAME,</span> <span class="pre">--name</span> <span class="pre">NAME</span></code></dt>
+<dd>Service name required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-hashmap-service-delete">
+<span id="id19"></span><h3>cloudkitty hashmap-service-delete<a class="headerlink" href="cloudkitty.html#cloudkitty-hashmap-service-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty hashmap-service-delete -s SERVICE_ID</span>
+</pre></div>
+</div>
+<p>Delete a service.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">SERVICE_ID,</span> <span class="pre">--service-id</span> <span class="pre">SERVICE_ID</span></code></dt>
+<dd>Service uuid required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-hashmap-service-list">
+<span id="id20"></span><h3>cloudkitty hashmap-service-list<a class="headerlink" href="cloudkitty.html#cloudkitty-hashmap-service-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty hashmap-service-list</span>
+</pre></div>
+</div>
+<p>List services.</p>
+</div>
+<div class="section" id="cloudkitty-hashmap-threshold-create">
+<span id="id21"></span><h3>cloudkitty hashmap-threshold-create<a class="headerlink" href="cloudkitty.html#cloudkitty-hashmap-threshold-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty hashmap-threshold-create [-s SERVICE_ID] [-f FIELD_ID] -l</span>
+<span class="go">                                           LEVEL -c COST [-t TYPE]</span>
+<span class="go">                                           [-g GROUP_ID] [-p PROJECT_ID]</span>
+</pre></div>
+</div>
+<p>Create a mapping.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">SERVICE_ID,</span> <span class="pre">--service-id</span> <span class="pre">SERVICE_ID</span></code></dt>
+<dd>Service id.</dd>
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">FIELD_ID,</span> <span class="pre">--field-id</span> <span class="pre">FIELD_ID</span></code></dt>
+<dd>Field id.</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">LEVEL,</span> <span class="pre">--level</span> <span class="pre">LEVEL</span></code></dt>
+<dd>Threshold level required.</dd>
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">COST,</span> <span class="pre">--cost</span> <span class="pre">COST</span></code></dt>
+<dd>Threshold cost required.</dd>
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">TYPE,</span> <span class="pre">--type</span> <span class="pre">TYPE</span></code></dt>
+<dd>Threshold type (flat, rate).</dd>
+<dt><code class="docutils literal"><span class="pre">-g</span> <span class="pre">GROUP_ID,</span> <span class="pre">--group-id</span> <span class="pre">GROUP_ID</span></code></dt>
+<dd>Group id.</dd>
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">PROJECT_ID,</span> <span class="pre">--project-id</span> <span class="pre">PROJECT_ID</span></code></dt>
+<dd>Project/tenant id.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-hashmap-threshold-delete">
+<span id="id22"></span><h3>cloudkitty hashmap-threshold-delete<a class="headerlink" href="cloudkitty.html#cloudkitty-hashmap-threshold-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty hashmap-threshold-delete -i THRESHOLD_ID</span>
+</pre></div>
+</div>
+<p>Delete a threshold.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-i</span> <span class="pre">THRESHOLD_ID,</span> <span class="pre">--threshold-id</span> <span class="pre">THRESHOLD_ID</span></code></dt>
+<dd>Threshold uuid required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-hashmap-threshold-get">
+<span id="id23"></span><h3>cloudkitty hashmap-threshold-get<a class="headerlink" href="cloudkitty.html#cloudkitty-hashmap-threshold-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty hashmap-threshold-get -i THRESHOLD_ID</span>
+</pre></div>
+</div>
+<p>Get a threshold.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-i</span> <span class="pre">THRESHOLD_ID,</span> <span class="pre">--threshold-id</span> <span class="pre">THRESHOLD_ID</span></code></dt>
+<dd>Threshold uuid required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-hashmap-threshold-group">
+<span id="id24"></span><h3>cloudkitty hashmap-threshold-group<a class="headerlink" href="cloudkitty.html#cloudkitty-hashmap-threshold-group" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty hashmap-threshold-group -i THRESHOLD_ID</span>
+</pre></div>
+</div>
+<p>Get a threshold group.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-i</span> <span class="pre">THRESHOLD_ID,</span> <span class="pre">--threshold-id</span> <span class="pre">THRESHOLD_ID</span></code></dt>
+<dd>Threshold uuid required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-hashmap-threshold-list">
+<span id="id25"></span><h3>cloudkitty hashmap-threshold-list<a class="headerlink" href="cloudkitty.html#cloudkitty-hashmap-threshold-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty hashmap-threshold-list [-s SERVICE_ID] [-f FIELD_ID]</span>
+<span class="go">                                         [-g GROUP_ID]</span>
+<span class="go">                                         [--no-group {True,False}]</span>
+<span class="go">                                         [-p PROJECT_ID]</span>
+</pre></div>
+</div>
+<p>List thresholds.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">SERVICE_ID,</span> <span class="pre">--service-id</span> <span class="pre">SERVICE_ID</span></code></dt>
+<dd>Service id.</dd>
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">FIELD_ID,</span> <span class="pre">--field-id</span> <span class="pre">FIELD_ID</span></code></dt>
+<dd>Field id.</dd>
+<dt><code class="docutils literal"><span class="pre">-g</span> <span class="pre">GROUP_ID,</span> <span class="pre">--group-id</span> <span class="pre">GROUP_ID</span></code></dt>
+<dd>Group id.</dd>
+<dt><code class="docutils literal"><span class="pre">--no-group</span> <span class="pre">{True,False}</span></code></dt>
+<dd>If True, list only orhpaned thresholds.</dd>
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">PROJECT_ID,</span> <span class="pre">--project-id</span> <span class="pre">PROJECT_ID</span></code></dt>
+<dd>Project/tenant id.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-hashmap-threshold-update">
+<span id="id26"></span><h3>cloudkitty hashmap-threshold-update<a class="headerlink" href="cloudkitty.html#cloudkitty-hashmap-threshold-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty hashmap-threshold-update -i THRESHOLD_ID [-l LEVEL]</span>
+<span class="go">                                           [-c COST] [-t TYPE] [-g GROUP_ID]</span>
+<span class="go">                                           [-p PROJECT_ID]</span>
+</pre></div>
+</div>
+<p>Update a threshold.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-i</span> <span class="pre">THRESHOLD_ID,</span> <span class="pre">--threshold-id</span> <span class="pre">THRESHOLD_ID</span></code></dt>
+<dd>Threshold id required.</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">LEVEL,</span> <span class="pre">--level</span> <span class="pre">LEVEL</span></code></dt>
+<dd>Threshold level.</dd>
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">COST,</span> <span class="pre">--cost</span> <span class="pre">COST</span></code></dt>
+<dd>Threshold cost.</dd>
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">TYPE,</span> <span class="pre">--type</span> <span class="pre">TYPE</span></code></dt>
+<dd>Threshold type (flat, rate).</dd>
+<dt><code class="docutils literal"><span class="pre">-g</span> <span class="pre">GROUP_ID,</span> <span class="pre">--group-id</span> <span class="pre">GROUP_ID</span></code></dt>
+<dd>Group id.</dd>
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">PROJECT_ID,</span> <span class="pre">--project-id</span> <span class="pre">PROJECT_ID</span></code></dt>
+<dd>Project/tenant id.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-info-config-get">
+<span id="id27"></span><h3>cloudkitty info-config-get<a class="headerlink" href="cloudkitty.html#cloudkitty-info-config-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty info-config-get</span>
+</pre></div>
+</div>
+<p>Get cloudkitty configuration.</p>
+</div>
+<div class="section" id="cloudkitty-info-service-get">
+<span id="id28"></span><h3>cloudkitty info-service-get<a class="headerlink" href="cloudkitty.html#cloudkitty-info-service-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty info-service-get [-n NAME]</span>
+</pre></div>
+</div>
+<p>Get service info.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">NAME,</span> <span class="pre">--name</span> <span class="pre">NAME</span></code></dt>
+<dd>Service name.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-module-disable">
+<span id="id29"></span><h3>cloudkitty module-disable<a class="headerlink" href="cloudkitty.html#cloudkitty-module-disable" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty module-disable -n NAME</span>
+</pre></div>
+</div>
+<p>Disable a module.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">NAME,</span> <span class="pre">--name</span> <span class="pre">NAME</span></code></dt>
+<dd>Module name required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-module-enable">
+<span id="id30"></span><h3>cloudkitty module-enable<a class="headerlink" href="cloudkitty.html#cloudkitty-module-enable" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty module-enable -n NAME</span>
+</pre></div>
+</div>
+<p>Enable a module.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">NAME,</span> <span class="pre">--name</span> <span class="pre">NAME</span></code></dt>
+<dd>Module name required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-module-list">
+<span id="id31"></span><h3>cloudkitty module-list<a class="headerlink" href="cloudkitty.html#cloudkitty-module-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty module-list</span>
+</pre></div>
+</div>
+<p>List the samples for this meters.</p>
+</div>
+<div class="section" id="cloudkitty-module-set-priority">
+<span id="id32"></span><h3>cloudkitty module-set-priority<a class="headerlink" href="cloudkitty.html#cloudkitty-module-set-priority" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty module-set-priority -n NAME -p PRIORITY</span>
+</pre></div>
+</div>
+<p>Set module priority.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">NAME,</span> <span class="pre">--name</span> <span class="pre">NAME</span></code></dt>
+<dd>Module name required.</dd>
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">PRIORITY,</span> <span class="pre">--priority</span> <span class="pre">PRIORITY</span></code></dt>
+<dd>Module priority required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-pyscripts-script-create">
+<span id="id33"></span><h3>cloudkitty pyscripts-script-create<a class="headerlink" href="cloudkitty.html#cloudkitty-pyscripts-script-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty pyscripts-script-create -n NAME [-f FILE]</span>
+</pre></div>
+</div>
+<p>Create a script.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">NAME,</span> <span class="pre">--name</span> <span class="pre">NAME</span></code></dt>
+<dd>Script name required.</dd>
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">FILE,</span> <span class="pre">--file</span> <span class="pre">FILE</span></code></dt>
+<dd>Script file.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-pyscripts-script-delete">
+<span id="id34"></span><h3>cloudkitty pyscripts-script-delete<a class="headerlink" href="cloudkitty.html#cloudkitty-pyscripts-script-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty pyscripts-script-delete -s SCRIPT_ID</span>
+</pre></div>
+</div>
+<p>Delete a script.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">SCRIPT_ID,</span> <span class="pre">--script-id</span> <span class="pre">SCRIPT_ID</span></code></dt>
+<dd>Script uuid required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-pyscripts-script-get">
+<span id="id35"></span><h3>cloudkitty pyscripts-script-get<a class="headerlink" href="cloudkitty.html#cloudkitty-pyscripts-script-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty pyscripts-script-get -s SCRIPT_ID</span>
+</pre></div>
+</div>
+<p>Get script.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">SCRIPT_ID,</span> <span class="pre">--script-id</span> <span class="pre">SCRIPT_ID</span></code></dt>
+<dd>Script uuid required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-pyscripts-script-get-data">
+<span id="id36"></span><h3>cloudkitty pyscripts-script-get-data<a class="headerlink" href="cloudkitty.html#cloudkitty-pyscripts-script-get-data" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty pyscripts-script-get-data -s SCRIPT_ID</span>
+</pre></div>
+</div>
+<p>Get script data.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">SCRIPT_ID,</span> <span class="pre">--script-id</span> <span class="pre">SCRIPT_ID</span></code></dt>
+<dd>Script uuid required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-pyscripts-script-list">
+<span id="id37"></span><h3>cloudkitty pyscripts-script-list<a class="headerlink" href="cloudkitty.html#cloudkitty-pyscripts-script-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty pyscripts-script-list [-d SHOW_DATA]</span>
+</pre></div>
+</div>
+<p>List scripts.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-d</span> <span class="pre">SHOW_DATA,</span> <span class="pre">--show-data</span> <span class="pre">SHOW_DATA</span></code></dt>
+<dd>Show data in the listing Defaults to False.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-pyscripts-script-update">
+<span id="id38"></span><h3>cloudkitty pyscripts-script-update<a class="headerlink" href="cloudkitty.html#cloudkitty-pyscripts-script-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty pyscripts-script-update -s SCRIPT_ID -f FILE</span>
+</pre></div>
+</div>
+<p>Update a mapping.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">SCRIPT_ID,</span> <span class="pre">--script-id</span> <span class="pre">SCRIPT_ID</span></code></dt>
+<dd>Script uuid required.</dd>
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">FILE,</span> <span class="pre">--file</span> <span class="pre">FILE</span></code></dt>
+<dd>Script file required.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-report-tenant-list">
+<span id="id39"></span><h3>cloudkitty report-tenant-list<a class="headerlink" href="cloudkitty.html#cloudkitty-report-tenant-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty report-tenant-list</span>
+</pre></div>
+</div>
+<p>List tenant report.</p>
+</div>
+<div class="section" id="cloudkitty-storage-dataframe-list">
+<span id="id40"></span><h3>cloudkitty storage-dataframe-list<a class="headerlink" href="cloudkitty.html#cloudkitty-storage-dataframe-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty storage-dataframe-list [-b BEGIN] [-e END] [-t TENANT]</span>
+<span class="go">                                         [-r RESOURCE_TYPE]</span>
+</pre></div>
+</div>
+<p>List dataframes.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-b</span> <span class="pre">BEGIN,</span> <span class="pre">--begin</span> <span class="pre">BEGIN</span></code></dt>
+<dd>Starting date/time (YYYY-MM-DDTHH:MM:SS).</dd>
+<dt><code class="docutils literal"><span class="pre">-e</span> <span class="pre">END,</span> <span class="pre">--end</span> <span class="pre">END</span></code></dt>
+<dd>Ending date/time (YYYY-MM-DDTHH:MM:SS).</dd>
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">TENANT,</span> <span class="pre">--tenant</span> <span class="pre">TENANT</span></code></dt>
+<dd>Tenant ID Defaults to None.</dd>
+<dt><code class="docutils literal"><span class="pre">-r</span> <span class="pre">RESOURCE_TYPE,</span> <span class="pre">--resource-type</span> <span class="pre">RESOURCE_TYPE</span></code></dt>
+<dd>Resource type (compute, image, ...) Defaults
+to None.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-summary-get">
+<span id="id41"></span><h3>cloudkitty summary-get<a class="headerlink" href="cloudkitty.html#cloudkitty-summary-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty summary-get [-t SUMMARY_TENANT_ID] [-b BEGIN] [-e END]</span>
+<span class="go">                              [-s SERVICE] [-g GROUPBY] [-a]</span>
+</pre></div>
+</div>
+<p>Get summary report.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">SUMMARY_TENANT_ID,</span> <span class="pre">--tenant-id</span> <span class="pre">SUMMARY_TENANT_ID</span></code></dt>
+<dd>Tenant id.</dd>
+<dt><code class="docutils literal"><span class="pre">-b</span> <span class="pre">BEGIN,</span> <span class="pre">--begin</span> <span class="pre">BEGIN</span></code></dt>
+<dd>Begin timestamp.</dd>
+<dt><code class="docutils literal"><span class="pre">-e</span> <span class="pre">END,</span> <span class="pre">--end</span> <span class="pre">END</span></code></dt>
+<dd>End timestamp.</dd>
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">SERVICE,</span> <span class="pre">--service</span> <span class="pre">SERVICE</span></code></dt>
+<dd>Service Type.</dd>
+<dt><code class="docutils literal"><span class="pre">-g</span> <span class="pre">GROUPBY,</span> <span class="pre">--groupby</span> <span class="pre">GROUPBY</span></code></dt>
+<dd>Fields to groupby, separated by commas if
+multiple, now support res_type,tenant_id.</dd>
+<dt><code class="docutils literal"><span class="pre">-a,</span> <span class="pre">--all-tenants</span></code></dt>
+<dd>Allows to get summary from all tenants (admin
+only). Defaults to False.</dd>
+</dl>
+</div>
+<div class="section" id="cloudkitty-total-get">
+<span id="id42"></span><h3>cloudkitty total-get<a class="headerlink" href="cloudkitty.html#cloudkitty-total-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: cloudkitty total-get [-t TOTAL_TENANT_ID] [-b BEGIN] [-e END]</span>
+<span class="go">                            [-s SERVICE] [-a]</span>
+</pre></div>
+</div>
+<p>Get total reports.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">TOTAL_TENANT_ID,</span> <span class="pre">--tenant-id</span> <span class="pre">TOTAL_TENANT_ID</span></code></dt>
+<dd>Tenant id.</dd>
+<dt><code class="docutils literal"><span class="pre">-b</span> <span class="pre">BEGIN,</span> <span class="pre">--begin</span> <span class="pre">BEGIN</span></code></dt>
+<dd>Starting date/time (YYYY-MM-DDTHH:MM:SS).</dd>
+<dt><code class="docutils literal"><span class="pre">-e</span> <span class="pre">END,</span> <span class="pre">--end</span> <span class="pre">END</span></code></dt>
+<dd>Ending date/time (YYYY-MM-DDTHH:MM:SS).</dd>
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">SERVICE,</span> <span class="pre">--service</span> <span class="pre">SERVICE</span></code></dt>
+<dd>Service Type.</dd>
+<dt><code class="docutils literal"><span class="pre">-a,</span> <span class="pre">--all-tenants</span></code></dt>
+<dd>Allows to get total from all tenants (admin
+only). Defaults to False.</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="heat.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Orchestration service (heat) command-line client"></i></a>
+          
+          
+            <a href="vitrage.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: RCA (Root Cause Analysis) service (vitrage) command-line client"></i></a>
+          
+            <a id="logABugLink3" href="cloudkitty.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="cloudkitty.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="murano.html">Application Catalog service (murano) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="freezer.html">Backup, Restore, and Disaster Recovery service (freezer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ironic.html">Bare Metal service (ironic) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cinder.html">Block Storage service (cinder) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="senlin.html">Clustering service (senlin) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute service (nova) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnum.html">Container Infrastructure Management service (magnum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database service (trove) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="designate.html">DNS service (designate) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image service (glance) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watcher.html">Infrastructure Optimization service (watcher) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barbican.html">Key Manager service (barbican) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monasca.html">Monitoring (monasca) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networking.html">Networking service (neutron) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tacker.html">NFV Orchestration service (tacker) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="swift.html">Object Storage service (swift) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heat.html">Orchestration service (heat) command-line client</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="cloudkitty.html#">Rating service (cloudkitty) command-line client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cloudkitty.html#cloudkitty-usage">cloudkitty usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cloudkitty.html#cloudkitty-optional-arguments">cloudkitty optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="vitrage.html">RCA (Root Cause Analysis) service (vitrage) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manila.html">Shared File Systems service (manila) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solum.html">Software Development Lifecycle Automation service (solum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aodh.html">Telemetry Alarming service (aodh) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ceilometer.html">Telemetry Data Collection service (ceilometer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gnocchi.html">A time series storage and resources index service (gnocchi) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mistral.html">Workflow service (mistral) command-line client</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "cloudkitty" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/cli-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "Rating service (cloudkitty) command-line client in Command-Line Interface Reference";
+    var fieldTags = "cli-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:39";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

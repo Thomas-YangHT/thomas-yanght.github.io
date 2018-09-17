@@ -1,0 +1,1671 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: Bare Metal service (ironic) command-line client</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>Bare Metal service (ironic) command-line client</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="freezer.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Backup, Restore, and Disaster Recovery service (freezer) command-line client"></i></a>
+    
+    
+    <a href="cinder.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Block Storage service (cinder) command-line client"></i></a>
+    
+    <a id="logABugLink1" href="ironic.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="ironic.html#">Bare Metal service (ironic) command-line client</a><ul>
+<li><a class="reference internal" href="ironic.html#ironic-usage">ironic usage</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-optional-arguments">ironic optional arguments</a><ul>
+<li><a class="reference internal" href="ironic.html#ironic-chassis-create">ironic chassis-create</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-chassis-delete">ironic chassis-delete</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-chassis-list">ironic chassis-list</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-chassis-node-list">ironic chassis-node-list</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-chassis-show">ironic chassis-show</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-chassis-update">ironic chassis-update</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-create">ironic create</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-driver-get-vendor-passthru-methods">ironic driver-get-vendor-passthru-methods</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-driver-list">ironic driver-list</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-driver-properties">ironic driver-properties</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-driver-raid-logical-disk-properties">ironic driver-raid-logical-disk-properties</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-driver-show">ironic driver-show</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-driver-vendor-passthru">ironic driver-vendor-passthru</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-create">ironic node-create</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-delete">ironic node-delete</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-get-boot-device">ironic node-get-boot-device</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-get-console">ironic node-get-console</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-get-supported-boot-devices">ironic node-get-supported-boot-devices</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-get-vendor-passthru-methods">ironic node-get-vendor-passthru-methods</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-inject-nmi">ironic node-inject-nmi</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-list">ironic node-list</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-port-list">ironic node-port-list</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-set-boot-device">ironic node-set-boot-device</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-set-console-mode">ironic node-set-console-mode</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-set-maintenance">ironic node-set-maintenance</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-set-power-state">ironic node-set-power-state</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-set-provision-state">ironic node-set-provision-state</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-set-target-raid-config">ironic node-set-target-raid-config</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-show">ironic node-show</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-show-states">ironic node-show-states</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-update">ironic node-update</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-validate">ironic node-validate</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-vendor-passthru">ironic node-vendor-passthru</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-vif-attach">ironic node-vif-attach</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-vif-detach">ironic node-vif-detach</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-node-vif-list">ironic node-vif-list</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-port-create">ironic port-create</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-port-delete">ironic port-delete</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-port-list">ironic port-list</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-port-show">ironic port-show</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-port-update">ironic port-update</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-portgroup-create">ironic portgroup-create</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-portgroup-delete">ironic portgroup-delete</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-portgroup-list">ironic portgroup-list</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-portgroup-port-list">ironic portgroup-port-list</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-portgroup-show">ironic portgroup-show</a></li>
+<li><a class="reference internal" href="ironic.html#ironic-portgroup-update">ironic portgroup-update</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="bare-metal-service-ironic-command-line-client">
+<h1>Bare Metal service (ironic) command-line client<a class="headerlink" href="ironic.html#bare-metal-service-ironic-command-line-client" title="Permalink to this headline">¶</a></h1>
+<p>The ironic client is the command-line interface (CLI) for
+the Bare Metal service (ironic) API and its extensions.</p>
+<p>This chapter documents <strong class="command">ironic</strong> version <code class="docutils literal"><span class="pre">1.11.1</span></code>.</p>
+<p>For help on a specific <strong class="command">ironic</strong> command, enter:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> ironic <span class="nb">help</span> COMMAND
+</pre></div>
+</div>
+<div class="section" id="ironic-usage">
+<span id="ironic-command-usage"></span><h2>ironic usage<a class="headerlink" href="ironic.html#ironic-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic [--insecure] [--os-cacert &lt;ca-certificate&gt;]</span>
+<span class="go">              [--os-cert &lt;certificate&gt;] [--os-key &lt;key&gt;] [--timeout &lt;seconds&gt;]</span>
+<span class="go">              [--version] [--debug] [--json] [-v] [--cert-file OS_CERT]</span>
+<span class="go">              [--key-file OS_KEY] [--ca-file OS_CACERT]</span>
+<span class="go">              [--os-username OS_USERNAME] [--os-password OS_PASSWORD]</span>
+<span class="go">              [--os-tenant-id OS_TENANT_ID] [--os-tenant-name OS_TENANT_NAME]</span>
+<span class="go">              [--os-auth-url OS_AUTH_URL] [--os-region-name OS_REGION_NAME]</span>
+<span class="go">              [--os-auth-token OS_AUTH_TOKEN] [--ironic-url IRONIC_URL]</span>
+<span class="go">              [--ironic-api-version IRONIC_API_VERSION]</span>
+<span class="go">              [--os-service-type OS_SERVICE_TYPE] [--os-endpoint IRONIC_URL]</span>
+<span class="go">              [--os-endpoint-type OS_ENDPOINT_TYPE]</span>
+<span class="go">              [--os-user-domain-id OS_USER_DOMAIN_ID]</span>
+<span class="go">              [--os-user-domain-name OS_USER_DOMAIN_NAME]</span>
+<span class="go">              [--os-project-id OS_PROJECT_ID]</span>
+<span class="go">              [--os-project-name OS_PROJECT_NAME]</span>
+<span class="go">              [--os-project-domain-id OS_PROJECT_DOMAIN_ID]</span>
+<span class="go">              [--os-project-domain-name OS_PROJECT_DOMAIN_NAME]</span>
+<span class="go">              [--max-retries MAX_RETRIES] [--retry-interval RETRY_INTERVAL]</span>
+<span class="go">              &lt;subcommand&gt; ...</span>
+</pre></div>
+</div>
+<p><strong>Subcommands:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">chassis-create</span></code></dt>
+<dd>Create a new chassis.</dd>
+<dt><code class="docutils literal"><span class="pre">chassis-delete</span></code></dt>
+<dd>Delete a chassis.</dd>
+<dt><code class="docutils literal"><span class="pre">chassis-list</span></code></dt>
+<dd>List the chassis.</dd>
+<dt><code class="docutils literal"><span class="pre">chassis-node-list</span></code></dt>
+<dd>List the nodes contained in a chassis.</dd>
+<dt><code class="docutils literal"><span class="pre">chassis-show</span></code></dt>
+<dd>Show detailed information about a chassis.</dd>
+<dt><code class="docutils literal"><span class="pre">chassis-update</span></code></dt>
+<dd>Update information about a chassis.</dd>
+<dt><code class="docutils literal"><span class="pre">node-create</span></code></dt>
+<dd>Register a new node with the Ironic service.</dd>
+<dt><code class="docutils literal"><span class="pre">node-delete</span></code></dt>
+<dd>Unregister node(s) from the Ironic service.</dd>
+<dt><code class="docutils literal"><span class="pre">node-get-boot-device</span></code></dt>
+<dd>Get the current boot device for a node.</dd>
+<dt><code class="docutils literal"><span class="pre">node-get-console</span></code></dt>
+<dd>Get the connection information for a node's console,
+if enabled.</dd>
+<dt><code class="docutils literal"><span class="pre">node-get-supported-boot-devices</span></code></dt>
+<dd>Get the supported boot devices for a node.</dd>
+<dt><code class="docutils literal"><span class="pre">node-get-vendor-passthru-methods</span></code></dt>
+<dd>Get the vendor passthru methods for a node.</dd>
+<dt><code class="docutils literal"><span class="pre">node-inject-nmi</span></code></dt>
+<dd>Inject NMI to a node.</dd>
+<dt><code class="docutils literal"><span class="pre">node-list</span></code></dt>
+<dd>List the nodes which are registered with the Ironic
+service.</dd>
+<dt><code class="docutils literal"><span class="pre">node-port-list</span></code></dt>
+<dd>List the ports associated with a node.</dd>
+<dt><code class="docutils literal"><span class="pre">node-set-boot-device</span></code></dt>
+<dd>Set the boot device for a node.</dd>
+<dt><code class="docutils literal"><span class="pre">node-set-console-mode</span></code></dt>
+<dd>Enable or disable serial console access for a node.</dd>
+<dt><code class="docutils literal"><span class="pre">node-set-maintenance</span></code></dt>
+<dd>Enable or disable maintenance mode for a node.</dd>
+<dt><code class="docutils literal"><span class="pre">node-set-power-state</span></code></dt>
+<dd>Power a node on or off or reboot.</dd>
+<dt><code class="docutils literal"><span class="pre">node-set-provision-state</span></code></dt>
+<dd>Initiate a provisioning state change for a node.</dd>
+<dt><code class="docutils literal"><span class="pre">node-set-target-raid-config</span></code></dt>
+<dd>Set target RAID config on a node.</dd>
+<dt><code class="docutils literal"><span class="pre">node-show</span></code></dt>
+<dd>Show detailed information about a node.</dd>
+<dt><code class="docutils literal"><span class="pre">node-show-states</span></code></dt>
+<dd>Show information about the node's states.</dd>
+<dt><code class="docutils literal"><span class="pre">node-update</span></code></dt>
+<dd>Update information about a registered node.</dd>
+<dt><code class="docutils literal"><span class="pre">node-validate</span></code></dt>
+<dd>Validate a node's driver interfaces.</dd>
+<dt><code class="docutils literal"><span class="pre">node-vendor-passthru</span></code></dt>
+<dd>Call a vendor-passthru extension for a node.</dd>
+<dt><code class="docutils literal"><span class="pre">node-vif-attach</span></code></dt>
+<dd>Attach VIF to a given node.</dd>
+<dt><code class="docutils literal"><span class="pre">node-vif-detach</span></code></dt>
+<dd>Detach VIF from a given node.</dd>
+<dt><code class="docutils literal"><span class="pre">node-vif-list</span></code></dt>
+<dd>List VIFs for a given node.</dd>
+<dt><code class="docutils literal"><span class="pre">port-create</span></code></dt>
+<dd>Create a new port.</dd>
+<dt><code class="docutils literal"><span class="pre">port-delete</span></code></dt>
+<dd>Delete a port.</dd>
+<dt><code class="docutils literal"><span class="pre">port-list</span></code></dt>
+<dd>List the ports.</dd>
+<dt><code class="docutils literal"><span class="pre">port-show</span></code></dt>
+<dd>Show detailed information about a port.</dd>
+<dt><code class="docutils literal"><span class="pre">port-update</span></code></dt>
+<dd>Update information about a port.</dd>
+<dt><code class="docutils literal"><span class="pre">portgroup-create</span></code></dt>
+<dd>Create a new portgroup.</dd>
+<dt><code class="docutils literal"><span class="pre">portgroup-delete</span></code></dt>
+<dd>Delete a portgroup.</dd>
+<dt><code class="docutils literal"><span class="pre">portgroup-list</span></code></dt>
+<dd>List the portgroups.</dd>
+<dt><code class="docutils literal"><span class="pre">portgroup-port-list</span></code></dt>
+<dd>List the ports associated with a portgroup.</dd>
+<dt><code class="docutils literal"><span class="pre">portgroup-show</span></code></dt>
+<dd>Show detailed information about a portgroup.</dd>
+<dt><code class="docutils literal"><span class="pre">portgroup-update</span></code></dt>
+<dd>Update information about a portgroup.</dd>
+<dt><code class="docutils literal"><span class="pre">driver-get-vendor-passthru-methods</span></code></dt>
+<dd>Get the vendor passthru methods for a driver.</dd>
+<dt><code class="docutils literal"><span class="pre">driver-list</span></code></dt>
+<dd>List the enabled drivers.</dd>
+<dt><code class="docutils literal"><span class="pre">driver-properties</span></code></dt>
+<dd>Get properties of a driver.</dd>
+<dt><code class="docutils literal"><span class="pre">driver-raid-logical-disk-properties</span></code></dt>
+<dd>Get RAID logical disk properties for a driver.</dd>
+<dt><code class="docutils literal"><span class="pre">driver-show</span></code></dt>
+<dd>Show information about a driver.</dd>
+<dt><code class="docutils literal"><span class="pre">driver-vendor-passthru</span></code></dt>
+<dd>Call a vendor-passthru extension for a driver.</dd>
+<dt><code class="docutils literal"><span class="pre">create</span></code></dt>
+<dd>Create baremetal resources (chassis, nodes, port
+groups and ports).</dd>
+<dt><code class="docutils literal"><span class="pre">bash-completion</span></code></dt>
+<dd>Prints all of the commands and options for bash-completion.</dd>
+<dt><code class="docutils literal"><span class="pre">help</span></code></dt>
+<dd>Display help about this program or one of its
+subcommands.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-optional-arguments">
+<span id="ironic-command-options"></span><h2>ironic optional arguments<a class="headerlink" href="ironic.html#ironic-optional-arguments" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--version</span></code></dt>
+<dd>show program's version number and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--debug</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[IRONICCLIENT_DEBUG]</span></code></dd>
+<dt><code class="docutils literal"><span class="pre">--json</span></code></dt>
+<dd>Print JSON response without formatting.</dd>
+<dt><code class="docutils literal"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></dt>
+<dd>Print more verbose output</dd>
+<dt><code class="docutils literal"><span class="pre">--cert-file</span> <span class="pre">OS_CERT</span></code></dt>
+<dd><strong>DEPRECATED!</strong> Use --os-cert.</dd>
+<dt><code class="docutils literal"><span class="pre">--key-file</span> <span class="pre">OS_KEY</span></code></dt>
+<dd><strong>DEPRECATED!</strong> Use --os-key.</dd>
+<dt><code class="docutils literal"><span class="pre">--ca-file</span> <span class="pre">OS_CACERT</span></code></dt>
+<dd><strong>DEPRECATED!</strong> Use --os-cacert.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-username</span> <span class="pre">OS_USERNAME</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USERNAME]</span></code></dd>
+<dt><code class="docutils literal"><span class="pre">--os-password</span> <span class="pre">OS_PASSWORD</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PASSWORD]</span></code></dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-id</span> <span class="pre">OS_TENANT_ID</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TENANT_ID]</span></code></dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-name</span> <span class="pre">OS_TENANT_NAME</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TENANT_NAME]</span></code></dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-url</span> <span class="pre">OS_AUTH_URL</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_AUTH_URL]</span></code></dd>
+<dt><code class="docutils literal"><span class="pre">--os-region-name</span> <span class="pre">OS_REGION_NAME</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_REGION_NAME]</span></code></dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-token</span> <span class="pre">OS_AUTH_TOKEN</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_AUTH_TOKEN]</span></code></dd>
+<dt><code class="docutils literal"><span class="pre">--ironic-url</span> <span class="pre">IRONIC_URL</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[IRONIC_URL]</span></code></dd>
+<dt><code class="docutils literal"><span class="pre">--ironic-api-version</span> <span class="pre">IRONIC_API_VERSION</span></code></dt>
+<dd>Accepts 1.x (where &quot;x&quot; is microversion) or &quot;latest&quot;,
+Defaults to <code class="docutils literal"><span class="pre">env[IRONIC_API_VERSION]</span></code> or 1</dd>
+<dt><code class="docutils literal"><span class="pre">--os-service-type</span> <span class="pre">OS_SERVICE_TYPE</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_SERVICE_TYPE]</span></code> or &quot;baremetal&quot;</dd>
+<dt><code class="docutils literal"><span class="pre">--os-endpoint</span> <span class="pre">IRONIC_URL</span></code></dt>
+<dd>Specify an endpoint to use instead of retrieving one
+from the service catalog (via authentication).
+Defaults to <code class="docutils literal"><span class="pre">env[OS_SERVICE_ENDPOINT]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-endpoint-type</span> <span class="pre">OS_ENDPOINT_TYPE</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_ENDPOINT_TYPE]</span></code> or &quot;publicURL&quot;</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-id</span> <span class="pre">OS_USER_DOMAIN_ID</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USER_DOMAIN_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-name</span> <span class="pre">OS_USER_DOMAIN_NAME</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USER_DOMAIN_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-id</span> <span class="pre">OS_PROJECT_ID</span></code></dt>
+<dd>Another way to specify tenant ID. This option is
+mutually exclusive with --os-tenant-id. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_PROJECT_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-name</span> <span class="pre">OS_PROJECT_NAME</span></code></dt>
+<dd>Another way to specify tenant name. This option is
+mutually exclusive with --os-tenant-name. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_PROJECT_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-id</span> <span class="pre">OS_PROJECT_DOMAIN_ID</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_DOMAIN_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-name</span> <span class="pre">OS_PROJECT_DOMAIN_NAME</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_DOMAIN_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--max-retries</span> <span class="pre">MAX_RETRIES</span></code></dt>
+<dd>Maximum number of retries in case of conflict error
+(HTTP 409). Defaults to <code class="docutils literal"><span class="pre">env[IRONIC_MAX_RETRIES]</span></code> or 5.
+Use 0 to disable retrying.</dd>
+<dt><code class="docutils literal"><span class="pre">--retry-interval</span> <span class="pre">RETRY_INTERVAL</span></code></dt>
+<dd>Amount of time (in seconds) between retries in case of
+conflict error (HTTP 409). Defaults to
+<code class="docutils literal"><span class="pre">env[IRONIC_RETRY_INTERVAL]</span></code> or 2.</dd>
+</dl>
+<div class="section" id="ironic-chassis-create">
+<span id="id1"></span><h3>ironic chassis-create<a class="headerlink" href="ironic.html#ironic-chassis-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic chassis-create [-d &lt;description&gt;] [-e &lt;key=value&gt;] [-u &lt;uuid&gt;]</span>
+</pre></div>
+</div>
+<p>Create a new chassis.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-d</span> <span class="pre">&lt;description&gt;,</span> <span class="pre">--description</span> <span class="pre">&lt;description&gt;</span></code></dt>
+<dd>Description of the chassis.</dd>
+<dt><code class="docutils literal"><span class="pre">-e</span> <span class="pre">&lt;key=value&gt;,</span> <span class="pre">--extra</span> <span class="pre">&lt;key=value&gt;</span></code></dt>
+<dd>Record arbitrary key/value metadata. Can be specified
+multiple times.</dd>
+<dt><code class="docutils literal"><span class="pre">-u</span> <span class="pre">&lt;uuid&gt;,</span> <span class="pre">--uuid</span> <span class="pre">&lt;uuid&gt;</span></code></dt>
+<dd>UUID of the chassis.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-chassis-delete">
+<span id="id2"></span><h3>ironic chassis-delete<a class="headerlink" href="ironic.html#ironic-chassis-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic chassis-delete &lt;chassis&gt; [&lt;chassis&gt; ...]</span>
+</pre></div>
+</div>
+<p>Delete a chassis.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;chassis&gt;</span></code></dt>
+<dd>UUID of the chassis.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-chassis-list">
+<span id="id3"></span><h3>ironic chassis-list<a class="headerlink" href="ironic.html#ironic-chassis-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic chassis-list [--detail] [--limit &lt;limit&gt;] [--marker &lt;chassis&gt;]</span>
+<span class="go">                           [--sort-key &lt;field&gt;] [--sort-dir &lt;direction&gt;]</span>
+<span class="go">                           [--fields &lt;field&gt; [&lt;field&gt; ...]]</span>
+</pre></div>
+</div>
+<p>List the chassis.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--detail</span></code></dt>
+<dd>Show detailed information about the chassis.</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Maximum number of chassis to return per request, 0 for
+no limit. Default is the maximum number used by the
+Ironic API Service.</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">&lt;chassis&gt;</span></code></dt>
+<dd>Chassis UUID (for example, of the last chassis in the
+list from a previous request). Returns the list of
+chassis after this UUID.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-key</span> <span class="pre">&lt;field&gt;</span></code></dt>
+<dd>Chassis field that will be used for sorting.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-dir</span> <span class="pre">&lt;direction&gt;</span></code></dt>
+<dd>Sort direction: &quot;asc&quot; (the default) or &quot;desc&quot;.</dd>
+<dt><code class="docutils literal"><span class="pre">--fields</span> <span class="pre">&lt;field&gt;</span> <span class="pre">[&lt;field&gt;</span> <span class="pre">...]</span></code></dt>
+<dd>One or more chassis fields. Only these fields will be
+fetched from the server. Can not be used when '--detail' is specified.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-chassis-node-list">
+<span id="id4"></span><h3>ironic chassis-node-list<a class="headerlink" href="ironic.html#ironic-chassis-node-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic chassis-node-list [--detail] [--limit &lt;limit&gt;] [--marker &lt;node&gt;]</span>
+<span class="go">                                [--sort-key &lt;field&gt;] [--sort-dir &lt;direction&gt;]</span>
+<span class="go">                                [--fields &lt;field&gt; [&lt;field&gt; ...]]</span>
+<span class="go">                                [--maintenance &lt;boolean&gt;]</span>
+<span class="go">                                [--associated &lt;boolean&gt;]</span>
+<span class="go">                                [--provision-state &lt;provision-state&gt;]</span>
+<span class="go">                                &lt;chassis&gt;</span>
+</pre></div>
+</div>
+<p>List the nodes contained in a chassis.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;chassis&gt;</span></code></dt>
+<dd>UUID of the chassis.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--detail</span></code></dt>
+<dd>Show detailed information about the nodes.</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Maximum number of nodes to return per request, 0 for
+no limit. Default is the maximum number used by the
+Ironic API Service.</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Node UUID (for example, of the last node in the list
+from a previous request). Returns the list of nodes
+after this UUID.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-key</span> <span class="pre">&lt;field&gt;</span></code></dt>
+<dd>Node field that will be used for sorting.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-dir</span> <span class="pre">&lt;direction&gt;</span></code></dt>
+<dd>Sort direction: &quot;asc&quot; (the default) or &quot;desc&quot;.</dd>
+<dt><code class="docutils literal"><span class="pre">--fields</span> <span class="pre">&lt;field&gt;</span> <span class="pre">[&lt;field&gt;</span> <span class="pre">...]</span></code></dt>
+<dd>One or more node fields. Only these fields will be
+fetched from the server. Can not be used when '--detail' is specified.</dd>
+<dt><code class="docutils literal"><span class="pre">--maintenance</span> <span class="pre">&lt;boolean&gt;</span></code></dt>
+<dd>List nodes in maintenance mode: 'true' or 'false'.</dd>
+<dt><code class="docutils literal"><span class="pre">--associated</span> <span class="pre">&lt;boolean&gt;</span></code></dt>
+<dd>List nodes by instance association: 'true' or 'false'.</dd>
+<dt><code class="docutils literal"><span class="pre">--provision-state</span> <span class="pre">&lt;provision-state&gt;</span></code></dt>
+<dd>List nodes in specified provision state.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-chassis-show">
+<span id="id5"></span><h3>ironic chassis-show<a class="headerlink" href="ironic.html#ironic-chassis-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic chassis-show [--fields &lt;field&gt; [&lt;field&gt; ...]] &lt;chassis&gt;</span>
+</pre></div>
+</div>
+<p>Show detailed information about a chassis.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;chassis&gt;</span></code></dt>
+<dd>UUID of the chassis.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--fields</span> <span class="pre">&lt;field&gt;</span> <span class="pre">[&lt;field&gt;</span> <span class="pre">...]</span></code></dt>
+<dd>One or more chassis fields. Only these fields will be
+fetched from the server.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-chassis-update">
+<span id="id6"></span><h3>ironic chassis-update<a class="headerlink" href="ironic.html#ironic-chassis-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic chassis-update &lt;chassis&gt; &lt;op&gt; &lt;path=value&gt; [&lt;path=value&gt; ...]</span>
+</pre></div>
+</div>
+<p>Update information about a chassis.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;chassis&gt;</span></code></dt>
+<dd>UUID of the chassis.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;op&gt;</span></code></dt>
+<dd>Operation: 'add', 'replace', or 'remove'.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;path=value&gt;</span></code></dt>
+<dd>Attribute to add, replace, or remove. Can be specified
+multiple times. For 'remove', only &lt;path&gt; is necessary.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-create">
+<span id="id7"></span><h3>ironic create<a class="headerlink" href="ironic.html#ironic-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic create &lt;file&gt; [&lt;file&gt; ...]</span>
+</pre></div>
+</div>
+<p>Create baremetal resources (chassis, nodes, port groups and ports). The
+resources may be described in one or more JSON or YAML files. If any file
+cannot be validated, no resources are created. An attempt is made to create
+all the resources; those that could not be created are skipped (with a
+corresponding error message).</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;file&gt;</span></code></dt>
+<dd>File (.yaml or .json) containing descriptions of the resources to
+create. Can be specified multiple times.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-driver-get-vendor-passthru-methods">
+<span id="id8"></span><h3>ironic driver-get-vendor-passthru-methods<a class="headerlink" href="ironic.html#ironic-driver-get-vendor-passthru-methods" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic driver-get-vendor-passthru-methods &lt;driver&gt;</span>
+</pre></div>
+</div>
+<p>Get the vendor passthru methods for a driver.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;driver&gt;</span></code></dt>
+<dd>Name of the driver.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-driver-list">
+<span id="id9"></span><h3>ironic driver-list<a class="headerlink" href="ironic.html#ironic-driver-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic driver-list</span>
+</pre></div>
+</div>
+<p>List the enabled drivers.</p>
+</div>
+<div class="section" id="ironic-driver-properties">
+<span id="id10"></span><h3>ironic driver-properties<a class="headerlink" href="ironic.html#ironic-driver-properties" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic driver-properties [--wrap &lt;integer&gt;] &lt;driver&gt;</span>
+</pre></div>
+</div>
+<p>Get properties of a driver.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;driver&gt;</span></code></dt>
+<dd>Name of the driver.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--wrap</span> <span class="pre">&lt;integer&gt;</span></code></dt>
+<dd>Wrap the output to a specified length. Positive number can
+realize wrap functionality. 0 is default for disabled.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-driver-raid-logical-disk-properties">
+<span id="id11"></span><h3>ironic driver-raid-logical-disk-properties<a class="headerlink" href="ironic.html#ironic-driver-raid-logical-disk-properties" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic driver-raid-logical-disk-properties [--wrap &lt;integer&gt;] &lt;driver&gt;</span>
+</pre></div>
+</div>
+<p>Get RAID logical disk properties for a driver.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;driver&gt;</span></code></dt>
+<dd>Name of the driver.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--wrap</span> <span class="pre">&lt;integer&gt;</span></code></dt>
+<dd>Wrap the output to a specified length. Positive number can
+realize wrap functionality. 0 is default for disabled.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-driver-show">
+<span id="id12"></span><h3>ironic driver-show<a class="headerlink" href="ironic.html#ironic-driver-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic driver-show &lt;driver&gt;</span>
+</pre></div>
+</div>
+<p>Show information about a driver.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;driver&gt;</span></code></dt>
+<dd>Name of the driver.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-driver-vendor-passthru">
+<span id="id13"></span><h3>ironic driver-vendor-passthru<a class="headerlink" href="ironic.html#ironic-driver-vendor-passthru" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic driver-vendor-passthru [--http-method &lt;http-method&gt;]</span>
+<span class="go">                                     &lt;driver&gt; &lt;method&gt;</span>
+<span class="go">                                     [&lt;arg=value&gt; [&lt;arg=value&gt; ...]]</span>
+</pre></div>
+</div>
+<p>Call a vendor-passthru extension for a driver.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;driver&gt;</span></code></dt>
+<dd>Name of the driver.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;method&gt;</span></code></dt>
+<dd>Vendor-passthru method to be called.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;arg=value&gt;</span></code></dt>
+<dd>Argument to be passed to the vendor-passthru method.
+Can be specified multiple times.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--http-method</span> <span class="pre">&lt;http-method&gt;</span></code></dt>
+<dd>The HTTP method to use in the request. Valid HTTP
+methods are: POST, PUT, GET, DELETE, PATCH. Defaults
+to 'POST'.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-create">
+<span id="id14"></span><h3>ironic node-create<a class="headerlink" href="ironic.html#ironic-node-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-create [-c &lt;chassis&gt;] -d &lt;driver&gt; [-i &lt;key=value&gt;]</span>
+<span class="go">                          [-p &lt;key=value&gt;] [-e &lt;key=value&gt;] [-u &lt;uuid&gt;]</span>
+<span class="go">                          [-n &lt;name&gt;]</span>
+<span class="go">                          [--network-interface &lt;network_interface&gt;]</span>
+<span class="go">                          [--resource-class &lt;resource_class&gt;]</span>
+</pre></div>
+</div>
+<p>Register a new node with the Ironic service.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">&lt;chassis&gt;,</span> <span class="pre">--chassis</span> <span class="pre">&lt;chassis&gt;</span></code></dt>
+<dd>UUID of the chassis that this node belongs to.</dd>
+<dt><code class="docutils literal"><span class="pre">-i</span> <span class="pre">&lt;key=value&gt;,</span> <span class="pre">--driver-info</span> <span class="pre">&lt;key=value&gt;</span></code></dt>
+<dd>Key/value pair used by the driver, such as out-of-band
+management credentials. Can be specified multiple
+times.</dd>
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">&lt;key=value&gt;,</span> <span class="pre">--properties</span> <span class="pre">&lt;key=value&gt;</span></code></dt>
+<dd>Key/value pair describing the physical characteristics
+of the node. This is exported to Nova and used by the
+scheduler. Can be specified multiple times.</dd>
+<dt><code class="docutils literal"><span class="pre">-e</span> <span class="pre">&lt;key=value&gt;,</span> <span class="pre">--extra</span> <span class="pre">&lt;key=value&gt;</span></code></dt>
+<dd>Record arbitrary key/value metadata. Can be specified
+multiple times.</dd>
+<dt><code class="docutils literal"><span class="pre">-u</span> <span class="pre">&lt;uuid&gt;,</span> <span class="pre">--uuid</span> <span class="pre">&lt;uuid&gt;</span></code></dt>
+<dd>Unique UUID for the node.</dd>
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">&lt;name&gt;,</span> <span class="pre">--name</span> <span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Unique name for the node.</dd>
+<dt><code class="docutils literal"><span class="pre">--network-interface</span> <span class="pre">&lt;network_interface&gt;</span></code></dt>
+<dd>Network interface used for switching node to
+cleaning/provisioning networks.</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-class</span> <span class="pre">&lt;resource_class&gt;</span></code></dt>
+<dd>Resource class for classifying or grouping nodes.
+Used, for example, to classify nodes in Nova's
+placement engine.</dd>
+</dl>
+<p><strong>Required arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-d</span> <span class="pre">&lt;driver&gt;,</span> <span class="pre">--driver</span> <span class="pre">&lt;driver&gt;</span></code></dt>
+<dd>Driver used to control the node.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-delete">
+<span id="id15"></span><h3>ironic node-delete<a class="headerlink" href="ironic.html#ironic-node-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-delete &lt;node&gt; [&lt;node&gt; ...]</span>
+</pre></div>
+</div>
+<p>Unregister node(s) from the Ironic service. Returns errors for any nodes that
+could not be unregistered.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-get-boot-device">
+<span id="id16"></span><h3>ironic node-get-boot-device<a class="headerlink" href="ironic.html#ironic-node-get-boot-device" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-get-boot-device &lt;node&gt;</span>
+</pre></div>
+</div>
+<p>Get the current boot device for a node.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-get-console">
+<span id="id17"></span><h3>ironic node-get-console<a class="headerlink" href="ironic.html#ironic-node-get-console" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-get-console &lt;node&gt;</span>
+</pre></div>
+</div>
+<p>Get the connection information for a node's console, if enabled.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-get-supported-boot-devices">
+<span id="id18"></span><h3>ironic node-get-supported-boot-devices<a class="headerlink" href="ironic.html#ironic-node-get-supported-boot-devices" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-get-supported-boot-devices &lt;node&gt;</span>
+</pre></div>
+</div>
+<p>Get the supported boot devices for a node.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-get-vendor-passthru-methods">
+<span id="id19"></span><h3>ironic node-get-vendor-passthru-methods<a class="headerlink" href="ironic.html#ironic-node-get-vendor-passthru-methods" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-get-vendor-passthru-methods &lt;node&gt;</span>
+</pre></div>
+</div>
+<p>Get the vendor passthru methods for a node.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-inject-nmi">
+<span id="id20"></span><h3>ironic node-inject-nmi<a class="headerlink" href="ironic.html#ironic-node-inject-nmi" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-inject-nmi &lt;node&gt;</span>
+</pre></div>
+</div>
+<p>Inject NMI to a node.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-list">
+<span id="id21"></span><h3>ironic node-list<a class="headerlink" href="ironic.html#ironic-node-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-list [--limit &lt;limit&gt;] [--marker &lt;node&gt;]</span>
+<span class="go">                        [--sort-key &lt;field&gt;] [--sort-dir &lt;direction&gt;]</span>
+<span class="go">                        [--maintenance &lt;boolean&gt;] [--associated &lt;boolean&gt;]</span>
+<span class="go">                        [--provision-state &lt;provision-state&gt;]</span>
+<span class="go">                        [--driver &lt;driver&gt;] [--detail]</span>
+<span class="go">                        [--fields &lt;field&gt; [&lt;field&gt; ...]]</span>
+<span class="go">                        [--resource-class &lt;resource class&gt;]</span>
+</pre></div>
+</div>
+<p>List the nodes which are registered with the Ironic service.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Maximum number of nodes to return per request, 0 for
+no limit. Default is the maximum number used by the
+Ironic API Service.</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Node UUID (for example, of the last node in the list
+from a previous request). Returns the list of nodes
+after this UUID.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-key</span> <span class="pre">&lt;field&gt;</span></code></dt>
+<dd>Node field that will be used for sorting.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-dir</span> <span class="pre">&lt;direction&gt;</span></code></dt>
+<dd>Sort direction: &quot;asc&quot; (the default) or &quot;desc&quot;.</dd>
+<dt><code class="docutils literal"><span class="pre">--maintenance</span> <span class="pre">&lt;boolean&gt;</span></code></dt>
+<dd>List nodes in maintenance mode: 'true' or 'false'.</dd>
+<dt><code class="docutils literal"><span class="pre">--associated</span> <span class="pre">&lt;boolean&gt;</span></code></dt>
+<dd>List nodes by instance association: 'true' or 'false'.</dd>
+<dt><code class="docutils literal"><span class="pre">--provision-state</span> <span class="pre">&lt;provision-state&gt;</span></code></dt>
+<dd>List nodes in specified provision state.</dd>
+<dt><code class="docutils literal"><span class="pre">--driver</span> <span class="pre">&lt;driver&gt;</span></code></dt>
+<dd>List nodes using specified driver.</dd>
+<dt><code class="docutils literal"><span class="pre">--detail</span></code></dt>
+<dd>Show detailed information about the nodes.</dd>
+<dt><code class="docutils literal"><span class="pre">--fields</span> <span class="pre">&lt;field&gt;</span> <span class="pre">[&lt;field&gt;</span> <span class="pre">...]</span></code></dt>
+<dd>One or more node fields. Only these fields will be
+fetched from the server. Can not be used when '--detail' is specified.</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-class</span> <span class="pre">&lt;resource</span> <span class="pre">class&gt;</span></code></dt>
+<dd>List nodes using specified resource class.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-port-list">
+<span id="id22"></span><h3>ironic node-port-list<a class="headerlink" href="ironic.html#ironic-node-port-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-port-list [--detail] [--limit &lt;limit&gt;] [--marker &lt;port&gt;]</span>
+<span class="go">                             [--sort-key &lt;field&gt;] [--sort-dir &lt;direction&gt;]</span>
+<span class="go">                             [--fields &lt;field&gt; [&lt;field&gt; ...]]</span>
+<span class="go">                             &lt;node&gt;</span>
+</pre></div>
+</div>
+<p>List the ports associated with a node.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--detail</span></code></dt>
+<dd>Show detailed information about the ports.</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Maximum number of ports to return per request, 0 for
+no limit. Default is the maximum number used by the
+Ironic API Service.</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">&lt;port&gt;</span></code></dt>
+<dd>Port UUID (for example, of the last port in the list
+from a previous request). Returns the list of ports
+after this UUID.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-key</span> <span class="pre">&lt;field&gt;</span></code></dt>
+<dd>Port field that will be used for sorting.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-dir</span> <span class="pre">&lt;direction&gt;</span></code></dt>
+<dd>Sort direction: &quot;asc&quot; (the default) or &quot;desc&quot;.</dd>
+<dt><code class="docutils literal"><span class="pre">--fields</span> <span class="pre">&lt;field&gt;</span> <span class="pre">[&lt;field&gt;</span> <span class="pre">...]</span></code></dt>
+<dd>One or more port fields. Only these fields will be
+fetched from the server. Can not be used when '--detail' is specified.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-set-boot-device">
+<span id="id23"></span><h3>ironic node-set-boot-device<a class="headerlink" href="ironic.html#ironic-node-set-boot-device" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-set-boot-device [--persistent] &lt;node&gt; &lt;boot-device&gt;</span>
+</pre></div>
+</div>
+<p>Set the boot device for a node.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;boot-device&gt;</span></code></dt>
+<dd>One of pxe, disk, cdrom, bios, safe.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--persistent</span></code></dt>
+<dd>Make changes persistent for all future boots.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-set-console-mode">
+<span id="id24"></span><h3>ironic node-set-console-mode<a class="headerlink" href="ironic.html#ironic-node-set-console-mode" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-set-console-mode &lt;node&gt; &lt;enabled&gt;</span>
+</pre></div>
+</div>
+<p>Enable or disable serial console access for a node.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;enabled&gt;</span></code></dt>
+<dd>Enable or disable console access for a node: 'true' or 'false'.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-set-maintenance">
+<span id="id25"></span><h3>ironic node-set-maintenance<a class="headerlink" href="ironic.html#ironic-node-set-maintenance" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-set-maintenance [--reason &lt;reason&gt;]</span>
+<span class="go">                                   &lt;node&gt; &lt;maintenance-mode&gt;</span>
+</pre></div>
+</div>
+<p>Enable or disable maintenance mode for a node.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;maintenance-mode&gt;</span></code></dt>
+<dd>'true' or 'false'; 'on' or 'off'.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--reason</span> <span class="pre">&lt;reason&gt;</span></code></dt>
+<dd>Reason for setting maintenance mode to 'true' or 'on';
+not valid when setting to 'false' or 'off'.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-set-power-state">
+<span id="id26"></span><h3>ironic node-set-power-state<a class="headerlink" href="ironic.html#ironic-node-set-power-state" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-set-power-state [--soft] [--power-timeout &lt;power-timeout&gt;]</span>
+<span class="go">                                   &lt;node&gt; &lt;power-state&gt;</span>
+</pre></div>
+</div>
+<p>Power a node on or off or reboot.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;power-state&gt;</span></code></dt>
+<dd>'on', 'off', or 'reboot'.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--soft</span></code></dt>
+<dd>Gracefully change the power state. Only valid for
+'off' and 'reboot' power states.</dd>
+<dt><code class="docutils literal"><span class="pre">--power-timeout</span> <span class="pre">&lt;power-timeout&gt;</span></code></dt>
+<dd>Timeout (in seconds, positive integer) to wait for the
+target power state before erroring out.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-set-provision-state">
+<span id="id27"></span><h3>ironic node-set-provision-state<a class="headerlink" href="ironic.html#ironic-node-set-provision-state" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-set-provision-state [--config-drive &lt;config-drive&gt;]</span>
+<span class="go">                                       [--clean-steps &lt;clean-steps&gt;]</span>
+<span class="go">                                       [--wait [WAIT_TIMEOUT]]</span>
+<span class="go">                                       &lt;node&gt; &lt;provision-state&gt;</span>
+</pre></div>
+</div>
+<p>Initiate a provisioning state change for a node.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;provision-state&gt;</span></code></dt>
+<dd>Supported states: deleted, provide, clean, manage,
+active, rebuild, inspect, abort, adopt.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--config-drive</span> <span class="pre">&lt;config-drive&gt;</span></code></dt>
+<dd>A gzipped, base64-encoded configuration drive string
+OR the path to the configuration drive file OR the
+path to a directory containing the config drive files.
+In case it's a directory, a config drive will be
+generated from it. This argument is only valid when
+setting provision-state to 'active'.</dd>
+<dt><code class="docutils literal"><span class="pre">--clean-steps</span> <span class="pre">&lt;clean-steps&gt;</span></code></dt>
+<dd>The clean steps in JSON format. May be the path to a
+file containing the clean steps; OR '-', with the
+clean steps being read from standard input; OR a
+string. The value should be a list of clean-step
+dictionaries; each dictionary should have keys
+'interface' and 'step', and optional key 'args'. This
+argument must be specified (and is only valid) when
+setting provision-state to 'clean'.</dd>
+<dt><code class="docutils literal"><span class="pre">--wait</span> <span class="pre">[WAIT_TIMEOUT]</span></code></dt>
+<dd>Wait for a node to reach the expected state. Not
+supported for 'abort'. Optionally takes a timeout in
+seconds. The default value is 0, meaning no timeout.
+Fails if the node reaches an unexpected stable state,
+a failure state or a state with last_error set.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-set-target-raid-config">
+<span id="id28"></span><h3>ironic node-set-target-raid-config<a class="headerlink" href="ironic.html#ironic-node-set-target-raid-config" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-set-target-raid-config &lt;node&gt; &lt;target-raid-config&gt;</span>
+</pre></div>
+</div>
+<p>Set target RAID config on a node.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;target-raid-config&gt;</span></code></dt>
+<dd>A file containing JSON data of the desired RAID
+configuration. Use '-' to read the contents from
+standard input. It also accepts the valid json string
+as input if file/standard input are not used for
+providing input. The input can be an empty dictionary
+too which unsets the node.target_raid_config on the
+node.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-show">
+<span id="id29"></span><h3>ironic node-show<a class="headerlink" href="ironic.html#ironic-node-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-show [--instance] [--fields &lt;field&gt; [&lt;field&gt; ...]] &lt;id&gt;</span>
+</pre></div>
+</div>
+<p>Show detailed information about a node.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;id&gt;</span></code></dt>
+<dd>Name or UUID of the node (or instance UUID if
+--instance is specified).</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--instance</span> <span class="pre">&lt;id&gt;</span></code></dt>
+<dd>is an instance UUID.</dd>
+<dt><code class="docutils literal"><span class="pre">--fields</span> <span class="pre">&lt;field&gt;</span> <span class="pre">[&lt;field&gt;</span> <span class="pre">...]</span></code></dt>
+<dd>One or more node fields. Only these fields will be
+fetched from the server.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-show-states">
+<span id="id30"></span><h3>ironic node-show-states<a class="headerlink" href="ironic.html#ironic-node-show-states" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-show-states &lt;node&gt;</span>
+</pre></div>
+</div>
+<p>Show information about the node's states.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-update">
+<span id="id31"></span><h3>ironic node-update<a class="headerlink" href="ironic.html#ironic-node-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-update &lt;node&gt; &lt;op&gt; &lt;path=value&gt; [&lt;path=value&gt; ...]</span>
+</pre></div>
+</div>
+<p>Update information about a registered node.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;op&gt;</span></code></dt>
+<dd>Operation: 'add', 'replace', or 'remove'.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;path=value&gt;</span></code></dt>
+<dd>Attribute to add, replace, or remove. Can be specified
+multiple times. For 'remove', only &lt;path&gt; is necessary. For
+nested attributes, separate the components with slashes, eg
+'driver_info/deploy_kernel=uuid'.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-validate">
+<span id="id32"></span><h3>ironic node-validate<a class="headerlink" href="ironic.html#ironic-node-validate" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-validate &lt;node&gt;</span>
+</pre></div>
+</div>
+<p>Validate a node's driver interfaces.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-vendor-passthru">
+<span id="id33"></span><h3>ironic node-vendor-passthru<a class="headerlink" href="ironic.html#ironic-node-vendor-passthru" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-vendor-passthru [--http-method &lt;http-method&gt;]</span>
+<span class="go">                                   &lt;node&gt; &lt;method&gt;</span>
+<span class="go">                                   [&lt;arg=value&gt; [&lt;arg=value&gt; ...]]</span>
+</pre></div>
+</div>
+<p>Call a vendor-passthru extension for a node.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;method&gt;</span></code></dt>
+<dd>Vendor-passthru method to be called.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;arg=value&gt;</span></code></dt>
+<dd>Argument to be passed to the vendor-passthru method.
+Can be specified multiple times.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--http-method</span> <span class="pre">&lt;http-method&gt;</span></code></dt>
+<dd>The HTTP method to use in the request. Valid HTTP
+methods are: POST, PUT, GET, DELETE, PATCH. Defaults
+to 'POST'.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-vif-attach">
+<span id="id34"></span><h3>ironic node-vif-attach<a class="headerlink" href="ironic.html#ironic-node-vif-attach" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-vif-attach [--vif-info &lt;key=value&gt;] &lt;node&gt; &lt;vif-id&gt;</span>
+</pre></div>
+</div>
+<p>Attach VIF to a given node.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;vif-id&gt;</span></code></dt>
+<dd>Name or UUID of the VIF to attach to node.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--vif-info</span> <span class="pre">&lt;key=value&gt;</span></code></dt>
+<dd>Record arbitrary key/value metadata. Can be specified
+multiple times. The mandatory 'id' parameter cannot be
+specified as a key.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-vif-detach">
+<span id="id35"></span><h3>ironic node-vif-detach<a class="headerlink" href="ironic.html#ironic-node-vif-detach" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-vif-detach &lt;node&gt; &lt;vif-id&gt;</span>
+</pre></div>
+</div>
+<p>Detach VIF from a given node.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;vif-id&gt;</span></code></dt>
+<dd>Name or UUID of the VIF to detach from node.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-node-vif-list">
+<span id="id36"></span><h3>ironic node-vif-list<a class="headerlink" href="ironic.html#ironic-node-vif-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic node-vif-list &lt;node&gt;</span>
+</pre></div>
+</div>
+<p>List VIFs for a given node.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;node&gt;</span></code></dt>
+<dd>Name or UUID of the node.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-port-create">
+<span id="id37"></span><h3>ironic port-create<a class="headerlink" href="ironic.html#ironic-port-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic port-create -a &lt;address&gt; -n &lt;node&gt; [-l &lt;key=value&gt;]</span>
+<span class="go">                          [--portgroup &lt;portgroup&gt;] [--pxe-enabled &lt;boolean&gt;]</span>
+<span class="go">                          [-e &lt;key=value&gt;] [-u &lt;uuid&gt;]</span>
+</pre></div>
+</div>
+<p>Create a new port.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;key=value&gt;,</span> <span class="pre">--local-link-connection</span> <span class="pre">&lt;key=value&gt;</span></code></dt>
+<dd>Key/value metadata describing Local link connection
+information. Valid keys are switch_info, switch_id,
+port_id.Can be specified multiple times.</dd>
+<dt><code class="docutils literal"><span class="pre">--portgroup</span> <span class="pre">&lt;portgroup&gt;</span></code></dt>
+<dd>UUID of the portgroup that this port belongs to.</dd>
+<dt><code class="docutils literal"><span class="pre">--pxe-enabled</span> <span class="pre">&lt;boolean&gt;</span></code></dt>
+<dd>Indicates whether this Port should be used when PXE
+booting this Node.</dd>
+<dt><code class="docutils literal"><span class="pre">-e</span> <span class="pre">&lt;key=value&gt;,</span> <span class="pre">--extra</span> <span class="pre">&lt;key=value&gt;</span></code></dt>
+<dd>Record arbitrary key/value metadata. Can be specified
+multiple times.</dd>
+<dt><code class="docutils literal"><span class="pre">-u</span> <span class="pre">&lt;uuid&gt;,</span> <span class="pre">--uuid</span> <span class="pre">&lt;uuid&gt;</span></code></dt>
+<dd>UUID of the port.</dd>
+</dl>
+<p><strong>Required arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-a</span> <span class="pre">&lt;address&gt;,</span> <span class="pre">--address</span> <span class="pre">&lt;address&gt;</span></code></dt>
+<dd>MAC address for this port.</dd>
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">&lt;node&gt;,</span> <span class="pre">--node</span> <span class="pre">&lt;node&gt;,</span> <span class="pre">--node_uuid</span> <span class="pre">&lt;node&gt;</span></code></dt>
+<dd>UUID of the node that this port belongs to.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-port-delete">
+<span id="id38"></span><h3>ironic port-delete<a class="headerlink" href="ironic.html#ironic-port-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic port-delete &lt;port&gt; [&lt;port&gt; ...]</span>
+</pre></div>
+</div>
+<p>Delete a port.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;port&gt;</span></code></dt>
+<dd>UUID of the port.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-port-list">
+<span id="id39"></span><h3>ironic port-list<a class="headerlink" href="ironic.html#ironic-port-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic port-list [--detail] [--address &lt;mac-address&gt;] [--limit &lt;limit&gt;]</span>
+<span class="go">                        [--marker &lt;port&gt;] [--sort-key &lt;field&gt;]</span>
+<span class="go">                        [--sort-dir &lt;direction&gt;]</span>
+<span class="go">                        [--fields &lt;field&gt; [&lt;field&gt; ...]]</span>
+</pre></div>
+</div>
+<p>List the ports.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--detail</span></code></dt>
+<dd>Show detailed information about ports.</dd>
+<dt><code class="docutils literal"><span class="pre">--address</span> <span class="pre">&lt;mac-address&gt;</span></code></dt>
+<dd>Only show information for the port with this MAC
+address.</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Maximum number of ports to return per request, 0 for
+no limit. Default is the maximum number used by the
+Ironic API Service.</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">&lt;port&gt;</span></code></dt>
+<dd>Port UUID (for example, of the last port in the list
+from a previous request). Returns the list of ports
+after this UUID.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-key</span> <span class="pre">&lt;field&gt;</span></code></dt>
+<dd>Port field that will be used for sorting.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-dir</span> <span class="pre">&lt;direction&gt;</span></code></dt>
+<dd>Sort direction: &quot;asc&quot; (the default) or &quot;desc&quot;.</dd>
+<dt><code class="docutils literal"><span class="pre">--fields</span> <span class="pre">&lt;field&gt;</span> <span class="pre">[&lt;field&gt;</span> <span class="pre">...]</span></code></dt>
+<dd>One or more port fields. Only these fields will be
+fetched from the server. Can not be used when '--detail' is specified.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-port-show">
+<span id="id40"></span><h3>ironic port-show<a class="headerlink" href="ironic.html#ironic-port-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic port-show [--address] [--fields &lt;field&gt; [&lt;field&gt; ...]] &lt;id&gt;</span>
+</pre></div>
+</div>
+<p>Show detailed information about a port.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;id&gt;</span></code></dt>
+<dd>UUID of the port (or MAC address if --address is
+specified).</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--address</span> <span class="pre">&lt;id&gt;</span></code></dt>
+<dd>is the MAC address (instead of the UUID) of the
+port.</dd>
+<dt><code class="docutils literal"><span class="pre">--fields</span> <span class="pre">&lt;field&gt;</span> <span class="pre">[&lt;field&gt;</span> <span class="pre">...]</span></code></dt>
+<dd>One or more port fields. Only these fields will be
+fetched from the server.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-port-update">
+<span id="id41"></span><h3>ironic port-update<a class="headerlink" href="ironic.html#ironic-port-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic port-update &lt;port&gt; &lt;op&gt; &lt;path=value&gt; [&lt;path=value&gt; ...]</span>
+</pre></div>
+</div>
+<p>Update information about a port.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;port&gt;</span></code></dt>
+<dd>UUID of the port.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;op&gt;</span></code></dt>
+<dd>Operation: 'add', 'replace', or 'remove'.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;path=value&gt;</span></code></dt>
+<dd>Attribute to add, replace, or remove. Can be specified
+multiple times. For 'remove', only &lt;path&gt; is necessary.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-portgroup-create">
+<span id="id42"></span><h3>ironic portgroup-create<a class="headerlink" href="ironic.html#ironic-portgroup-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic portgroup-create [-a &lt;address&gt;] -n &lt;node&gt; [--name &lt;name&gt;]</span>
+<span class="go">                               [-e &lt;key=value&gt;]</span>
+<span class="go">                               [--standalone-ports-supported &lt;boolean&gt;]</span>
+<span class="go">                               [-u &lt;uuid&gt;] [-m &lt;mode&gt;] [-p &lt;key=value&gt;]</span>
+</pre></div>
+</div>
+<p>Create a new portgroup.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-a</span> <span class="pre">&lt;address&gt;,</span> <span class="pre">--address</span> <span class="pre">&lt;address&gt;</span></code></dt>
+<dd>MAC address for this portgroup.</dd>
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name for the portgroup.</dd>
+<dt><code class="docutils literal"><span class="pre">-e</span> <span class="pre">&lt;key=value&gt;,</span> <span class="pre">--extra</span> <span class="pre">&lt;key=value&gt;</span></code></dt>
+<dd>Record arbitrary key/value metadata. Can be specified
+multiple times.</dd>
+<dt><code class="docutils literal"><span class="pre">--standalone-ports-supported</span> <span class="pre">&lt;boolean&gt;</span></code></dt>
+<dd>Specifies whether ports from this portgroup can be
+used in stand alone mode.</dd>
+<dt><code class="docutils literal"><span class="pre">-u</span> <span class="pre">&lt;uuid&gt;,</span> <span class="pre">--uuid</span> <span class="pre">&lt;uuid&gt;</span></code></dt>
+<dd>UUID of the portgroup.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;mode&gt;,</span> <span class="pre">--mode</span> <span class="pre">&lt;mode&gt;</span></code></dt>
+<dd>Portgroup mode. For possible values, refer to <a class="reference external" href="https://">https://</a>
+www.kernel.org/doc/Documentation/networking/bonding.tx
+t</dd>
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">&lt;key=value&gt;,</span> <span class="pre">--properties</span> <span class="pre">&lt;key=value&gt;</span></code></dt>
+<dd>Record key/value properties related to this
+portgroup's configuration.</dd>
+</dl>
+<p><strong>Required arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">&lt;node&gt;,</span> <span class="pre">--node</span> <span class="pre">&lt;node&gt;</span></code></dt>
+<dd>UUID of the node that this portgroup belongs to.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-portgroup-delete">
+<span id="id43"></span><h3>ironic portgroup-delete<a class="headerlink" href="ironic.html#ironic-portgroup-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic portgroup-delete &lt;portgroup&gt; [&lt;portgroup&gt; ...]</span>
+</pre></div>
+</div>
+<p>Delete a portgroup.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;portgroup&gt;</span></code></dt>
+<dd>UUID or Name of the portgroup.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-portgroup-list">
+<span id="id44"></span><h3>ironic portgroup-list<a class="headerlink" href="ironic.html#ironic-portgroup-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic portgroup-list [--detail] [-n &lt;node&gt;] [-a &lt;mac-address&gt;]</span>
+<span class="go">                             [--limit &lt;limit&gt;] [--marker &lt;portgroup&gt;]</span>
+<span class="go">                             [--sort-key &lt;field&gt;] [--sort-dir &lt;direction&gt;]</span>
+<span class="go">                             [--fields &lt;field&gt; [&lt;field&gt; ...]]</span>
+</pre></div>
+</div>
+<p>List the portgroups.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--detail</span></code></dt>
+<dd>Show detailed information about portgroups.</dd>
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">&lt;node&gt;,</span> <span class="pre">--node</span> <span class="pre">&lt;node&gt;</span></code></dt>
+<dd>UUID of the node that this portgroup belongs to.</dd>
+<dt><code class="docutils literal"><span class="pre">-a</span> <span class="pre">&lt;mac-address&gt;,</span> <span class="pre">--address</span> <span class="pre">&lt;mac-address&gt;</span></code></dt>
+<dd>Only show information for the portgroup with this MAC
+address.</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Maximum number of portgroups to return per request, 0
+for no limit. Default is the maximum number used by
+the Ironic API Service.</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">&lt;portgroup&gt;</span></code></dt>
+<dd>Portgroup UUID (for example, of the last portgroup in
+the list from a previous request). Returns the list of
+portgroups after this UUID.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-key</span> <span class="pre">&lt;field&gt;</span></code></dt>
+<dd>Portgroup field that will be used for sorting.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-dir</span> <span class="pre">&lt;direction&gt;</span></code></dt>
+<dd>Sort direction: &quot;asc&quot; (the default) or &quot;desc&quot;.</dd>
+<dt><code class="docutils literal"><span class="pre">--fields</span> <span class="pre">&lt;field&gt;</span> <span class="pre">[&lt;field&gt;</span> <span class="pre">...]</span></code></dt>
+<dd>One or more portgroup fields. Only these fields will
+be fetched from the server. Can not be used when '--detail' is specified.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-portgroup-port-list">
+<span id="id45"></span><h3>ironic portgroup-port-list<a class="headerlink" href="ironic.html#ironic-portgroup-port-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic portgroup-port-list [--detail] [--limit &lt;limit&gt;]</span>
+<span class="go">                                  [--marker &lt;port&gt;] [--sort-key &lt;field&gt;]</span>
+<span class="go">                                  [--sort-dir &lt;direction&gt;]</span>
+<span class="go">                                  [--fields &lt;field&gt; [&lt;field&gt; ...]]</span>
+<span class="go">                                  &lt;portgroup&gt;</span>
+</pre></div>
+</div>
+<p>List the ports associated with a portgroup.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;portgroup&gt;</span></code></dt>
+<dd>Name or UUID of the portgroup.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--detail</span></code></dt>
+<dd>Show detailed information about the ports.</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Maximum number of ports to return per request, 0 for
+no limit. Default is the maximum number used by the
+Ironic API Service.</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">&lt;port&gt;</span></code></dt>
+<dd>Port UUID (for example, of the last port in the list
+from a previous request). Returns the list of ports
+after this UUID.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-key</span> <span class="pre">&lt;field&gt;</span></code></dt>
+<dd>Port field that will be used for sorting.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-dir</span> <span class="pre">&lt;direction&gt;</span></code></dt>
+<dd>Sort direction: &quot;asc&quot; (the default) or &quot;desc&quot;.</dd>
+<dt><code class="docutils literal"><span class="pre">--fields</span> <span class="pre">&lt;field&gt;</span> <span class="pre">[&lt;field&gt;</span> <span class="pre">...]</span></code></dt>
+<dd>One or more port fields. Only these fields will be
+fetched from the server. Can not be used when '--detail' is specified.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-portgroup-show">
+<span id="id46"></span><h3>ironic portgroup-show<a class="headerlink" href="ironic.html#ironic-portgroup-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic portgroup-show [--address] [--fields &lt;field&gt; [&lt;field&gt; ...]] &lt;id&gt;</span>
+</pre></div>
+</div>
+<p>Show detailed information about a portgroup.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;id&gt;</span></code></dt>
+<dd>Name or UUID of the portgroup (or MAC address if
+--address is specified).</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--address</span> <span class="pre">&lt;id&gt;</span></code></dt>
+<dd>is the MAC address (instead of the UUID) of the
+portgroup.</dd>
+<dt><code class="docutils literal"><span class="pre">--fields</span> <span class="pre">&lt;field&gt;</span> <span class="pre">[&lt;field&gt;</span> <span class="pre">...]</span></code></dt>
+<dd>One or more portgroup fields. Only these fields will
+be fetched from the server.</dd>
+</dl>
+</div>
+<div class="section" id="ironic-portgroup-update">
+<span id="id47"></span><h3>ironic portgroup-update<a class="headerlink" href="ironic.html#ironic-portgroup-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: ironic portgroup-update &lt;portgroup&gt; &lt;op&gt; &lt;path=value&gt;</span>
+<span class="go">                               [&lt;path=value&gt; ...]</span>
+</pre></div>
+</div>
+<p>Update information about a portgroup.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;portgroup&gt;</span></code></dt>
+<dd>UUID or Name of the portgroup.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;op&gt;</span></code></dt>
+<dd>Operation: 'add', 'replace', or 'remove'.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;path=value&gt;</span></code></dt>
+<dd>Attribute to add, replace, or remove. Can be specified
+multiple times. For 'remove', only &lt;path&gt; is necessary.</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="freezer.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Backup, Restore, and Disaster Recovery service (freezer) command-line client"></i></a>
+          
+          
+            <a href="cinder.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Block Storage service (cinder) command-line client"></i></a>
+          
+            <a id="logABugLink3" href="ironic.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="ironic.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="murano.html">Application Catalog service (murano) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="freezer.html">Backup, Restore, and Disaster Recovery service (freezer) command-line client</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="ironic.html#">Bare Metal service (ironic) command-line client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ironic.html#ironic-usage">ironic usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ironic.html#ironic-optional-arguments">ironic optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cinder.html">Block Storage service (cinder) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="senlin.html">Clustering service (senlin) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute service (nova) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnum.html">Container Infrastructure Management service (magnum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database service (trove) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="designate.html">DNS service (designate) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image service (glance) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watcher.html">Infrastructure Optimization service (watcher) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barbican.html">Key Manager service (barbican) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monasca.html">Monitoring (monasca) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networking.html">Networking service (neutron) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tacker.html">NFV Orchestration service (tacker) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="swift.html">Object Storage service (swift) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heat.html">Orchestration service (heat) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloudkitty.html">Rating service (cloudkitty) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vitrage.html">RCA (Root Cause Analysis) service (vitrage) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manila.html">Shared File Systems service (manila) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solum.html">Software Development Lifecycle Automation service (solum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aodh.html">Telemetry Alarming service (aodh) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ceilometer.html">Telemetry Data Collection service (ceilometer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gnocchi.html">A time series storage and resources index service (gnocchi) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mistral.html">Workflow service (mistral) command-line client</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "ironic" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/cli-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "Bare Metal service (ironic) command-line client in Command-Line Interface Reference";
+    var fieldTags = "cli-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:39";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

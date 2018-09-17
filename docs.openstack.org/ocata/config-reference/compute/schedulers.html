@@ -1,0 +1,1664 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: Compute schedulers</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="../_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="../_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="../_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="../_static/css/combined.css" rel="stylesheet">
+<link href="../_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" href="../_static/sphinxmark.css" type="text/css" />
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>Compute schedulers</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="hypervisor-virtuozzo.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Virtuozzo"></i></a>
+    
+    
+    <a href="cells.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Cells (v1)"></i></a>
+    
+    <a id="logABugLink1" href="schedulers.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:41</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="../index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="schedulers.html#">Compute schedulers</a><ul>
+<li><a class="reference internal" href="schedulers.html#filter-scheduler">Filter scheduler</a></li>
+<li><a class="reference internal" href="schedulers.html#compute-filters">Compute filters</a><ul>
+<li><a class="reference internal" href="schedulers.html#aggregatecorefilter">AggregateCoreFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#aggregatediskfilter">AggregateDiskFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#aggregateimagepropertiesisolation">AggregateImagePropertiesIsolation</a></li>
+<li><a class="reference internal" href="schedulers.html#aggregateinstanceextraspecsfilter">AggregateInstanceExtraSpecsFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#aggregateioopsfilter">AggregateIoOpsFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#aggregatemultitenancyisolation">AggregateMultiTenancyIsolation</a></li>
+<li><a class="reference internal" href="schedulers.html#aggregatenuminstancesfilter">AggregateNumInstancesFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#aggregateramfilter">AggregateRamFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#aggregatetypeaffinityfilter">AggregateTypeAffinityFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#allhostsfilter">AllHostsFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#availabilityzonefilter">AvailabilityZoneFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#computecapabilitiesfilter">ComputeCapabilitiesFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#computefilter">ComputeFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#corefilter">CoreFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#differenthostfilter">DifferentHostFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#diskfilter">DiskFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#exactcorefilter">ExactCoreFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#exactdiskfilter">ExactDiskFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#exactramfilter">ExactRamFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#groupaffinityfilter">GroupAffinityFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#groupantiaffinityfilter">GroupAntiAffinityFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#imagepropertiesfilter">ImagePropertiesFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#isolatedhostsfilter">IsolatedHostsFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#ioopsfilter">IoOpsFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#jsonfilter">JsonFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#metricsfilter">MetricsFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#numatopologyfilter">NUMATopologyFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#numinstancesfilter">NumInstancesFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#pcipassthroughfilter">PciPassthroughFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#ramfilter">RamFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#retryfilter">RetryFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#samehostfilter">SameHostFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#servergroupaffinityfilter">ServerGroupAffinityFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#servergroupantiaffinityfilter">ServerGroupAntiAffinityFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#simplecidraffinityfilter">SimpleCIDRAffinityFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#trustedfilter">TrustedFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#typeaffinityfilter">TypeAffinityFilter</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="schedulers.html#cell-filters">Cell filters</a><ul>
+<li><a class="reference internal" href="schedulers.html#differentcellfilter">DifferentCellFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#id15">ImagePropertiesFilter</a></li>
+<li><a class="reference internal" href="schedulers.html#targetcellfilter">TargetCellFilter</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="schedulers.html#weights">Weights</a></li>
+<li><a class="reference internal" href="schedulers.html#chance-scheduler">Chance scheduler</a></li>
+<li><a class="reference internal" href="schedulers.html#utilization-aware-scheduling">Utilization aware scheduling</a></li>
+<li><a class="reference internal" href="schedulers.html#host-aggregates-and-availability-zones">Host aggregates and availability zones</a><ul>
+<li><a class="reference internal" href="schedulers.html#command-line-interface">Command-line interface</a></li>
+<li><a class="reference internal" href="schedulers.html#configure-scheduler-to-support-host-aggregates">Configure scheduler to support host aggregates</a></li>
+<li><a class="reference internal" href="schedulers.html#example-specify-compute-hosts-with-ssds">Example: Specify compute hosts with SSDs</a></li>
+<li><a class="reference internal" href="schedulers.html#xenserver-hypervisor-pools-to-support-live-migration">XenServer hypervisor pools to support live migration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="schedulers.html#configuration-options">Configuration options</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="compute-schedulers">
+<h1>Compute schedulers<a class="headerlink" href="schedulers.html#compute-schedulers" title="Permalink to this headline">¶</a></h1>
+<p>Compute uses the <code class="docutils literal"><span class="pre">nova-scheduler</span></code> service to determine how to
+dispatch compute requests. For example, the <code class="docutils literal"><span class="pre">nova-scheduler</span></code>
+service determines on which host a VM should launch.
+In the context of filters, the term <code class="docutils literal"><span class="pre">host</span></code> means a physical
+node that has a <code class="docutils literal"><span class="pre">nova-compute</span></code> service running on it.
+You can configure the scheduler through a variety of options.</p>
+<p>Compute is configured with the following default scheduler
+options in the <code class="docutils literal"><span class="pre">/etc/nova/nova.conf</span></code> file:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">scheduler_driver_task_period</span> <span class="o">=</span> <span class="s">60</span>
+<span class="na">scheduler_driver</span> <span class="o">=</span> <span class="s">nova.scheduler.filter_scheduler.FilterScheduler</span>
+<span class="na">scheduler_available_filters</span> <span class="o">=</span> <span class="s">nova.scheduler.filters.all_filters</span>
+<span class="na">scheduler_default_filters</span> <span class="o">=</span> <span class="s">RetryFilter, AvailabilityZoneFilter, RamFilter, DiskFilter, ComputeFilter, ComputeCapabilitiesFilter, ImagePropertiesFilter, ServerGroupAntiAffinityFilter, ServerGroupAffinityFilter</span>
+</pre></div>
+</div>
+<p>By default, the <code class="docutils literal"><span class="pre">scheduler_driver</span></code> is configured as a filter scheduler,
+as described in the next section. In the default configuration,
+this scheduler considers hosts that meet all the following criteria:</p>
+<ul class="simple">
+<li>Have not been attempted for scheduling purposes (<code class="docutils literal"><span class="pre">RetryFilter</span></code>).</li>
+<li>Are in the requested availability zone (<code class="docutils literal"><span class="pre">AvailabilityZoneFilter</span></code>).</li>
+<li>Have sufficient RAM available (<code class="docutils literal"><span class="pre">RamFilter</span></code>).</li>
+<li>Have sufficient disk space available for root and ephemeral storage
+(<code class="docutils literal"><span class="pre">DiskFilter</span></code>).</li>
+<li>Can service the request (<code class="docutils literal"><span class="pre">ComputeFilter</span></code>).</li>
+<li>Satisfy the extra specs associated with the instance type
+(<code class="docutils literal"><span class="pre">ComputeCapabilitiesFilter</span></code>).</li>
+<li>Satisfy any architecture, hypervisor type, or virtual machine mode
+properties specified on the instance&#8217;s image properties
+(<code class="docutils literal"><span class="pre">ImagePropertiesFilter</span></code>).</li>
+<li>Are on a different host than other instances of a group (if requested)
+(<code class="docutils literal"><span class="pre">ServerGroupAntiAffinityFilter</span></code>).</li>
+<li>Are in a set of group hosts (if requested) (<code class="docutils literal"><span class="pre">ServerGroupAffinityFilter</span></code>).</li>
+</ul>
+<p>The scheduler caches its list of available hosts;
+use the <code class="docutils literal"><span class="pre">scheduler_driver_task_period</span></code> option to specify
+how often the list is updated.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not configure <code class="docutils literal"><span class="pre">service_down_time</span></code> to be much smaller than
+<code class="docutils literal"><span class="pre">scheduler_driver_task_period</span></code>; otherwise, hosts appear to
+be dead while the host list is being cached.</p>
+</div>
+<p>For information about the volume scheduler, see the <a class="reference external" href="https://docs.openstack.org/admin-guide/blockstorage-manage-volumes.html">Block Storage section</a>
+of OpenStack Administrator Guide.</p>
+<p>The scheduler chooses a new host when an instance is migrated.</p>
+<p>When evacuating instances from a host, the scheduler service honors
+the target host defined by the administrator on the
+<strong class="command">nova evacuate</strong> command.
+If a target is not defined by the administrator, the scheduler
+determines the target host. For information about instance evacuation,
+see <a class="reference external" href="https://docs.openstack.org/admin-guide/compute-node-down.html#evacuate-instances">Evacuate instances</a> section of the
+OpenStack Administrator Guide.</p>
+<div class="section" id="filter-scheduler">
+<span id="compute-scheduler-filters"></span><h2>Filter scheduler<a class="headerlink" href="schedulers.html#filter-scheduler" title="Permalink to this headline">¶</a></h2>
+<p>The filter scheduler (<code class="docutils literal"><span class="pre">nova.scheduler.filter_scheduler.FilterScheduler</span></code>)
+is the default scheduler for scheduling virtual machine instances.
+It supports filtering and weighting to make informed decisions on
+where a new instance should be created.</p>
+<p>When the filter scheduler receives a request for a resource, it first
+applies filters to determine which hosts are eligible for consideration
+when dispatching a resource. Filters are binary: either a host is
+accepted by the filter, or it is rejected. Hosts that are accepted by
+the filter are then processed by a different algorithm to decide which
+hosts to use for that request, described in the <a class="reference internal" href="schedulers.html#weights"><span class="std std-ref">Weights</span></a> section.</p>
+<p><strong>Filtering</strong></p>
+<div class="figure">
+<img alt="../_images/filteringWorkflow1.png" src="../_images/filteringWorkflow1.png" />
+</div>
+<p>The <code class="docutils literal"><span class="pre">scheduler_available_filters</span></code> configuration option in <code class="docutils literal"><span class="pre">nova.conf</span></code>
+provides the Compute service with the list of the filters that are used
+by the scheduler. The default setting specifies all of the filter that
+are included with the Compute service:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">scheduler_available_filters</span> <span class="o">=</span> <span class="s">nova.scheduler.filters.all_filters</span>
+</pre></div>
+</div>
+<p>This configuration option can be specified multiple times.
+For example, if you implemented your own custom filter in Python called
+<code class="docutils literal"><span class="pre">myfilter.MyFilter</span></code> and you wanted to use both the built-in filters
+and your custom filter, your <code class="docutils literal"><span class="pre">nova.conf</span></code> file would contain:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">scheduler_available_filters</span> <span class="o">=</span> <span class="s">nova.scheduler.filters.all_filters</span>
+<span class="na">scheduler_available_filters</span> <span class="o">=</span> <span class="s">myfilter.MyFilter</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">scheduler_default_filters</span></code> configuration option in <code class="docutils literal"><span class="pre">nova.conf</span></code>
+defines the list of filters that are applied by the <code class="docutils literal"><span class="pre">nova-scheduler</span></code>
+service. The default filters are:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">scheduler_default_filters</span> <span class="o">=</span> <span class="s">RetryFilter, AvailabilityZoneFilter, RamFilter, ComputeFilter, ComputeCapabilitiesFilter, ImagePropertiesFilter, ServerGroupAntiAffinityFilter, ServerGroupAffinityFilter</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="compute-filters">
+<h2>Compute filters<a class="headerlink" href="schedulers.html#compute-filters" title="Permalink to this headline">¶</a></h2>
+<p>The following sections describe the available compute filters.</p>
+<div class="section" id="aggregatecorefilter">
+<h3>AggregateCoreFilter<a class="headerlink" href="schedulers.html#aggregatecorefilter" title="Permalink to this headline">¶</a></h3>
+<p>Filters host by CPU core numbers with a per-aggregate
+<code class="docutils literal"><span class="pre">cpu_allocation_ratio</span></code> value. If the per-aggregate value
+is not found, the value falls back to the global setting.
+If the host is in more than one aggregate and more than
+one value is found, the minimum value will be used.
+For information about how to use this filter,
+see <a class="reference internal" href="schedulers.html#host-aggregates"><span class="std std-ref">Host aggregates and availability zones</span></a>. See also <a class="reference internal" href="schedulers.html#corefilter"><span class="std std-ref">CoreFilter</span></a>.</p>
+</div>
+<div class="section" id="aggregatediskfilter">
+<h3>AggregateDiskFilter<a class="headerlink" href="schedulers.html#aggregatediskfilter" title="Permalink to this headline">¶</a></h3>
+<p>Filters host by disk allocation with a per-aggregate
+<code class="docutils literal"><span class="pre">disk_allocation_ratio</span></code> value. If the per-aggregate value
+is not found, the value falls back to the global setting.
+If the host is in more than one aggregate and more than
+one value is found, the minimum value will be used.
+For information about how to use this filter,
+see <a class="reference internal" href="schedulers.html#host-aggregates"><span class="std std-ref">Host aggregates and availability zones</span></a>. See also <a class="reference internal" href="schedulers.html#diskfilter"><span class="std std-ref">DiskFilter</span></a>.</p>
+</div>
+<div class="section" id="aggregateimagepropertiesisolation">
+<h3>AggregateImagePropertiesIsolation<a class="headerlink" href="schedulers.html#aggregateimagepropertiesisolation" title="Permalink to this headline">¶</a></h3>
+<p>Matches properties defined in an image&#8217;s metadata against
+those of aggregates to determine host matches:</p>
+<ul class="simple">
+<li>If a host belongs to an aggregate and the aggregate defines
+one or more metadata that matches an image&#8217;s properties,
+that host is a candidate to boot the image&#8217;s instance.</li>
+<li>If a host does not belong to any aggregate,
+it can boot instances from all images.</li>
+</ul>
+<p>For example, the following aggregate <code class="docutils literal"><span class="pre">myWinAgg</span></code> has the
+Windows operating system as metadata (named &#8216;windows&#8217;):</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack aggregate show MyWinAgg
+<span class="go">+-------------------+----------------------------+</span>
+<span class="go">| Field             | Value                      |</span>
+<span class="go">+-------------------+----------------------------+</span>
+<span class="go">| availability_zone | zone1                      |</span>
+<span class="go">| created_at        | 2017-01-01T15:36:44.000000 |</span>
+<span class="go">| deleted           | False                      |</span>
+<span class="go">| deleted_at        | None                       |</span>
+<span class="go">| hosts             | [u&#39;sf-devel&#39;]              |</span>
+<span class="go">| id                | 1                          |</span>
+<span class="go">| name              | test                       |</span>
+<span class="go">| properties        |                            |</span>
+<span class="go">| updated_at        | None                       |</span>
+<span class="go">+-------------------+----------------------------+</span>
+</pre></div>
+</div>
+<p>In this example, because the following Win-2012 image has the
+<code class="docutils literal"><span class="pre">windows</span></code> property, it boots on the <code class="docutils literal"><span class="pre">sf-devel</span></code> host
+(all other filters being equal):</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack image show Win-2012
+<span class="go">+------------------+------------------------------------------------------+</span>
+<span class="go">| Field            | Value                                                |</span>
+<span class="go">+------------------+------------------------------------------------------+</span>
+<span class="go">| checksum         | ee1eca47dc88f4879d8a229cc70a07c6                     |</span>
+<span class="go">| container_format | bare                                                 |</span>
+<span class="go">| created_at       | 2016-12-13T09:30:30Z                                 |</span>
+<span class="go">| disk_format      | qcow2                                                |</span>
+<span class="go">| ...</span>
+</pre></div>
+</div>
+<p>You can configure the <code class="docutils literal"><span class="pre">AggregateImagePropertiesIsolation</span></code>
+filter by using the following options in the <code class="docutils literal"><span class="pre">nova.conf</span></code> file:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="c1"># Considers only keys matching the given namespace (string).</span>
+<span class="c1"># Multiple values can be given, as a comma-separated list.</span>
+<span class="na">aggregate_image_properties_isolation_namespace</span> <span class="o">=</span> <span class="s">&lt;None&gt;</span>
+
+<span class="c1"># Separator used between the namespace and keys (string).</span>
+<span class="na">aggregate_image_properties_isolation_separator</span> <span class="o">=</span> <span class="s">.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="aggregateinstanceextraspecsfilter">
+<span id="id1"></span><h3>AggregateInstanceExtraSpecsFilter<a class="headerlink" href="schedulers.html#aggregateinstanceextraspecsfilter" title="Permalink to this headline">¶</a></h3>
+<p>Matches properties defined in extra specs for an instance type
+against admin-defined properties on a host aggregate.
+Works with specifications that are scoped with
+<code class="docutils literal"><span class="pre">aggregate_instance_extra_specs</span></code>.
+Multiple values can be given, as a comma-separated list.
+For backward compatibility, also works with non-scoped specifications;
+this action is highly discouraged because it conflicts with
+<a class="reference internal" href="schedulers.html#computecapabilitiesfilter"><span class="std std-ref">ComputeCapabilitiesFilter</span></a> filter when you enable both filters.
+For information about how to use this filter, see the
+<a class="reference internal" href="schedulers.html#host-aggregates"><span class="std std-ref">Host aggregates and availability zones</span></a> section.</p>
+</div>
+<div class="section" id="aggregateioopsfilter">
+<h3>AggregateIoOpsFilter<a class="headerlink" href="schedulers.html#aggregateioopsfilter" title="Permalink to this headline">¶</a></h3>
+<p>Filters host by disk allocation with a per-aggregate
+<code class="docutils literal"><span class="pre">max_io_ops_per_host</span></code> value. If the per-aggregate value
+is not found, the value falls back to the global setting.
+If the host is in more than one aggregate and more than one
+value is found, the minimum value will be used.
+For information about how to use this filter,
+see <a class="reference internal" href="schedulers.html#host-aggregates"><span class="std std-ref">Host aggregates and availability zones</span></a>. See also <a class="reference internal" href="schedulers.html#ioopsfilter"><span class="std std-ref">IoOpsFilter</span></a>.</p>
+</div>
+<div class="section" id="aggregatemultitenancyisolation">
+<h3>AggregateMultiTenancyIsolation<a class="headerlink" href="schedulers.html#aggregatemultitenancyisolation" title="Permalink to this headline">¶</a></h3>
+<p>Ensures that the tenant (or list of tenants) creates all instances only
+on specific <a class="reference internal" href="schedulers.html#host-aggregates"><span class="std std-ref">Host aggregates and availability zones</span></a>. If a host is in an aggregate that has
+the <code class="docutils literal"><span class="pre">filter_tenant_id</span></code> metadata key, the host creates instances from only
+that tenant or list of tenants. A host can be in different aggregates. If a
+host does not belong to an aggregate with the metadata key, the host can
+create instances from all tenants. This setting does not isolate the
+aggregate from other tenants. Any other tenant can continue to build
+instances on the specified aggregate.</p>
+</div>
+<div class="section" id="aggregatenuminstancesfilter">
+<h3>AggregateNumInstancesFilter<a class="headerlink" href="schedulers.html#aggregatenuminstancesfilter" title="Permalink to this headline">¶</a></h3>
+<p>Filters host by number of instances with a per-aggregate
+<code class="docutils literal"><span class="pre">max_instances_per_host</span></code> value. If the per-aggregate value
+is not found, the value falls back to the global setting.
+If the host is in more than one aggregate and thus more than
+one value is found, the minimum value will be used.
+For information about how to use this filter, see <a class="reference internal" href="schedulers.html#host-aggregates"><span class="std std-ref">Host aggregates and availability zones</span></a>.
+See also <a class="reference internal" href="schedulers.html#numinstancesfilter"><span class="std std-ref">NumInstancesFilter</span></a>.</p>
+</div>
+<div class="section" id="aggregateramfilter">
+<h3>AggregateRamFilter<a class="headerlink" href="schedulers.html#aggregateramfilter" title="Permalink to this headline">¶</a></h3>
+<p>Filters host by RAM allocation of instances with a per-aggregate
+<code class="docutils literal"><span class="pre">ram_allocation_ratio</span></code> value. If the per-aggregate value is not
+found, the value falls back to the global setting.
+If the host is in more than one aggregate and thus more than
+one value is found, the minimum value will be used.
+For information about how to use this filter, see <a class="reference internal" href="schedulers.html#host-aggregates"><span class="std std-ref">Host aggregates and availability zones</span></a>.
+See also <a class="reference internal" href="schedulers.html#ramfilter"><span class="std std-ref">RamFilter</span></a>.</p>
+</div>
+<div class="section" id="aggregatetypeaffinityfilter">
+<h3>AggregateTypeAffinityFilter<a class="headerlink" href="schedulers.html#aggregatetypeaffinityfilter" title="Permalink to this headline">¶</a></h3>
+<p>This filter passes hosts if no <code class="docutils literal"><span class="pre">instance_type</span></code> key is set or the
+<code class="docutils literal"><span class="pre">instance_type</span></code> aggregate metadata value contains the name of the
+<code class="docutils literal"><span class="pre">instance_type</span></code> requested.  The value of the <code class="docutils literal"><span class="pre">instance_type</span></code>
+metadata entry is a string that may contain either a single
+<code class="docutils literal"><span class="pre">instance_type</span></code> name or a comma-separated list of <code class="docutils literal"><span class="pre">instance_type</span></code>
+names, such as <code class="docutils literal"><span class="pre">m1.nano</span></code> or <code class="docutils literal"><span class="pre">m1.nano,m1.small</span></code>.
+For information about how to use this filter, see <a class="reference internal" href="schedulers.html#host-aggregates"><span class="std std-ref">Host aggregates and availability zones</span></a>.
+See also <a class="reference internal" href="schedulers.html#typeaffinityfilter"><span class="std std-ref">TypeAffinityFilter</span></a>.</p>
+</div>
+<div class="section" id="allhostsfilter">
+<h3>AllHostsFilter<a class="headerlink" href="schedulers.html#allhostsfilter" title="Permalink to this headline">¶</a></h3>
+<p>This is a no-op filter. It does not eliminate any of the available hosts.</p>
+</div>
+<div class="section" id="availabilityzonefilter">
+<h3>AvailabilityZoneFilter<a class="headerlink" href="schedulers.html#availabilityzonefilter" title="Permalink to this headline">¶</a></h3>
+<p>Filters hosts by availability zone. You must enable this filter
+for the scheduler to respect availability zones in requests.</p>
+</div>
+<div class="section" id="computecapabilitiesfilter">
+<span id="id2"></span><h3>ComputeCapabilitiesFilter<a class="headerlink" href="schedulers.html#computecapabilitiesfilter" title="Permalink to this headline">¶</a></h3>
+<p>Matches properties defined in extra specs for an instance type
+against compute capabilities. If an extra specs key contains
+a colon (<code class="docutils literal"><span class="pre">:</span></code>), anything before the colon is treated as a namespace
+and anything after the colon is treated as the key to be matched.
+If a namespace is present and is not <code class="docutils literal"><span class="pre">capabilities</span></code>, the filter
+ignores the namespace. For backward compatibility, also treats the
+extra specs key as the key to be matched if no namespace is present;
+this action is highly discouraged because it conflicts with
+<a class="reference internal" href="schedulers.html#aggregateinstanceextraspecsfilter"><span class="std std-ref">AggregateInstanceExtraSpecsFilter</span></a> filter when you enable both filters.</p>
+</div>
+<div class="section" id="computefilter">
+<span id="id3"></span><h3>ComputeFilter<a class="headerlink" href="schedulers.html#computefilter" title="Permalink to this headline">¶</a></h3>
+<p>Passes all hosts that are operational and enabled.</p>
+<p>In general, you should always enable this filter.</p>
+</div>
+<div class="section" id="corefilter">
+<span id="id4"></span><h3>CoreFilter<a class="headerlink" href="schedulers.html#corefilter" title="Permalink to this headline">¶</a></h3>
+<p>Only schedules instances on hosts if sufficient CPU cores are available.
+If this filter is not set, the scheduler might over-provision a host
+based on cores. For example, the virtual cores running on an instance
+may exceed the physical cores.</p>
+<p>You can configure this filter to enable a fixed amount of vCPU
+overcommitment by using the <code class="docutils literal"><span class="pre">cpu_allocation_ratio</span></code> configuration
+option in <code class="docutils literal"><span class="pre">nova.conf</span></code>. The default setting is:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">cpu_allocation_ratio</span> <span class="o">=</span> <span class="s">16.0</span>
+</pre></div>
+</div>
+<p>With this setting, if 8 vCPUs are on a node, the scheduler allows
+instances up to 128 vCPU to be run on that node.</p>
+<p>To disallow vCPU overcommitment set:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">cpu_allocation_ratio</span> <span class="o">=</span> <span class="s">1.0</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The Compute API always returns the actual number of CPU cores available
+on a compute node regardless of the value of the <code class="docutils literal"><span class="pre">cpu_allocation_ratio</span></code>
+configuration key. As a result changes to the <code class="docutils literal"><span class="pre">cpu_allocation_ratio</span></code>
+are not reflected via the command line clients or the dashboard.
+Changes to this configuration key are only taken into account internally
+in the scheduler.</p>
+</div>
+</div>
+<div class="section" id="differenthostfilter">
+<h3>DifferentHostFilter<a class="headerlink" href="schedulers.html#differenthostfilter" title="Permalink to this headline">¶</a></h3>
+<p>Schedules the instance on a different host from a set of instances.
+To take advantage of this filter, the requester must pass a scheduler hint,
+using <code class="docutils literal"><span class="pre">different_host</span></code> as the key and a list of instance UUIDs as
+the value. This filter is the opposite of the <code class="docutils literal"><span class="pre">SameHostFilter</span></code>.
+Using the <strong class="command">openstack server create</strong> command, use the <code class="docutils literal"><span class="pre">--hint</span></code>
+flag. For example:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack server create --image cedef40a-ed67-4d10-800e-17455edce175 <span class="se">\</span>
+  --flavor <span class="m">1</span> --hint <span class="nv">different_host</span><span class="o">=</span>a0cf03a5-d921-4877-bb5c-86d26cf818e1 <span class="se">\</span>
+  --hint <span class="nv">different_host</span><span class="o">=</span>8c19174f-4220-44f0-824a-cd1eeef10287 server-1
+</pre></div>
+</div>
+<p>With the API, use the <code class="docutils literal"><span class="pre">os:scheduler_hints</span></code> key. For example:</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;server&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;server-1&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;imageRef&quot;</span><span class="p">:</span> <span class="s2">&quot;cedef40a-ed67-4d10-800e-17455edce175&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;flavorRef&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;os:scheduler_hints&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;different_host&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;a0cf03a5-d921-4877-bb5c-86d26cf818e1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;8c19174f-4220-44f0-824a-cd1eeef10287&quot;</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="diskfilter">
+<span id="id5"></span><h3>DiskFilter<a class="headerlink" href="schedulers.html#diskfilter" title="Permalink to this headline">¶</a></h3>
+<p>Only schedules instances on hosts if there is sufficient disk space
+available for root and ephemeral storage.</p>
+<p>You can configure this filter to enable a fixed amount of disk
+overcommitment by using the <code class="docutils literal"><span class="pre">disk_allocation_ratio</span></code> configuration
+option in the <code class="docutils literal"><span class="pre">nova.conf</span></code> configuration file.
+The default setting disables the possibility of the overcommitment
+and allows launching a VM only if there is a sufficient amount of
+disk space available on a host:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">disk_allocation_ratio</span> <span class="o">=</span> <span class="s">1.0</span>
+</pre></div>
+</div>
+<p>DiskFilter always considers the value of the <code class="docutils literal"><span class="pre">disk_available_least</span></code>
+property and not the one of the <code class="docutils literal"><span class="pre">free_disk_gb</span></code> property of
+a hypervisor&#8217;s statistics:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack hypervisor stats show
+<span class="go">+----------------------+-------+</span>
+<span class="go">| Field                | Value |</span>
+<span class="go">+----------------------+-------+</span>
+<span class="go">| count                | 1     |</span>
+<span class="go">| current_workload     | 0     |</span>
+<span class="go">| disk_available_least | 14    |</span>
+<span class="go">| free_disk_gb         | 27    |</span>
+<span class="go">| free_ram_mb          | 15374 |</span>
+<span class="go">| local_gb             | 27    |</span>
+<span class="go">| local_gb_used        | 0     |</span>
+<span class="go">| memory_mb            | 15886 |</span>
+<span class="go">| memory_mb_used       | 512   |</span>
+<span class="go">| running_vms          | 0     |</span>
+<span class="go">| vcpus                | 8     |</span>
+<span class="go">| vcpus_used           | 0     |</span>
+<span class="go">+----------------------+-------+</span>
+</pre></div>
+</div>
+<p>As it can be viewed from the command output above, the amount of the
+available disk space can be less than the amount of the free disk space.
+It happens because the <code class="docutils literal"><span class="pre">disk_available_least</span></code> property accounts
+for the virtual size rather than the actual size of images.
+If you use an image format that is sparse or copy on write so that each
+virtual instance does not require a 1:1 allocation of a virtual disk to a
+physical storage, it may be useful to allow the overcommitment of disk space.</p>
+<p>To enable scheduling instances while overcommitting disk resources on the
+node, adjust the value of the <code class="docutils literal"><span class="pre">disk_allocation_ratio</span></code> configuration
+option to greater than <code class="docutils literal"><span class="pre">1.0</span></code>:</p>
+<div class="highlight-none"><div class="highlight"><pre><span></span>disk_allocation_ratio &gt; 1.0
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the value is set to <code class="docutils literal"><span class="pre">&gt;1</span></code>, we recommend keeping track of the free
+disk space, as the value approaching <code class="docutils literal"><span class="pre">0</span></code> may result in the incorrect
+functioning of instances using it at the moment.</p>
+</div>
+</div>
+<div class="section" id="exactcorefilter">
+<h3>ExactCoreFilter<a class="headerlink" href="schedulers.html#exactcorefilter" title="Permalink to this headline">¶</a></h3>
+<p>Only schedules instances on hosts if host has the exact number of CPU cores.</p>
+</div>
+<div class="section" id="exactdiskfilter">
+<h3>ExactDiskFilter<a class="headerlink" href="schedulers.html#exactdiskfilter" title="Permalink to this headline">¶</a></h3>
+<p>Only schedules instances on hosts if host has the exact amount of disk
+available.</p>
+</div>
+<div class="section" id="exactramfilter">
+<h3>ExactRamFilter<a class="headerlink" href="schedulers.html#exactramfilter" title="Permalink to this headline">¶</a></h3>
+<p>Only schedules instances on hosts if host has the exact number of RAM
+available.</p>
+</div>
+<div class="section" id="groupaffinityfilter">
+<span id="id6"></span><h3>GroupAffinityFilter<a class="headerlink" href="schedulers.html#groupaffinityfilter" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This filter is deprecated in favor of <a class="reference internal" href="schedulers.html#servergroupaffinityfilter"><span class="std std-ref">ServerGroupAffinityFilter</span></a>.</p>
+</div>
+<p>The GroupAffinityFilter ensures that an instance is scheduled on to a host
+from a set of group hosts. To take advantage of this filter, the requester
+must pass a scheduler hint, using <code class="docutils literal"><span class="pre">group</span></code> as the key and an arbitrary name
+as the value. Using the <strong class="command">openstack server create</strong> command, use the
+<code class="docutils literal"><span class="pre">--hint</span></code> flag. For example:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack server create --image IMAGE_ID --flavor <span class="m">1</span> <span class="se">\</span>
+  --hint <span class="nv">group</span><span class="o">=</span>foo server-1
+</pre></div>
+</div>
+<p>This filter should not be enabled at the same time as
+<a class="reference internal" href="schedulers.html#groupantiaffinityfilter"><span class="std std-ref">GroupAntiAffinityFilter</span></a> or neither filter will work properly.</p>
+</div>
+<div class="section" id="groupantiaffinityfilter">
+<span id="id7"></span><h3>GroupAntiAffinityFilter<a class="headerlink" href="schedulers.html#groupantiaffinityfilter" title="Permalink to this headline">¶</a></h3>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This filter is deprecated in favor of <a class="reference internal" href="schedulers.html#servergroupantiaffinityfilter"><span class="std std-ref">ServerGroupAntiAffinityFilter</span></a>.</p>
+</div>
+<p>The GroupAntiAffinityFilter ensures that each instance in a group is on
+a different host. To take advantage of this filter, the requester must
+pass a scheduler hint, using <code class="docutils literal"><span class="pre">group</span></code> as the key and an arbitrary name
+as the value. Using the <strong class="command">openstack server create</strong> command,
+use the <code class="docutils literal"><span class="pre">--hint</span></code> flag. For example:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack server create --image IMAGE_ID --flavor <span class="m">1</span> <span class="se">\</span>
+  --hint <span class="nv">group</span><span class="o">=</span>foo server-1
+</pre></div>
+</div>
+<p>This filter should not be enabled at the same time as
+<a class="reference internal" href="schedulers.html#groupaffinityfilter"><span class="std std-ref">GroupAffinityFilter</span></a> or neither filter will work properly.</p>
+</div>
+<div class="section" id="imagepropertiesfilter">
+<span id="id8"></span><h3>ImagePropertiesFilter<a class="headerlink" href="schedulers.html#imagepropertiesfilter" title="Permalink to this headline">¶</a></h3>
+<p>Filters hosts based on properties defined on the instance&#8217;s image.
+It passes hosts that can support the specified image properties contained
+in the instance. Properties include the architecture, hypervisor type,
+hypervisor version (for Xen hypervisor type only), and virtual machine mode.</p>
+<p>For example, an instance might require a host that runs an ARM-based
+processor, and QEMU as the hypervisor.
+You can decorate an image with these properties by using:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack image <span class="nb">set</span> --architecture arm --property <span class="nv">hypervisor_type</span><span class="o">=</span>qemu <span class="se">\</span>
+  img-uuid
+</pre></div>
+</div>
+<p>The image properties that the filter checks for are:</p>
+<dl class="docutils">
+<dt>architecture</dt>
+<dd>describes the machine architecture required by the image.
+Examples are <code class="docutils literal"><span class="pre">i686</span></code>, <code class="docutils literal"><span class="pre">x86_64</span></code>, <code class="docutils literal"><span class="pre">arm</span></code>, and <code class="docutils literal"><span class="pre">ppc64</span></code>.</dd>
+<dt>hypervisor_type</dt>
+<dd><p class="first">describes the hypervisor required by the image.
+Examples are <code class="docutils literal"><span class="pre">xen</span></code>, <code class="docutils literal"><span class="pre">qemu</span></code>, and <code class="docutils literal"><span class="pre">xenapi</span></code>.</p>
+<div class="last admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">qemu</span></code> is used for both QEMU and KVM hypervisor types.</p>
+</div>
+</dd>
+<dt>hypervisor_version_requires</dt>
+<dd><p class="first">describes the hypervisor version required by the image.
+The property is supported for Xen hypervisor type only.
+It can be used to enable support for multiple hypervisor versions,
+and to prevent instances with newer Xen tools from being provisioned
+on an older version of a hypervisor. If available, the property value
+is compared to the hypervisor version of the compute host.</p>
+<p>To filter the hosts by the hypervisor version, add the
+<code class="docutils literal"><span class="pre">hypervisor_version_requires</span></code> property on the image as metadata and
+pass an operator and a required hypervisor version as its value:</p>
+<div class="last highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack image <span class="nb">set</span> --property <span class="nv">hypervisor_type</span><span class="o">=</span>xen --property <span class="se">\</span>
+  <span class="nv">hypervisor_version_requires</span><span class="o">=</span><span class="s2">&quot;&gt;=4.3&quot;</span> img-uuid
+</pre></div>
+</div>
+</dd>
+<dt>vm_mode</dt>
+<dd>describes the hypervisor application binary interface (ABI) required
+by the image. Examples are <code class="docutils literal"><span class="pre">xen</span></code> for Xen 3.0 paravirtual ABI,
+<code class="docutils literal"><span class="pre">hvm</span></code> for native ABI, <code class="docutils literal"><span class="pre">uml</span></code> for User Mode Linux paravirtual ABI,
+<code class="docutils literal"><span class="pre">exe</span></code> for container virt executable ABI.</dd>
+</dl>
+</div>
+<div class="section" id="isolatedhostsfilter">
+<h3>IsolatedHostsFilter<a class="headerlink" href="schedulers.html#isolatedhostsfilter" title="Permalink to this headline">¶</a></h3>
+<p>Allows the admin to define a special (isolated) set of images and a special
+(isolated) set of hosts, such that the isolated images can only run on
+the isolated hosts, and the isolated hosts can only run isolated images.
+The flag <code class="docutils literal"><span class="pre">restrict_isolated_hosts_to_isolated_images</span></code> can be used to
+force isolated hosts to only run isolated images.</p>
+<p>The admin must specify the isolated set of images and hosts in the
+<code class="docutils literal"><span class="pre">nova.conf</span></code> file using the <code class="docutils literal"><span class="pre">isolated_hosts</span></code> and <code class="docutils literal"><span class="pre">isolated_images</span></code>
+configuration options. For example:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">isolated_hosts</span> <span class="o">=</span> <span class="s">server1, server2</span>
+<span class="na">isolated_images</span> <span class="o">=</span> <span class="s">342b492c-128f-4a42-8d3a-c5088cf27d13, ebd267a6-ca86-4d6c-9a0e-bd132d6b7d09</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ioopsfilter">
+<span id="id9"></span><h3>IoOpsFilter<a class="headerlink" href="schedulers.html#ioopsfilter" title="Permalink to this headline">¶</a></h3>
+<p>The IoOpsFilter filters hosts by concurrent I/O operations on it.
+Hosts with too many concurrent I/O operations will be filtered out.
+The <code class="docutils literal"><span class="pre">max_io_ops_per_host</span></code> option specifies the maximum number of
+I/O intensive instances allowed to run on a host.
+A host will be ignored by the scheduler if more than
+<code class="docutils literal"><span class="pre">max_io_ops_per_host</span></code> instances in build, resize, snapshot,
+migrate, rescue or unshelve task states are running on it.</p>
+</div>
+<div class="section" id="jsonfilter">
+<h3>JsonFilter<a class="headerlink" href="schedulers.html#jsonfilter" title="Permalink to this headline">¶</a></h3>
+<p>The JsonFilter allows a user to construct a custom filter by passing
+a scheduler hint in JSON format. The following operators are supported:</p>
+<ul class="simple">
+<li>=</li>
+<li>&lt;</li>
+<li>&gt;</li>
+<li>in</li>
+<li>&lt;=</li>
+<li>&gt;=</li>
+<li>not</li>
+<li>or</li>
+<li>and</li>
+</ul>
+<p>The filter supports the following variables:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">$free_ram_mb</span></code></li>
+<li><code class="docutils literal"><span class="pre">$free_disk_mb</span></code></li>
+<li><code class="docutils literal"><span class="pre">$total_usable_ram_mb</span></code></li>
+<li><code class="docutils literal"><span class="pre">$vcpus_total</span></code></li>
+<li><code class="docutils literal"><span class="pre">$vcpus_used</span></code></li>
+</ul>
+<p>Using the <strong class="command">openstack server create</strong> command, use the
+<code class="docutils literal"><span class="pre">--hint</span></code> flag:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack server create --image 827d564a-e636-4fc4-a376-d36f7ebe1747 <span class="se">\</span>
+  --flavor <span class="m">1</span> --hint <span class="nv">query</span><span class="o">=</span><span class="s1">&#39;[&quot;&gt;=&quot;,&quot;$free_ram_mb&quot;,1024]&#39;</span> server1
+</pre></div>
+</div>
+<p>With the API, use the <code class="docutils literal"><span class="pre">os:scheduler_hints</span></code> key:</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;server&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;server-1&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;imageRef&quot;</span><span class="p">:</span> <span class="s2">&quot;cedef40a-ed67-4d10-800e-17455edce175&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;flavorRef&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;os:scheduler_hints&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;query&quot;</span><span class="p">:</span> <span class="s2">&quot;[&gt;=,$free_ram_mb,1024]&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="metricsfilter">
+<h3>MetricsFilter<a class="headerlink" href="schedulers.html#metricsfilter" title="Permalink to this headline">¶</a></h3>
+<p>Filters hosts based on meters <code class="docutils literal"><span class="pre">weight_setting</span></code>.
+Only hosts with the available meters are passed so that
+the metrics weigher will not fail due to these hosts.</p>
+</div>
+<div class="section" id="numatopologyfilter">
+<h3>NUMATopologyFilter<a class="headerlink" href="schedulers.html#numatopologyfilter" title="Permalink to this headline">¶</a></h3>
+<p>Filters hosts based on the NUMA topology that was specified for the
+instance through the use of flavor <code class="docutils literal"><span class="pre">extra_specs</span></code> in combination
+with the image properties, as described in detail in the
+<a class="reference external" href="http://specs.openstack.org/openstack/nova-specs/specs/juno/implemented/virt-driver-numa-placement.html">related nova-spec document</a>.
+Filter will try to match the exact NUMA cells of the instance to
+those of the host. It will consider the standard over-subscription
+limits each cell, and provide limits to the compute host accordingly.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If instance has no topology defined, it will be considered for any host.
+If instance has a topology defined, it will be considered only for NUMA
+capable hosts.</p>
+</div>
+</div>
+<div class="section" id="numinstancesfilter">
+<span id="id10"></span><h3>NumInstancesFilter<a class="headerlink" href="schedulers.html#numinstancesfilter" title="Permalink to this headline">¶</a></h3>
+<p>Hosts that have more instances running than specified by the
+<code class="docutils literal"><span class="pre">max_instances_per_host</span></code> option are filtered out when this filter
+is in place.</p>
+</div>
+<div class="section" id="pcipassthroughfilter">
+<h3>PciPassthroughFilter<a class="headerlink" href="schedulers.html#pcipassthroughfilter" title="Permalink to this headline">¶</a></h3>
+<p>The filter schedules instances on a host if the host has devices that
+meet the device requests in the <code class="docutils literal"><span class="pre">extra_specs</span></code> attribute for the flavor.</p>
+</div>
+<div class="section" id="ramfilter">
+<span id="id11"></span><h3>RamFilter<a class="headerlink" href="schedulers.html#ramfilter" title="Permalink to this headline">¶</a></h3>
+<p>Only schedules instances on hosts that have sufficient RAM available.
+If this filter is not set, the scheduler may over provision a host
+based on RAM (for example, the RAM allocated by virtual machine
+instances may exceed the physical RAM).</p>
+<p>You can configure this filter to enable a fixed amount of RAM
+overcommitment by using the <code class="docutils literal"><span class="pre">ram_allocation_ratio</span></code> configuration
+option in <code class="docutils literal"><span class="pre">nova.conf</span></code>. The default setting is:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">ram_allocation_ratio</span> <span class="o">=</span> <span class="s">1.5</span>
+</pre></div>
+</div>
+<p>This setting enables 1.5 GB instances to run on any compute node
+with 1 GB of free RAM.</p>
+</div>
+<div class="section" id="retryfilter">
+<h3>RetryFilter<a class="headerlink" href="schedulers.html#retryfilter" title="Permalink to this headline">¶</a></h3>
+<p>Filters out hosts that have already been attempted for scheduling purposes.
+If the scheduler selects a host to respond to a service request,
+and the host fails to respond to the request, this filter prevents
+the scheduler from retrying that host for the service request.</p>
+<p>This filter is only useful if the <code class="docutils literal"><span class="pre">scheduler_max_attempts</span></code>
+configuration option is set to a value greater than zero.</p>
+</div>
+<div class="section" id="samehostfilter">
+<h3>SameHostFilter<a class="headerlink" href="schedulers.html#samehostfilter" title="Permalink to this headline">¶</a></h3>
+<p>Schedules the instance on the same host as another instance in a set
+of instances. To take advantage of this filter, the requester must
+pass a scheduler hint, using <code class="docutils literal"><span class="pre">same_host</span></code> as the key and a
+list of instance UUIDs as the value.
+This filter is the opposite of the <code class="docutils literal"><span class="pre">DifferentHostFilter</span></code>.
+Using the <strong class="command">openstack server create</strong> command, use the
+<code class="docutils literal"><span class="pre">--hint</span></code> flag:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack server create --image cedef40a-ed67-4d10-800e-17455edce175 <span class="se">\</span>
+  --flavor <span class="m">1</span> --hint <span class="nv">same_host</span><span class="o">=</span>a0cf03a5-d921-4877-bb5c-86d26cf818e1 <span class="se">\</span>
+  --hint <span class="nv">same_host</span><span class="o">=</span>8c19174f-4220-44f0-824a-cd1eeef10287 server-1
+</pre></div>
+</div>
+<p>With the API, use the <code class="docutils literal"><span class="pre">os:scheduler_hints</span></code> key:</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;server&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;server-1&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;imageRef&quot;</span><span class="p">:</span> <span class="s2">&quot;cedef40a-ed67-4d10-800e-17455edce175&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;flavorRef&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;os:scheduler_hints&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;same_host&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;a0cf03a5-d921-4877-bb5c-86d26cf818e1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;8c19174f-4220-44f0-824a-cd1eeef10287&quot;</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="servergroupaffinityfilter">
+<span id="id12"></span><h3>ServerGroupAffinityFilter<a class="headerlink" href="schedulers.html#servergroupaffinityfilter" title="Permalink to this headline">¶</a></h3>
+<p>The ServerGroupAffinityFilter ensures that an instance is scheduled
+on to a host from a set of group hosts. To take advantage of this filter,
+the requester must create a server group with an <code class="docutils literal"><span class="pre">affinity</span></code> policy,
+and pass a scheduler hint, using <code class="docutils literal"><span class="pre">group</span></code> as the key and the server
+group UUID as the value.
+Using the <strong class="command">openstack server create</strong> command, use the
+<code class="docutils literal"><span class="pre">--hint</span></code> flag. For example:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack server group create --policy affinity group-1
+<span class="gp">$</span> openstack server create --image IMAGE_ID --flavor <span class="m">1</span> <span class="se">\</span>
+  --hint <span class="nv">group</span><span class="o">=</span>SERVER_GROUP_UUID server-1
+</pre></div>
+</div>
+</div>
+<div class="section" id="servergroupantiaffinityfilter">
+<span id="id13"></span><h3>ServerGroupAntiAffinityFilter<a class="headerlink" href="schedulers.html#servergroupantiaffinityfilter" title="Permalink to this headline">¶</a></h3>
+<p>The ServerGroupAntiAffinityFilter ensures that each instance in a group is
+on a different host. To take advantage of this filter, the requester must
+create a server group with an <code class="docutils literal"><span class="pre">anti-affinity</span></code> policy, and pass a scheduler
+hint, using <code class="docutils literal"><span class="pre">group</span></code> as the key and the server group UUID as the value.
+Using the <strong class="command">openstack server create</strong> command, use the
+<code class="docutils literal"><span class="pre">--hint</span></code> flag. For example:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack server group create --policy anti-affinity group-1
+<span class="gp">$</span> openstack server create --image IMAGE_ID --flavor <span class="m">1</span> <span class="se">\</span>
+  --hint <span class="nv">group</span><span class="o">=</span>SERVER_GROUP_UUID server-1
+</pre></div>
+</div>
+</div>
+<div class="section" id="simplecidraffinityfilter">
+<h3>SimpleCIDRAffinityFilter<a class="headerlink" href="schedulers.html#simplecidraffinityfilter" title="Permalink to this headline">¶</a></h3>
+<p>Schedules the instance based on host IP subnet range.
+To take advantage of this filter, the requester must specify a range
+of valid IP address in CIDR format, by passing two scheduler hints:</p>
+<dl class="docutils">
+<dt>build_near_host_ip</dt>
+<dd>The first IP address in the subnet (for example, <code class="docutils literal"><span class="pre">192.168.1.1</span></code>)</dd>
+<dt>cidr</dt>
+<dd>The CIDR that corresponds to the subnet (for example, <code class="docutils literal"><span class="pre">/24</span></code>)</dd>
+</dl>
+<p>Using the <strong class="command">openstack server create</strong> command, use the
+<code class="docutils literal"><span class="pre">--hint</span></code> flag. For example, to specify the IP subnet
+<code class="docutils literal"><span class="pre">192.168.1.1/24</span></code>:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack server create --image cedef40a-ed67-4d10-800e-17455edce175 <span class="se">\</span>
+  --flavor <span class="m">1</span> --hint <span class="nv">build_near_host_ip</span><span class="o">=</span><span class="m">192</span>.168.1.1 --hint <span class="nv">cidr</span><span class="o">=</span>/24 server-1
+</pre></div>
+</div>
+<p>With the API, use the <code class="docutils literal"><span class="pre">os:scheduler_hints</span></code> key:</p>
+<div class="highlight-json"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;server&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;server-1&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;imageRef&quot;</span><span class="p">:</span> <span class="s2">&quot;cedef40a-ed67-4d10-800e-17455edce175&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;flavorRef&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;os:scheduler_hints&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;build_near_host_ip&quot;</span><span class="p">:</span> <span class="s2">&quot;192.168.1.1&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;cidr&quot;</span><span class="p">:</span> <span class="s2">&quot;24&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="trustedfilter">
+<h3>TrustedFilter<a class="headerlink" href="schedulers.html#trustedfilter" title="Permalink to this headline">¶</a></h3>
+<p>Filters hosts based on their trust. Only passes hosts that
+meet the trust requirements specified in the instance properties.</p>
+</div>
+<div class="section" id="typeaffinityfilter">
+<span id="id14"></span><h3>TypeAffinityFilter<a class="headerlink" href="schedulers.html#typeaffinityfilter" title="Permalink to this headline">¶</a></h3>
+<p>Dynamically limits hosts to one instance type. An instance can only be
+launched on a host, if no instance with different instances types
+are running on it, or if the host has no running instances at all.</p>
+</div>
+</div>
+<div class="section" id="cell-filters">
+<h2>Cell filters<a class="headerlink" href="schedulers.html#cell-filters" title="Permalink to this headline">¶</a></h2>
+<p>The following sections describe the available cell filters.</p>
+<div class="section" id="differentcellfilter">
+<h3>DifferentCellFilter<a class="headerlink" href="schedulers.html#differentcellfilter" title="Permalink to this headline">¶</a></h3>
+<p>Schedules the instance on a different cell from a set of instances.
+To take advantage of this filter, the requester must pass a scheduler hint,
+using <code class="docutils literal"><span class="pre">different_cell</span></code> as the key and a list of instance UUIDs as the value.</p>
+</div>
+<div class="section" id="id15">
+<h3>ImagePropertiesFilter<a class="headerlink" href="schedulers.html#id15" title="Permalink to this headline">¶</a></h3>
+<p>Filters cells based on properties defined on the instance’s image.
+This filter works specifying the hypervisor required in the image
+metadata and the supported hypervisor version in cell capabilities.</p>
+</div>
+<div class="section" id="targetcellfilter">
+<h3>TargetCellFilter<a class="headerlink" href="schedulers.html#targetcellfilter" title="Permalink to this headline">¶</a></h3>
+<p>Filters target cells. This filter works by specifying a scheduler
+hint of <code class="docutils literal"><span class="pre">target_cell</span></code>. The value should be the full cell path.</p>
+</div>
+</div>
+<div class="section" id="weights">
+<span id="id16"></span><h2>Weights<a class="headerlink" href="schedulers.html#weights" title="Permalink to this headline">¶</a></h2>
+<p>When resourcing instances, the filter scheduler filters and weights
+each host in the list of acceptable hosts. Each time the scheduler
+selects a host, it virtually consumes resources on it, and subsequent
+selections are adjusted accordingly. This process is useful when the
+customer asks for the same large amount of instances, because weight
+is computed for each requested instance.</p>
+<p>All weights are normalized before being summed up;
+the host with the largest weight is given the highest priority.</p>
+<p><strong>Weighting hosts</strong></p>
+<div class="figure">
+<img alt="../_images/nova-weighting-hosts.png" src="../_images/nova-weighting-hosts.png" />
+</div>
+<p>If cells are used, cells are weighted by the scheduler in the same
+manner as hosts.</p>
+<p>Hosts and cells are weighted based on the following options in
+the <code class="docutils literal"><span class="pre">/etc/nova/nova.conf</span></code> file:</p>
+<table border="1" class="colwidths-given docutils" id="id17">
+<caption><span class="caption-text">Host weighting options</span><a class="headerlink" href="schedulers.html#id17" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="11%" />
+<col width="26%" />
+<col width="63%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Section</th>
+<th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>[DEFAULT]</td>
+<td><code class="docutils literal"><span class="pre">ram_weight_multiplier</span></code></td>
+<td>By default, the scheduler spreads instances across all hosts evenly.
+Set the <code class="docutils literal"><span class="pre">ram_weight_multiplier</span></code> option to a negative number if you
+prefer stacking instead of spreading. Use a floating-point value.</td>
+</tr>
+<tr class="row-odd"><td>[DEFAULT]</td>
+<td><code class="docutils literal"><span class="pre">scheduler_host_subset_size</span></code></td>
+<td>New instances are scheduled on a host that is chosen randomly from a
+subset of the N best hosts. This property defines the subset size
+from which a host is chosen. A value of 1 chooses the first host
+returned by the weighting functions. This value must be at least 1.
+A value less than 1 is ignored, and 1 is used instead.
+Use an integer value.</td>
+</tr>
+<tr class="row-even"><td>[DEFAULT]</td>
+<td><code class="docutils literal"><span class="pre">scheduler_weight_classes</span></code></td>
+<td>Defaults to <code class="docutils literal"><span class="pre">nova.scheduler.weights.all_weighers</span></code>.
+Hosts are then weighted and sorted with the largest weight winning.</td>
+</tr>
+<tr class="row-odd"><td>[DEFAULT]</td>
+<td><code class="docutils literal"><span class="pre">io_ops_weight_multiplier</span></code></td>
+<td>Multiplier used for weighing host I/O operations. A negative
+value means a preference to choose light workload compute hosts.</td>
+</tr>
+<tr class="row-even"><td>[DEFAULT]</td>
+<td><code class="docutils literal"><span class="pre">soft_affinity_weight_multiplier</span></code></td>
+<td>Multiplier used for weighing hosts for group soft-affinity.
+Only a positive value is meaningful. Negative means that the
+behavior will change to the opposite, which is soft-anti-affinity.</td>
+</tr>
+<tr class="row-odd"><td>[DEFAULT]</td>
+<td><code class="docutils literal"><span class="pre">soft_anti_affinity_weight_multiplier</span></code></td>
+<td>Multiplier used for weighing hosts for group soft-anti-affinity.
+Only a positive value is meaningful. Negative means that the
+behavior will change to the opposite, which is soft-affinity.</td>
+</tr>
+<tr class="row-even"><td>[metrics]</td>
+<td><code class="docutils literal"><span class="pre">weight_multiplier</span></code></td>
+<td>Multiplier for weighting meters. Use a floating-point value.</td>
+</tr>
+<tr class="row-odd"><td>[metrics]</td>
+<td><code class="docutils literal"><span class="pre">weight_setting</span></code></td>
+<td>Determines how meters are weighted. Use a comma-separated list of
+metricName=ratio. For example: <code class="docutils literal"><span class="pre">name1=1.0,</span> <span class="pre">name2=-1.0</span></code> results in:
+<code class="docutils literal"><span class="pre">name1.value</span> <span class="pre">*</span> <span class="pre">1.0</span> <span class="pre">+</span> <span class="pre">name2.value</span> <span class="pre">*</span> <span class="pre">-1.0</span></code></td>
+</tr>
+<tr class="row-even"><td>[metrics]</td>
+<td><code class="docutils literal"><span class="pre">required</span></code></td>
+<td><p class="first">Specifies how to treat unavailable meters:</p>
+<ul class="last simple">
+<li>True - Raises an exception. To avoid the raised exception,
+you should use the scheduler filter <code class="docutils literal"><span class="pre">MetricFilter</span></code> to filter
+out hosts with unavailable meters.</li>
+<li>False - Treated as a negative factor in the weighting process
+(uses the <code class="docutils literal"><span class="pre">weight_of_unavailable</span></code> option).</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td>[metrics]</td>
+<td><code class="docutils literal"><span class="pre">weight_of_unavailable</span></code></td>
+<td>If <code class="docutils literal"><span class="pre">required</span></code> is set to False, and any one of the meters set by
+<code class="docutils literal"><span class="pre">weight_setting</span></code> is unavailable, the <code class="docutils literal"><span class="pre">weight_of_unavailable</span></code>
+value is returned to the scheduler.</td>
+</tr>
+</tbody>
+</table>
+<p>For example:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[DEFAULT]</span>
+<span class="na">scheduler_host_subset_size</span> <span class="o">=</span> <span class="s">1</span>
+<span class="na">scheduler_weight_classes</span> <span class="o">=</span> <span class="s">nova.scheduler.weights.all_weighers</span>
+<span class="na">ram_weight_multiplier</span> <span class="o">=</span> <span class="s">1.0</span>
+<span class="na">io_ops_weight_multiplier</span> <span class="o">=</span> <span class="s">2.0</span>
+<span class="na">soft_affinity_weight_multiplier</span> <span class="o">=</span> <span class="s">1.0</span>
+<span class="na">soft_anti_affinity_weight_multiplier</span> <span class="o">=</span> <span class="s">1.0</span>
+<span class="k">[metrics]</span>
+<span class="na">weight_multiplier</span> <span class="o">=</span> <span class="s">1.0</span>
+<span class="na">weight_setting</span> <span class="o">=</span> <span class="s">name1=1.0, name2=-1.0</span>
+<span class="na">required</span> <span class="o">=</span> <span class="s">false</span>
+<span class="na">weight_of_unavailable</span> <span class="o">=</span> <span class="s">-10000.0</span>
+</pre></div>
+</div>
+<table border="1" class="colwidths-given docutils" id="id18">
+<caption><span class="caption-text">Cell weighting options</span><a class="headerlink" href="schedulers.html#id18" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="11%" />
+<col width="26%" />
+<col width="63%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Section</th>
+<th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>[cells]</td>
+<td><code class="docutils literal"><span class="pre">mute_weight_multiplier</span></code></td>
+<td>Multiplier to weight mute children (hosts which have not sent
+capacity or capacity updates for some time).
+Use a negative, floating-point value.</td>
+</tr>
+<tr class="row-odd"><td>[cells]</td>
+<td><code class="docutils literal"><span class="pre">offset_weight_multiplier</span></code></td>
+<td>Multiplier to weight cells, so you can specify a preferred cell.
+Use a floating point value.</td>
+</tr>
+<tr class="row-even"><td>[cells]</td>
+<td><code class="docutils literal"><span class="pre">ram_weight_multiplier</span></code></td>
+<td>By default, the scheduler spreads instances across all cells evenly.
+Set the <code class="docutils literal"><span class="pre">ram_weight_multiplier</span></code> option to a negative number if you
+prefer stacking instead of spreading. Use a floating-point value.</td>
+</tr>
+<tr class="row-odd"><td>[cells]</td>
+<td><code class="docutils literal"><span class="pre">scheduler_weight_classes</span></code></td>
+<td>Defaults to <code class="docutils literal"><span class="pre">nova.cells.weights.all_weighers</span></code>, which maps to all
+cell weighers included with Compute. Cells are then weighted and
+sorted with the largest weight winning.</td>
+</tr>
+</tbody>
+</table>
+<p>For example:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[cells]</span>
+<span class="na">scheduler_weight_classes</span> <span class="o">=</span> <span class="s">nova.cells.weights.all_weighers</span>
+<span class="na">mute_weight_multiplier</span> <span class="o">=</span> <span class="s">-10.0</span>
+<span class="na">ram_weight_multiplier</span> <span class="o">=</span> <span class="s">1.0</span>
+<span class="na">offset_weight_multiplier</span> <span class="o">=</span> <span class="s">1.0</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="chance-scheduler">
+<h2>Chance scheduler<a class="headerlink" href="schedulers.html#chance-scheduler" title="Permalink to this headline">¶</a></h2>
+<p>As an administrator, you work with the filter scheduler.
+However, the Compute service also uses the Chance Scheduler,
+<code class="docutils literal"><span class="pre">nova.scheduler.chance.ChanceScheduler</span></code>,
+which randomly selects from lists of filtered hosts.</p>
+</div>
+<div class="section" id="utilization-aware-scheduling">
+<h2>Utilization aware scheduling<a class="headerlink" href="schedulers.html#utilization-aware-scheduling" title="Permalink to this headline">¶</a></h2>
+<p>It is possible to schedule VMs using advanced scheduling decisions.
+These decisions are made based on enhanced usage statistics encompassing
+data like memory cache utilization, memory bandwidth utilization,
+or network bandwidth utilization. This is disabled by default.
+The administrator can configure how the metrics are weighted in the
+configuration file by using the <code class="docutils literal"><span class="pre">weight_setting</span></code> configuration option
+in the <code class="docutils literal"><span class="pre">nova.conf</span></code> configuration file.
+For example to configure metric1 with ratio1 and metric2 with ratio2:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">weight_setting</span> <span class="o">=</span> <span class="s">&quot;metric1=ratio1, metric2=ratio2&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="host-aggregates-and-availability-zones">
+<span id="host-aggregates"></span><h2>Host aggregates and availability zones<a class="headerlink" href="schedulers.html#host-aggregates-and-availability-zones" title="Permalink to this headline">¶</a></h2>
+<p>Host aggregates are a mechanism for partitioning hosts in an OpenStack
+cloud, or a region of an OpenStack cloud, based on arbitrary characteristics.
+Examples where an administrator may want to do this include where a group
+of hosts have additional hardware or performance characteristics.</p>
+<p>Host aggregates are not explicitly exposed to users.
+Instead administrators map flavors to host aggregates.
+Administrators do this by setting metadata on a host aggregate,
+and matching flavor extra specifications.
+The scheduler then endeavors to match user requests for instance of the
+given flavor to a host aggregate with the same key-value pair in its metadata.
+Compute nodes can be in more than one host aggregate.</p>
+<p>Administrators are able to optionally expose a host aggregate as an
+availability zone. Availability zones are different from host aggregates in
+that they are explicitly exposed to the user, and hosts can only be in a
+single availability zone. Administrators can configure a default availability
+zone where instances will be scheduled when the user fails to specify one.</p>
+<div class="section" id="command-line-interface">
+<h3>Command-line interface<a class="headerlink" href="schedulers.html#command-line-interface" title="Permalink to this headline">¶</a></h3>
+<p>The <strong class="command">nova</strong> command-line client supports the following
+aggregate-related commands.</p>
+<dl class="docutils">
+<dt>nova aggregate-list</dt>
+<dd>Print a list of all aggregates.</dd>
+<dt>nova aggregate-create &lt;name&gt; [availability-zone]</dt>
+<dd>Create a new aggregate named <code class="docutils literal"><span class="pre">&lt;name&gt;</span></code>, and optionally in availability
+zone <code class="docutils literal"><span class="pre">[availability-zone]</span></code> if specified. The command returns the ID of
+the newly created aggregate. Hosts can be made available to multiple
+host aggregates. Be careful when adding a host to an additional host
+aggregate when the host is also in an availability zone. Pay attention
+when using the <strong class="command">nova aggregate-set-metadata</strong> and
+<strong class="command">nova aggregate-update</strong> commands to avoid user confusion when they
+boot instances in different availability zones.
+An error occurs if you cannot add a particular host to an aggregate zone
+for which it is not intended.</dd>
+<dt>nova aggregate-delete &lt;aggregate&gt;</dt>
+<dd>Delete an aggregate with its <code class="docutils literal"><span class="pre">&lt;id&gt;</span></code> or <code class="docutils literal"><span class="pre">&lt;name&gt;</span></code>.</dd>
+<dt>nova aggregate-show &lt;aggregate&gt;</dt>
+<dd>Show details of the aggregate with its <code class="docutils literal"><span class="pre">&lt;id&gt;</span></code> or <code class="docutils literal"><span class="pre">&lt;name&gt;</span></code>.</dd>
+<dt>nova aggregate-add-host &lt;aggregate&gt; &lt;host&gt;</dt>
+<dd>Add host with name <code class="docutils literal"><span class="pre">&lt;host&gt;</span></code> to aggregate with its <code class="docutils literal"><span class="pre">&lt;id&gt;</span></code> or <code class="docutils literal"><span class="pre">&lt;name&gt;</span></code>.</dd>
+<dt>nova aggregate-remove-host &lt;aggregate&gt; &lt;host&gt;</dt>
+<dd>Remove the host with name <code class="docutils literal"><span class="pre">&lt;host&gt;</span></code> from the aggregate with its <code class="docutils literal"><span class="pre">&lt;id&gt;</span></code>
+or <code class="docutils literal"><span class="pre">&lt;name&gt;</span></code>.</dd>
+<dt>nova aggregate-set-metadata &lt;aggregate&gt; &lt;key=value&gt; [&lt;key=value&gt; ...]</dt>
+<dd>Add or update metadata (key-value pairs) associated with the aggregate
+with its <code class="docutils literal"><span class="pre">&lt;id&gt;</span></code> or <code class="docutils literal"><span class="pre">&lt;name&gt;</span></code>.</dd>
+<dt>nova aggregate-update &lt;id&gt; &lt;name&gt; [&lt;availability_zone&gt;]</dt>
+<dd>Update the name and availability zone (optional) for the aggregate.</dd>
+<dt>nova host-list</dt>
+<dd>List all hosts by service.</dd>
+<dt>nova host-update &#8211;maintenance [enable | disable]</dt>
+<dd>Put/resume host into/from maintenance.</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Only administrators can access these commands. If you try to use
+these commands and the user name and tenant that you use to access
+the Compute service do not have the <code class="docutils literal"><span class="pre">admin</span></code> role or the
+appropriate privileges, these errors occur:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">ERROR: Policy doesn&#39;t allow compute_extension:aggregates to be performed. (HTTP 403) (Request-ID: req-299fbff6-6729-4cef-93b2-e7e1f96b4864)</span>
+</pre></div>
+</div>
+<div class="last highlight-console"><div class="highlight"><pre><span></span><span class="go">ERROR: Policy doesn&#39;t allow compute_extension:hosts to be performed. (HTTP 403) (Request-ID: req-ef2400f6-6776-4ea3-b6f1-7704085c27d1)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="configure-scheduler-to-support-host-aggregates">
+<h3>Configure scheduler to support host aggregates<a class="headerlink" href="schedulers.html#configure-scheduler-to-support-host-aggregates" title="Permalink to this headline">¶</a></h3>
+<p>One common use case for host aggregates is when you want to support
+scheduling instances to a subset of compute hosts because they have
+a specific capability. For example, you may want to allow users to
+request compute hosts that have SSD drives if they need access to
+faster disk I/O, or access to compute hosts that have GPU cards to
+take advantage of GPU-accelerated code.</p>
+<p>To configure the scheduler to support host aggregates, the
+<code class="docutils literal"><span class="pre">scheduler_default_filters</span></code> configuration option must contain the
+<code class="docutils literal"><span class="pre">AggregateInstanceExtraSpecsFilter</span></code> in addition to the other
+filters used by the scheduler. Add the following line to
+<code class="docutils literal"><span class="pre">/etc/nova/nova.conf</span></code> on the host that runs the <code class="docutils literal"><span class="pre">nova-scheduler</span></code>
+service to enable host aggregates filtering, as well as the other
+filters that are typically enabled:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">scheduler_default_filters</span><span class="o">=</span><span class="s">AggregateInstanceExtraSpecsFilter,RetryFilter,AvailabilityZoneFilter,RamFilter,ComputeFilter,ComputeCapabilitiesFilter,ImagePropertiesFilter,ServerGroupAntiAffinityFilter,ServerGroupAffinityFilter</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-specify-compute-hosts-with-ssds">
+<h3>Example: Specify compute hosts with SSDs<a class="headerlink" href="schedulers.html#example-specify-compute-hosts-with-ssds" title="Permalink to this headline">¶</a></h3>
+<p>This example configures the Compute service to enable users to request
+nodes that have solid-state drives (SSDs). You create a <code class="docutils literal"><span class="pre">fast-io</span></code>
+host aggregate in the <code class="docutils literal"><span class="pre">nova</span></code> availability zone and you add the
+<code class="docutils literal"><span class="pre">ssd=true</span></code> key-value pair to the aggregate. Then, you add the
+<code class="docutils literal"><span class="pre">node1</span></code>, and <code class="docutils literal"><span class="pre">node2</span></code> compute nodes to it.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack aggregate create --zone nova fast-io
+<span class="go">+-------------------+----------------------------+</span>
+<span class="go">| Field             | Value                      |</span>
+<span class="go">+-------------------+----------------------------+</span>
+<span class="go">| availability_zone | nova                       |</span>
+<span class="go">| created_at        | 2016-12-22T07:31:13.013466 |</span>
+<span class="go">| deleted           | False                      |</span>
+<span class="go">| deleted_at        | None                       |</span>
+<span class="go">| id                | 1                          |</span>
+<span class="go">| name              | fast-io                    |</span>
+<span class="go">| updated_at        | None                       |</span>
+<span class="go">+-------------------+----------------------------+</span>
+
+<span class="gp">$</span> openstack aggregate <span class="nb">set</span> --property <span class="nv">ssd</span><span class="o">=</span><span class="nb">true</span> <span class="m">1</span>
+<span class="go">+-------------------+----------------------------+</span>
+<span class="go">| Field             | Value                      |</span>
+<span class="go">+-------------------+----------------------------+</span>
+<span class="go">| availability_zone | nova                       |</span>
+<span class="go">| created_at        | 2016-12-22T07:31:13.000000 |</span>
+<span class="go">| deleted           | False                      |</span>
+<span class="go">| deleted_at        | None                       |</span>
+<span class="go">| hosts             | []                         |</span>
+<span class="go">| id                | 1                          |</span>
+<span class="go">| name              | fast-io                    |</span>
+<span class="go">| properties        | ssd=&#39;true&#39;                 |</span>
+<span class="go">| updated_at        | None                       |</span>
+<span class="go">+-------------------+----------------------------+</span>
+
+<span class="gp">$</span> openstack aggregate add host <span class="m">1</span> node1
+<span class="go">+-------------------+--------------------------------------------------+</span>
+<span class="go">| Field             | Value                                            |</span>
+<span class="go">+-------------------+--------------------------------------------------+</span>
+<span class="go">| availability_zone | nova                                             |</span>
+<span class="go">| created_at        | 2016-12-22T07:31:13.000000                       |</span>
+<span class="go">| deleted           | False                                            |</span>
+<span class="go">| deleted_at        | None                                             |</span>
+<span class="go">| hosts             | [u&#39;node1&#39;]                                       |</span>
+<span class="go">| id                | 1                                                |</span>
+<span class="go">| metadata          | {u&#39;ssd&#39;: u&#39;true&#39;, u&#39;availability_zone&#39;: u&#39;nova&#39;} |</span>
+<span class="go">| name              | fast-io                                          |</span>
+<span class="go">| updated_at        | None                                             |</span>
+<span class="go">+-------------------+--------------------------------------------------+</span>
+
+<span class="gp">$</span> openstack aggregate add host <span class="m">1</span> node2
+<span class="go">+-------------------+--------------------------------------------------+</span>
+<span class="go">| Field             | Value                                            |</span>
+<span class="go">+-------------------+--------------------------------------------------+</span>
+<span class="go">| availability_zone | nova                                             |</span>
+<span class="go">| created_at        | 2016-12-22T07:31:13.000000                       |</span>
+<span class="go">| deleted           | False                                            |</span>
+<span class="go">| deleted_at        | None                                             |</span>
+<span class="go">| hosts             | [u&#39;node2&#39;]                                       |</span>
+<span class="go">| id                | 1                                                |</span>
+<span class="go">| metadata          | {u&#39;ssd&#39;: u&#39;true&#39;, u&#39;availability_zone&#39;: u&#39;nova&#39;} |</span>
+<span class="go">| name              | fast-io                                          |</span>
+<span class="go">| updated_at        | None                                             |</span>
+<span class="go">+-------------------+--------------------------------------------------+</span>
+</pre></div>
+</div>
+<p>Use the <strong class="command">openstack flavor create</strong> command to create the <code class="docutils literal"><span class="pre">ssd.large</span></code>
+flavor called with an ID of 6, 8 GB of RAM, 80 GB root disk, and 4 vCPUs.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack flavor create --id <span class="m">6</span> --ram <span class="m">8192</span> --disk <span class="m">80</span> --vcpus <span class="m">4</span> ssd.large
+<span class="go">+----------------------------+-----------+</span>
+<span class="go">| Field                      | Value     |</span>
+<span class="go">+----------------------------+-----------+</span>
+<span class="go">| OS-FLV-DISABLED:disabled   | False     |</span>
+<span class="go">| OS-FLV-EXT-DATA:ephemeral  | 0         |</span>
+<span class="go">| disk                       | 80        |</span>
+<span class="go">| id                         | 6         |</span>
+<span class="go">| name                       | ssd.large |</span>
+<span class="go">| os-flavor-access:is_public | True      |</span>
+<span class="go">| ram                        | 8192      |</span>
+<span class="go">| rxtx_factor                | 1.0       |</span>
+<span class="go">| swap                       |           |</span>
+<span class="go">| vcpus                      | 4         |</span>
+<span class="go">+----------------------------+-----------+</span>
+</pre></div>
+</div>
+<p>Once the flavor is created, specify one or more key-value pairs that
+match the key-value pairs on the host aggregates with scope
+<code class="docutils literal"><span class="pre">aggregate_instance_extra_specs</span></code>. In this case, that is the
+<code class="docutils literal"><span class="pre">aggregate_instance_extra_specs:ssd=true</span></code> key-value pair.
+Setting a key-value pair on a flavor is done using the
+<strong class="command">openstack flavor set</strong> command.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack flavor <span class="nb">set</span> --property aggregate_instance_extra_specs:ssd<span class="o">=</span><span class="nb">true</span> ssd.large
+</pre></div>
+</div>
+<p>Once it is set, you should see the <code class="docutils literal"><span class="pre">extra_specs</span></code> property of the
+<code class="docutils literal"><span class="pre">ssd.large</span></code> flavor populated with a key of <code class="docutils literal"><span class="pre">ssd</span></code> and a corresponding
+value of <code class="docutils literal"><span class="pre">true</span></code>.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> openstack flavor show ssd.large
+<span class="go">+----------------------------+-------------------------------------------+</span>
+<span class="go">| Field                      | Value                                     |</span>
+<span class="go">+----------------------------+-------------------------------------------+</span>
+<span class="go">| OS-FLV-DISABLED:disabled   | False                                     |</span>
+<span class="go">| OS-FLV-EXT-DATA:ephemeral  | 0                                         |</span>
+<span class="go">| disk                       | 80                                        |</span>
+<span class="go">| id                         | 6                                         |</span>
+<span class="go">| name                       | ssd.large                                 |</span>
+<span class="go">| os-flavor-access:is_public | True                                      |</span>
+<span class="go">| properties                 | aggregate_instance_extra_specs:ssd=&#39;true&#39; |</span>
+<span class="go">| ram                        | 8192                                      |</span>
+<span class="go">| rxtx_factor                | 1.0                                       |</span>
+<span class="go">| swap                       |                                           |</span>
+<span class="go">| vcpus                      | 4                                         |</span>
+<span class="go">+----------------------------+-------------------------------------------+</span>
+</pre></div>
+</div>
+<p>Now, when a user requests an instance with the <code class="docutils literal"><span class="pre">ssd.large</span></code> flavor,
+the scheduler only considers hosts with the <code class="docutils literal"><span class="pre">ssd=true</span></code> key-value pair.
+In this example, these are <code class="docutils literal"><span class="pre">node1</span></code> and <code class="docutils literal"><span class="pre">node2</span></code>.</p>
+</div>
+<div class="section" id="xenserver-hypervisor-pools-to-support-live-migration">
+<h3>XenServer hypervisor pools to support live migration<a class="headerlink" href="schedulers.html#xenserver-hypervisor-pools-to-support-live-migration" title="Permalink to this headline">¶</a></h3>
+<p>When using the XenAPI-based hypervisor, the Compute service uses
+host aggregates to manage XenServer Resource pools, which are
+used in supporting live migration.</p>
+</div>
+</div>
+<div class="section" id="configuration-options">
+<h2>Configuration options<a class="headerlink" href="schedulers.html#configuration-options" title="Permalink to this headline">¶</a></h2>
+<p>The Compute scheduler configuration options are documented in the tables below.</p>
+<table border="1" class="config-ref-table docutils" id="id19">
+<caption><span class="caption-text">Description of scheduler configuration options</span><a class="headerlink" href="schedulers.html#id19" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">discover_hosts_in_cells_interval</span></code> = <code class="docutils literal"><span class="pre">-1</span></code></td>
+<td><p class="first">(Integer) Periodic task interval.</p>
+<p>This value controls how often (in seconds) the scheduler should attempt to discover new hosts that have been added to cells. If negative (the default), no automatic discovery will occur.</p>
+<p class="last">Deployments where compute nodes come and go frequently may want this enabled, where others may prefer to manually discover hosts when one is added to avoid any overhead from constantly checking. If enabled, every time this runs, we will select any unmapped hosts out of each cell database on every run.</p>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">driver</span></code> = <code class="docutils literal"><span class="pre">filter_scheduler</span></code></td>
+<td><p class="first">(String) The class of the driver used by the scheduler.</p>
+<p>The options are chosen from the entry points under the namespace &#8216;nova.scheduler.driver&#8217; in &#8216;setup.cfg&#8217;.</p>
+<p>Possible values:</p>
+<ul class="last simple">
+<li>A string, where the string corresponds to the class name of a scheduler driver. There are a number of options available: ** &#8216;caching_scheduler&#8217;, which aggressively caches the system state for better individual scheduler performance at the risk of more retries when running multiple schedulers ** &#8216;chance_scheduler&#8217;, which simply picks a host at random ** &#8216;fake_scheduler&#8217;, which is used for testing</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">periodic_task_interval</span></code> = <code class="docutils literal"><span class="pre">60</span></code></td>
+<td><p class="first">(Integer) Periodic task interval.</p>
+<p>This value controls how often (in seconds) to run periodic tasks in the scheduler. The specific tasks that are run for each period are determined by the particular scheduler being used.</p>
+<p>If this is larger than the nova-service &#8216;service_down_time&#8217; setting, Nova may report the scheduler service as down. This is because the scheduler driver is responsible for sending a heartbeat and it will only do that as often as this option allows. As each scheduler can work a little differently than the others, be sure to test this with your selected scheduler.</p>
+<p>Possible values:</p>
+<ul class="simple">
+<li>An integer, where the integer corresponds to periodic task interval in seconds. 0 uses the default interval (60 seconds). A negative value disables periodic tasks.</li>
+</ul>
+<p>Related options:</p>
+<ul class="last simple">
+<li><code class="docutils literal"><span class="pre">nova-service</span> <span class="pre">service_down_time</span></code></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">host_manager</span></code> = <code class="docutils literal"><span class="pre">host_manager</span></code></td>
+<td><p class="first">(String) The scheduler host manager to use.</p>
+<p class="last">The host manager manages the in-memory picture of the hosts that the scheduler uses. The options values are chosen from the entry points under the namespace &#8216;nova.scheduler.host_manager&#8217; in &#8216;setup.cfg&#8217;.</p>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">max_attempts</span></code> = <code class="docutils literal"><span class="pre">3</span></code></td>
+<td><p class="first">(Integer) Maximum number of schedule attempts for a chosen host.</p>
+<p>This is the maximum number of attempts that will be made to schedule an instance before it is assumed that the failures aren&#8217;t due to normal occasional race conflicts, but rather some other problem. When this is reached a MaxRetriesExceeded exception is raised, and the instance is set to an error state.</p>
+<p>Possible values:</p>
+<ul class="last simple">
+<li>A positive integer, where the integer corresponds to the max number of attempts that can be made when scheduling an instance.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="hypervisor-virtuozzo.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Virtuozzo"></i></a>
+          
+          
+            <a href="cells.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Cells (v1)"></i></a>
+          
+            <a id="logABugLink3" href="schedulers.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:41</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="../_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="schedulers.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="../index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../config-overview.html">OpenStack configuration overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common-configurations.html">Common configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../application-catalog.html">Application Catalog service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bare-metal.html">Bare Metal service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../block-storage.html">Block Storage service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clustering.html">Clustering service</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../compute.html">Compute service</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="config-options.html">The full set of available options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tables/conf-changes/nova.html">New, updated, and deprecated options in Ocata for Compute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nova-conf.html">Overview of nova.conf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html">Compute API configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resize.html">Configure resize</a></li>
+<li class="toctree-l2"><a class="reference internal" href="database-connections.html">Database configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fibre-channel.html">Fibre Channel support in Compute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iscsi-offload.html">iSCSI interface and offload support in Compute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hypervisors.html">Hypervisors</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="schedulers.html#">Compute schedulers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cells.html">Cells (v1)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logs.html">Compute log files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nova-conf-samples.html">Example nova.conf configuration files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="samples/index.html">Compute service sample configuration files</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dashboard.html">Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data-processing.html">Data Processing service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../database.html">Database service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../identity.html">Identity service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../image.html">Image service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../message.html">Message service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking.html">Networking service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../object-storage.html">Object Storage service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../orchestration.html">Orchestration service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shared-file-systems.html">Shared File Systems service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../telemetry.html">Telemetry service</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../policy-yaml-file.html">The policy.yaml file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../policy-json-file.html">The policy.json file</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="../_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="../_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="../_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="../_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="../_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "compute/schedulers" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/config-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "Compute schedulers in Configuration Reference";
+    var fieldTags = "config-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:41";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

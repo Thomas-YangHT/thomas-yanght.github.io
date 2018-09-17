@@ -1,0 +1,1644 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: Image service (glance) command-line client</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>Image service (glance) command-line client</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="image.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Image service (glance) command-line clients"></i></a>
+    
+    
+    <a href="glance-property-keys.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Image service property keys"></i></a>
+    
+    <a id="logABugLink1" href="glance.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="glance.html#">Image service (glance) command-line client</a><ul>
+<li><a class="reference internal" href="glance.html#glance-usage">glance usage</a></li>
+<li><a class="reference internal" href="glance.html#glance-optional-arguments">glance optional arguments</a><ul>
+<li><a class="reference internal" href="glance.html#glance-explain">glance explain</a></li>
+<li><a class="reference internal" href="glance.html#glance-image-create">glance image-create</a></li>
+<li><a class="reference internal" href="glance.html#glance-image-deactivate">glance image-deactivate</a></li>
+<li><a class="reference internal" href="glance.html#glance-image-delete">glance image-delete</a></li>
+<li><a class="reference internal" href="glance.html#glance-image-download">glance image-download</a></li>
+<li><a class="reference internal" href="glance.html#glance-image-list">glance image-list</a></li>
+<li><a class="reference internal" href="glance.html#glance-image-reactivate">glance image-reactivate</a></li>
+<li><a class="reference internal" href="glance.html#glance-image-show">glance image-show</a></li>
+<li><a class="reference internal" href="glance.html#glance-image-tag-delete">glance image-tag-delete</a></li>
+<li><a class="reference internal" href="glance.html#glance-image-tag-update">glance image-tag-update</a></li>
+<li><a class="reference internal" href="glance.html#glance-image-update">glance image-update</a></li>
+<li><a class="reference internal" href="glance.html#glance-image-upload">glance image-upload</a></li>
+<li><a class="reference internal" href="glance.html#glance-location-add">glance location-add</a></li>
+<li><a class="reference internal" href="glance.html#glance-location-delete">glance location-delete</a></li>
+<li><a class="reference internal" href="glance.html#glance-location-update">glance location-update</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-namespace-create">glance md-namespace-create</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-namespace-delete">glance md-namespace-delete</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-namespace-import">glance md-namespace-import</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-namespace-list">glance md-namespace-list</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-namespace-objects-delete">glance md-namespace-objects-delete</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-namespace-properties-delete">glance md-namespace-properties-delete</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-namespace-resource-type-list">glance md-namespace-resource-type-list</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-namespace-show">glance md-namespace-show</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-namespace-tags-delete">glance md-namespace-tags-delete</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-namespace-update">glance md-namespace-update</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-object-create">glance md-object-create</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-object-delete">glance md-object-delete</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-object-list">glance md-object-list</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-object-property-show">glance md-object-property-show</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-object-show">glance md-object-show</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-object-update">glance md-object-update</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-property-create">glance md-property-create</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-property-delete">glance md-property-delete</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-property-list">glance md-property-list</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-property-show">glance md-property-show</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-property-update">glance md-property-update</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-resource-type-associate">glance md-resource-type-associate</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-resource-type-deassociate">glance md-resource-type-deassociate</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-resource-type-list">glance md-resource-type-list</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-tag-create">glance md-tag-create</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-tag-create-multiple">glance md-tag-create-multiple</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-tag-delete">glance md-tag-delete</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-tag-list">glance md-tag-list</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-tag-show">glance md-tag-show</a></li>
+<li><a class="reference internal" href="glance.html#glance-md-tag-update">glance md-tag-update</a></li>
+<li><a class="reference internal" href="glance.html#glance-member-create">glance member-create</a></li>
+<li><a class="reference internal" href="glance.html#glance-member-delete">glance member-delete</a></li>
+<li><a class="reference internal" href="glance.html#glance-member-list">glance member-list</a></li>
+<li><a class="reference internal" href="glance.html#glance-member-update">glance member-update</a></li>
+<li><a class="reference internal" href="glance.html#glance-task-create">glance task-create</a></li>
+<li><a class="reference internal" href="glance.html#glance-task-list">glance task-list</a></li>
+<li><a class="reference internal" href="glance.html#glance-task-show">glance task-show</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="image-service-glance-command-line-client">
+<h1>Image service (glance) command-line client<a class="headerlink" href="glance.html#image-service-glance-command-line-client" title="Permalink to this headline">¶</a></h1>
+<p>The glance client is the command-line interface (CLI) for
+the Image service (glance) API and its extensions.</p>
+<p>This chapter documents <strong class="command">glance</strong> version <code class="docutils literal"><span class="pre">2.6.0</span></code>.</p>
+<p>For help on a specific <strong class="command">glance</strong> command, enter:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> glance <span class="nb">help</span> COMMAND
+</pre></div>
+</div>
+<div class="section" id="glance-usage">
+<span id="glance-command-usage"></span><h2>glance usage<a class="headerlink" href="glance.html#glance-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance [--version] [-d] [-v] [--get-schema] [--no-ssl-compression] [-f]</span>
+<span class="go">              [--os-image-url OS_IMAGE_URL]</span>
+<span class="go">              [--os-image-api-version OS_IMAGE_API_VERSION]</span>
+<span class="go">              [--profile HMAC_KEY] [--key-file OS_KEY] [--ca-file OS_CACERT]</span>
+<span class="go">              [--cert-file OS_CERT] [--os-region-name OS_REGION_NAME]</span>
+<span class="go">              [--os-auth-token OS_AUTH_TOKEN]</span>
+<span class="go">              [--os-service-type OS_SERVICE_TYPE]</span>
+<span class="go">              [--os-endpoint-type OS_ENDPOINT_TYPE] [--insecure]</span>
+<span class="go">              [--os-cacert &lt;ca-certificate&gt;] [--os-cert &lt;certificate&gt;]</span>
+<span class="go">              [--os-key &lt;key&gt;] [--timeout &lt;seconds&gt;] [--os-auth-type &lt;name&gt;]</span>
+<span class="go">              [--os-auth-url OS_AUTH_URL] [--os-domain-id OS_DOMAIN_ID]</span>
+<span class="go">              [--os-domain-name OS_DOMAIN_NAME]</span>
+<span class="go">              [--os-project-id OS_PROJECT_ID]</span>
+<span class="go">              [--os-project-name OS_PROJECT_NAME]</span>
+<span class="go">              [--os-project-domain-id OS_PROJECT_DOMAIN_ID]</span>
+<span class="go">              [--os-project-domain-name OS_PROJECT_DOMAIN_NAME]</span>
+<span class="go">              [--os-trust-id OS_TRUST_ID]</span>
+<span class="go">              [--os-default-domain-id OS_DEFAULT_DOMAIN_ID]</span>
+<span class="go">              [--os-default-domain-name OS_DEFAULT_DOMAIN_NAME]</span>
+<span class="go">              [--os-user-id OS_USER_ID] [--os-username OS_USERNAME]</span>
+<span class="go">              [--os-user-domain-id OS_USER_DOMAIN_ID]</span>
+<span class="go">              [--os-user-domain-name OS_USER_DOMAIN_NAME]</span>
+<span class="go">              [--os-password OS_PASSWORD]</span>
+<span class="go">              &lt;subcommand&gt; ...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="glance-optional-arguments">
+<span id="glance-command-options"></span><h2>glance optional arguments<a class="headerlink" href="glance.html#glance-optional-arguments" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--version</span></code></dt>
+<dd>show program's version number and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-d,</span> <span class="pre">--debug</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[GLANCECLIENT_DEBUG]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></dt>
+<dd>Print more verbose output.</dd>
+<dt><code class="docutils literal"><span class="pre">--get-schema</span></code></dt>
+<dd>Ignores cached copy and forces retrieval of schema
+that generates portions of the help text. Ignored with
+API version 1.</dd>
+<dt><code class="docutils literal"><span class="pre">--no-ssl-compression</span></code></dt>
+<dd><strong>DEPRECATED!</strong> This option is deprecated and not used
+anymore. SSL compression should be disabled by default
+by the system SSL library.</dd>
+<dt><code class="docutils literal"><span class="pre">-f,</span> <span class="pre">--force</span></code></dt>
+<dd>Prevent select actions from requesting user
+confirmation.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-image-url</span> <span class="pre">OS_IMAGE_URL</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_IMAGE_URL]</span></code>. If the provided image
+url
+contains
+a
+version
+number
+and
+`--os-image-api-version`
+is
+omitted
+the
+version
+of
+the
+URL
+will
+be
+picked as the image api version to use.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-image-api-version</span> <span class="pre">OS_IMAGE_API_VERSION</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_IMAGE_API_VERSION]</span></code> or 2.</dd>
+<dt><code class="docutils literal"><span class="pre">--profile</span> <span class="pre">HMAC_KEY</span></code></dt>
+<dd>HMAC key to use for encrypting context data for
+performance profiling of operation. This key should be
+the value of HMAC key configured in osprofiler
+middleware in glance, it is specified in paste
+configuration file at /etc/glance/api-paste.ini and
+/etc/glance/registry-paste.ini. Without key the
+profiling will not be triggered even if osprofiler is
+enabled on server side.</dd>
+<dt><code class="docutils literal"><span class="pre">--key-file</span> <span class="pre">OS_KEY</span></code></dt>
+<dd><strong>DEPRECATED!</strong> Use --os-key.</dd>
+<dt><code class="docutils literal"><span class="pre">--ca-file</span> <span class="pre">OS_CACERT</span></code></dt>
+<dd><strong>DEPRECATED!</strong> Use --os-cacert.</dd>
+<dt><code class="docutils literal"><span class="pre">--cert-file</span> <span class="pre">OS_CERT</span></code></dt>
+<dd><strong>DEPRECATED!</strong> Use --os-cert.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-region-name</span> <span class="pre">OS_REGION_NAME</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_REGION_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-token</span> <span class="pre">OS_AUTH_TOKEN</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_AUTH_TOKEN]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-service-type</span> <span class="pre">OS_SERVICE_TYPE</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_SERVICE_TYPE]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-endpoint-type</span> <span class="pre">OS_ENDPOINT_TYPE</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_ENDPOINT_TYPE]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-type</span> <span class="pre">&lt;name&gt;,</span> <span class="pre">--os-auth-plugin</span> <span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Authentication type to use</dd>
+</dl>
+<div class="section" id="glance-explain">
+<span id="id1"></span><h3>glance explain<a class="headerlink" href="glance.html#glance-explain" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance explain &lt;MODEL&gt;</span>
+</pre></div>
+</div>
+<p>Describe a specific model.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;MODEL&gt;</span></code></dt>
+<dd>Name of model to describe.</dd>
+</dl>
+</div>
+<div class="section" id="glance-image-create">
+<span id="id2"></span><h3>glance image-create<a class="headerlink" href="glance.html#glance-image-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance image-create [--architecture &lt;ARCHITECTURE&gt;]</span>
+<span class="go">                           [--protected [True|False]] [--name &lt;NAME&gt;]</span>
+<span class="go">                           [--instance-uuid &lt;INSTANCE_UUID&gt;]</span>
+<span class="go">                           [--min-disk &lt;MIN_DISK&gt;] [--visibility &lt;VISIBILITY&gt;]</span>
+<span class="go">                           [--kernel-id &lt;KERNEL_ID&gt;]</span>
+<span class="go">                           [--tags &lt;TAGS&gt; [&lt;TAGS&gt; ...]]</span>
+<span class="go">                           [--os-version &lt;OS_VERSION&gt;]</span>
+<span class="go">                           [--disk-format &lt;DISK_FORMAT&gt;]</span>
+<span class="go">                           [--os-distro &lt;OS_DISTRO&gt;] [--id &lt;ID&gt;]</span>
+<span class="go">                           [--owner &lt;OWNER&gt;] [--ramdisk-id &lt;RAMDISK_ID&gt;]</span>
+<span class="go">                           [--min-ram &lt;MIN_RAM&gt;]</span>
+<span class="go">                           [--container-format &lt;CONTAINER_FORMAT&gt;]</span>
+<span class="go">                           [--property &lt;key=value&gt;] [--file &lt;FILE&gt;]</span>
+<span class="go">                           [--progress]</span>
+</pre></div>
+</div>
+<p>Create a new image.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--architecture</span> <span class="pre">&lt;ARCHITECTURE&gt;</span></code></dt>
+<dd>Operating system architecture as specified in
+<a class="reference external" href="http://docs.openstack.org/user-guide/common/cli-manage-images.html">http://docs.openstack.org/user-guide/common/cli-manage-images.html</a></dd>
+<dt><code class="docutils literal"><span class="pre">--protected</span> <span class="pre">[True|False]</span></code></dt>
+<dd>If true, image will not be deletable.</dd>
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Descriptive name for the image</dd>
+<dt><code class="docutils literal"><span class="pre">--instance-uuid</span> <span class="pre">&lt;INSTANCE_UUID&gt;</span></code></dt>
+<dd>Metadata which can be used to record which instance
+this image is associated with. (Informational only,
+does not create an instance snapshot.)</dd>
+<dt><code class="docutils literal"><span class="pre">--min-disk</span> <span class="pre">&lt;MIN_DISK&gt;</span></code></dt>
+<dd>Amount of disk space (in GB) required to boot image.</dd>
+<dt><code class="docutils literal"><span class="pre">--visibility</span> <span class="pre">&lt;VISIBILITY&gt;</span></code></dt>
+<dd>Scope of image accessibility Valid values: public,
+private, community, shared</dd>
+<dt><code class="docutils literal"><span class="pre">--kernel-id</span> <span class="pre">&lt;KERNEL_ID&gt;</span></code></dt>
+<dd>ID of image stored in Glance that should be used as
+the kernel when booting an AMI-style image.</dd>
+<dt><code class="docutils literal"><span class="pre">--tags</span> <span class="pre">&lt;TAGS&gt;</span> <span class="pre">[&lt;TAGS&gt;</span> <span class="pre">...]</span></code></dt>
+<dd>List of strings related to the image</dd>
+<dt><code class="docutils literal"><span class="pre">--os-version</span> <span class="pre">&lt;OS_VERSION&gt;</span></code></dt>
+<dd>Operating system version as specified by the
+distributor</dd>
+<dt><code class="docutils literal"><span class="pre">--disk-format</span> <span class="pre">&lt;DISK_FORMAT&gt;</span></code></dt>
+<dd>Format of the disk Valid values: None, ami, ari, aki,
+vhd, vhdx, vmdk, raw, qcow2, vdi, iso, ploop</dd>
+<dt><code class="docutils literal"><span class="pre">--os-distro</span> <span class="pre">&lt;OS_DISTRO&gt;</span></code></dt>
+<dd>Common name of operating system distribution as
+specified
+in
+<a class="reference external" href="http://docs.openstack.org/user-guide/common/cli-manage-images.html">http://docs.openstack.org/user-guide/common/cli-manage-images.html</a></dd>
+<dt><code class="docutils literal"><span class="pre">--id</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>An identifier for the image</dd>
+<dt><code class="docutils literal"><span class="pre">--owner</span> <span class="pre">&lt;OWNER&gt;</span></code></dt>
+<dd>Owner of the image</dd>
+<dt><code class="docutils literal"><span class="pre">--ramdisk-id</span> <span class="pre">&lt;RAMDISK_ID&gt;</span></code></dt>
+<dd>ID of image stored in Glance that should be used as
+the ramdisk when booting an AMI-style image.</dd>
+<dt><code class="docutils literal"><span class="pre">--min-ram</span> <span class="pre">&lt;MIN_RAM&gt;</span></code></dt>
+<dd>Amount of ram (in MB) required to boot image.</dd>
+<dt><code class="docutils literal"><span class="pre">--container-format</span> <span class="pre">&lt;CONTAINER_FORMAT&gt;</span></code></dt>
+<dd>Format of the container Valid values: None, ami, ari,
+aki, bare, ovf, ova, docker</dd>
+<dt><code class="docutils literal"><span class="pre">--property</span> <span class="pre">&lt;key=value&gt;</span></code></dt>
+<dd>Arbitrary property to associate with image. May be
+used multiple times.</dd>
+<dt><code class="docutils literal"><span class="pre">--file</span> <span class="pre">&lt;FILE&gt;</span></code></dt>
+<dd>Local file that contains disk image to be uploaded
+during creation. Alternatively, the image data can be
+passed to the client via stdin.</dd>
+<dt><code class="docutils literal"><span class="pre">--progress</span></code></dt>
+<dd>Show upload progress bar.</dd>
+</dl>
+</div>
+<div class="section" id="glance-image-deactivate">
+<span id="id3"></span><h3>glance image-deactivate<a class="headerlink" href="glance.html#glance-image-deactivate" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance image-deactivate &lt;IMAGE_ID&gt;</span>
+</pre></div>
+</div>
+<p>Deactivate specified image.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;IMAGE_ID&gt;</span></code></dt>
+<dd>ID of image to deactivate.</dd>
+</dl>
+</div>
+<div class="section" id="glance-image-delete">
+<span id="id4"></span><h3>glance image-delete<a class="headerlink" href="glance.html#glance-image-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance image-delete &lt;IMAGE_ID&gt; [&lt;IMAGE_ID&gt; ...]</span>
+</pre></div>
+</div>
+<p>Delete specified image.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;IMAGE_ID&gt;</span></code></dt>
+<dd>ID of image(s) to delete.</dd>
+</dl>
+</div>
+<div class="section" id="glance-image-download">
+<span id="id5"></span><h3>glance image-download<a class="headerlink" href="glance.html#glance-image-download" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance image-download [--file &lt;FILE&gt;] [--progress] &lt;IMAGE_ID&gt;</span>
+</pre></div>
+</div>
+<p>Download a specific image.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;IMAGE_ID&gt;</span></code></dt>
+<dd>ID of image to download.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--file</span> <span class="pre">&lt;FILE&gt;</span></code></dt>
+<dd>Local file to save downloaded image data to. If this is not
+specified and there is no redirection the image data will not
+be saved.</dd>
+<dt><code class="docutils literal"><span class="pre">--progress</span></code></dt>
+<dd>Show download progress bar.</dd>
+</dl>
+</div>
+<div class="section" id="glance-image-list">
+<span id="id6"></span><h3>glance image-list<a class="headerlink" href="glance.html#glance-image-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance image-list [--limit &lt;LIMIT&gt;] [--page-size &lt;SIZE&gt;]</span>
+<span class="go">                         [--visibility &lt;VISIBILITY&gt;]</span>
+<span class="go">                         [--member-status &lt;MEMBER_STATUS&gt;] [--owner &lt;OWNER&gt;]</span>
+<span class="go">                         [--property-filter &lt;KEY=VALUE&gt;]</span>
+<span class="go">                         [--checksum &lt;CHECKSUM&gt;] [--tag &lt;TAG&gt;]</span>
+<span class="go">                         [--sort-key {name,status,container_format,disk_format,size,id,created_at,updated_at}]</span>
+<span class="go">                         [--sort-dir {asc,desc}] [--sort &lt;key&gt;[:&lt;direction&gt;]]</span>
+</pre></div>
+</div>
+<p>List images you can access.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></dt>
+<dd>Maximum number of images to get.</dd>
+<dt><code class="docutils literal"><span class="pre">--page-size</span> <span class="pre">&lt;SIZE&gt;</span></code></dt>
+<dd>Number of images to request in each paginated request.</dd>
+<dt><code class="docutils literal"><span class="pre">--visibility</span> <span class="pre">&lt;VISIBILITY&gt;</span></code></dt>
+<dd>The visibility of the images to display.</dd>
+<dt><code class="docutils literal"><span class="pre">--member-status</span> <span class="pre">&lt;MEMBER_STATUS&gt;</span></code></dt>
+<dd>The status of images to display.</dd>
+<dt><code class="docutils literal"><span class="pre">--owner</span> <span class="pre">&lt;OWNER&gt;</span></code></dt>
+<dd>Display images owned by &lt;OWNER&gt;.</dd>
+<dt><code class="docutils literal"><span class="pre">--property-filter</span> <span class="pre">&lt;KEY=VALUE&gt;</span></code></dt>
+<dd>Filter images by a user-defined image property.</dd>
+<dt><code class="docutils literal"><span class="pre">--checksum</span> <span class="pre">&lt;CHECKSUM&gt;</span></code></dt>
+<dd>Displays images that match the checksum.</dd>
+<dt><code class="docutils literal"><span class="pre">--tag</span> <span class="pre">&lt;TAG&gt;</span></code></dt>
+<dd>Filter images by a user-defined tag.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-key</span> <span class="pre">{name,status,container_format,disk_format,size,id,created_at,updated_at}</span></code></dt>
+<dd>Sort image list by specified fields. May be used
+multiple times.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-dir</span> <span class="pre">{asc,desc}</span></code></dt>
+<dd>Sort image list in specified directions.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort</span> <span class="pre">&lt;key&gt;[:&lt;direction&gt;]</span></code></dt>
+<dd>Comma-separated list of sort keys and directions in
+the form of &lt;key&gt;[:&lt;asc|desc&gt;]. Valid keys: name,
+status, container_format, disk_format, size, id,
+created_at, updated_at. OPTIONAL.</dd>
+</dl>
+</div>
+<div class="section" id="glance-image-reactivate">
+<span id="id7"></span><h3>glance image-reactivate<a class="headerlink" href="glance.html#glance-image-reactivate" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance image-reactivate &lt;IMAGE_ID&gt;</span>
+</pre></div>
+</div>
+<p>Reactivate specified image.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;IMAGE_ID&gt;</span></code></dt>
+<dd>ID of image to reactivate.</dd>
+</dl>
+</div>
+<div class="section" id="glance-image-show">
+<span id="id8"></span><h3>glance image-show<a class="headerlink" href="glance.html#glance-image-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance image-show [--human-readable] [--max-column-width &lt;integer&gt;]</span>
+<span class="go">                         &lt;IMAGE_ID&gt;</span>
+</pre></div>
+</div>
+<p>Describe a specific image.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;IMAGE_ID&gt;</span></code></dt>
+<dd>ID of image to describe.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--human-readable</span></code></dt>
+<dd>Print image size in a human-friendly format.</dd>
+<dt><code class="docutils literal"><span class="pre">--max-column-width</span> <span class="pre">&lt;integer&gt;</span></code></dt>
+<dd>The max column width of the printed table.</dd>
+</dl>
+</div>
+<div class="section" id="glance-image-tag-delete">
+<span id="id9"></span><h3>glance image-tag-delete<a class="headerlink" href="glance.html#glance-image-tag-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance image-tag-delete &lt;IMAGE_ID&gt; &lt;TAG_VALUE&gt;</span>
+</pre></div>
+</div>
+<p>Delete the tag associated with the given image.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;IMAGE_ID&gt;</span></code></dt>
+<dd>ID of the image from which to delete tag.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;TAG_VALUE&gt;</span></code></dt>
+<dd>Value of the tag.</dd>
+</dl>
+</div>
+<div class="section" id="glance-image-tag-update">
+<span id="id10"></span><h3>glance image-tag-update<a class="headerlink" href="glance.html#glance-image-tag-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance image-tag-update &lt;IMAGE_ID&gt; &lt;TAG_VALUE&gt;</span>
+</pre></div>
+</div>
+<p>Update an image with the given tag.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;IMAGE_ID&gt;</span></code></dt>
+<dd>Image to be updated with the given tag.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;TAG_VALUE&gt;</span></code></dt>
+<dd>Value of the tag.</dd>
+</dl>
+</div>
+<div class="section" id="glance-image-update">
+<span id="id11"></span><h3>glance image-update<a class="headerlink" href="glance.html#glance-image-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance image-update [--architecture &lt;ARCHITECTURE&gt;]</span>
+<span class="go">                           [--protected [True|False]] [--name &lt;NAME&gt;]</span>
+<span class="go">                           [--instance-uuid &lt;INSTANCE_UUID&gt;]</span>
+<span class="go">                           [--min-disk &lt;MIN_DISK&gt;] [--visibility &lt;VISIBILITY&gt;]</span>
+<span class="go">                           [--kernel-id &lt;KERNEL_ID&gt;]</span>
+<span class="go">                           [--os-version &lt;OS_VERSION&gt;]</span>
+<span class="go">                           [--disk-format &lt;DISK_FORMAT&gt;]</span>
+<span class="go">                           [--os-distro &lt;OS_DISTRO&gt;] [--owner &lt;OWNER&gt;]</span>
+<span class="go">                           [--ramdisk-id &lt;RAMDISK_ID&gt;] [--min-ram &lt;MIN_RAM&gt;]</span>
+<span class="go">                           [--container-format &lt;CONTAINER_FORMAT&gt;]</span>
+<span class="go">                           [--property &lt;key=value&gt;] [--remove-property key]</span>
+<span class="go">                           &lt;IMAGE_ID&gt;</span>
+</pre></div>
+</div>
+<p>Update an existing image.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;IMAGE_ID&gt;</span></code></dt>
+<dd>ID of image to update.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--architecture</span> <span class="pre">&lt;ARCHITECTURE&gt;</span></code></dt>
+<dd>Operating system architecture as specified in
+<a class="reference external" href="http://docs.openstack.org/user-guide/common/cli-manage-images.html">http://docs.openstack.org/user-guide/common/cli-manage-images.html</a></dd>
+<dt><code class="docutils literal"><span class="pre">--protected</span> <span class="pre">[True|False]</span></code></dt>
+<dd>If true, image will not be deletable.</dd>
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Descriptive name for the image</dd>
+<dt><code class="docutils literal"><span class="pre">--instance-uuid</span> <span class="pre">&lt;INSTANCE_UUID&gt;</span></code></dt>
+<dd>Metadata which can be used to record which instance
+this image is associated with. (Informational only,
+does not create an instance snapshot.)</dd>
+<dt><code class="docutils literal"><span class="pre">--min-disk</span> <span class="pre">&lt;MIN_DISK&gt;</span></code></dt>
+<dd>Amount of disk space (in GB) required to boot image.</dd>
+<dt><code class="docutils literal"><span class="pre">--visibility</span> <span class="pre">&lt;VISIBILITY&gt;</span></code></dt>
+<dd>Scope of image accessibility Valid values: public,
+private, community, shared</dd>
+<dt><code class="docutils literal"><span class="pre">--kernel-id</span> <span class="pre">&lt;KERNEL_ID&gt;</span></code></dt>
+<dd>ID of image stored in Glance that should be used as
+the kernel when booting an AMI-style image.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-version</span> <span class="pre">&lt;OS_VERSION&gt;</span></code></dt>
+<dd>Operating system version as specified by the
+distributor</dd>
+<dt><code class="docutils literal"><span class="pre">--disk-format</span> <span class="pre">&lt;DISK_FORMAT&gt;</span></code></dt>
+<dd>Format of the disk Valid values: None, ami, ari, aki,
+vhd, vhdx, vmdk, raw, qcow2, vdi, iso, ploop</dd>
+<dt><code class="docutils literal"><span class="pre">--os-distro</span> <span class="pre">&lt;OS_DISTRO&gt;</span></code></dt>
+<dd>Common name of operating system distribution as
+specified
+in
+<a class="reference external" href="http://docs.openstack.org/user-guide/common/cli-manage-images.html">http://docs.openstack.org/user-guide/common/cli-manage-images.html</a></dd>
+<dt><code class="docutils literal"><span class="pre">--owner</span> <span class="pre">&lt;OWNER&gt;</span></code></dt>
+<dd>Owner of the image</dd>
+<dt><code class="docutils literal"><span class="pre">--ramdisk-id</span> <span class="pre">&lt;RAMDISK_ID&gt;</span></code></dt>
+<dd>ID of image stored in Glance that should be used as
+the ramdisk when booting an AMI-style image.</dd>
+<dt><code class="docutils literal"><span class="pre">--min-ram</span> <span class="pre">&lt;MIN_RAM&gt;</span></code></dt>
+<dd>Amount of ram (in MB) required to boot image.</dd>
+<dt><code class="docutils literal"><span class="pre">--container-format</span> <span class="pre">&lt;CONTAINER_FORMAT&gt;</span></code></dt>
+<dd>Format of the container Valid values: None, ami, ari,
+aki, bare, ovf, ova, docker</dd>
+<dt><code class="docutils literal"><span class="pre">--property</span> <span class="pre">&lt;key=value&gt;</span></code></dt>
+<dd>Arbitrary property to associate with image. May be
+used multiple times.</dd>
+<dt><code class="docutils literal"><span class="pre">--remove-property</span></code></dt>
+<dd>key
+Name of arbitrary property to remove from the image.</dd>
+</dl>
+</div>
+<div class="section" id="glance-image-upload">
+<span id="id12"></span><h3>glance image-upload<a class="headerlink" href="glance.html#glance-image-upload" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance image-upload [--file &lt;FILE&gt;] [--size &lt;IMAGE_SIZE&gt;] [--progress]</span>
+<span class="go">                           &lt;IMAGE_ID&gt;</span>
+</pre></div>
+</div>
+<p>Upload data for a specific image.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;IMAGE_ID&gt;</span></code></dt>
+<dd>ID of image to upload data to.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--file</span> <span class="pre">&lt;FILE&gt;</span></code></dt>
+<dd>Local file that contains disk image to be uploaded.
+Alternatively, images can be passed to the client via
+stdin.</dd>
+<dt><code class="docutils literal"><span class="pre">--size</span> <span class="pre">&lt;IMAGE_SIZE&gt;</span></code></dt>
+<dd>Size in bytes of image to be uploaded. Default is to
+get size from provided data object but this is
+supported in case where size cannot be inferred.</dd>
+<dt><code class="docutils literal"><span class="pre">--progress</span></code></dt>
+<dd>Show upload progress bar.</dd>
+</dl>
+</div>
+<div class="section" id="glance-location-add">
+<span id="id13"></span><h3>glance location-add<a class="headerlink" href="glance.html#glance-location-add" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance location-add --url &lt;URL&gt; [--metadata &lt;STRING&gt;] &lt;IMAGE_ID&gt;</span>
+</pre></div>
+</div>
+<p>Add a location (and related metadata) to an image.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;IMAGE_ID&gt;</span></code></dt>
+<dd>ID of image to which the location is to be added.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--url</span> <span class="pre">&lt;URL&gt;</span></code></dt>
+<dd>URL of location to add.</dd>
+<dt><code class="docutils literal"><span class="pre">--metadata</span> <span class="pre">&lt;STRING&gt;</span></code></dt>
+<dd>Metadata associated with the location. Must be a valid
+JSON object (default: {})</dd>
+</dl>
+</div>
+<div class="section" id="glance-location-delete">
+<span id="id14"></span><h3>glance location-delete<a class="headerlink" href="glance.html#glance-location-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance location-delete --url &lt;URL&gt; &lt;IMAGE_ID&gt;</span>
+</pre></div>
+</div>
+<p>Remove locations (and related metadata) from an image.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;IMAGE_ID&gt;</span></code></dt>
+<dd>ID of image whose locations are to be removed.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--url</span> <span class="pre">&lt;URL&gt;</span></code></dt>
+<dd>URL of location to remove. May be used multiple times.</dd>
+</dl>
+</div>
+<div class="section" id="glance-location-update">
+<span id="id15"></span><h3>glance location-update<a class="headerlink" href="glance.html#glance-location-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance location-update --url &lt;URL&gt; [--metadata &lt;STRING&gt;] &lt;IMAGE_ID&gt;</span>
+</pre></div>
+</div>
+<p>Update metadata of an image's location.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;IMAGE_ID&gt;</span></code></dt>
+<dd>ID of image whose location is to be updated.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--url</span> <span class="pre">&lt;URL&gt;</span></code></dt>
+<dd>URL of location to update.</dd>
+<dt><code class="docutils literal"><span class="pre">--metadata</span> <span class="pre">&lt;STRING&gt;</span></code></dt>
+<dd>Metadata associated with the location. Must be a valid
+JSON object (default: {})</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-namespace-create">
+<span id="id16"></span><h3>glance md-namespace-create<a class="headerlink" href="glance.html#glance-md-namespace-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-namespace-create [--schema &lt;SCHEMA&gt;]</span>
+<span class="go">                                  [--created-at &lt;CREATED_AT&gt;]</span>
+<span class="go">                                  [--resource-type-associations &lt;RESOURCE_TYPE_ASSOCIATIONS&gt; [&lt;RESOURCE_TYPE_ASSOCIATIONS&gt; ...]]</span>
+<span class="go">                                  [--protected [True|False]] [--self &lt;SELF&gt;]</span>
+<span class="go">                                  [--display-name &lt;DISPLAY_NAME&gt;]</span>
+<span class="go">                                  [--owner &lt;OWNER&gt;]</span>
+<span class="go">                                  [--visibility &lt;VISIBILITY&gt;]</span>
+<span class="go">                                  [--updated-at &lt;UPDATED_AT&gt;]</span>
+<span class="go">                                  [--description &lt;DESCRIPTION&gt;]</span>
+<span class="go">                                  &lt;NAMESPACE&gt;</span>
+</pre></div>
+</div>
+<p>Create a new metadata definitions namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of the namespace.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<p><code class="docutils literal"><span class="pre">--schema</span> <span class="pre">&lt;SCHEMA&gt;</span></code></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--created-at</span> <span class="pre">&lt;CREATED_AT&gt;</span></code></dt>
+<dd>Date and time of namespace creation.</dd>
+</dl>
+<p><code class="docutils literal"><span class="pre">--resource-type-associations</span> <span class="pre">&lt;RESOURCE_TYPE_ASSOCIATIONS&gt;</span> <span class="pre">[...]</span></code></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--protected</span> <span class="pre">[True|False]</span></code></dt>
+<dd>If true, namespace will not be deletable.</dd>
+</dl>
+<p><code class="docutils literal"><span class="pre">--self</span> <span class="pre">&lt;SELF&gt;</span></code></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--display-name</span> <span class="pre">&lt;DISPLAY_NAME&gt;</span></code></dt>
+<dd>The user friendly name for the namespace. Used by UI
+if available.</dd>
+<dt><code class="docutils literal"><span class="pre">--owner</span> <span class="pre">&lt;OWNER&gt;</span></code></dt>
+<dd>Owner of the namespace.</dd>
+<dt><code class="docutils literal"><span class="pre">--visibility</span> <span class="pre">&lt;VISIBILITY&gt;</span></code></dt>
+<dd>Scope of namespace accessibility. Valid values:
+public, private</dd>
+<dt><code class="docutils literal"><span class="pre">--updated-at</span> <span class="pre">&lt;UPDATED_AT&gt;</span></code></dt>
+<dd>Date and time of the last namespace modification.</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;DESCRIPTION&gt;</span></code></dt>
+<dd>Provides a user friendly description of the namespace.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-namespace-delete">
+<span id="id17"></span><h3>glance md-namespace-delete<a class="headerlink" href="glance.html#glance-md-namespace-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-namespace-delete &lt;NAMESPACE&gt;</span>
+</pre></div>
+</div>
+<p>Delete specified metadata definitions namespace with its contents.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace to delete.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-namespace-import">
+<span id="id18"></span><h3>glance md-namespace-import<a class="headerlink" href="glance.html#glance-md-namespace-import" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-namespace-import [--file &lt;FILEPATH&gt;]</span>
+</pre></div>
+</div>
+<p>Import a metadata definitions namespace from file or standard input.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--file</span> <span class="pre">&lt;FILEPATH&gt;</span></code></dt>
+<dd>Path to file with namespace schema to import.
+Alternatively, namespaces schema can be passed to the
+client via stdin.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-namespace-list">
+<span id="id19"></span><h3>glance md-namespace-list<a class="headerlink" href="glance.html#glance-md-namespace-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-namespace-list [--resource-types &lt;RESOURCE_TYPES&gt;]</span>
+<span class="go">                                [--visibility &lt;VISIBILITY&gt;]</span>
+<span class="go">                                [--page-size &lt;SIZE&gt;]</span>
+</pre></div>
+</div>
+<p>List metadata definitions namespaces.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--resource-types</span> <span class="pre">&lt;RESOURCE_TYPES&gt;</span></code></dt>
+<dd>Resource type to filter namespaces.</dd>
+<dt><code class="docutils literal"><span class="pre">--visibility</span> <span class="pre">&lt;VISIBILITY&gt;</span></code></dt>
+<dd>Visibility parameter to filter namespaces.</dd>
+<dt><code class="docutils literal"><span class="pre">--page-size</span> <span class="pre">&lt;SIZE&gt;</span></code></dt>
+<dd>Number of namespaces to request in each paginated
+request.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-namespace-objects-delete">
+<span id="id20"></span><h3>glance md-namespace-objects-delete<a class="headerlink" href="glance.html#glance-md-namespace-objects-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-namespace-objects-delete &lt;NAMESPACE&gt;</span>
+</pre></div>
+</div>
+<p>Delete all metadata definitions objects inside a specific namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-namespace-properties-delete">
+<span id="id21"></span><h3>glance md-namespace-properties-delete<a class="headerlink" href="glance.html#glance-md-namespace-properties-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-namespace-properties-delete &lt;NAMESPACE&gt;</span>
+</pre></div>
+</div>
+<p>Delete all metadata definitions property inside a specific namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-namespace-resource-type-list">
+<span id="id22"></span><h3>glance md-namespace-resource-type-list<a class="headerlink" href="glance.html#glance-md-namespace-resource-type-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-namespace-resource-type-list &lt;NAMESPACE&gt;</span>
+</pre></div>
+</div>
+<p>List resource types associated to specific namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-namespace-show">
+<span id="id23"></span><h3>glance md-namespace-show<a class="headerlink" href="glance.html#glance-md-namespace-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-namespace-show [--resource-type &lt;RESOURCE_TYPE&gt;]</span>
+<span class="go">                                [--max-column-width &lt;integer&gt;]</span>
+<span class="go">                                &lt;NAMESPACE&gt;</span>
+</pre></div>
+</div>
+<p>Describe a specific metadata definitions namespace. Lists also the namespace
+properties, objects and resource type associations.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace to describe.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--resource-type</span> <span class="pre">&lt;RESOURCE_TYPE&gt;</span></code></dt>
+<dd>Applies prefix of given resource type associated to a
+namespace to all properties of a namespace.</dd>
+<dt><code class="docutils literal"><span class="pre">--max-column-width</span> <span class="pre">&lt;integer&gt;</span></code></dt>
+<dd>The max column width of the printed table.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-namespace-tags-delete">
+<span id="id24"></span><h3>glance md-namespace-tags-delete<a class="headerlink" href="glance.html#glance-md-namespace-tags-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-namespace-tags-delete &lt;NAMESPACE&gt;</span>
+</pre></div>
+</div>
+<p>Delete all metadata definitions tags inside a specific namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-namespace-update">
+<span id="id25"></span><h3>glance md-namespace-update<a class="headerlink" href="glance.html#glance-md-namespace-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-namespace-update [--created-at &lt;CREATED_AT&gt;]</span>
+<span class="go">                                  [--protected [True|False]]</span>
+<span class="go">                                  [--namespace &lt;NAMESPACE&gt;] [--self &lt;SELF&gt;]</span>
+<span class="go">                                  [--display-name &lt;DISPLAY_NAME&gt;]</span>
+<span class="go">                                  [--owner &lt;OWNER&gt;]</span>
+<span class="go">                                  [--visibility &lt;VISIBILITY&gt;]</span>
+<span class="go">                                  [--updated-at &lt;UPDATED_AT&gt;]</span>
+<span class="go">                                  [--description &lt;DESCRIPTION&gt;]</span>
+<span class="go">                                  &lt;NAMESPACE&gt;</span>
+</pre></div>
+</div>
+<p>Update an existing metadata definitions namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace to update.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--created-at</span> <span class="pre">&lt;CREATED_AT&gt;</span></code></dt>
+<dd>Date and time of namespace creation.</dd>
+<dt><code class="docutils literal"><span class="pre">--protected</span> <span class="pre">[True|False]</span></code></dt>
+<dd>If true, namespace will not be deletable.</dd>
+<dt><code class="docutils literal"><span class="pre">--namespace</span> <span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>The unique namespace text.</dd>
+</dl>
+<p><code class="docutils literal"><span class="pre">--self</span> <span class="pre">&lt;SELF&gt;</span></code></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--display-name</span> <span class="pre">&lt;DISPLAY_NAME&gt;</span></code></dt>
+<dd>The user friendly name for the namespace. Used by UI
+if available.</dd>
+<dt><code class="docutils literal"><span class="pre">--owner</span> <span class="pre">&lt;OWNER&gt;</span></code></dt>
+<dd>Owner of the namespace.</dd>
+<dt><code class="docutils literal"><span class="pre">--visibility</span> <span class="pre">&lt;VISIBILITY&gt;</span></code></dt>
+<dd>Scope of namespace accessibility. Valid values:
+public, private</dd>
+<dt><code class="docutils literal"><span class="pre">--updated-at</span> <span class="pre">&lt;UPDATED_AT&gt;</span></code></dt>
+<dd>Date and time of the last namespace modification.</dd>
+<dt><code class="docutils literal"><span class="pre">--description</span> <span class="pre">&lt;DESCRIPTION&gt;</span></code></dt>
+<dd>Provides a user friendly description of the namespace.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-object-create">
+<span id="id26"></span><h3>glance md-object-create<a class="headerlink" href="glance.html#glance-md-object-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-object-create --name &lt;NAME&gt; --schema &lt;SCHEMA&gt; &lt;NAMESPACE&gt;</span>
+</pre></div>
+</div>
+<p>Create a new metadata definitions object inside a namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace the object will belong.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Internal name of an object.</dd>
+<dt><code class="docutils literal"><span class="pre">--schema</span> <span class="pre">&lt;SCHEMA&gt;</span></code></dt>
+<dd>Valid JSON schema of an object.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-object-delete">
+<span id="id27"></span><h3>glance md-object-delete<a class="headerlink" href="glance.html#glance-md-object-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-object-delete &lt;NAMESPACE&gt; &lt;OBJECT&gt;</span>
+</pre></div>
+</div>
+<p>Delete a specific metadata definitions object inside a namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace the object belongs.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;OBJECT&gt;</span></code></dt>
+<dd>Name of an object.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-object-list">
+<span id="id28"></span><h3>glance md-object-list<a class="headerlink" href="glance.html#glance-md-object-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-object-list &lt;NAMESPACE&gt;</span>
+</pre></div>
+</div>
+<p>List metadata definitions objects inside a specific namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-object-property-show">
+<span id="id29"></span><h3>glance md-object-property-show<a class="headerlink" href="glance.html#glance-md-object-property-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-object-property-show [--max-column-width &lt;integer&gt;]</span>
+<span class="go">                                      &lt;NAMESPACE&gt; &lt;OBJECT&gt; &lt;PROPERTY&gt;</span>
+</pre></div>
+</div>
+<p>Describe a specific metadata definitions property inside an object.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace the object belongs.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;OBJECT&gt;</span></code></dt>
+<dd>Name of an object.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;PROPERTY&gt;</span></code></dt>
+<dd>Name of a property.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--max-column-width</span> <span class="pre">&lt;integer&gt;</span></code></dt>
+<dd>The max column width of the printed table.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-object-show">
+<span id="id30"></span><h3>glance md-object-show<a class="headerlink" href="glance.html#glance-md-object-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-object-show [--max-column-width &lt;integer&gt;]</span>
+<span class="go">                             &lt;NAMESPACE&gt; &lt;OBJECT&gt;</span>
+</pre></div>
+</div>
+<p>Describe a specific metadata definitions object inside a namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace the object belongs.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;OBJECT&gt;</span></code></dt>
+<dd>Name of an object.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--max-column-width</span> <span class="pre">&lt;integer&gt;</span></code></dt>
+<dd>The max column width of the printed table.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-object-update">
+<span id="id31"></span><h3>glance md-object-update<a class="headerlink" href="glance.html#glance-md-object-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-object-update [--name &lt;NAME&gt;] [--schema &lt;SCHEMA&gt;]</span>
+<span class="go">                               &lt;NAMESPACE&gt; &lt;OBJECT&gt;</span>
+</pre></div>
+</div>
+<p>Update metadata definitions object inside a namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace the object belongs.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;OBJECT&gt;</span></code></dt>
+<dd>Name of an object.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>New name of an object.</dd>
+<dt><code class="docutils literal"><span class="pre">--schema</span> <span class="pre">&lt;SCHEMA&gt;</span></code></dt>
+<dd>Valid JSON schema of an object.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-property-create">
+<span id="id32"></span><h3>glance md-property-create<a class="headerlink" href="glance.html#glance-md-property-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-property-create --name &lt;NAME&gt; --title &lt;TITLE&gt; --schema</span>
+<span class="go">                                 &lt;SCHEMA&gt;</span>
+<span class="go">                                 &lt;NAMESPACE&gt;</span>
+</pre></div>
+</div>
+<p>Create a new metadata definitions property inside a namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace the property will belong.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Internal name of a property.</dd>
+<dt><code class="docutils literal"><span class="pre">--title</span> <span class="pre">&lt;TITLE&gt;</span></code></dt>
+<dd>Property name displayed to the user.</dd>
+<dt><code class="docutils literal"><span class="pre">--schema</span> <span class="pre">&lt;SCHEMA&gt;</span></code></dt>
+<dd>Valid JSON schema of a property.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-property-delete">
+<span id="id33"></span><h3>glance md-property-delete<a class="headerlink" href="glance.html#glance-md-property-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-property-delete &lt;NAMESPACE&gt; &lt;PROPERTY&gt;</span>
+</pre></div>
+</div>
+<p>Delete a specific metadata definitions property inside a namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace the property belongs.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;PROPERTY&gt;</span></code></dt>
+<dd>Name of a property.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-property-list">
+<span id="id34"></span><h3>glance md-property-list<a class="headerlink" href="glance.html#glance-md-property-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-property-list &lt;NAMESPACE&gt;</span>
+</pre></div>
+</div>
+<p>List metadata definitions properties inside a specific namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-property-show">
+<span id="id35"></span><h3>glance md-property-show<a class="headerlink" href="glance.html#glance-md-property-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-property-show [--max-column-width &lt;integer&gt;]</span>
+<span class="go">                               &lt;NAMESPACE&gt; &lt;PROPERTY&gt;</span>
+</pre></div>
+</div>
+<p>Describe a specific metadata definitions property inside a namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace the property belongs.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;PROPERTY&gt;</span></code></dt>
+<dd>Name of a property.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--max-column-width</span> <span class="pre">&lt;integer&gt;</span></code></dt>
+<dd>The max column width of the printed table.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-property-update">
+<span id="id36"></span><h3>glance md-property-update<a class="headerlink" href="glance.html#glance-md-property-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-property-update [--name &lt;NAME&gt;] [--title &lt;TITLE&gt;]</span>
+<span class="go">                                 [--schema &lt;SCHEMA&gt;]</span>
+<span class="go">                                 &lt;NAMESPACE&gt; &lt;PROPERTY&gt;</span>
+</pre></div>
+</div>
+<p>Update metadata definitions property inside a namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace the property belongs.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;PROPERTY&gt;</span></code></dt>
+<dd>Name of a property.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>New name of a property.</dd>
+<dt><code class="docutils literal"><span class="pre">--title</span> <span class="pre">&lt;TITLE&gt;</span></code></dt>
+<dd>Property name displayed to the user.</dd>
+<dt><code class="docutils literal"><span class="pre">--schema</span> <span class="pre">&lt;SCHEMA&gt;</span></code></dt>
+<dd>Valid JSON schema of a property.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-resource-type-associate">
+<span id="id37"></span><h3>glance md-resource-type-associate<a class="headerlink" href="glance.html#glance-md-resource-type-associate" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-resource-type-associate [--updated-at &lt;UPDATED_AT&gt;]</span>
+<span class="go">                                         [--name &lt;NAME&gt;]</span>
+<span class="go">                                         [--properties-target &lt;PROPERTIES_TARGET&gt;]</span>
+<span class="go">                                         [--prefix &lt;PREFIX&gt;]</span>
+<span class="go">                                         [--created-at &lt;CREATED_AT&gt;]</span>
+<span class="go">                                         &lt;NAMESPACE&gt;</span>
+</pre></div>
+</div>
+<p>Associate resource type with a metadata definitions namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--updated-at</span> <span class="pre">&lt;UPDATED_AT&gt;</span></code></dt>
+<dd>Date and time of the last resource type association
+modification.</dd>
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Resource type names should be aligned with Heat
+resource types whenever possible: <a class="reference external" href="http://docs.openstac">http://docs.openstac</a>
+k.org/developer/heat/template_guide/openstack.html</dd>
+<dt><code class="docutils literal"><span class="pre">--properties-target</span> <span class="pre">&lt;PROPERTIES_TARGET&gt;</span></code></dt>
+<dd>Some resource types allow more than one key / value
+pair per instance. For example, Cinder allows user and
+image metadata on volumes. Only the image properties
+metadata is evaluated by Nova (scheduling or drivers).
+This property allows a namespace target to remove the
+ambiguity.</dd>
+<dt><code class="docutils literal"><span class="pre">--prefix</span> <span class="pre">&lt;PREFIX&gt;</span></code></dt>
+<dd>Specifies the prefix to use for the given resource
+type. Any properties in the namespace should be
+prefixed with this prefix when being applied to the
+specified resource type. Must include prefix separator
+(e.g. a colon :).</dd>
+<dt><code class="docutils literal"><span class="pre">--created-at</span> <span class="pre">&lt;CREATED_AT&gt;</span></code></dt>
+<dd>Date and time of resource type association.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-resource-type-deassociate">
+<span id="id38"></span><h3>glance md-resource-type-deassociate<a class="headerlink" href="glance.html#glance-md-resource-type-deassociate" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-resource-type-deassociate &lt;NAMESPACE&gt; &lt;RESOURCE_TYPE&gt;</span>
+</pre></div>
+</div>
+<p>Deassociate resource type with a metadata definitions namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;RESOURCE_TYPE&gt;</span></code></dt>
+<dd>Name of resource type.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-resource-type-list">
+<span id="id39"></span><h3>glance md-resource-type-list<a class="headerlink" href="glance.html#glance-md-resource-type-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-resource-type-list</span>
+</pre></div>
+</div>
+<p>List available resource type names.</p>
+</div>
+<div class="section" id="glance-md-tag-create">
+<span id="id40"></span><h3>glance md-tag-create<a class="headerlink" href="glance.html#glance-md-tag-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-tag-create --name &lt;NAME&gt; &lt;NAMESPACE&gt;</span>
+</pre></div>
+</div>
+<p>Add a new metadata definitions tag inside a namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of the namespace the tag will belong to.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>The name of the new tag to add.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-tag-create-multiple">
+<span id="id41"></span><h3>glance md-tag-create-multiple<a class="headerlink" href="glance.html#glance-md-tag-create-multiple" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-tag-create-multiple --names &lt;NAMES&gt; [--delim &lt;DELIM&gt;]</span>
+<span class="go">                                     &lt;NAMESPACE&gt;</span>
+</pre></div>
+</div>
+<p>Create new metadata definitions tags inside a namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of the namespace the tags will belong to.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--names</span> <span class="pre">&lt;NAMES&gt;</span></code></dt>
+<dd>A comma separated list of tag names.</dd>
+<dt><code class="docutils literal"><span class="pre">--delim</span> <span class="pre">&lt;DELIM&gt;</span></code></dt>
+<dd>The delimiter used to separate the names (if none is
+provided then the default is a comma).</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-tag-delete">
+<span id="id42"></span><h3>glance md-tag-delete<a class="headerlink" href="glance.html#glance-md-tag-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-tag-delete &lt;NAMESPACE&gt; &lt;TAG&gt;</span>
+</pre></div>
+</div>
+<p>Delete a specific metadata definitions tag inside a namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of the namespace to which the tag belongs.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;TAG&gt;</span></code></dt>
+<dd>Name of the tag.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-tag-list">
+<span id="id43"></span><h3>glance md-tag-list<a class="headerlink" href="glance.html#glance-md-tag-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-tag-list &lt;NAMESPACE&gt;</span>
+</pre></div>
+</div>
+<p>List metadata definitions tags inside a specific namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of namespace.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-tag-show">
+<span id="id44"></span><h3>glance md-tag-show<a class="headerlink" href="glance.html#glance-md-tag-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-tag-show &lt;NAMESPACE&gt; &lt;TAG&gt;</span>
+</pre></div>
+</div>
+<p>Describe a specific metadata definitions tag inside a namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of the namespace to which the tag belongs.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;TAG&gt;</span></code></dt>
+<dd>Name of the tag.</dd>
+</dl>
+</div>
+<div class="section" id="glance-md-tag-update">
+<span id="id45"></span><h3>glance md-tag-update<a class="headerlink" href="glance.html#glance-md-tag-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance md-tag-update --name &lt;NAME&gt; &lt;NAMESPACE&gt; &lt;TAG&gt;</span>
+</pre></div>
+</div>
+<p>Rename a metadata definitions tag inside a namespace.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAMESPACE&gt;</span></code></dt>
+<dd>Name of the namespace to which the tag belongs.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;TAG&gt;</span></code></dt>
+<dd>Name of the old tag.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>New name of the new tag.</dd>
+</dl>
+</div>
+<div class="section" id="glance-member-create">
+<span id="id46"></span><h3>glance member-create<a class="headerlink" href="glance.html#glance-member-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance member-create &lt;IMAGE_ID&gt; &lt;MEMBER_ID&gt;</span>
+</pre></div>
+</div>
+<p>Create member for a given image.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;IMAGE_ID&gt;</span></code></dt>
+<dd>Image with which to create member.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;MEMBER_ID&gt;</span></code></dt>
+<dd>Tenant to add as member.</dd>
+</dl>
+</div>
+<div class="section" id="glance-member-delete">
+<span id="id47"></span><h3>glance member-delete<a class="headerlink" href="glance.html#glance-member-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance member-delete &lt;IMAGE_ID&gt; &lt;MEMBER_ID&gt;</span>
+</pre></div>
+</div>
+<p>Delete image member.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;IMAGE_ID&gt;</span></code></dt>
+<dd>Image from which to remove member.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;MEMBER_ID&gt;</span></code></dt>
+<dd>Tenant to remove as member.</dd>
+</dl>
+</div>
+<div class="section" id="glance-member-list">
+<span id="id48"></span><h3>glance member-list<a class="headerlink" href="glance.html#glance-member-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance member-list --image-id &lt;IMAGE_ID&gt;</span>
+</pre></div>
+</div>
+<p>Describe sharing permissions by image.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--image-id</span> <span class="pre">&lt;IMAGE_ID&gt;</span></code></dt>
+<dd>Image to display members of.</dd>
+</dl>
+</div>
+<div class="section" id="glance-member-update">
+<span id="id49"></span><h3>glance member-update<a class="headerlink" href="glance.html#glance-member-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance member-update &lt;IMAGE_ID&gt; &lt;MEMBER_ID&gt; &lt;MEMBER_STATUS&gt;</span>
+</pre></div>
+</div>
+<p>Update the status of a member for a given image.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;IMAGE_ID&gt;</span></code></dt>
+<dd>Image from which to update member.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;MEMBER_ID&gt;</span></code></dt>
+<dd>Tenant to update.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;MEMBER_STATUS&gt;</span></code></dt>
+<dd>Updated status of member. Valid Values: accepted, rejected,
+pending</dd>
+</dl>
+</div>
+<div class="section" id="glance-task-create">
+<span id="id50"></span><h3>glance task-create<a class="headerlink" href="glance.html#glance-task-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance task-create [--type &lt;TYPE&gt;] [--input &lt;STRING&gt;]</span>
+</pre></div>
+</div>
+<p>Create a new task.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--type</span> <span class="pre">&lt;TYPE&gt;</span></code></dt>
+<dd>Type of Task. Please refer to Glance schema or
+documentation to see which tasks are supported.</dd>
+<dt><code class="docutils literal"><span class="pre">--input</span> <span class="pre">&lt;STRING&gt;</span></code></dt>
+<dd>Parameters of the task to be launched</dd>
+</dl>
+</div>
+<div class="section" id="glance-task-list">
+<span id="id51"></span><h3>glance task-list<a class="headerlink" href="glance.html#glance-task-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance task-list [--sort-key {id,type,status}] [--sort-dir {asc,desc}]</span>
+<span class="go">                        [--page-size &lt;SIZE&gt;] [--type &lt;TYPE&gt;]</span>
+<span class="go">                        [--status &lt;STATUS&gt;]</span>
+</pre></div>
+</div>
+<p>List tasks you can access.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--sort-key</span> <span class="pre">{id,type,status}</span></code></dt>
+<dd>Sort task list by specified field.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-dir</span> <span class="pre">{asc,desc}</span></code></dt>
+<dd>Sort task list in specified direction.</dd>
+<dt><code class="docutils literal"><span class="pre">--page-size</span> <span class="pre">&lt;SIZE&gt;</span></code></dt>
+<dd>Number of tasks to request in each paginated request.</dd>
+<dt><code class="docutils literal"><span class="pre">--type</span> <span class="pre">&lt;TYPE&gt;</span></code></dt>
+<dd>Filter tasks to those that have this type.</dd>
+<dt><code class="docutils literal"><span class="pre">--status</span> <span class="pre">&lt;STATUS&gt;</span></code></dt>
+<dd>Filter tasks to those that have this status.</dd>
+</dl>
+</div>
+<div class="section" id="glance-task-show">
+<span id="id52"></span><h3>glance task-show<a class="headerlink" href="glance.html#glance-task-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: glance task-show &lt;TASK_ID&gt;</span>
+</pre></div>
+</div>
+<p>Describe a specific task.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;TASK_ID&gt;</span></code></dt>
+<dd>ID of task to describe.</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="image.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Image service (glance) command-line clients"></i></a>
+          
+          
+            <a href="glance-property-keys.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Image service property keys"></i></a>
+          
+            <a id="logABugLink3" href="glance.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="glance.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="murano.html">Application Catalog service (murano) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="freezer.html">Backup, Restore, and Disaster Recovery service (freezer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ironic.html">Bare Metal service (ironic) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cinder.html">Block Storage service (cinder) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="senlin.html">Clustering service (senlin) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute service (nova) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnum.html">Container Infrastructure Management service (magnum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database service (trove) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="designate.html">DNS service (designate) command-line client</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="image.html">Image service (glance) command-line clients</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="glance.html#">Image service (glance) command-line client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="glance-property-keys.html">Image service property keys</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="watcher.html">Infrastructure Optimization service (watcher) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barbican.html">Key Manager service (barbican) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monasca.html">Monitoring (monasca) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networking.html">Networking service (neutron) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tacker.html">NFV Orchestration service (tacker) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="swift.html">Object Storage service (swift) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heat.html">Orchestration service (heat) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloudkitty.html">Rating service (cloudkitty) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vitrage.html">RCA (Root Cause Analysis) service (vitrage) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manila.html">Shared File Systems service (manila) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solum.html">Software Development Lifecycle Automation service (solum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aodh.html">Telemetry Alarming service (aodh) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ceilometer.html">Telemetry Data Collection service (ceilometer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gnocchi.html">A time series storage and resources index service (gnocchi) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mistral.html">Workflow service (mistral) command-line client</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "glance" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/cli-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "Image service (glance) command-line client in Command-Line Interface Reference";
+    var fieldTags = "cli-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:39";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,637 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: IBM Storage Driver for OpenStack</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="../../_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="../../_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="../../_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="../../_static/css/combined.css" rel="stylesheet">
+<link href="../../_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" href="../../_static/sphinxmark.css" type="text/css" />
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>IBM Storage Driver for OpenStack</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="ibm-storwize-svc-driver.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: IBM Storwize family and SVC volume driver"></i></a>
+    
+    
+    <a href="ibm-flashsystem-volume-driver.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: IBM FlashSystem volume driver"></i></a>
+    
+    <a id="logABugLink1" href="ibm-storage-volume-driver.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:41</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="../../index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="ibm-storage-volume-driver.html#">IBM Storage Driver for OpenStack</a><ul>
+<li><a class="reference internal" href="ibm-storage-volume-driver.html#introduction">Introduction</a><ul>
+<li><a class="reference internal" href="ibm-storage-volume-driver.html#concept-diagram">Concept diagram</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="ibm-storage-volume-driver.html#configuration">Configuration</a></li>
+<li><a class="reference internal" href="ibm-storage-volume-driver.html#security">Security</a><ul>
+<li><a class="reference internal" href="ibm-storage-volume-driver.html#avoiding-man-in-the-middle-attacks">Avoiding man-in-the-middle attacks</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="ibm-storage-volume-driver.html#troubleshooting">Troubleshooting</a><ul>
+<li><a class="reference internal" href="ibm-storage-volume-driver.html#checking-the-cinder-node-log-files">Checking the cinder node log files</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="ibm-storage-volume-driver.html#best-practices">Best practices</a><ul>
+<li><a class="reference internal" href="ibm-storage-volume-driver.html#working-with-multi-tenancy">Working with multi-tenancy</a></li>
+<li><a class="reference internal" href="ibm-storage-volume-driver.html#working-with-ibm-real-time-compression">Working with IBM Real-time Compression™</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="ibm-storage-driver-for-openstack">
+<h1>IBM Storage Driver for OpenStack<a class="headerlink" href="ibm-storage-volume-driver.html#ibm-storage-driver-for-openstack" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="ibm-storage-volume-driver.html#introduction" title="Permalink to this headline">¶</a></h2>
+<p>The IBM Storage Driver for OpenStack is a software component of the
+OpenStack cloud environment that enables utilization of storage
+resources provided by supported IBM storage systems.</p>
+<p>The driver was validated on the following storage systems:</p>
+<ul class="simple">
+<li>IBM DS8000 Family</li>
+<li>IBM FlashSystem A9000</li>
+<li>IBM FlashSystem A9000R</li>
+<li>IBM Spectrum Accelerate</li>
+<li>IBM XIV Storage System</li>
+</ul>
+<p>After the driver is configured on the OpenStack cinder nodes, storage volumes
+can be allocated by the cinder nodes to the nova nodes. Virtual machines on
+the nova nodes can then utilize these storage resources.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Unless stated otherwise, all references to XIV storage
+system in this guide relate all members of the Spectrum Accelerate
+Family (XIV, Spectrum Accelerate and FlashSystem A9000/A9000R).</p>
+</div>
+<div class="section" id="concept-diagram">
+<h3>Concept diagram<a class="headerlink" href="ibm-storage-volume-driver.html#concept-diagram" title="Permalink to this headline">¶</a></h3>
+<p>This figure illustrates how an IBM storage system is connected
+to the OpenStack cloud environment and provides storage resources when the
+IBM Storage Driver for OpenStack is configured on the OpenStack cinder nodes.
+The OpenStack cloud is connected to the IBM storage system over Fibre
+Channel or iSCSI (DS8000 systems support only Fibre Channel connections).
+Remote cloud users can issue requests for storage resources from the
+OpenStack cloud. These requests are transparently handled by the IBM Storage
+Driver, which communicates with the IBM storage system and controls the
+storage volumes on it. The IBM storage resources are then provided to the
+nova nodes in the OpenStack cloud.</p>
+<div class="figure">
+<img alt="../../_images/ibm-storage-nova-concept.png" src="../../_images/ibm-storage-nova-concept.png" />
+</div>
+</div>
+</div>
+<div class="section" id="configuration">
+<h2>Configuration<a class="headerlink" href="ibm-storage-volume-driver.html#configuration" title="Permalink to this headline">¶</a></h2>
+<p>Configure the driver manually by changing the <code class="docutils literal"><span class="pre">cinder.conf</span></code> file as
+follows:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">volume_driver</span> <span class="o">=</span> <span class="s">cinder.volume.drivers.ibm.ibm_storage.IBMStorageDriver</span>
+</pre></div>
+</div>
+<span id="cinder-ibm-storage"></span><table border="1" class="config-ref-table docutils" id="id1">
+<caption><span class="caption-text">Description of IBM Storage driver configuration options</span><a class="headerlink" href="ibm-storage-volume-driver.html#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[DEFAULT]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ds8k_devadd_unitadd_mapping</span></code> =</td>
+<td>(String) Mapping between IODevice address and unit address.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ds8k_host_type</span></code> = <code class="docutils literal"><span class="pre">auto</span></code></td>
+<td>(String) Set to zLinux if your OpenStack version is prior to Liberty and you&#8217;re connecting to zLinux systems. Otherwise set to auto. Valid values for this parameter are: &#8216;auto&#8217;, &#8216;AMDLinuxRHEL&#8217;, &#8216;AMDLinuxSuse&#8217;, &#8216;AppleOSX&#8217;, &#8216;Fujitsu&#8217;, &#8216;Hp&#8217;, &#8216;HpTru64&#8217;, &#8216;HpVms&#8217;, &#8216;LinuxDT&#8217;, &#8216;LinuxRF&#8217;, &#8216;LinuxRHEL&#8217;, &#8216;LinuxSuse&#8217;, &#8216;Novell&#8217;, &#8216;SGI&#8217;, &#8216;SVC&#8217;, &#8216;SanFsAIX&#8217;, &#8216;SanFsLinux&#8217;, &#8216;Sun&#8217;, &#8216;VMWare&#8217;, &#8216;Win2000&#8217;, &#8216;Win2003&#8217;, &#8216;Win2008&#8217;, &#8216;Win2012&#8217;, &#8216;iLinux&#8217;, &#8216;nSeries&#8217;, &#8216;pLinux&#8217;, &#8216;pSeries&#8217;, &#8216;pSeriesPowerswap&#8217;, &#8216;zLinux&#8217;, &#8216;iSeries&#8217;.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ds8k_ssid_prefix</span></code> = <code class="docutils literal"><span class="pre">FF</span></code></td>
+<td>(String) Set the first two digits of SSID</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">proxy</span></code> = <code class="docutils literal"><span class="pre">cinder.volume.drivers.ibm.ibm_storage.proxy.IBMStorageProxy</span></code></td>
+<td>(String) Proxy driver that connects to the IBM Storage Array</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">san_clustername</span></code> =</td>
+<td>(String) Cluster name to use for creating volumes</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">san_ip</span></code> =</td>
+<td>(String) IP address of SAN controller</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">san_login</span></code> = <code class="docutils literal"><span class="pre">admin</span></code></td>
+<td>(String) Username for SAN controller</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">san_password</span></code> =</td>
+<td>(String) Password for SAN controller</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="security">
+<h2>Security<a class="headerlink" href="ibm-storage-volume-driver.html#security" title="Permalink to this headline">¶</a></h2>
+<p>The following information provides an overview of security for the IBM
+Storage Driver for OpenStack.</p>
+<div class="section" id="avoiding-man-in-the-middle-attacks">
+<h3>Avoiding man-in-the-middle attacks<a class="headerlink" href="ibm-storage-volume-driver.html#avoiding-man-in-the-middle-attacks" title="Permalink to this headline">¶</a></h3>
+<p>When using a Spectrum Accelerate Family product, you can prevent
+man-in-the-middle (MITM) attacks by following these rules:</p>
+<ul>
+<li><p class="first">Upgrade to IBM XIV storage system version 11.3 or later.</p>
+</li>
+<li><p class="first">If working in a secure mode, do not work insecurely against another storage
+system in the same environment.</p>
+</li>
+<li><p class="first">Validate the storage certificate. If you are using an XIV-provided
+certificate, use the CA file that was provided with your storage system
+(<code class="docutils literal"><span class="pre">XIV-CA.pem</span></code>). The certificate files should be copied to one of the
+following directories:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">/etc/ssl/certs</span></code></li>
+<li><code class="docutils literal"><span class="pre">/etc/ssl/certs/xiv</span></code></li>
+<li><code class="docutils literal"><span class="pre">/etc/pki</span></code></li>
+<li><code class="docutils literal"><span class="pre">/etc/pki/xiv</span></code></li>
+</ul>
+<p>If you are using your own certificates, copy them to the same directories
+with the prefix <code class="docutils literal"><span class="pre">XIV</span></code> and in the <code class="docutils literal"><span class="pre">.pem</span></code> format.
+For example: <code class="docutils literal"><span class="pre">XIV-my_cert.pem</span></code>.</p>
+</li>
+<li><p class="first">To prevent the CVE-2014-3566 MITM attack, follow the OpenStack
+community
+<a class="reference external" href="http://osdir.com/ml/openstack-dev/2014-10/msg01349.html">directions</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="ibm-storage-volume-driver.html#troubleshooting" title="Permalink to this headline">¶</a></h2>
+<p>Refer to this information to troubleshoot technical problems that you
+might encounter when using the IBM Storage Driver for OpenStack.</p>
+<div class="section" id="checking-the-cinder-node-log-files">
+<h3>Checking the cinder node log files<a class="headerlink" href="ibm-storage-volume-driver.html#checking-the-cinder-node-log-files" title="Permalink to this headline">¶</a></h3>
+<p>The cinder log files record operation information that might be useful
+for troubleshooting.</p>
+<p>To achieve optimal and clear logging of events, activate the verbose
+logging level in the <code class="docutils literal"><span class="pre">cinder.conf</span></code> file, located in the <code class="docutils literal"><span class="pre">/etc/cinder</span></code>
+folder. Add the following line in the file, save the file, and then
+restart the <code class="docutils literal"><span class="pre">cinder-volume</span></code> service:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">verbose = True</span>
+<span class="go">debug = True</span>
+</pre></div>
+</div>
+<p>To turn off the verbose logging level, change <code class="docutils literal"><span class="pre">True</span></code> to <code class="docutils literal"><span class="pre">False</span></code>,
+save the file, and then restart the <code class="docutils literal"><span class="pre">cinder-volume</span></code> service.</p>
+<p>Check the log files on a periodic basis to ensure that the IBM
+Storage Driver is functioning properly:</p>
+<ol class="arabic simple">
+<li>Log into the cinder node.</li>
+<li>Go to the <code class="docutils literal"><span class="pre">/var/log/cinder</span></code> folder</li>
+<li>Open the activity log file named <code class="docutils literal"><span class="pre">cinder-volume.log</span></code> or <code class="docutils literal"><span class="pre">volume.log</span></code>.
+The IBM Storage Driver writes to this log file using the
+<code class="docutils literal"><span class="pre">[IBM</span> <span class="pre">DS8K</span> <span class="pre">STORAGE]</span></code> or <code class="docutils literal"><span class="pre">[IBM</span> <span class="pre">XIV</span> <span class="pre">STORAGE]</span></code> prefix (depending on
+the relevant storage system) for each event that it records in the file.</li>
+</ol>
+</div>
+</div>
+<div class="section" id="best-practices">
+<h2>Best practices<a class="headerlink" href="ibm-storage-volume-driver.html#best-practices" title="Permalink to this headline">¶</a></h2>
+<p>This section contains the general guidance and best practices.</p>
+<div class="section" id="working-with-multi-tenancy">
+<h3>Working with multi-tenancy<a class="headerlink" href="ibm-storage-volume-driver.html#working-with-multi-tenancy" title="Permalink to this headline">¶</a></h3>
+<p>The XIV storage systems, running microcode version 11.5 or later, Spectrum
+Accelerate and FlashSystem A9000/A9000R can employ multi-tenancy.</p>
+<p>In order to use multi-tenancy with the IBM Storage Driver for OpenStack:</p>
+<ul class="simple">
+<li>For each storage system, verify that all predefined storage pools are
+in the same domain or, that all are not in a domain.</li>
+<li>Use either storage administrator or domain administrator user&#8217;s
+credentials, as long as the credentials grant a full access to the relevant
+pool.</li>
+<li>If the user is a domain administrator, the storage system domain
+access policy can be <code class="docutils literal"><span class="pre">CLOSED</span></code> (<code class="docutils literal"><span class="pre">domain_policy:</span> <span class="pre">access=CLOSED</span></code>).
+Otherwise, verify that the storage system domain access policy is
+<code class="docutils literal"><span class="pre">OPEN</span></code> (<code class="docutils literal"><span class="pre">domain_policy:</span> <span class="pre">access=OPEN</span></code>).</li>
+<li>If the user is not a domain administrator, the host management policy
+of the storage system domain can be <code class="docutils literal"><span class="pre">BASIC</span></code> (<code class="docutils literal"><span class="pre">domain_policy:</span>
+<span class="pre">host_management=BASIC</span></code>). Otherwise, verify that the storage
+system domain host management policy is <code class="docutils literal"><span class="pre">EXTENDED</span></code>
+(<code class="docutils literal"><span class="pre">domain_policy:</span> <span class="pre">host_management=EXTENDED</span></code>).</li>
+</ul>
+</div>
+<div class="section" id="working-with-ibm-real-time-compression">
+<h3>Working with IBM Real-time Compression™<a class="headerlink" href="ibm-storage-volume-driver.html#working-with-ibm-real-time-compression" title="Permalink to this headline">¶</a></h3>
+<p>XIV storage systems running microcode version 11.6 or later,
+Spectrum Accelerate and FlashSystem A9000/A9000R can employ IBM
+Real-time Compression™.</p>
+<p>Follow these guidelines when working with compressed storage
+resources using the IBM Storage Driver for OpenStack:</p>
+<ul class="simple">
+<li>Compression mode cannot be changed for storage volumes, using
+the IBM Storage Driver for OpenStack. The volumes are created
+according to the default compression mode of the pool. For example,
+any volume created in a compressed pool will be compressed as well.</li>
+<li>The minimum size for a compressed storage volume is 87 GB.</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="ibm-storwize-svc-driver.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: IBM Storwize family and SVC volume driver"></i></a>
+          
+          
+            <a href="ibm-flashsystem-volume-driver.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: IBM FlashSystem volume driver"></i></a>
+          
+            <a id="logABugLink3" href="ibm-storage-volume-driver.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:41</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="../../_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="ibm-storage-volume-driver.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="../../index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../config-overview.html">OpenStack configuration overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../common-configurations.html">Common configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../application-catalog.html">Application Catalog service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bare-metal.html">Bare Metal service</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../block-storage.html">Block Storage service</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../block-storage-overview.html">Introduction to the Block Storage service</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../volume-drivers.html">Volume drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../backup-drivers.html">Backup drivers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../schedulers.html">Block Storage schedulers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../logs.html">Log files used by Block Storage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../fc-zoning.html">Fibre Channel Zone Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../nested-quota.html">Nested quotas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../volume-encryption.html">Volume encryption supported by the key manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../config-options.html">Additional options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../samples/index.html">Block Storage service sample configuration files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tables/conf-changes/cinder.html">New, updated, and deprecated options in Ocata for Block Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../clustering.html">Clustering service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../compute.html">Compute service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dashboard.html">Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../data-processing.html">Data Processing service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../database.html">Database service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../identity.html">Identity service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../image.html">Image service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../message.html">Message service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../networking.html">Networking service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../object-storage.html">Object Storage service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../orchestration.html">Orchestration service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../shared-file-systems.html">Shared File Systems service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../telemetry.html">Telemetry service</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../policy-yaml-file.html">The policy.yaml file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../policy-json-file.html">The policy.json file</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="../../_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="../../_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="../../_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="../../_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="../../_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "block-storage/drivers/ibm-storage-volume-driver" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/config-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "IBM Storage Driver for OpenStack in Configuration Reference";
+    var fieldTags = "config-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:41";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

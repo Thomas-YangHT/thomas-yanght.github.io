@@ -1,0 +1,601 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: Launch and manage stacks</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>Launch and manage stacks</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="dashboard-manage-shares.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Create and manage shares"></i></a>
+    
+    
+    <a href="dashboard-databases.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Create and manage databases"></i></a>
+    
+    <a id="logABugLink1" href="dashboard-stacks.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:37</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="dashboard-stacks.html#">Launch and manage stacks</a><ul>
+<li><a class="reference internal" href="dashboard-stacks.html#launch-a-stack">Launch a stack</a></li>
+<li><a class="reference internal" href="dashboard-stacks.html#manage-a-stack">Manage a stack</a></li>
+<li><a class="reference internal" href="dashboard-stacks.html#delete-a-stack">Delete a stack</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="launch-and-manage-stacks">
+<h1>Launch and manage stacks<a class="headerlink" href="dashboard-stacks.html#launch-and-manage-stacks" title="Permalink to this headline">¶</a></h1>
+<p>OpenStack Orchestration is a service that you can use to
+orchestrate multiple composite cloud applications. This
+service supports the use of both the Amazon Web Services (AWS)
+CloudFormation template format through both a Query API that
+is compatible with CloudFormation and the native OpenStack
+<a class="reference internal" href="common/glossary.html#term-heat-orchestration-template-hot"><span class="xref std std-term">Heat Orchestration Template (HOT)</span></a> format through a REST API.</p>
+<p>These flexible template languages enable application
+developers to describe and automate the deployment of
+infrastructure, services, and applications. The templates
+enable creation of most OpenStack resource types, such as
+instances, floating IP addresses, volumes, security groups,
+and users. Once created, the resources are referred to as
+stacks.</p>
+<p>The template languages are described in the <a class="reference external" href="https://docs.openstack.org/developer/heat/template_guide/index.html">Template Guide</a> in the <a class="reference external" href="http://docs.openstack.org/developer/heat/">Heat developer documentation</a>.</p>
+<div class="section" id="launch-a-stack">
+<h2>Launch a stack<a class="headerlink" href="dashboard-stacks.html#launch-a-stack" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">Log in to the dashboard.</p>
+</li>
+<li><p class="first">Select the appropriate project from the drop down menu at the top left.</p>
+</li>
+<li><p class="first">On the <span class="guilabel">Project</span> tab, open the <span class="guilabel">Orchestration</span> tab and
+click <span class="guilabel">Stacks</span> category.</p>
+</li>
+<li><p class="first">Click <span class="guilabel">Launch Stack</span>.</p>
+</li>
+<li><p class="first">In the <span class="guilabel">Select Template</span> dialog box, specify the
+following values:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="56%" />
+<col width="44%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><span class="guilabel">Template Source</span></td>
+<td>Choose the source of the
+template from the list.</td>
+</tr>
+<tr class="row-even"><td><span class="guilabel">Template URL/File/Data</span></td>
+<td>Depending on the source that
+you select, enter the URL,
+browse to the file location,
+or directly include the
+template.</td>
+</tr>
+<tr class="row-odd"><td><span class="guilabel">Environment Source</span></td>
+<td>Choose the source of the
+environment from the list.
+The environment files contain
+additional settings for the
+stack.</td>
+</tr>
+<tr class="row-even"><td><span class="guilabel">Environment File/Data</span></td>
+<td>Depending on the source that
+you select, browse to the
+file location, directly
+include the environment</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p class="first">Click <span class="guilabel">Next</span>.</p>
+</li>
+<li><p class="first">In the <span class="guilabel">Launch Stack</span> dialog box, specify the
+following values:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><span class="guilabel">Stack Name</span></td>
+<td>Enter a name to identify
+the stack.</td>
+</tr>
+<tr class="row-even"><td><span class="guilabel">Creation Timeout</span>
+<span class="guilabel">(minutes)</span></td>
+<td>Specify the number of minutes
+that can elapse before the
+launch of the stack times out.</td>
+</tr>
+<tr class="row-odd"><td><span class="guilabel">Rollback On Failure</span></td>
+<td>Select this check box if you
+want the service to roll back
+changes if the stack fails to
+launch.</td>
+</tr>
+<tr class="row-even"><td><span class="guilabel">Password for user</span>
+<span class="guilabel">&#8220;demo&#8221;</span></td>
+<td>Specify the password that
+the default user uses when the
+stack is created.</td>
+</tr>
+<tr class="row-odd"><td><span class="guilabel">DBUsername</span></td>
+<td>Specify the name of the
+database user.</td>
+</tr>
+<tr class="row-even"><td><span class="guilabel">LinuxDistribution</span></td>
+<td>Specify the Linux distribution
+that is used in the stack.</td>
+</tr>
+<tr class="row-odd"><td><span class="guilabel">DBRootPassword</span></td>
+<td>Specify the root password for
+the database.</td>
+</tr>
+<tr class="row-even"><td><span class="guilabel">KeyName</span></td>
+<td>Specify the name of the key pair
+to use to log in to the stack.</td>
+</tr>
+<tr class="row-odd"><td><span class="guilabel">DBName</span></td>
+<td>Specify the name of the
+database.</td>
+</tr>
+<tr class="row-even"><td><span class="guilabel">DBPassword</span></td>
+<td>Specify the password of the
+database.</td>
+</tr>
+<tr class="row-odd"><td><span class="guilabel">InstanceType</span></td>
+<td>Specify the flavor for the
+instance.</td>
+</tr>
+</tbody>
+</table>
+</li>
+<li><p class="first">Click <span class="guilabel">Launch</span> to create a stack. The <span class="guilabel">Stacks</span>
+tab shows the stack.</p>
+</li>
+</ol>
+<p>After the stack is created, click on the stack name to see the
+following details:</p>
+<dl class="docutils">
+<dt>Topology</dt>
+<dd>The topology of the stack.</dd>
+<dt>Overview</dt>
+<dd>The parameters and details of the stack.</dd>
+<dt>Resources</dt>
+<dd>The resources used by the stack.</dd>
+<dt>Events</dt>
+<dd>The events related to the stack.</dd>
+<dt>Template</dt>
+<dd>The template for the stack.</dd>
+</dl>
+</div>
+<div class="section" id="manage-a-stack">
+<h2>Manage a stack<a class="headerlink" href="dashboard-stacks.html#manage-a-stack" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">Log in to the dashboard.</p>
+</li>
+<li><p class="first">Select the appropriate project from the drop down menu at the top left.</p>
+</li>
+<li><p class="first">On the <span class="guilabel">Project</span> tab, open the <span class="guilabel">Orchestration</span> tab and
+click <span class="guilabel">Stacks</span> category.</p>
+</li>
+<li><p class="first">Select the stack that you want to update.</p>
+</li>
+<li><p class="first">Click <span class="guilabel">Change Stack Template</span>.</p>
+</li>
+<li><p class="first">In the <span class="guilabel">Select Template</span> dialog box, select the
+new template source or environment source.</p>
+</li>
+<li><p class="first">Click <span class="guilabel">Next</span>.</p>
+<p>The <span class="guilabel">Update Stack Parameters</span> window appears.</p>
+</li>
+<li><p class="first">Enter new values for any parameters that you want to update.</p>
+</li>
+<li><p class="first">Click <span class="guilabel">Update</span>.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="delete-a-stack">
+<h2>Delete a stack<a class="headerlink" href="dashboard-stacks.html#delete-a-stack" title="Permalink to this headline">¶</a></h2>
+<p>When you delete a stack, you cannot undo this action.</p>
+<ol class="arabic simple">
+<li>Log in to the dashboard.</li>
+<li>Select the appropriate project from the drop down menu at the top left.</li>
+<li>On the <span class="guilabel">Project</span> tab, open the <span class="guilabel">Orchestration</span> tab and
+click <span class="guilabel">Stacks</span> category.</li>
+<li>Select the stack that you want to delete.</li>
+<li>Click <span class="guilabel">Delete Stack</span>.</li>
+<li>In the confirmation dialog box, click <span class="guilabel">Delete Stack</span>
+to confirm the deletion.</li>
+</ol>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="dashboard-manage-shares.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Create and manage shares"></i></a>
+          
+          
+            <a href="dashboard-databases.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Create and manage databases"></i></a>
+          
+            <a id="logABugLink3" href="dashboard-stacks.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:37</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="dashboard-stacks.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="common/conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro-user.html">How can I use an OpenStack cloud?</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="dashboard.html">OpenStack dashboard</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="dashboard-log-in.html">Log in to the dashboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dashboard-manage-images.html">Upload and manage images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="configure-access-and-security-for-instances.html">Configure access and security for instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dashboard-launch-instances.html">Launch and manage instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dashboard-create-networks.html">Create and manage networks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dashboard-manage-containers.html">Create and manage object containers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dashboard-manage-volumes.html">Create and manage volumes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dashboard-manage-shares.html">Create and manage shares</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="dashboard-stacks.html#">Launch and manage stacks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dashboard-databases.html">Create and manage databases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dashboard-manage-lbaasv2.html">View and manage load balancers v2</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">OpenStack command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sdk.html">OpenStack Python SDK</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hot.html">HOT Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli-cheat-sheet.html">OpenStack command-line interface cheat sheet</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="common/app-support.html">Community support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="common/glossary.html">Glossary</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "dashboard-stacks" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/user-guide/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "Launch and manage stacks in End User Guide";
+    var fieldTags = "user-guide";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:37";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

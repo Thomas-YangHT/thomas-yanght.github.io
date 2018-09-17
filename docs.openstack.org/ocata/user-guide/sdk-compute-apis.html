@@ -1,0 +1,919 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: Compute</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>Compute</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="sdk-neutron-apis.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Networking"></i></a>
+    
+    
+    <a href="hot.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: HOT Guide"></i></a>
+    
+    <a id="logABugLink1" href="sdk-compute-apis.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:37</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="sdk-compute-apis.html#">Compute</a><ul>
+<li><a class="reference internal" href="sdk-compute-apis.html#set-environment-variables">Set environment variables</a></li>
+<li><a class="reference internal" href="sdk-compute-apis.html#get-openstack-credentials-api-v2">Get OpenStack credentials (API v2)</a></li>
+<li><a class="reference internal" href="sdk-compute-apis.html#list-servers-api-v2">List servers (API v2)</a><ul>
+<li><a class="reference internal" href="sdk-compute-apis.html#list-server-code-listing-example">List server code listing example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="sdk-compute-apis.html#create-server-api-v2">Create server (API v2)</a><ul>
+<li><a class="reference internal" href="sdk-compute-apis.html#create-server-code-listing-example">Create server code listing example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="sdk-compute-apis.html#delete-server-api-v2">Delete server (API v2)</a><ul>
+<li><a class="reference internal" href="sdk-compute-apis.html#delete-server-code-example">Delete server code example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="sdk-compute-apis.html#update-server-api-v2">Update server (API v2)</a><ul>
+<li><a class="reference internal" href="sdk-compute-apis.html#update-server-code-listing-example">Update server code listing example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="sdk-compute-apis.html#list-flavors-api-v2">List flavors (API v2)</a><ul>
+<li><a class="reference internal" href="sdk-compute-apis.html#list-flavors-code-listing-example">List flavors code listing example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="sdk-compute-apis.html#list-floating-ips-api-v2">List floating IPs (API v2)</a><ul>
+<li><a class="reference internal" href="sdk-compute-apis.html#list-floating-ips-code-listing-example">List floating IPs code listing example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="sdk-compute-apis.html#list-hosts-api-v2">List hosts (API v2)</a><ul>
+<li><a class="reference internal" href="sdk-compute-apis.html#list-hosts-code-listing-example">List hosts code listing example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="compute">
+<h1>Compute<a class="headerlink" href="sdk-compute-apis.html#compute" title="Permalink to this headline">¶</a></h1>
+<p>To use the information in this section, you must be familiar with
+OpenStack Compute.</p>
+<div class="section" id="set-environment-variables">
+<h2>Set environment variables<a class="headerlink" href="sdk-compute-apis.html#set-environment-variables" title="Permalink to this headline">¶</a></h2>
+<p>To set up environmental variables and authenticate against Compute API
+endpoints, see <a class="reference internal" href="sdk-authenticate.html#sdk-authenticate"><span class="std std-ref">Authenticate</span></a>.</p>
+</div>
+<div class="section" id="get-openstack-credentials-api-v2">
+<span id="get-openstack-credentials"></span><h2>Get OpenStack credentials (API v2)<a class="headerlink" href="sdk-compute-apis.html#get-openstack-credentials-api-v2" title="Permalink to this headline">¶</a></h2>
+<p>This example uses the <code class="docutils literal"><span class="pre">get_nova_credentials_v2</span></code> method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_nova_credentials_v2</span><span class="p">():</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;2&#39;</span>
+    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;username&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OS_USERNAME&#39;</span><span class="p">]</span>
+    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;api_key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OS_PASSWORD&#39;</span><span class="p">]</span>
+    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;auth_url&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OS_AUTH_URL&#39;</span><span class="p">]</span>
+    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;project_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;OS_TENANT_NAME&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">d</span>
+</pre></div>
+</div>
+<p>This code resides in the <code class="docutils literal"><span class="pre">credentials.py</span></code> file, which all samples
+import.</p>
+<p>Use the <code class="docutils literal"><span class="pre">get_nova_credentials_v2()</span></code> method to populate and get a
+dictionary:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">credentials</span> <span class="o">=</span> <span class="n">get_nova_credentials_v2</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="list-servers-api-v2">
+<h2>List servers (API v2)<a class="headerlink" href="sdk-compute-apis.html#list-servers-api-v2" title="Permalink to this headline">¶</a></h2>
+<p>The following program lists servers by using the Compute API v2.</p>
+<ol class="arabic">
+<li><p class="first">Import the following modules:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">credentials</span> <span class="kn">import</span> <span class="n">get_nova_credentials_v2</span>
+<span class="kn">from</span> <span class="nn">novaclient.client</span> <span class="kn">import</span> <span class="n">Client</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Get Nova credentials. See <a class="reference internal" href="sdk-compute-apis.html#get-openstack-credentials"><span class="std std-ref">Get OpenStack credentials (API v2)</span></a>.</p>
+</li>
+<li><p class="first">Instantiate the <code class="docutils literal"><span class="pre">nova_client</span></code> client object by using the
+<code class="docutils literal"><span class="pre">credentials</span></code> dictionary object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">nova_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="o">**</span><span class="n">credentials</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">List servers by calling <code class="docutils literal"><span class="pre">servers.list</span></code> on <code class="docutils literal"><span class="pre">nova_client</span></code> object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">nova_client</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">list</span><span class="p">())</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="section" id="list-server-code-listing-example">
+<h3>List server code listing example<a class="headerlink" href="sdk-compute-apis.html#list-server-code-listing-example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="kn">from</span> <span class="nn">credentials</span> <span class="kn">import</span> <span class="n">get_nova_credentials_v2</span>
+<span class="kn">from</span> <span class="nn">novaclient.client</span> <span class="kn">import</span> <span class="n">Client</span>
+
+<span class="n">credentials</span> <span class="o">=</span> <span class="n">get_nova_credentials_v2</span><span class="p">()</span>
+<span class="n">nova_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="o">**</span><span class="n">credentials</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">nova_client</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">list</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="create-server-api-v2">
+<h2>Create server (API v2)<a class="headerlink" href="sdk-compute-apis.html#create-server-api-v2" title="Permalink to this headline">¶</a></h2>
+<p>The following program creates a server (VM) by using the Compute API v2.</p>
+<ol class="arabic">
+<li><p class="first">Import the following modules:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">credentials</span> <span class="kn">import</span> <span class="n">get_nova_credentials_v2</span>
+<span class="kn">from</span> <span class="nn">novaclient.client</span> <span class="kn">import</span> <span class="n">Client</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Get OpenStack credentials. See <a class="reference internal" href="sdk-compute-apis.html#get-openstack-credentials"><span class="std std-ref">Get OpenStack credentials (API v2)</span></a>.</p>
+</li>
+<li><p class="first">Instantiate the <code class="docutils literal"><span class="pre">nova_client</span></code> client object by using the
+<code class="docutils literal"><span class="pre">credentials</span></code> dictionary object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">nova_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="o">**</span><span class="n">credentials</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Get the flavor and image to use to create a server. This code uses
+the <code class="docutils literal"><span class="pre">cirros</span></code> image, the <code class="docutils literal"><span class="pre">m1.tiny</span></code> flavor, and the <code class="docutils literal"><span class="pre">private</span></code>
+network:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">image</span> <span class="o">=</span> <span class="n">nova_client</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cirros&quot;</span><span class="p">)</span>
+<span class="n">flavor</span> <span class="o">=</span> <span class="n">nova_client</span><span class="o">.</span><span class="n">flavors</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;m1.tiny&quot;</span><span class="p">)</span>
+<span class="n">net</span> <span class="o">=</span> <span class="n">nova_client</span><span class="o">.</span><span class="n">networks</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;private&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">To create the server, use the network, image, and flavor:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">nics</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;net-id&#39;</span><span class="p">:</span> <span class="n">net</span><span class="o">.</span><span class="n">id</span><span class="p">}]</span>
+<span class="n">instance</span> <span class="o">=</span> <span class="n">nova_client</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;vm2&quot;</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
+<span class="n">flavor</span><span class="o">=</span><span class="n">flavor</span><span class="p">,</span> <span class="n">key_name</span><span class="o">=</span><span class="s2">&quot;keypair-1&quot;</span><span class="p">,</span> <span class="n">nics</span><span class="o">=</span><span class="n">nics</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Run the &#8220;Sleep for five seconds&#8221; command, and determine whether
+the server/vm was created by calling <code class="docutils literal"><span class="pre">nova_client.servers.list()</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="s2">&quot;Sleeping for 5s after create command&quot;</span><span class="p">)</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s2">&quot;List of VMs&quot;</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">nova_client</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">list</span><span class="p">())</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="section" id="create-server-code-listing-example">
+<h3>Create server code listing example<a class="headerlink" href="sdk-compute-apis.html#create-server-code-listing-example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">credentials</span> <span class="kn">import</span> <span class="n">get_nova_credentials_v2</span>
+<span class="kn">from</span> <span class="nn">novaclient.client</span> <span class="kn">import</span> <span class="n">Client</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">credentials</span> <span class="o">=</span> <span class="n">get_nova_credentials_v2</span><span class="p">()</span>
+    <span class="n">nova_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="o">**</span><span class="n">credentials</span><span class="p">)</span>
+
+    <span class="n">image</span> <span class="o">=</span> <span class="n">nova_client</span><span class="o">.</span><span class="n">images</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cirros&quot;</span><span class="p">)</span>
+    <span class="n">flavor</span> <span class="o">=</span> <span class="n">nova_client</span><span class="o">.</span><span class="n">flavors</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;m1.tiny&quot;</span><span class="p">)</span>
+    <span class="n">net</span> <span class="o">=</span> <span class="n">nova_client</span><span class="o">.</span><span class="n">networks</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;private&quot;</span><span class="p">)</span>
+    <span class="n">nics</span> <span class="o">=</span> <span class="p">[{</span><span class="s1">&#39;net-id&#39;</span><span class="p">:</span> <span class="n">net</span><span class="o">.</span><span class="n">id</span><span class="p">}]</span>
+    <span class="n">instance</span> <span class="o">=</span> <span class="n">nova_client</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;vm2&quot;</span><span class="p">,</span> <span class="n">image</span><span class="o">=</span><span class="n">image</span><span class="p">,</span>
+                                      <span class="n">flavor</span><span class="o">=</span><span class="n">flavor</span><span class="p">,</span> <span class="n">key_name</span><span class="o">=</span><span class="s2">&quot;keypair-1&quot;</span><span class="p">,</span> <span class="n">nics</span><span class="o">=</span><span class="n">nics</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Sleeping for 5s after create command&quot;</span><span class="p">)</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;List of VMs&quot;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">nova_client</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">list</span><span class="p">())</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Execution Completed&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="delete-server-api-v2">
+<h2>Delete server (API v2)<a class="headerlink" href="sdk-compute-apis.html#delete-server-api-v2" title="Permalink to this headline">¶</a></h2>
+<p>The following program deletes a server (VM) by using the Compute API v2.</p>
+<ol class="arabic">
+<li><p class="first">Import the following modules:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">credentials</span> <span class="kn">import</span> <span class="n">get_nova_credentials_v2</span>
+<span class="kn">from</span> <span class="nn">novaclient.client</span> <span class="kn">import</span> <span class="n">Client</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Get Nova credentials. See <a class="reference internal" href="sdk-compute-apis.html#get-openstack-credentials"><span class="std std-ref">Get OpenStack credentials (API v2)</span></a>.</p>
+</li>
+<li><p class="first">Instantiate the <code class="docutils literal"><span class="pre">nova_client</span></code> client object by using the
+<code class="docutils literal"><span class="pre">credentials</span></code> dictionary object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">nova_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="o">**</span><span class="n">credentials</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Determine whether the <code class="docutils literal"><span class="pre">vm1</span></code> server exists:</p>
+<ol class="loweralpha simple">
+<li>List servers: <code class="docutils literal"><span class="pre">servers_list</span></code>.</li>
+<li>Iterate over <code class="docutils literal"><span class="pre">servers_list</span></code> and compare name with <code class="docutils literal"><span class="pre">vm1</span></code>.</li>
+<li>If true, set the variable name <code class="docutils literal"><span class="pre">server_exists</span></code> to <code class="docutils literal"><span class="pre">True</span></code>
+and break from the for loop:</li>
+</ol>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">servers_list</span> <span class="o">=</span> <span class="n">nova_client</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+<span class="n">server_del</span> <span class="o">=</span> <span class="s2">&quot;vm1&quot;</span>
+<span class="n">server_exists</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">servers_list</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">server_del</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;This server </span><span class="si">%s</span><span class="s2"> exists&quot;</span> <span class="o">%</span> <span class="n">server_del</span><span class="p">)</span>
+        <span class="n">server_exists</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">break</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">If the server exists, run the <code class="docutils literal"><span class="pre">delete</span></code> method of the
+<code class="docutils literal"><span class="pre">nova_client.servers</span></code> object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">nova_client</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="section" id="delete-server-code-example">
+<h3>Delete server code example<a class="headerlink" href="sdk-compute-apis.html#delete-server-code-example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="kn">from</span> <span class="nn">credentials</span> <span class="kn">import</span> <span class="n">get_nova_credentials_v2</span>
+<span class="kn">from</span> <span class="nn">novaclient.client</span> <span class="kn">import</span> <span class="n">Client</span>
+
+<span class="n">credentials</span> <span class="o">=</span> <span class="n">get_nova_credentials_v2</span><span class="p">()</span>
+<span class="n">nova_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="o">**</span><span class="n">credentials</span><span class="p">)</span>
+
+<span class="n">servers_list</span> <span class="o">=</span> <span class="n">nova_client</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+<span class="n">server_del</span> <span class="o">=</span> <span class="s2">&quot;vm1&quot;</span>
+<span class="n">server_exists</span> <span class="o">=</span> <span class="bp">False</span>
+
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">servers_list</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">server_del</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;This server </span><span class="si">%s</span><span class="s2"> exists&quot;</span> <span class="o">%</span> <span class="n">server_del</span><span class="p">)</span>
+        <span class="n">server_exists</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">break</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">server_exists</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;server </span><span class="si">%s</span><span class="s2"> does not exist&quot;</span> <span class="o">%</span> <span class="n">server_del</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;deleting server..........&quot;</span><span class="p">)</span>
+    <span class="n">nova_client</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;server </span><span class="si">%s</span><span class="s2"> deleted&quot;</span> <span class="o">%</span> <span class="n">server_del</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="update-server-api-v2">
+<h2>Update server (API v2)<a class="headerlink" href="sdk-compute-apis.html#update-server-api-v2" title="Permalink to this headline">¶</a></h2>
+<p>The following program updates the name of a server (VM) by using the
+Compute API v2.</p>
+<ol class="arabic">
+<li><p class="first">Import the following modules:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">credentials</span> <span class="kn">import</span> <span class="n">get_nova_credentials_v2</span>
+<span class="kn">from</span> <span class="nn">novaclient.client</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">print_server</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">print_server</span></code> is a method defined in <code class="docutils literal"><span class="pre">utils.py</span></code> and prints the
+server details as shown in the code listing below:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">print_server</span><span class="p">(</span><span class="n">server</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">35</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;server id: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">server</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;server name: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">server</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;server image: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">server</span><span class="o">.</span><span class="n">image</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;server flavor: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">server</span><span class="o">.</span><span class="n">flavor</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;server key name: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">server</span><span class="o">.</span><span class="n">key_name</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;user_id: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">server</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">35</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Get OpenStack Credentials. See <a class="reference internal" href="sdk-compute-apis.html#get-openstack-credentials"><span class="std std-ref">Get OpenStack credentials
+(API v2)</span></a>.</p>
+</li>
+<li><p class="first">Instantiate the <code class="docutils literal"><span class="pre">nova_client</span></code> client object by using the
+<code class="docutils literal"><span class="pre">credentials</span></code> dictionary object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">nova_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="o">**</span><span class="n">credentials</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Get the server instance using <code class="docutils literal"><span class="pre">server_id</span></code> and print the details by
+calling <code class="docutils literal"><span class="pre">print_server</span></code> method:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">server_id</span> <span class="o">=</span> <span class="s1">&#39;99889c8d-113f-4a7e-970c-77f1916bfe14&#39;</span>
+<span class="n">server</span> <span class="o">=</span> <span class="n">nova_client</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">server_id</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">name</span>
+<span class="n">print_server</span><span class="p">(</span><span class="n">server</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Call <code class="docutils literal"><span class="pre">server.update</span></code> on the server object with the new value for
+<code class="docutils literal"><span class="pre">name</span></code> variable:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">server</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="s1">&#39;1&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Get the updated instance of the server:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">server_updated</span> <span class="o">=</span> <span class="n">nova_client</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">server_id</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Call <code class="docutils literal"><span class="pre">print_server</span></code> again to check the update server details:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">print_server</span><span class="p">(</span><span class="n">server_updated</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="section" id="update-server-code-listing-example">
+<h3>Update server code listing example<a class="headerlink" href="sdk-compute-apis.html#update-server-code-listing-example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">credentials</span> <span class="kn">import</span> <span class="n">get_nova_credentials_v2</span>
+<span class="kn">from</span> <span class="nn">novaclient.client</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">print_server</span>
+
+<span class="n">credentials</span> <span class="o">=</span> <span class="n">get_nova_credentials_v2</span><span class="p">()</span>
+<span class="n">nova_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="o">**</span><span class="n">credentials</span><span class="p">)</span>
+
+<span class="c1"># Change the server_id specific to your environment</span>
+
+<span class="n">server_id</span> <span class="o">=</span> <span class="s1">&#39;99889c8d-113f-4a7e-970c-77f1916bfe14&#39;</span>
+<span class="n">server</span> <span class="o">=</span> <span class="n">nova_client</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">server_id</span><span class="p">)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">name</span>
+<span class="n">print_server</span><span class="p">(</span><span class="n">server</span><span class="p">)</span>
+
+<span class="n">server</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">n</span> <span class="o">+</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+<span class="n">server_updated</span> <span class="o">=</span> <span class="n">nova_client</span><span class="o">.</span><span class="n">servers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">server_id</span><span class="p">)</span>
+<span class="n">print_server</span><span class="p">(</span><span class="n">server_updated</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="list-flavors-api-v2">
+<h2>List flavors (API v2)<a class="headerlink" href="sdk-compute-apis.html#list-flavors-api-v2" title="Permalink to this headline">¶</a></h2>
+<p>The following program lists flavors and their details by using the
+Compute API v2.</p>
+<ol class="arabic">
+<li><p class="first">Import the following modules:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">credentials</span> <span class="kn">import</span> <span class="n">get_nova_credentials_v2</span>
+<span class="kn">from</span> <span class="nn">novaclient.client</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">print_flavors</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">print_flavors</span></code> method is defined in <code class="docutils literal"><span class="pre">utils.py</span></code> and prints the
+flavor details:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">print_flavors</span><span class="p">(</span><span class="n">flavor_list</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">flavor</span> <span class="ow">in</span> <span class="n">flavor_list</span><span class="p">:</span>
+       <span class="k">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">35</span><span class="p">)</span>
+       <span class="k">print</span><span class="p">(</span><span class="s2">&quot;flavor id : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">flavor</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+       <span class="k">print</span><span class="p">(</span><span class="s2">&quot;flavor name : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">flavor</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+       <span class="k">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">35</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Get OpenStack credentials. <a class="reference internal" href="sdk-compute-apis.html#get-openstack-credentials"><span class="std std-ref">Get OpenStack credentials
+(API v2)</span></a>.</p>
+</li>
+<li><p class="first">Instantiate the <code class="docutils literal"><span class="pre">nova_client</span></code> client object by using the
+<code class="docutils literal"><span class="pre">credentials</span></code> dictionary object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">nova_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="o">**</span><span class="n">credentials</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">List flavors by calling <code class="docutils literal"><span class="pre">list()</span></code> on <code class="docutils literal"><span class="pre">nova_client.flavors</span></code> object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">flavors_list</span> <span class="o">=</span>  <span class="n">nova_client</span><span class="o">.</span><span class="n">flavors</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Print the flavor details, id and name by calling <code class="docutils literal"><span class="pre">print_flavors</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">print_flavors</span><span class="p">(</span><span class="n">flavors_list</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="section" id="list-flavors-code-listing-example">
+<h3>List flavors code listing example<a class="headerlink" href="sdk-compute-apis.html#list-flavors-code-listing-example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">credentials</span> <span class="kn">import</span> <span class="n">get_nova_credentials_v2</span>
+<span class="kn">from</span> <span class="nn">novaclient.client</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">print_flavors</span>
+
+<span class="n">credentials</span> <span class="o">=</span> <span class="n">get_nova_credentials_v2</span><span class="p">()</span>
+<span class="n">nova_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="o">**</span><span class="n">credentials</span><span class="p">)</span>
+
+<span class="n">flavors_list</span> <span class="o">=</span> <span class="n">nova_client</span><span class="o">.</span><span class="n">flavors</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+<span class="n">print_flavors</span><span class="p">(</span><span class="n">flavors_list</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="list-floating-ips-api-v2">
+<h2>List floating IPs (API v2)<a class="headerlink" href="sdk-compute-apis.html#list-floating-ips-api-v2" title="Permalink to this headline">¶</a></h2>
+<p>The following program lists the floating IPs and their details by using
+the Compute API v2.</p>
+<ol class="arabic">
+<li><p class="first">Import the following modules:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">credentials</span> <span class="kn">import</span> <span class="n">get_nova_credentials_v2</span>
+<span class="kn">from</span> <span class="nn">novaclient.client</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">print_values_ip</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">print_values_ip</span></code> method is defined in <code class="docutils literal"><span class="pre">utils.py</span></code> and prints the
+floating_ip object details:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">print_values_ip</span><span class="p">(</span><span class="n">ip_list</span><span class="p">):</span>
+    <span class="n">ip_dict_lisl</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ip</span> <span class="ow">in</span> <span class="n">ip_list</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">35</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;fixed_ip : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ip</span><span class="o">.</span><span class="n">fixed_ip</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;id : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ip</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;instance_id : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ip</span><span class="o">.</span><span class="n">instance_id</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;ip : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ip</span><span class="o">.</span><span class="n">ip</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;pool : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">ip</span><span class="o">.</span><span class="n">pool</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Get OpenStack credentials. See <a class="reference internal" href="sdk-compute-apis.html#get-openstack-credentials"><span class="std std-ref">Get OpenStack credentials
+(API v2)</span></a>.</p>
+</li>
+<li><p class="first">Instantiate the <code class="docutils literal"><span class="pre">nova_client</span></code> client object by using the
+<code class="docutils literal"><span class="pre">credentials</span></code> dictionary object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">nova_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="o">**</span><span class="n">credentials</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">List floating IPs by calling <code class="docutils literal"><span class="pre">list()</span></code> on <code class="docutils literal"><span class="pre">nova_client.floating_ips</span></code>
+object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">ip_list</span> <span class="o">=</span> <span class="n">nova_client</span><span class="o">.</span><span class="n">floating_ips</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Print the floating IP object details by calling <code class="docutils literal"><span class="pre">print_values_ip</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">print_values_ip</span><span class="p">(</span><span class="n">ip_list</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="section" id="list-floating-ips-code-listing-example">
+<h3>List floating IPs code listing example<a class="headerlink" href="sdk-compute-apis.html#list-floating-ips-code-listing-example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">credentials</span> <span class="kn">import</span> <span class="n">get_nova_credentials_v2</span>
+<span class="kn">from</span> <span class="nn">novaclient.client</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">print_values_ip</span>
+
+<span class="n">credentials</span> <span class="o">=</span> <span class="n">get_nova_credentials_v2</span><span class="p">()</span>
+<span class="n">nova_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="o">**</span><span class="n">credentials</span><span class="p">)</span>
+<span class="n">ip_list</span> <span class="o">=</span> <span class="n">nova_client</span><span class="o">.</span><span class="n">floating_ips</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+<span class="n">print_values_ip</span><span class="p">(</span><span class="n">ip_list</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="list-hosts-api-v2">
+<h2>List hosts (API v2)<a class="headerlink" href="sdk-compute-apis.html#list-hosts-api-v2" title="Permalink to this headline">¶</a></h2>
+<p>The following program lists the hosts by using the Compute API v2.</p>
+<ol class="arabic">
+<li><p class="first">Import the following modules:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">credentials</span> <span class="kn">import</span> <span class="n">get_nova_credentials_v2</span>
+<span class="kn">from</span> <span class="nn">novaclient.client</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">print_hosts</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">print_hosts</span></code> method is defined in <code class="docutils literal"><span class="pre">utils.py</span></code> and prints the
+host object details:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">print_hosts</span><span class="p">(</span><span class="n">host_list</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">host</span> <span class="ow">in</span> <span class="n">host_list</span><span class="p">:</span>
+       <span class="k">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">35</span><span class="p">)</span>
+       <span class="k">print</span><span class="p">(</span><span class="s2">&quot;host_name : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">host</span><span class="o">.</span><span class="n">host_name</span><span class="p">)</span>
+       <span class="k">print</span><span class="p">(</span><span class="s2">&quot;service : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">host</span><span class="o">.</span><span class="n">service</span><span class="p">)</span>
+       <span class="k">print</span><span class="p">(</span><span class="s2">&quot;zone : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">host</span><span class="o">.</span><span class="n">zone</span><span class="p">)</span>
+       <span class="k">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="o">*</span><span class="mi">35</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Get OpenStack credentials. See <a class="reference internal" href="sdk-compute-apis.html#get-openstack-credentials"><span class="std std-ref">Get OpenStack credentials (API v2)</span></a>.</p>
+</li>
+<li><p class="first">Instantiate the <code class="docutils literal"><span class="pre">nova_client</span></code> client object by using the
+<code class="docutils literal"><span class="pre">credentials</span></code> dictionary object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">nova_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="o">**</span><span class="n">credentials</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">List hosts by calling <code class="docutils literal"><span class="pre">list()</span></code> on <code class="docutils literal"><span class="pre">nova_client.hosts</span></code> object:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">host_list</span> <span class="o">=</span> <span class="n">nova_client</span><span class="o">.</span><span class="n">hosts</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Print the host object details by calling <code class="docutils literal"><span class="pre">print_hosts(host_list)</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">print_hosts</span><span class="p">(</span><span class="n">host_list</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<div class="section" id="list-hosts-code-listing-example">
+<h3>List hosts code listing example<a class="headerlink" href="sdk-compute-apis.html#list-hosts-code-listing-example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">credentials</span> <span class="kn">import</span> <span class="n">get_nova_credentials_v2</span>
+<span class="kn">from</span> <span class="nn">novaclient.client</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="kn">import</span> <span class="n">print_hosts</span>
+
+<span class="n">credentials</span> <span class="o">=</span> <span class="n">get_nova_credentials_v2</span><span class="p">()</span>
+<span class="n">nova_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="o">**</span><span class="n">credentials</span><span class="p">)</span>
+<span class="n">host_list</span> <span class="o">=</span> <span class="n">nova_client</span><span class="o">.</span><span class="n">hosts</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+
+<span class="n">print_hosts</span><span class="p">(</span><span class="n">host_list</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="sdk-neutron-apis.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Networking"></i></a>
+          
+          
+            <a href="hot.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: HOT Guide"></i></a>
+          
+            <a id="logABugLink3" href="sdk-compute-apis.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:37</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="sdk-compute-apis.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="common/conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro-user.html">How can I use an OpenStack cloud?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dashboard.html">OpenStack dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli.html">OpenStack command-line clients</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="sdk.html">OpenStack Python SDK</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="sdk-overview.html">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sdk-install.html">Installing OpenStack SDK</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sdk-authenticate.html">Authenticate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sdk-create-legacy-novaclient.html">Create a Legacy Client Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sdk-manage-images.html">Manage images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sdk-assign-cors-headers.html">Assign CORS headers to requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sdk-schedule-objects-for-deletion.html">Schedule objects for deletion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sdk-configure-access-security-instances.html">Configure access and security for instances</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sdk-neutron-apis.html">Networking</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="sdk-compute-apis.html#">Compute</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hot.html">HOT Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cli-cheat-sheet.html">OpenStack command-line interface cheat sheet</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="common/app-support.html">Community support</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="common/glossary.html">Glossary</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "sdk-compute-apis" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/user-guide/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "Compute in End User Guide";
+    var fieldTags = "user-guide";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:37";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

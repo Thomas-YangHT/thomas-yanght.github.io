@@ -1,0 +1,686 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: neutron-debug command-line client</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>neutron-debug command-line client</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="neutron.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Networking service (neutron) command-line client"></i></a>
+    
+    
+    <a href="neutron-sanity-check.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: neutron-sanity-check command-line client"></i></a>
+    
+    <a id="logABugLink1" href="neutron-debug.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="neutron-debug.html#">neutron-debug command-line client</a><ul>
+<li><a class="reference internal" href="neutron-debug.html#neutron-debug-usage">neutron-debug usage</a><ul>
+<li><a class="reference internal" href="neutron-debug.html#subcommands">Subcommands</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="neutron-debug.html#neutron-debug-optional-arguments">neutron-debug optional arguments</a></li>
+<li><a class="reference internal" href="neutron-debug.html#neutron-debug-probe-create-command">neutron-debug probe-create command</a><ul>
+<li><a class="reference internal" href="neutron-debug.html#positional-arguments">Positional arguments</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="neutron-debug.html#neutron-debug-probe-list-command">neutron-debug probe-list command</a></li>
+<li><a class="reference internal" href="neutron-debug.html#neutron-debug-probe-clear-command">neutron-debug probe-clear command</a></li>
+<li><a class="reference internal" href="neutron-debug.html#neutron-debug-probe-delete-command">neutron-debug probe-delete command</a><ul>
+<li><a class="reference internal" href="neutron-debug.html#id2">Positional arguments</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="neutron-debug.html#neutron-debug-probe-exec-command">neutron-debug probe-exec command</a></li>
+<li><a class="reference internal" href="neutron-debug.html#neutron-debug-ping-all-command">neutron-debug ping-all command</a><ul>
+<li><a class="reference internal" href="neutron-debug.html#id3">Positional arguments</a></li>
+<li><a class="reference internal" href="neutron-debug.html#optional-arguments">Optional arguments</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="neutron-debug.html#neutron-debug-example">neutron-debug example</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="neutron-debug-command-line-client">
+<h1>neutron-debug command-line client<a class="headerlink" href="neutron-debug.html#neutron-debug-command-line-client" title="Permalink to this headline">¶</a></h1>
+<p>The <strong class="command">neutron-debug</strong> client is an extension to the <strong class="command">neutron</strong>
+command-line interface (CLI) for the OpenStack neutron-debug tool.</p>
+<p>This chapter documents <strong class="command">neutron-debug</strong> version <code class="docutils literal"><span class="pre">2.3.0</span></code>.</p>
+<p>For help on a specific <strong class="command">neutron-debug</strong> command, enter:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> neutron-debug <span class="nb">help</span> COMMAND
+</pre></div>
+</div>
+<div class="section" id="neutron-debug-usage">
+<span id="id1"></span><h2>neutron-debug usage<a class="headerlink" href="neutron-debug.html#neutron-debug-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: neutron-debug [--version] [-v] [-q] [-h] [-r NUM]</span>
+<span class="go">                     [--os-service-type &lt;os-service-type&gt;]</span>
+<span class="go">                     [--os-endpoint-type &lt;os-endpoint-type&gt;]</span>
+<span class="go">                     [--service-type &lt;service-type&gt;]</span>
+<span class="go">                     [--endpoint-type &lt;endpoint-type&gt;]</span>
+<span class="go">                     [--os-auth-strategy &lt;auth-strategy&gt;] [--os-cloud &lt;cloud&gt;]</span>
+<span class="go">                     [--os-auth-url &lt;auth-url&gt;]</span>
+<span class="go">                     [--os-tenant-name &lt;auth-tenant-name&gt; | --os-project-name &lt;auth-project-name&gt;]</span>
+<span class="go">                     [--os-tenant-id &lt;auth-tenant-id&gt; | --os-project-id &lt;auth-project-id&gt;]</span>
+<span class="go">                     [--os-username &lt;auth-username&gt;]</span>
+<span class="go">                     [--os-user-id &lt;auth-user-id&gt;]</span>
+<span class="go">                     [--os-user-domain-id &lt;auth-user-domain-id&gt;]</span>
+<span class="go">                     [--os-user-domain-name &lt;auth-user-domain-name&gt;]</span>
+<span class="go">                     [--os-project-domain-id &lt;auth-project-domain-id&gt;]</span>
+<span class="go">                     [--os-project-domain-name &lt;auth-project-domain-name&gt;]</span>
+<span class="go">                     [--os-cert &lt;certificate&gt;] [--os-cacert &lt;ca-certificate&gt;]</span>
+<span class="go">                     [--os-key &lt;key&gt;] [--os-password &lt;auth-password&gt;]</span>
+<span class="go">                     [--os-region-name &lt;auth-region-name&gt;]</span>
+<span class="go">                     [--os-token &lt;token&gt;] [--http-timeout &lt;seconds&gt;]</span>
+<span class="go">                     [--os-url &lt;url&gt;] [--insecure] [--config-file CONFIG_FILE]</span>
+<span class="go">                     &lt;subcommand&gt; ...</span>
+</pre></div>
+</div>
+<div class="section" id="subcommands">
+<h3>Subcommands<a class="headerlink" href="neutron-debug.html#subcommands" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">probe-create</span></code></dt>
+<dd>Create probe port - create port and interface within a network namespace.</dd>
+<dt><code class="docutils literal"><span class="pre">probe-list</span></code></dt>
+<dd>List all probes.</dd>
+<dt><code class="docutils literal"><span class="pre">probe-clear</span></code></dt>
+<dd>Clear all probes.</dd>
+<dt><code class="docutils literal"><span class="pre">probe-delete</span></code></dt>
+<dd>Delete probe - delete port then delete the namespace.</dd>
+<dt><code class="docutils literal"><span class="pre">probe-exec</span></code></dt>
+<dd>Execute commands in the namespace of the probe.</dd>
+<dt><code class="docutils literal"><span class="pre">ping-all</span></code></dt>
+<dd><code class="docutils literal"><span class="pre">ping-all</span></code> is an all-in-one command to ping all fixed IPs in a specified
+network.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="neutron-debug-optional-arguments">
+<span id="neutron-debug-optional"></span><h2>neutron-debug optional arguments<a class="headerlink" href="neutron-debug.html#neutron-debug-optional-arguments" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--version</span></code></dt>
+<dd>Show program's version number and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-v,</span> <span class="pre">--verbose,</span> <span class="pre">--debug</span></code></dt>
+<dd>Increase verbosity of output and show tracebacks on
+errors. You can repeat this option.</dd>
+<dt><code class="docutils literal"><span class="pre">-q,</span> <span class="pre">--quiet</span></code></dt>
+<dd>Suppress output except warnings and errors.</dd>
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>Show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-r</span> <span class="pre">NUM,</span> <span class="pre">--retries</span> <span class="pre">NUM</span></code></dt>
+<dd>How many times the request to the Neutron server
+should be retried if it fails.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-service-type</span> <span class="pre">&lt;os-service-type&gt;</span></code></dt>
+<dd>Defaults to env[OS_NETWORK_SERVICE_TYPE] or network.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-endpoint-type</span> <span class="pre">&lt;os-endpoint-type&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_ENDPOINT_TYPE]</span></code> or public.</dd>
+<dt><code class="docutils literal"><span class="pre">--service-type</span> <span class="pre">&lt;service-type&gt;</span></code></dt>
+<dd>DEPRECATED! Use --os-service-type.</dd>
+<dt><code class="docutils literal"><span class="pre">--endpoint-type</span> <span class="pre">&lt;endpoint-type&gt;</span></code></dt>
+<dd>DEPRECATED! Use --os-endpoint-type.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-strategy</span> <span class="pre">&lt;auth-strategy&gt;</span></code></dt>
+<dd>DEPRECATED! Only keystone is supported.</dd>
+<dt><code class="docutils literal"><span class="pre">os-cloud</span> <span class="pre">&lt;cloud&gt;</span></code></dt>
+<dd>Defaults to env[OS_CLOUD].</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-url</span> <span class="pre">&lt;auth-url&gt;</span></code></dt>
+<dd>Authentication URL, defaults to env[OS_AUTH_URL].</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-name</span> <span class="pre">&lt;auth-tenant-name&gt;</span></code></dt>
+<dd>Authentication tenant name, defaults to
+env[OS_TENANT_NAME].</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-name</span> <span class="pre">&lt;auth-project-name&gt;</span></code></dt>
+<dd>Another way to specify tenant name. This option is
+mutually exclusive with --os-tenant-name. Defaults to
+env[OS_PROJECT_NAME].</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-id</span> <span class="pre">&lt;auth-tenant-id&gt;</span></code></dt>
+<dd>Authentication tenant ID, defaults to
+env[OS_TENANT_ID].</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-id</span> <span class="pre">&lt;auth-project-id&gt;</span></code></dt>
+<dd>Another way to specify tenant ID. This option is
+mutually exclusive with --os-tenant-id. Defaults to
+env[OS_PROJECT_ID].</dd>
+<dt><code class="docutils literal"><span class="pre">--os-username</span> <span class="pre">&lt;auth-username&gt;</span></code></dt>
+<dd>Authentication username, defaults to env[OS_USERNAME].</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-id</span> <span class="pre">&lt;auth-user-id&gt;</span></code></dt>
+<dd>Authentication user ID (Env: OS_USER_ID)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-id</span> <span class="pre">&lt;auth-user-domain-id&gt;</span></code></dt>
+<dd>OpenStack user domain ID. Defaults to
+env[OS_USER_DOMAIN_ID].</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-name</span> <span class="pre">&lt;auth-user-domain-name&gt;</span></code></dt>
+<dd>OpenStack user domain name. Defaults to
+env[OS_USER_DOMAIN_NAME].</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-id</span> <span class="pre">&lt;auth-project-domain-id&gt;</span></code></dt>
+<dd>Defaults to env[OS_PROJECT_DOMAIN_ID].</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-name</span> <span class="pre">&lt;auth-project-domain-name&gt;</span></code></dt>
+<dd>Defaults to env[OS_PROJECT_DOMAIN_NAME].</dd>
+<dt><code class="docutils literal"><span class="pre">--os-cert</span> <span class="pre">&lt;certificate&gt;</span></code></dt>
+<dd>Path of certificate file to use in SSL connection.
+This file can optionally be prepended with the private
+key. Defaults to env[OS_CERT].</dd>
+<dt><code class="docutils literal"><span class="pre">--os-cacert</span> <span class="pre">&lt;ca-certificate&gt;</span></code></dt>
+<dd>Specify a CA bundle file to use in verifying a TLS
+(https) server certificate. Defaults to
+env[OS_CACERT].</dd>
+<dt><code class="docutils literal"><span class="pre">--os-key</span> <span class="pre">&lt;key&gt;</span></code></dt>
+<dd>Path of client key to use in SSL connection. This
+option is not necessary if your key is prepended to
+your certificate file. Defaults to env[OS_KEY].</dd>
+<dt><code class="docutils literal"><span class="pre">--os-password</span> <span class="pre">&lt;auth-password&gt;</span></code></dt>
+<dd>Authentication password, defaults to env[OS_PASSWORD].</dd>
+<dt><code class="docutils literal"><span class="pre">--os-region-name</span> <span class="pre">&lt;auth-region-name&gt;</span></code></dt>
+<dd>Authentication region name, defaults to
+env[OS_REGION_NAME].</dd>
+<dt><code class="docutils literal"><span class="pre">--os-token</span> <span class="pre">&lt;token&gt;</span></code></dt>
+<dd>Authentication token, defaults to env[OS_TOKEN].</dd>
+<dt><code class="docutils literal"><span class="pre">--http-timeout</span> <span class="pre">&lt;seconds&gt;</span></code></dt>
+<dd>Timeout in seconds to wait for an HTTP response.
+Defaults to env[OS_NETWORK_TIMEOUT] or None if not
+specified.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-url</span> <span class="pre">&lt;url&gt;</span></code></dt>
+<dd>Defaults to env[OS_URL]</dd>
+<dt><code class="docutils literal"><span class="pre">--insecure</span></code></dt>
+<dd>Explicitly allow neutronclient to perform &quot;insecure&quot;
+SSL (https) requests. The server's certificate will
+not be verified against any certificate authorities.
+This option should be used with caution.</dd>
+<dt><code class="docutils literal"><span class="pre">--config-file</span> <span class="pre">CONFIG_FILE</span></code></dt>
+<dd>Config file for interface driver (You may also use l3_agent.ini)</dd>
+</dl>
+</div>
+<div class="section" id="neutron-debug-probe-create-command">
+<h2>neutron-debug probe-create command<a class="headerlink" href="neutron-debug.html#neutron-debug-probe-create-command" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: neutron-debug probe-create NET</span>
+</pre></div>
+</div>
+<p>Create probe port - create port and interface,
+then place it into the created network namespace.</p>
+<div class="section" id="positional-arguments">
+<h3>Positional arguments<a class="headerlink" href="neutron-debug.html#positional-arguments" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">NET</span> <span class="pre">ID</span></code></dt>
+<dd>ID of the network in which the probe will be created.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="neutron-debug-probe-list-command">
+<h2>neutron-debug probe-list command<a class="headerlink" href="neutron-debug.html#neutron-debug-probe-list-command" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: neutron-debug probe-list</span>
+</pre></div>
+</div>
+<p>List probes.</p>
+</div>
+<div class="section" id="neutron-debug-probe-clear-command">
+<h2>neutron-debug probe-clear command<a class="headerlink" href="neutron-debug.html#neutron-debug-probe-clear-command" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: neutron-debug probe-clear</span>
+</pre></div>
+</div>
+<p>Clear all probes.</p>
+</div>
+<div class="section" id="neutron-debug-probe-delete-command">
+<h2>neutron-debug probe-delete command<a class="headerlink" href="neutron-debug.html#neutron-debug-probe-delete-command" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: neutron-debug probe-delete &lt;port-id&gt;</span>
+</pre></div>
+</div>
+<p>Remove a probe.</p>
+<div class="section" id="id2">
+<h3>Positional arguments<a class="headerlink" href="neutron-debug.html#id2" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;port-id&gt;</span></code></dt>
+<dd>ID of the probe to delete.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="neutron-debug-probe-exec-command">
+<h2>neutron-debug probe-exec command<a class="headerlink" href="neutron-debug.html#neutron-debug-probe-exec-command" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: neutron-debug probe-exec &lt;port-id&gt; &lt;command&gt;</span>
+</pre></div>
+</div>
+<p>Execute commands in the namespace of the probe</p>
+</div>
+<div class="section" id="neutron-debug-ping-all-command">
+<h2>neutron-debug ping-all command<a class="headerlink" href="neutron-debug.html#neutron-debug-ping-all-command" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: neutron-debug ping-all &lt;port-id&gt; --timeout &lt;number&gt;</span>
+</pre></div>
+</div>
+<p>All-in-one command to ping all fixed IPs in a specified network.
+A probe creation is not needed for this command.
+A new probe is created automatically.
+It will, however, need to be deleted manually when it is no longer needed.
+When there are multiple networks, the newly created probe will be attached
+to a random network and thus the ping will take place from within that
+random network.</p>
+<div class="section" id="id3">
+<h3>Positional arguments<a class="headerlink" href="neutron-debug.html#id3" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;port-id&gt;</span></code></dt>
+<dd>ID of the port to use.</dd>
+</dl>
+</div>
+<div class="section" id="optional-arguments">
+<h3>Optional arguments<a class="headerlink" href="neutron-debug.html#optional-arguments" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--timeout</span> <span class="pre">&lt;timeout</span> <span class="pre">in</span> <span class="pre">seconds&gt;</span></code></dt>
+<dd>Optional ping timeout.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="neutron-debug-example">
+<h2>neutron-debug example<a class="headerlink" href="neutron-debug.html#neutron-debug-example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: neutron-debug create-probe &lt;NET_ID&gt;</span>
+</pre></div>
+</div>
+<p>Create a probe namespace within the network identified by <code class="docutils literal"><span class="pre">NET_ID</span></code>.
+The namespace will have the name of qprobe-&lt;UUID of the probe port&gt;</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For the following examples to function, the security group rules
+may need to be modified to allow the SSH (TCP port 22) or ping
+(ICMP) traffic into network.</p>
+</div>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: neutron-debug probe-exec &lt;probe ID&gt; &quot;ssh &lt;IP of instance&gt;&quot;</span>
+</pre></div>
+</div>
+<p>SSH to an instance within the network.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: neutron-debug ping-all &lt;network ID&gt;</span>
+</pre></div>
+</div>
+<p>Ping all instances on this network to verify they are responding.</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: neutron-debug probe-exec &lt;probe_ID&gt; dhcping &lt;VM_MAC address&gt; -s &lt;IP of DHCP server&gt;</span>
+</pre></div>
+</div>
+<p>Ping the DHCP server for this network using dhcping to verify it is working.</p>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="neutron.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Networking service (neutron) command-line client"></i></a>
+          
+          
+            <a href="neutron-sanity-check.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: neutron-sanity-check command-line client"></i></a>
+          
+            <a id="logABugLink3" href="neutron-debug.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="neutron-debug.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="murano.html">Application Catalog service (murano) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="freezer.html">Backup, Restore, and Disaster Recovery service (freezer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ironic.html">Bare Metal service (ironic) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cinder.html">Block Storage service (cinder) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="senlin.html">Clustering service (senlin) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute service (nova) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnum.html">Container Infrastructure Management service (magnum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database service (trove) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="designate.html">DNS service (designate) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image service (glance) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watcher.html">Infrastructure Optimization service (watcher) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barbican.html">Key Manager service (barbican) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monasca.html">Monitoring (monasca) command-line client</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="networking.html">Networking service (neutron) command-line clients</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="neutron.html">Networking service (neutron) command-line client</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="neutron-debug.html#">neutron-debug command-line client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neutron-sanity-check.html">neutron-sanity-check command-line client</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tacker.html">NFV Orchestration service (tacker) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="swift.html">Object Storage service (swift) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heat.html">Orchestration service (heat) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloudkitty.html">Rating service (cloudkitty) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vitrage.html">RCA (Root Cause Analysis) service (vitrage) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manila.html">Shared File Systems service (manila) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solum.html">Software Development Lifecycle Automation service (solum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aodh.html">Telemetry Alarming service (aodh) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ceilometer.html">Telemetry Data Collection service (ceilometer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gnocchi.html">A time series storage and resources index service (gnocchi) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mistral.html">Workflow service (mistral) command-line client</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "neutron-debug" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/cli-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "neutron-debug command-line client in Command-Line Interface Reference";
+    var fieldTags = "cli-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:39";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

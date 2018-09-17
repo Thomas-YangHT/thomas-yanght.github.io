@@ -1,0 +1,1782 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: Clustering service (senlin) command-line client</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>Clustering service (senlin) command-line client</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="cinder.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Block Storage service (cinder) command-line client"></i></a>
+    
+    
+    <a href="compute.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Compute service (nova) command-line clients"></i></a>
+    
+    <a id="logABugLink1" href="senlin.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="senlin.html#">Clustering service (senlin) command-line client</a><ul>
+<li><a class="reference internal" href="senlin.html#senlin-usage">senlin usage</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-optional-arguments">senlin optional arguments</a><ul>
+<li><a class="reference internal" href="senlin.html#senlin-action-list">senlin action-list</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-action-show">senlin action-show</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-build-info">senlin build-info</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-check">senlin cluster-check</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-collect">senlin cluster-collect</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-create">senlin cluster-create</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-delete">senlin cluster-delete</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-list">senlin cluster-list</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-node-add">senlin cluster-node-add</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-node-del">senlin cluster-node-del</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-node-list">senlin cluster-node-list</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-node-replace">senlin cluster-node-replace</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-policy-attach">senlin cluster-policy-attach</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-policy-detach">senlin cluster-policy-detach</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-policy-list">senlin cluster-policy-list</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-policy-show">senlin cluster-policy-show</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-policy-update">senlin cluster-policy-update</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-recover">senlin cluster-recover</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-resize">senlin cluster-resize</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-run">senlin cluster-run</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-scale-in">senlin cluster-scale-in</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-scale-out">senlin cluster-scale-out</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-show">senlin cluster-show</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-cluster-update">senlin cluster-update</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-event-list">senlin event-list</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-event-show">senlin event-show</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-node-check">senlin node-check</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-node-create">senlin node-create</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-node-delete">senlin node-delete</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-node-list">senlin node-list</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-node-recover">senlin node-recover</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-node-show">senlin node-show</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-node-update">senlin node-update</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-policy-create">senlin policy-create</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-policy-delete">senlin policy-delete</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-policy-list">senlin policy-list</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-policy-show">senlin policy-show</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-policy-type-list">senlin policy-type-list</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-policy-type-show">senlin policy-type-show</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-policy-update">senlin policy-update</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-policy-validate">senlin policy-validate</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-profile-create">senlin profile-create</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-profile-delete">senlin profile-delete</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-profile-list">senlin profile-list</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-profile-show">senlin profile-show</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-profile-type-list">senlin profile-type-list</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-profile-type-show">senlin profile-type-show</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-profile-update">senlin profile-update</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-profile-validate">senlin profile-validate</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-receiver-create">senlin receiver-create</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-receiver-delete">senlin receiver-delete</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-receiver-list">senlin receiver-list</a></li>
+<li><a class="reference internal" href="senlin.html#senlin-receiver-show">senlin receiver-show</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="clustering-service-senlin-command-line-client">
+<h1>Clustering service (senlin) command-line client<a class="headerlink" href="senlin.html#clustering-service-senlin-command-line-client" title="Permalink to this headline">¶</a></h1>
+<p>The senlin client is the command-line interface (CLI) for
+the Clustering service (senlin) API and its extensions.</p>
+<p>This chapter documents <strong class="command">senlin</strong> version <code class="docutils literal"><span class="pre">1.2.0</span></code>.</p>
+<p>For help on a specific <strong class="command">senlin</strong> command, enter:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> senlin <span class="nb">help</span> COMMAND
+</pre></div>
+</div>
+<div class="section" id="senlin-usage">
+<span id="senlin-command-usage"></span><h2>senlin usage<a class="headerlink" href="senlin.html#senlin-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin [--version] [-d] [-v] [--api-timeout API_TIMEOUT]</span>
+<span class="go">              [--senlin-api-version SENLIN_API_VERSION]</span>
+<span class="go">              [--os-auth-plugin AUTH_PLUGIN] [--os-auth-url AUTH_URL]</span>
+<span class="go">              [--os-project-id PROJECT_ID] [--os-project-name PROJECT_NAME]</span>
+<span class="go">              [--os-tenant-id TENANT_ID] [--os-tenant-name TENANT_NAME]</span>
+<span class="go">              [--os-domain-id DOMAIN_ID] [--os-domain-name DOMAIN_NAME]</span>
+<span class="go">              [--os-project-domain-id PROJECT_DOMAIN_ID]</span>
+<span class="go">              [--os-project-domain-name PROJECT_DOMAIN_NAME]</span>
+<span class="go">              [--os-user-domain-id USER_DOMAIN_ID]</span>
+<span class="go">              [--os-user-domain-name USER_DOMAIN_NAME]</span>
+<span class="go">              [--os-username USERNAME] [--os-user-id USER_ID]</span>
+<span class="go">              [--os-password PASSWORD] [--os-trust-id TRUST_ID]</span>
+<span class="go">              [--os-cacert CA_BUNDLE_FILE | --verify | --insecure]</span>
+<span class="go">              [--os-token TOKEN] [--os-access-info ACCESS_INFO]</span>
+<span class="go">              [--os-profile HMAC_KEY]</span>
+<span class="go">              &lt;subcommand&gt; ...</span>
+</pre></div>
+</div>
+<p><strong>Subcommands:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">action-list</span></code></dt>
+<dd>List actions.</dd>
+<dt><code class="docutils literal"><span class="pre">action-show</span></code></dt>
+<dd>Show detailed info about the specified action.</dd>
+<dt><code class="docutils literal"><span class="pre">build-info</span></code></dt>
+<dd>Retrieve build information.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-check</span></code></dt>
+<dd>Check the cluster(s).</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-collect</span></code></dt>
+<dd>Collect attributes across a cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-create</span></code></dt>
+<dd>Create the cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-delete</span></code></dt>
+<dd>Delete the cluster(s).</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-list</span></code></dt>
+<dd>List the user's clusters.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-node-add</span></code></dt>
+<dd>Add specified nodes to cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-node-del</span></code></dt>
+<dd>Delete specified nodes from cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-node-list</span></code></dt>
+<dd>List nodes from cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-node-replace</span></code></dt>
+<dd>Replace the nodes in cluster with specified nodes.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-policy-attach</span></code></dt>
+<dd>Attach policy to cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-policy-detach</span></code></dt>
+<dd>Detach policy from cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-policy-list</span></code></dt>
+<dd>List policies from cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-policy-show</span></code></dt>
+<dd>Show a specific policy that is bound to the specified
+cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-policy-update</span></code></dt>
+<dd>Update a policy's properties on a cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-recover</span></code></dt>
+<dd>Recover the cluster(s).</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-resize</span></code></dt>
+<dd>Resize a cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-run</span></code></dt>
+<dd>Run shell scripts on all nodes of a cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-scale-in</span></code></dt>
+<dd>Scale in a cluster by the specified number of nodes.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-scale-out</span></code></dt>
+<dd>Scale out a cluster by the specified number of nodes.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-show</span></code></dt>
+<dd>Show details of the cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">cluster-update</span></code></dt>
+<dd>Update the cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">event-list</span></code></dt>
+<dd>List events.</dd>
+<dt><code class="docutils literal"><span class="pre">event-show</span></code></dt>
+<dd>Describe the event.</dd>
+<dt><code class="docutils literal"><span class="pre">node-check</span></code></dt>
+<dd>Check the node(s).</dd>
+<dt><code class="docutils literal"><span class="pre">node-create</span></code></dt>
+<dd>Create the node.</dd>
+<dt><code class="docutils literal"><span class="pre">node-delete</span></code></dt>
+<dd>Delete the node(s).</dd>
+<dt><code class="docutils literal"><span class="pre">node-list</span></code></dt>
+<dd>Show list of nodes.</dd>
+<dt><code class="docutils literal"><span class="pre">node-recover</span></code></dt>
+<dd>Recover the node(s).</dd>
+<dt><code class="docutils literal"><span class="pre">node-show</span></code></dt>
+<dd>Show detailed info about the specified node.</dd>
+<dt><code class="docutils literal"><span class="pre">node-update</span></code></dt>
+<dd>Update the node.</dd>
+<dt><code class="docutils literal"><span class="pre">policy-create</span></code></dt>
+<dd>Create a policy.</dd>
+<dt><code class="docutils literal"><span class="pre">policy-delete</span></code></dt>
+<dd>Delete policy(s).</dd>
+<dt><code class="docutils literal"><span class="pre">policy-list</span></code></dt>
+<dd>List policies that meet the criteria.</dd>
+<dt><code class="docutils literal"><span class="pre">policy-show</span></code></dt>
+<dd>Show the policy details.</dd>
+<dt><code class="docutils literal"><span class="pre">policy-type-list</span></code></dt>
+<dd>List the available policy types.</dd>
+<dt><code class="docutils literal"><span class="pre">policy-type-show</span></code></dt>
+<dd>Get the details about a policy type.</dd>
+<dt><code class="docutils literal"><span class="pre">policy-update</span></code></dt>
+<dd>Update a policy.</dd>
+<dt><code class="docutils literal"><span class="pre">policy-validate</span></code></dt>
+<dd>Validate a policy spec.</dd>
+<dt><code class="docutils literal"><span class="pre">profile-create</span></code></dt>
+<dd>Create a profile.</dd>
+<dt><code class="docutils literal"><span class="pre">profile-delete</span></code></dt>
+<dd>Delete profile(s).</dd>
+<dt><code class="docutils literal"><span class="pre">profile-list</span></code></dt>
+<dd>List profiles that meet the criteria.</dd>
+<dt><code class="docutils literal"><span class="pre">profile-show</span></code></dt>
+<dd>Show the profile details.</dd>
+<dt><code class="docutils literal"><span class="pre">profile-type-list</span></code></dt>
+<dd>List the available profile types.</dd>
+<dt><code class="docutils literal"><span class="pre">profile-type-show</span></code></dt>
+<dd>Get the details about a profile type.</dd>
+<dt><code class="docutils literal"><span class="pre">profile-update</span></code></dt>
+<dd>Update a profile.</dd>
+<dt><code class="docutils literal"><span class="pre">profile-validate</span></code></dt>
+<dd>Validate a profile.</dd>
+<dt><code class="docutils literal"><span class="pre">receiver-create</span></code></dt>
+<dd>Create a receiver.</dd>
+<dt><code class="docutils literal"><span class="pre">receiver-delete</span></code></dt>
+<dd>Delete receiver(s).</dd>
+<dt><code class="docutils literal"><span class="pre">receiver-list</span></code></dt>
+<dd>List receivers that meet the criteria.</dd>
+<dt><code class="docutils literal"><span class="pre">receiver-show</span></code></dt>
+<dd>Show the receiver details.</dd>
+<dt><code class="docutils literal"><span class="pre">bash-completion</span></code></dt>
+<dd>Prints all of the commands and options to stdout.</dd>
+<dt><code class="docutils literal"><span class="pre">help</span></code></dt>
+<dd>Display help about this program or one of its
+subcommands.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-optional-arguments">
+<span id="senlin-command-options"></span><h2>senlin optional arguments<a class="headerlink" href="senlin.html#senlin-optional-arguments" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--version</span></code></dt>
+<dd>Shows the client version and exits.</dd>
+<dt><code class="docutils literal"><span class="pre">-d,</span> <span class="pre">--debug</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[SENLINCLIENT_DEBUG]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></dt>
+<dd>Print more verbose output.</dd>
+<dt><code class="docutils literal"><span class="pre">--api-timeout</span> <span class="pre">API_TIMEOUT</span></code></dt>
+<dd>Number of seconds to wait for an API response,
+defaults to system socket timeout</dd>
+<dt><code class="docutils literal"><span class="pre">--senlin-api-version</span> <span class="pre">SENLIN_API_VERSION</span></code></dt>
+<dd>Version number for Senlin API to use, Default to &quot;1&quot;.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-plugin</span> <span class="pre">AUTH_PLUGIN</span></code></dt>
+<dd>Authentication plugin, default to <code class="docutils literal"><span class="pre">env[OS_AUTH_PLUGIN]</span></code></dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-url</span> <span class="pre">AUTH_URL</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_AUTH_URL]</span></code></dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-id</span> <span class="pre">PROJECT_ID</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-name</span> <span class="pre">PROJECT_NAME</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-id</span> <span class="pre">TENANT_ID</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TENANT_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-name</span> <span class="pre">TENANT_NAME</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TENANT_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-domain-id</span> <span class="pre">DOMAIN_ID</span></code></dt>
+<dd>Domain ID for scope of authorization, defaults to
+<code class="docutils literal"><span class="pre">env[OS_DOMAIN_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-domain-name</span> <span class="pre">DOMAIN_NAME</span></code></dt>
+<dd>Domain name for scope of authorization, defaults to
+<code class="docutils literal"><span class="pre">env[OS_DOMAIN_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-id</span> <span class="pre">PROJECT_DOMAIN_ID</span></code></dt>
+<dd>Project domain ID for scope of authorization, defaults
+to <code class="docutils literal"><span class="pre">env[OS_PROJECT_DOMAIN_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-name</span> <span class="pre">PROJECT_DOMAIN_NAME</span></code></dt>
+<dd>Project domain name for scope of authorization,
+defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_DOMAIN_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-id</span> <span class="pre">USER_DOMAIN_ID</span></code></dt>
+<dd>User domain ID for scope of authorization, defaults to
+<code class="docutils literal"><span class="pre">env[OS_USER_DOMAIN_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-name</span> <span class="pre">USER_DOMAIN_NAME</span></code></dt>
+<dd>User domain name for scope of authorization, defaults
+to <code class="docutils literal"><span class="pre">env[OS_USER_DOMAIN_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-username</span> <span class="pre">USERNAME</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USERNAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-id</span> <span class="pre">USER_ID</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USER_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-password</span> <span class="pre">PASSWORD</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PASSWORD]</span></code></dd>
+<dt><code class="docutils literal"><span class="pre">--os-trust-id</span> <span class="pre">TRUST_ID</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TRUST_ID]</span></code></dd>
+<dt><code class="docutils literal"><span class="pre">--os-cacert</span> <span class="pre">CA_BUNDLE_FILE</span></code></dt>
+<dd>Path of CA TLS certificate(s) used to verify the
+remote server's certificate. Without this option
+senlin looks for the default system CA certificates.</dd>
+<dt><code class="docutils literal"><span class="pre">--verify</span></code></dt>
+<dd>Verify server certificate (default)</dd>
+<dt><code class="docutils literal"><span class="pre">--insecure</span></code></dt>
+<dd>Explicitly allow senlinclient to perform &quot;insecure
+SSL&quot; (HTTPS) requests. The server's certificate will
+not be verified against any certificate authorities.
+This option should be used with caution.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-token</span> <span class="pre">TOKEN</span></code></dt>
+<dd>A string token to bootstrap the Keystone database,
+defaults to <code class="docutils literal"><span class="pre">env[OS_TOKEN]</span></code></dd>
+<dt><code class="docutils literal"><span class="pre">--os-access-info</span> <span class="pre">ACCESS_INFO</span></code></dt>
+<dd>Access info, defaults to <code class="docutils literal"><span class="pre">env[OS_ACCESS_INFO]</span></code></dd>
+<dt><code class="docutils literal"><span class="pre">--os-profile</span> <span class="pre">HMAC_KEY</span></code></dt>
+<dd>HMAC key to use for encrypting context data for
+performance profiling of operation. This key should be
+the value of HMAC key configured in osprofiler
+middleware in senlin, it is specified in the paste
+deploy configuration (/etc/senlin/api-paste.ini).
+Without the key, profiling will not be triggered even
+if osprofiler is enabled on server side.</dd>
+</dl>
+<div class="section" id="senlin-action-list">
+<span id="id1"></span><h3>senlin action-list<a class="headerlink" href="senlin.html#senlin-action-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin action-list [-f &lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;] [-o &lt;KEY:DIR&gt;]</span>
+<span class="go">                          [-l &lt;LIMIT&gt;] [-m &lt;ID&gt;] [-g] [-F]</span>
+</pre></div>
+</div>
+<p>List actions.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;,</span> <span class="pre">--filters</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;</span></code></dt>
+<dd>Filter parameters to apply on returned actions. This
+can be specified multiple times, or once with
+parameters separated by a semicolon.</dd>
+<dt><code class="docutils literal"><span class="pre">-o</span> <span class="pre">&lt;KEY:DIR&gt;,</span> <span class="pre">--sort</span> <span class="pre">&lt;KEY:DIR&gt;</span></code></dt>
+<dd>Sorting option which is a string containing a list of
+keys separated by commas. Each key can be optionally
+appended by a sort direction (:asc or :desc)</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;LIMIT&gt;,</span> <span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></dt>
+<dd>Limit the number of actions returned.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;ID&gt;,</span> <span class="pre">--marker</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Only return actions that appear after the given node
+ID.</dd>
+<dt><code class="docutils literal"><span class="pre">-g,</span> <span class="pre">--global-project</span></code></dt>
+<dd>Whether actions from all projects should be listed.
+Default to False. Setting this to True may demand for
+an admin privilege.</dd>
+<dt><code class="docutils literal"><span class="pre">-F,</span> <span class="pre">--full-id</span></code></dt>
+<dd>Print full IDs in list.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-action-show">
+<span id="id2"></span><h3>senlin action-show<a class="headerlink" href="senlin.html#senlin-action-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin action-show &lt;ACTION&gt;</span>
+</pre></div>
+</div>
+<p>Show detailed info about the specified action.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;ACTION&gt;</span></code></dt>
+<dd>Name or ID of the action to show the details for.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-build-info">
+<span id="id3"></span><h3>senlin build-info<a class="headerlink" href="senlin.html#senlin-build-info" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin build-info</span>
+</pre></div>
+</div>
+<p>Retrieve build information.</p>
+</div>
+<div class="section" id="senlin-cluster-check">
+<span id="id4"></span><h3>senlin cluster-check<a class="headerlink" href="senlin.html#senlin-cluster-check" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-check &lt;CLUSTER&gt; [&lt;CLUSTER&gt; ...]</span>
+</pre></div>
+</div>
+<p>Check the cluster(s).</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CLUSTER&gt;</span></code></dt>
+<dd>ID or name of cluster(s) to operate on.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-collect">
+<span id="id5"></span><h3>senlin cluster-collect<a class="headerlink" href="senlin.html#senlin-cluster-collect" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-collect -p &lt;PATH&gt; [-L] [-F] &lt;CLUSTER&gt;</span>
+</pre></div>
+</div>
+<p>Collect attributes across a cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CLUSTER&gt;</span></code></dt>
+<dd>Name or ID of cluster(s) to operate on.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">&lt;PATH&gt;,</span> <span class="pre">--path</span> <span class="pre">&lt;PATH&gt;</span></code></dt>
+<dd>A Json path string specifying the attribute to
+collect.</dd>
+<dt><code class="docutils literal"><span class="pre">-L,</span> <span class="pre">--list</span></code></dt>
+<dd>Print a full list that contains both node ids and
+attribute values instead of values only. Default is
+False.</dd>
+<dt><code class="docutils literal"><span class="pre">-F,</span> <span class="pre">--full-id</span></code></dt>
+<dd>Print full IDs in list.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-create">
+<span id="id6"></span><h3>senlin cluster-create<a class="headerlink" href="senlin.html#senlin-cluster-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-create -p &lt;PROFILE&gt; [-n &lt;MIN-SIZE&gt;] [-m &lt;MAX-SIZE&gt;]</span>
+<span class="go">                             [-c &lt;DESIRED-CAPACITY&gt;] [-t &lt;TIMEOUT&gt;]</span>
+<span class="go">                             [-M &lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;]</span>
+<span class="go">                             &lt;CLUSTER_NAME&gt;</span>
+</pre></div>
+</div>
+<p>Create the cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CLUSTER_NAME&gt;</span></code></dt>
+<dd>Name of the cluster to create.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">&lt;PROFILE&gt;,</span> <span class="pre">--profile</span> <span class="pre">&lt;PROFILE&gt;</span></code></dt>
+<dd>Profile Id or name used for this cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">&lt;MIN-SIZE&gt;,</span> <span class="pre">--min-size</span> <span class="pre">&lt;MIN-SIZE&gt;</span></code></dt>
+<dd>Min size of the cluster. Default to 0.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;MAX-SIZE&gt;,</span> <span class="pre">--max-size</span> <span class="pre">&lt;MAX-SIZE&gt;</span></code></dt>
+<dd>Max size of the cluster. Default to -1, means
+unlimited.</dd>
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">&lt;DESIRED-CAPACITY&gt;,</span> <span class="pre">--desired-capacity</span> <span class="pre">&lt;DESIRED-CAPACITY&gt;</span></code></dt>
+<dd>Desired capacity of the cluster. Default to min_size
+if min_size is specified else 0.</dd>
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">&lt;TIMEOUT&gt;,</span> <span class="pre">--timeout</span> <span class="pre">&lt;TIMEOUT&gt;</span></code></dt>
+<dd>Cluster creation timeout in seconds.</dd>
+<dt><code class="docutils literal"><span class="pre">-M</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;,</span> <span class="pre">--metadata</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;</span></code></dt>
+<dd>Metadata values to be attached to the cluster. This
+can
+be
+specified
+multiple
+times,
+or
+once
+with
+key-value
+pairs
+separated
+by
+a
+semicolon.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-delete">
+<span id="id7"></span><h3>senlin cluster-delete<a class="headerlink" href="senlin.html#senlin-cluster-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-delete &lt;CLUSTER&gt; [&lt;CLUSTER&gt; ...]</span>
+</pre></div>
+</div>
+<p>Delete the cluster(s).</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CLUSTER&gt;</span></code></dt>
+<dd>Name or ID of cluster(s) to delete.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-list">
+<span id="id8"></span><h3>senlin cluster-list<a class="headerlink" href="senlin.html#senlin-cluster-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-list [-f &lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;] [-o &lt;KEY:DIR&gt;]</span>
+<span class="go">                           [-l &lt;LIMIT&gt;] [-m &lt;ID&gt;] [-g] [-F]</span>
+</pre></div>
+</div>
+<p>List the user's clusters.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;,</span> <span class="pre">--filters</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;</span></code></dt>
+<dd>Filter parameters to apply on returned clusters. This
+can be specified multiple times, or once with
+parameters separated by a semicolon.</dd>
+<dt><code class="docutils literal"><span class="pre">-o</span> <span class="pre">&lt;KEY:DIR&gt;,</span> <span class="pre">--sort</span> <span class="pre">&lt;KEY:DIR&gt;</span></code></dt>
+<dd>Sorting option which is a string containing a list of
+keys separated by commas. Each key can be optionally
+appended by a sort direction (:asc or :desc)</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;LIMIT&gt;,</span> <span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></dt>
+<dd>Limit the number of clusters returned.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;ID&gt;,</span> <span class="pre">--marker</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Only return clusters that appear after the given
+cluster ID.</dd>
+<dt><code class="docutils literal"><span class="pre">-g,</span> <span class="pre">--global-project</span></code></dt>
+<dd>Indicate that the cluster list should include clusters
+from all projects. This option is subject to access
+policy checking. Default is False.</dd>
+<dt><code class="docutils literal"><span class="pre">-F,</span> <span class="pre">--full-id</span></code></dt>
+<dd>Print full IDs in list.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-node-add">
+<span id="id9"></span><h3>senlin cluster-node-add<a class="headerlink" href="senlin.html#senlin-cluster-node-add" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-node-add -n &lt;NODES&gt; &lt;CLUSTER&gt;</span>
+</pre></div>
+</div>
+<p>Add specified nodes to cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CLUSTER&gt;</span></code></dt>
+<dd>Name or ID of cluster to operate on.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">&lt;NODES&gt;,</span> <span class="pre">--nodes</span> <span class="pre">&lt;NODES&gt;</span></code></dt>
+<dd>ID of nodes to be added; multiple nodes can be
+separated with &quot;,&quot;</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-node-del">
+<span id="id10"></span><h3>senlin cluster-node-del<a class="headerlink" href="senlin.html#senlin-cluster-node-del" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-node-del -n &lt;NODES&gt; &lt;CLUSTER&gt;</span>
+</pre></div>
+</div>
+<p>Delete specified nodes from cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CLUSTER&gt;</span></code></dt>
+<dd>Name or ID of cluster to operate on.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">&lt;NODES&gt;,</span> <span class="pre">--nodes</span> <span class="pre">&lt;NODES&gt;</span></code></dt>
+<dd>ID of nodes to be deleted; multiple nodes can be
+separated with &quot;,&quot;.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-node-list">
+<span id="id11"></span><h3>senlin cluster-node-list<a class="headerlink" href="senlin.html#senlin-cluster-node-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-node-list [-f &lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;]</span>
+<span class="go">                                [-l &lt;LIMIT&gt;] [-m &lt;ID&gt;] [-F]</span>
+<span class="go">                                &lt;CLUSTER&gt;</span>
+</pre></div>
+</div>
+<p>List nodes from cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CLUSTER&gt;</span></code></dt>
+<dd>Name or ID of cluster to nodes from.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;,</span> <span class="pre">--filters</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;</span></code></dt>
+<dd>Filter parameters to apply on returned nodes. This can
+be specified multiple times, or once with parameters
+separated by a semicolon.</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;LIMIT&gt;,</span> <span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></dt>
+<dd>Limit the number of nodes returned.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;ID&gt;,</span> <span class="pre">--marker</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Only return nodes that appear after the given node ID.</dd>
+<dt><code class="docutils literal"><span class="pre">-F,</span> <span class="pre">--full-id</span></code></dt>
+<dd>Print full IDs in list.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-node-replace">
+<span id="id12"></span><h3>senlin cluster-node-replace<a class="headerlink" href="senlin.html#senlin-cluster-node-replace" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-node-replace -n &lt;OLD_NODE1=NEW_NODE1&gt; &lt;CLUSTER&gt;</span>
+</pre></div>
+</div>
+<p>Replace the nodes in cluster with specified nodes.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CLUSTER&gt;</span></code></dt>
+<dd>Name or ID of cluster to operate on.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">&lt;OLD_NODE1=NEW_NODE1&gt;,</span> <span class="pre">--nodes</span> <span class="pre">&lt;OLD_NODE1=NEW_NODE1&gt;</span></code></dt>
+<dd>OLD_NODE is the name or ID of a node to be replaced,
+NEW_NODE is the name or ID of a node as replacement.
+This can be specified multiple times, or once with
+node-pairs separated by a comma ','.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-policy-attach">
+<span id="id13"></span><h3>senlin cluster-policy-attach<a class="headerlink" href="senlin.html#senlin-cluster-policy-attach" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-policy-attach -p &lt;POLICY&gt; [-e &lt;BOOLEAN&gt;] &lt;NAME or ID&gt;</span>
+</pre></div>
+</div>
+<p>Attach policy to cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of cluster to operate on.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">&lt;POLICY&gt;,</span> <span class="pre">--policy</span> <span class="pre">&lt;POLICY&gt;</span></code></dt>
+<dd>ID or name of policy to be attached.</dd>
+<dt><code class="docutils literal"><span class="pre">-e</span> <span class="pre">&lt;BOOLEAN&gt;,</span> <span class="pre">--enabled</span> <span class="pre">&lt;BOOLEAN&gt;</span></code></dt>
+<dd>Whether the policy should be enabled once attached.
+Default to enabled.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-policy-detach">
+<span id="id14"></span><h3>senlin cluster-policy-detach<a class="headerlink" href="senlin.html#senlin-cluster-policy-detach" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-policy-detach -p &lt;POLICY&gt; &lt;NAME or ID&gt;</span>
+</pre></div>
+</div>
+<p>Detach policy from cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of cluster to operate on.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">&lt;POLICY&gt;,</span> <span class="pre">--policy</span> <span class="pre">&lt;POLICY&gt;</span></code></dt>
+<dd>ID or name of policy to be detached.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-policy-list">
+<span id="id15"></span><h3>senlin cluster-policy-list<a class="headerlink" href="senlin.html#senlin-cluster-policy-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-policy-list [-f &lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;]</span>
+<span class="go">                                  [-o &lt;SORT_STRING&gt;] [-F]</span>
+<span class="go">                                  &lt;CLUSTER&gt;</span>
+</pre></div>
+</div>
+<p>List policies from cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CLUSTER&gt;</span></code></dt>
+<dd>Name or ID of cluster to query on.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;,</span> <span class="pre">--filters</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;</span></code></dt>
+<dd>Filter parameters to apply on returned results. This
+can be specified multiple times, or once with
+parameters separated by a semicolon.</dd>
+<dt><code class="docutils literal"><span class="pre">-o</span> <span class="pre">&lt;SORT_STRING&gt;,</span> <span class="pre">--sort</span> <span class="pre">&lt;SORT_STRING&gt;</span></code></dt>
+<dd>Sorting option which is a string containing a list of
+keys separated by commas. Each key can be optionally
+appended by a sort direction (:asc or :desc)</dd>
+<dt><code class="docutils literal"><span class="pre">-F,</span> <span class="pre">--full-id</span></code></dt>
+<dd>Print full IDs in list.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-policy-show">
+<span id="id16"></span><h3>senlin cluster-policy-show<a class="headerlink" href="senlin.html#senlin-cluster-policy-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-policy-show -p &lt;POLICY&gt; &lt;CLUSTER&gt;</span>
+</pre></div>
+</div>
+<p>Show a specific policy that is bound to the specified cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CLUSTER&gt;</span></code></dt>
+<dd>ID or name of the cluster to query on.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">&lt;POLICY&gt;,</span> <span class="pre">--policy</span> <span class="pre">&lt;POLICY&gt;</span></code></dt>
+<dd>ID or name of the policy to query on.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-policy-update">
+<span id="id17"></span><h3>senlin cluster-policy-update<a class="headerlink" href="senlin.html#senlin-cluster-policy-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-policy-update -p &lt;POLICY&gt; [-e &lt;BOOLEAN&gt;] &lt;NAME or ID&gt;</span>
+</pre></div>
+</div>
+<p>Update a policy's properties on a cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME</span> <span class="pre">or</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>Name or ID of cluster to operate on.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">&lt;POLICY&gt;,</span> <span class="pre">--policy</span> <span class="pre">&lt;POLICY&gt;</span></code></dt>
+<dd>ID or name of policy to be updated.</dd>
+<dt><code class="docutils literal"><span class="pre">-e</span> <span class="pre">&lt;BOOLEAN&gt;,</span> <span class="pre">--enabled</span> <span class="pre">&lt;BOOLEAN&gt;</span></code></dt>
+<dd>Whether the policy should be enabled.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-recover">
+<span id="id18"></span><h3>senlin cluster-recover<a class="headerlink" href="senlin.html#senlin-cluster-recover" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-recover &lt;CLUSTER&gt; [&lt;CLUSTER&gt; ...]</span>
+</pre></div>
+</div>
+<p>Recover the cluster(s).</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CLUSTER&gt;</span></code></dt>
+<dd>ID or name of cluster(s) to operate on.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-resize">
+<span id="id19"></span><h3>senlin cluster-resize<a class="headerlink" href="senlin.html#senlin-cluster-resize" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-resize [-c &lt;CAPACITY&gt;] [-a &lt;ADJUSTMENT&gt;]</span>
+<span class="go">                             [-p &lt;PERCENTAGE&gt;] [-t &lt;MIN_STEP&gt;] [-s] [-n MIN]</span>
+<span class="go">                             [-m MAX]</span>
+<span class="go">                             &lt;CLUSTER&gt;</span>
+</pre></div>
+</div>
+<p>Resize a cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CLUSTER&gt;</span></code></dt>
+<dd>Name or ID of cluster to operate on.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">&lt;CAPACITY&gt;,</span> <span class="pre">--capacity</span> <span class="pre">&lt;CAPACITY&gt;</span></code></dt>
+<dd>The desired number of nodes of the cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">-a</span> <span class="pre">&lt;ADJUSTMENT&gt;,</span> <span class="pre">--adjustment</span> <span class="pre">&lt;ADJUSTMENT&gt;</span></code></dt>
+<dd>A positive integer meaning the number of nodes to add,
+or a negative integer indicating the number of nodes
+to remove.</dd>
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">&lt;PERCENTAGE&gt;,</span> <span class="pre">--percentage</span> <span class="pre">&lt;PERCENTAGE&gt;</span></code></dt>
+<dd>A value that is interpreted as the percentage of size
+adjustment. This value can be positive or negative.</dd>
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">&lt;MIN_STEP&gt;,</span> <span class="pre">--min-step</span> <span class="pre">&lt;MIN_STEP&gt;</span></code></dt>
+<dd>An integer specifying the number of nodes for
+adjustment when &lt;PERCENTAGE&gt; is specified.</dd>
+<dt><code class="docutils literal"><span class="pre">-s,</span> <span class="pre">--strict</span> <span class="pre">A</span></code></dt>
+<dd>boolean specifying whether the resize should be
+performed on a best-effort basis when the new capacity
+may go beyond size constraints.</dd>
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">MIN,</span> <span class="pre">--min-size</span> <span class="pre">MIN</span></code></dt>
+<dd>New lower bound of cluster size.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">MAX,</span> <span class="pre">--max-size</span> <span class="pre">MAX</span></code></dt>
+<dd>New upper bound of cluster size. A value of -1
+indicates no upper limit on cluster size.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-run">
+<span id="id20"></span><h3>senlin cluster-run<a class="headerlink" href="senlin.html#senlin-cluster-run" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-run [-p &lt;PORT&gt;] [-t ADDRESS_TYPE] [-n &lt;NETWORK&gt;] [-6]</span>
+<span class="go">                          [-u &lt;USER&gt;] [-i IDENTITY_FILE] [-O SSH_OPTIONS] -s</span>
+<span class="go">                          &lt;FILE&gt;</span>
+<span class="go">                          &lt;CLUSTER&gt;</span>
+</pre></div>
+</div>
+<p>Run shell scripts on all nodes of a cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CLUSTER&gt;</span></code></dt>
+<dd>Name or ID of the cluster.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">&lt;PORT&gt;,</span> <span class="pre">--port</span> <span class="pre">&lt;PORT&gt;</span></code></dt>
+<dd>Optional flag to indicate the port to use
+(Default=22).</dd>
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">ADDRESS_TYPE,</span> <span class="pre">--address-type</span> <span class="pre">ADDRESS_TYPE</span></code></dt>
+<dd>Optional flag to indicate which IP type to use.
+Possible values includes 'fixed' and 'floating' (the
+Default).</dd>
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">&lt;NETWORK&gt;,</span> <span class="pre">--network</span> <span class="pre">&lt;NETWORK&gt;</span></code></dt>
+<dd>Network to use for the ssh.</dd>
+<dt><code class="docutils literal"><span class="pre">-6,</span> <span class="pre">--ipv6</span></code></dt>
+<dd>Optional flag to indicate whether to use an IPv6
+address attached to a server. (Defaults to IPv4
+address)</dd>
+<dt><code class="docutils literal"><span class="pre">-u</span> <span class="pre">&lt;USER&gt;,</span> <span class="pre">--user</span> <span class="pre">&lt;USER&gt;</span></code></dt>
+<dd>Login to use.</dd>
+<dt><code class="docutils literal"><span class="pre">-i</span> <span class="pre">IDENTITY_FILE,</span> <span class="pre">--identity-file</span> <span class="pre">IDENTITY_FILE</span></code></dt>
+<dd>Private key file, same as the '-i' option to the ssh
+command.</dd>
+<dt><code class="docutils literal"><span class="pre">-O</span> <span class="pre">SSH_OPTIONS,</span> <span class="pre">--ssh-options</span> <span class="pre">SSH_OPTIONS</span></code></dt>
+<dd>Extra options to pass to ssh. see: man ssh.</dd>
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">&lt;FILE&gt;,</span> <span class="pre">--script</span> <span class="pre">&lt;FILE&gt;</span></code></dt>
+<dd>Script file to run.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-scale-in">
+<span id="id21"></span><h3>senlin cluster-scale-in<a class="headerlink" href="senlin.html#senlin-cluster-scale-in" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-scale-in [-c &lt;COUNT&gt;] &lt;CLUSTER&gt;</span>
+</pre></div>
+</div>
+<p>Scale in a cluster by the specified number of nodes.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CLUSTER&gt;</span></code></dt>
+<dd>Name or ID of cluster to operate on.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">&lt;COUNT&gt;,</span> <span class="pre">--count</span> <span class="pre">&lt;COUNT&gt;</span></code></dt>
+<dd>Number of nodes to be deleted from the specified
+cluster.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-scale-out">
+<span id="id22"></span><h3>senlin cluster-scale-out<a class="headerlink" href="senlin.html#senlin-cluster-scale-out" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-scale-out [-c &lt;COUNT&gt;] &lt;CLUSTER&gt;</span>
+</pre></div>
+</div>
+<p>Scale out a cluster by the specified number of nodes.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CLUSTER&gt;</span></code></dt>
+<dd>Name or ID of cluster to operate on.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">&lt;COUNT&gt;,</span> <span class="pre">--count</span> <span class="pre">&lt;COUNT&gt;</span></code></dt>
+<dd>Number of nodes to be added to the specified cluster.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-show">
+<span id="id23"></span><h3>senlin cluster-show<a class="headerlink" href="senlin.html#senlin-cluster-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-show &lt;CLUSTER&gt;</span>
+</pre></div>
+</div>
+<p>Show details of the cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CLUSTER&gt;</span></code></dt>
+<dd>Name or ID of cluster to show.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-cluster-update">
+<span id="id24"></span><h3>senlin cluster-update<a class="headerlink" href="senlin.html#senlin-cluster-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin cluster-update [-p &lt;PROFILE&gt;] [-t &lt;TIMEOUT&gt;]</span>
+<span class="go">                             [-M &lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;] [-n &lt;NAME&gt;]</span>
+<span class="go">                             &lt;CLUSTER&gt;</span>
+</pre></div>
+</div>
+<p>Update the cluster.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;CLUSTER&gt;</span></code></dt>
+<dd>Name or ID of cluster to be updated.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">&lt;PROFILE&gt;,</span> <span class="pre">--profile</span> <span class="pre">&lt;PROFILE&gt;</span></code></dt>
+<dd>ID or name of new profile to use.</dd>
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">&lt;TIMEOUT&gt;,</span> <span class="pre">--timeout</span> <span class="pre">&lt;TIMEOUT&gt;</span></code></dt>
+<dd>New timeout (in seconds) value for the cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">-M</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;,</span> <span class="pre">--metadata</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;</span></code></dt>
+<dd>Metadata values to be attached to the cluster. This
+can
+be
+specified
+multiple
+times,
+or
+once
+with
+key-value
+pairs
+separated
+by
+a
+semicolon.
+Use
+'{}'
+can
+clean metadata</dd>
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">&lt;NAME&gt;,</span> <span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>New name for the cluster to update.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-event-list">
+<span id="id25"></span><h3>senlin event-list<a class="headerlink" href="senlin.html#senlin-event-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin event-list [-f &lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;] [-l &lt;LIMIT&gt;]</span>
+<span class="go">                         [-m &lt;ID&gt;] [-o &lt;KEY:DIR&gt;] [-g] [-F]</span>
+</pre></div>
+</div>
+<p>List events.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;,</span> <span class="pre">--filters</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;</span></code></dt>
+<dd>Filter parameters to apply on returned events. This
+can be specified multiple times, or once with
+parameters separated by a semicolon.</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;LIMIT&gt;,</span> <span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></dt>
+<dd>Limit the number of events returned.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;ID&gt;,</span> <span class="pre">--marker</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Only return events that appear after the given event
+ID.</dd>
+<dt><code class="docutils literal"><span class="pre">-o</span> <span class="pre">&lt;KEY:DIR&gt;,</span> <span class="pre">--sort</span> <span class="pre">&lt;KEY:DIR&gt;</span></code></dt>
+<dd>Sorting option which is a string containing a list of
+keys separated by commas. Each key can be optionally
+appended by a sort direction (:asc or :desc)</dd>
+<dt><code class="docutils literal"><span class="pre">-g,</span> <span class="pre">--global-project</span></code></dt>
+<dd>Whether events from all projects should be listed.
+Default to False. Setting this to True may demand for
+an admin privilege.</dd>
+<dt><code class="docutils literal"><span class="pre">-F,</span> <span class="pre">--full-id</span></code></dt>
+<dd>Print full IDs in list.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-event-show">
+<span id="id26"></span><h3>senlin event-show<a class="headerlink" href="senlin.html#senlin-event-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin event-show &lt;EVENT&gt;</span>
+</pre></div>
+</div>
+<p>Describe the event.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;EVENT&gt;</span></code></dt>
+<dd>ID of event to display details for.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-node-check">
+<span id="id27"></span><h3>senlin node-check<a class="headerlink" href="senlin.html#senlin-node-check" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin node-check &lt;NODE&gt; [&lt;NODE&gt; ...]</span>
+</pre></div>
+</div>
+<p>Check the node(s).</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NODE&gt;</span></code></dt>
+<dd>ID or name of node(s) to check.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-node-create">
+<span id="id28"></span><h3>senlin node-create<a class="headerlink" href="senlin.html#senlin-node-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin node-create -p &lt;PROFILE&gt; [-c &lt;CLUSTER&gt;] [-r &lt;ROLE&gt;]</span>
+<span class="go">                          [-M &lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;]</span>
+<span class="go">                          &lt;NODE_NAME&gt;</span>
+</pre></div>
+</div>
+<p>Create the node.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NODE_NAME&gt;</span></code></dt>
+<dd>Name of the node to create.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">&lt;PROFILE&gt;,</span> <span class="pre">--profile</span> <span class="pre">&lt;PROFILE&gt;</span></code></dt>
+<dd>Profile Id or name used for this node.</dd>
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">&lt;CLUSTER&gt;,</span> <span class="pre">--cluster</span> <span class="pre">&lt;CLUSTER&gt;</span></code></dt>
+<dd>Cluster Id for this node.</dd>
+<dt><code class="docutils literal"><span class="pre">-r</span> <span class="pre">&lt;ROLE&gt;,</span> <span class="pre">--role</span> <span class="pre">&lt;ROLE&gt;</span></code></dt>
+<dd>Role for this node in the specific cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">-M</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;,</span> <span class="pre">--metadata</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;</span></code></dt>
+<dd>Metadata values to be attached to the node. This can
+be specified multiple times, or once with key-value
+pairs separated by a semicolon.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-node-delete">
+<span id="id29"></span><h3>senlin node-delete<a class="headerlink" href="senlin.html#senlin-node-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin node-delete &lt;NODE&gt; [&lt;NODE&gt; ...]</span>
+</pre></div>
+</div>
+<p>Delete the node(s).</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NODE&gt;</span></code></dt>
+<dd>Name or ID of node(s) to delete.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-node-list">
+<span id="id30"></span><h3>senlin node-list<a class="headerlink" href="senlin.html#senlin-node-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin node-list [-c &lt;CLUSTER&gt;] [-f &lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;]</span>
+<span class="go">                        [-o &lt;KEY:DIR&gt;] [-l &lt;LIMIT&gt;] [-m &lt;ID&gt;] [-g] [-F]</span>
+</pre></div>
+</div>
+<p>Show list of nodes.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">&lt;CLUSTER&gt;,</span> <span class="pre">--cluster</span> <span class="pre">&lt;CLUSTER&gt;</span></code></dt>
+<dd>ID or name of cluster from which nodes are to be
+listed.</dd>
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;,</span> <span class="pre">--filters</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;</span></code></dt>
+<dd>Filter parameters to apply on returned nodes. This can
+be specified multiple times, or once with parameters
+separated by a semicolon.</dd>
+<dt><code class="docutils literal"><span class="pre">-o</span> <span class="pre">&lt;KEY:DIR&gt;,</span> <span class="pre">--sort</span> <span class="pre">&lt;KEY:DIR&gt;</span></code></dt>
+<dd>Sorting option which is a string containing a list of
+keys separated by commas. Each key can be optionally
+appended by a sort direction (:asc or :desc)</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;LIMIT&gt;,</span> <span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></dt>
+<dd>Limit the number of nodes returned.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;ID&gt;,</span> <span class="pre">--marker</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Only return nodes that appear after the given node ID.</dd>
+<dt><code class="docutils literal"><span class="pre">-g,</span> <span class="pre">--global-project</span></code></dt>
+<dd>Indicate that this node list should include nodes from
+all projects. This option is subject to access policy
+checking. Default is False.</dd>
+<dt><code class="docutils literal"><span class="pre">-F,</span> <span class="pre">--full-id</span></code></dt>
+<dd>Print full IDs in list.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-node-recover">
+<span id="id31"></span><h3>senlin node-recover<a class="headerlink" href="senlin.html#senlin-node-recover" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin node-recover &lt;NODE&gt; [&lt;NODE&gt; ...]</span>
+</pre></div>
+</div>
+<p>Recover the node(s).</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NODE&gt;</span></code></dt>
+<dd>ID or name of node(s) to recover.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-node-show">
+<span id="id32"></span><h3>senlin node-show<a class="headerlink" href="senlin.html#senlin-node-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin node-show [-D] &lt;NODE&gt;</span>
+</pre></div>
+</div>
+<p>Show detailed info about the specified node.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NODE&gt;</span></code></dt>
+<dd>Name or ID of the node to show the details for.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-D,</span> <span class="pre">--details</span></code></dt>
+<dd>Include physical object details.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-node-update">
+<span id="id33"></span><h3>senlin node-update<a class="headerlink" href="senlin.html#senlin-node-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin node-update [-n &lt;NAME&gt;] [-p &lt;PROFILE ID&gt;] [-r &lt;ROLE&gt;]</span>
+<span class="go">                          [-M &lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;]</span>
+<span class="go">                          &lt;NODE&gt;</span>
+</pre></div>
+</div>
+<p>Update the node.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NODE&gt;</span></code></dt>
+<dd>Name or ID of node to update.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">&lt;NAME&gt;,</span> <span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>New name for the node.</dd>
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">&lt;PROFILE</span> <span class="pre">ID&gt;,</span> <span class="pre">--profile</span> <span class="pre">&lt;PROFILE</span> <span class="pre">ID&gt;</span></code></dt>
+<dd>ID or name of new profile to use.</dd>
+<dt><code class="docutils literal"><span class="pre">-r</span> <span class="pre">&lt;ROLE&gt;,</span> <span class="pre">--role</span> <span class="pre">&lt;ROLE&gt;</span></code></dt>
+<dd>Role for this node in the specific cluster.</dd>
+<dt><code class="docutils literal"><span class="pre">-M</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;,</span> <span class="pre">--metadata</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;</span></code></dt>
+<dd>Metadata values to be attached to the node. This can
+be specified multiple times, or once with key-value
+pairs separated by a semicolon. Use '{}' can clean
+metadata</dd>
+</dl>
+</div>
+<div class="section" id="senlin-policy-create">
+<span id="id34"></span><h3>senlin policy-create<a class="headerlink" href="senlin.html#senlin-policy-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin policy-create -s &lt;SPEC_FILE&gt; &lt;NAME&gt;</span>
+</pre></div>
+</div>
+<p>Create a policy.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Name of the policy to create.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">&lt;SPEC_FILE&gt;,</span> <span class="pre">--spec-file</span> <span class="pre">&lt;SPEC_FILE&gt;</span></code></dt>
+<dd>The spec file used to create the policy.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-policy-delete">
+<span id="id35"></span><h3>senlin policy-delete<a class="headerlink" href="senlin.html#senlin-policy-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin policy-delete &lt;POLICY&gt; [&lt;POLICY&gt; ...]</span>
+</pre></div>
+</div>
+<p>Delete policy(s).</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;POLICY&gt;</span></code></dt>
+<dd>Name or ID of policy(s) to delete.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-policy-list">
+<span id="id36"></span><h3>senlin policy-list<a class="headerlink" href="senlin.html#senlin-policy-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin policy-list [-f &lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;] [-l &lt;LIMIT&gt;]</span>
+<span class="go">                          [-m &lt;ID&gt;] [-o &lt;KEY:DIR&gt;] [-g] [-F]</span>
+</pre></div>
+</div>
+<p>List policies that meet the criteria.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;,</span> <span class="pre">--filters</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;</span></code></dt>
+<dd>Filter parameters to apply on returned policies. This
+can be specified multiple times, or once with
+parameters separated by a semicolon.</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;LIMIT&gt;,</span> <span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></dt>
+<dd>Limit the number of policies returned.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;ID&gt;,</span> <span class="pre">--marker</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Only return policies that appear after the given ID.</dd>
+<dt><code class="docutils literal"><span class="pre">-o</span> <span class="pre">&lt;KEY:DIR&gt;,</span> <span class="pre">--sort</span> <span class="pre">&lt;KEY:DIR&gt;</span></code></dt>
+<dd>Sorting option which is a string containing a list of
+keys separated by commas. Each key can be optionally
+appended by a sort direction (:asc or :desc)</dd>
+<dt><code class="docutils literal"><span class="pre">-g,</span> <span class="pre">--global-project</span></code></dt>
+<dd>Indicate that the list should include policies from
+all projects. This option is subject to access policy
+checking. Default is False.</dd>
+<dt><code class="docutils literal"><span class="pre">-F,</span> <span class="pre">--full-id</span></code></dt>
+<dd>Print full IDs in list.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-policy-show">
+<span id="id37"></span><h3>senlin policy-show<a class="headerlink" href="senlin.html#senlin-policy-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin policy-show &lt;POLICY&gt;</span>
+</pre></div>
+</div>
+<p>Show the policy details.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;POLICY&gt;</span></code></dt>
+<dd>Name or ID of the policy to be shown.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-policy-type-list">
+<span id="id38"></span><h3>senlin policy-type-list<a class="headerlink" href="senlin.html#senlin-policy-type-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin policy-type-list</span>
+</pre></div>
+</div>
+<p>List the available policy types.</p>
+</div>
+<div class="section" id="senlin-policy-type-show">
+<span id="id39"></span><h3>senlin policy-type-show<a class="headerlink" href="senlin.html#senlin-policy-type-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin policy-type-show [-F &lt;FORMAT&gt;] &lt;TYPE_NAME&gt;</span>
+</pre></div>
+</div>
+<p>Get the details about a policy type.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;TYPE_NAME&gt;</span></code></dt>
+<dd>Policy type to retrieve.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">&lt;FORMAT&gt;,</span> <span class="pre">--format</span> <span class="pre">&lt;FORMAT&gt;</span></code></dt>
+<dd>The template output format, one of: yaml, json.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-policy-update">
+<span id="id40"></span><h3>senlin policy-update<a class="headerlink" href="senlin.html#senlin-policy-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin policy-update [-n &lt;NAME&gt;] &lt;POLICY&gt;</span>
+</pre></div>
+</div>
+<p>Update a policy.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;POLICY&gt;</span></code></dt>
+<dd>Name of the policy to be updated.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">&lt;NAME&gt;,</span> <span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>New name of the policy to be updated.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-policy-validate">
+<span id="id41"></span><h3>senlin policy-validate<a class="headerlink" href="senlin.html#senlin-policy-validate" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin policy-validate -s &lt;SPEC_FILE&gt;</span>
+</pre></div>
+</div>
+<p>Validate a policy spec.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">&lt;SPEC_FILE&gt;,</span> <span class="pre">--spec-file</span> <span class="pre">&lt;SPEC_FILE&gt;</span></code></dt>
+<dd>The spec file of the policy to be validated.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-profile-create">
+<span id="id42"></span><h3>senlin profile-create<a class="headerlink" href="senlin.html#senlin-profile-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin profile-create -s &lt;SPEC FILE&gt;</span>
+<span class="go">                             [-M &lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;]</span>
+<span class="go">                             &lt;PROFILE_NAME&gt;</span>
+</pre></div>
+</div>
+<p>Create a profile.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;PROFILE_NAME&gt;</span></code></dt>
+<dd>Name of the profile to create.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">&lt;SPEC</span> <span class="pre">FILE&gt;,</span> <span class="pre">--spec-file</span> <span class="pre">&lt;SPEC</span> <span class="pre">FILE&gt;</span></code></dt>
+<dd>The spec file used to create the profile.</dd>
+<dt><code class="docutils literal"><span class="pre">-M</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;,</span> <span class="pre">--metadata</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;</span></code></dt>
+<dd>Metadata values to be attached to the profile. This
+can
+be
+specified
+multiple
+times,
+or
+once
+with
+key-value
+pairs
+separated
+by
+a
+semicolon.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-profile-delete">
+<span id="id43"></span><h3>senlin profile-delete<a class="headerlink" href="senlin.html#senlin-profile-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin profile-delete &lt;PROFILE&gt; [&lt;PROFILE&gt; ...]</span>
+</pre></div>
+</div>
+<p>Delete profile(s).</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;PROFILE&gt;</span></code></dt>
+<dd>Name or ID of profile(s) to delete.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-profile-list">
+<span id="id44"></span><h3>senlin profile-list<a class="headerlink" href="senlin.html#senlin-profile-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin profile-list [-f &lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;] [-l &lt;LIMIT&gt;]</span>
+<span class="go">                           [-m &lt;ID&gt;] [-o &lt;KEY:DIR&gt;] [-g] [-F]</span>
+</pre></div>
+</div>
+<p>List profiles that meet the criteria.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;,</span> <span class="pre">--filters</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;</span></code></dt>
+<dd>Filter parameters to apply on returned profiles. This
+can be specified multiple times, or once with
+parameters separated by a semicolon.</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;LIMIT&gt;,</span> <span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></dt>
+<dd>Limit the number of profiles returned.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;ID&gt;,</span> <span class="pre">--marker</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Only return profiles that appear after the given ID.</dd>
+<dt><code class="docutils literal"><span class="pre">-o</span> <span class="pre">&lt;KEY:DIR&gt;,</span> <span class="pre">--sort</span> <span class="pre">&lt;KEY:DIR&gt;</span></code></dt>
+<dd>Sorting option which is a string containing a list of
+keys separated by commas. Each key can be optionally
+appended by a sort direction (:asc or :desc)</dd>
+<dt><code class="docutils literal"><span class="pre">-g,</span> <span class="pre">--global-project</span></code></dt>
+<dd>Indicate that the list should include profiles from
+all projects. This option is subject to access policy
+checking. Default is False.</dd>
+<dt><code class="docutils literal"><span class="pre">-F,</span> <span class="pre">--full-id</span></code></dt>
+<dd>Print full IDs in list.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-profile-show">
+<span id="id45"></span><h3>senlin profile-show<a class="headerlink" href="senlin.html#senlin-profile-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin profile-show &lt;PROFILE&gt;</span>
+</pre></div>
+</div>
+<p>Show the profile details.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;PROFILE&gt;</span></code></dt>
+<dd>Name or ID of profile to show.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-profile-type-list">
+<span id="id46"></span><h3>senlin profile-type-list<a class="headerlink" href="senlin.html#senlin-profile-type-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin profile-type-list</span>
+</pre></div>
+</div>
+<p>List the available profile types.</p>
+</div>
+<div class="section" id="senlin-profile-type-show">
+<span id="id47"></span><h3>senlin profile-type-show<a class="headerlink" href="senlin.html#senlin-profile-type-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin profile-type-show [-F &lt;FORMAT&gt;] &lt;TYPE_NAME&gt;</span>
+</pre></div>
+</div>
+<p>Get the details about a profile type.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;TYPE_NAME&gt;</span></code></dt>
+<dd>Profile type to retrieve.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-F</span> <span class="pre">&lt;FORMAT&gt;,</span> <span class="pre">--format</span> <span class="pre">&lt;FORMAT&gt;</span></code></dt>
+<dd>The template output format, one of: yaml, json.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-profile-update">
+<span id="id48"></span><h3>senlin profile-update<a class="headerlink" href="senlin.html#senlin-profile-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin profile-update [-n &lt;NAME&gt;] [-M &lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;]</span>
+<span class="go">                             &lt;PROFILE_ID&gt;</span>
+</pre></div>
+</div>
+<p>Update a profile.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;PROFILE_ID&gt;</span></code></dt>
+<dd>Name or ID of the profile to update.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">&lt;NAME&gt;,</span> <span class="pre">--name</span> <span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>The new name for the profile.</dd>
+<dt><code class="docutils literal"><span class="pre">-M</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;,</span> <span class="pre">--metadata</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;</span></code></dt>
+<dd>Metadata values to be attached to the profile. This
+can
+be
+specified
+multiple
+times,
+or
+once
+with
+key-value
+pairs
+separated
+by
+a
+semicolon.
+Use
+'{}'
+can
+clean metadata</dd>
+</dl>
+</div>
+<div class="section" id="senlin-profile-validate">
+<span id="id49"></span><h3>senlin profile-validate<a class="headerlink" href="senlin.html#senlin-profile-validate" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin profile-validate -s &lt;SPEC FILE&gt;</span>
+</pre></div>
+</div>
+<p>Validate a profile.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">&lt;SPEC</span> <span class="pre">FILE&gt;,</span> <span class="pre">--spec-file</span> <span class="pre">&lt;SPEC</span> <span class="pre">FILE&gt;</span></code></dt>
+<dd>The spec file of the profile to be validated.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-receiver-create">
+<span id="id50"></span><h3>senlin receiver-create<a class="headerlink" href="senlin.html#senlin-receiver-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin receiver-create [-t &lt;TYPE&gt;] [-c &lt;CLUSTER&gt;] [-a &lt;ACTION&gt;]</span>
+<span class="go">                              [-P &lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;]</span>
+<span class="go">                              &lt;NAME&gt;</span>
+</pre></div>
+</div>
+<p>Create a receiver.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;NAME&gt;</span></code></dt>
+<dd>Name of the receiver to create.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">&lt;TYPE&gt;,</span> <span class="pre">--type</span> <span class="pre">&lt;TYPE&gt;</span></code></dt>
+<dd>Type of the receiver to create. Receiver type can be
+&quot;webhook&quot; or &quot;message&quot;. Default to &quot;webhook&quot;.</dd>
+<dt><code class="docutils literal"><span class="pre">-c</span> <span class="pre">&lt;CLUSTER&gt;,</span> <span class="pre">--cluster</span> <span class="pre">&lt;CLUSTER&gt;</span></code></dt>
+<dd>Targeted cluster for this receiver. Required if
+receiver type is webhook.</dd>
+<dt><code class="docutils literal"><span class="pre">-a</span> <span class="pre">&lt;ACTION&gt;,</span> <span class="pre">--action</span> <span class="pre">&lt;ACTION&gt;</span></code></dt>
+<dd>Name or ID of the targeted action to be triggered.
+Required if receiver type is webhook.</dd>
+<dt><code class="docutils literal"><span class="pre">-P</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;,</span> <span class="pre">--params</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;</span></code></dt>
+<dd>A dictionary of parameters that will be passed to
+target action when the receiver is triggered.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-receiver-delete">
+<span id="id51"></span><h3>senlin receiver-delete<a class="headerlink" href="senlin.html#senlin-receiver-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin receiver-delete &lt;RECEIVER&gt; [&lt;RECEIVER&gt; ...]</span>
+</pre></div>
+</div>
+<p>Delete receiver(s).</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;RECEIVER&gt;</span></code></dt>
+<dd>Name or ID of receiver(s) to delete.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-receiver-list">
+<span id="id52"></span><h3>senlin receiver-list<a class="headerlink" href="senlin.html#senlin-receiver-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin receiver-list [-f &lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;] [-l &lt;LIMIT&gt;]</span>
+<span class="go">                            [-m &lt;ID&gt;] [-o &lt;KEY:DIR&gt;] [-g] [-F]</span>
+</pre></div>
+</div>
+<p>List receivers that meet the criteria.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-f</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;,</span> <span class="pre">--filters</span> <span class="pre">&lt;&quot;KEY1=VALUE1;KEY2=VALUE2...&quot;&gt;</span></code></dt>
+<dd>Filter parameters to apply on returned receivers. This
+can be specified multiple times, or once with
+parameters separated by a semicolon.</dd>
+<dt><code class="docutils literal"><span class="pre">-l</span> <span class="pre">&lt;LIMIT&gt;,</span> <span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></dt>
+<dd>Limit the number of receivers returned.</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">&lt;ID&gt;,</span> <span class="pre">--marker</span> <span class="pre">&lt;ID&gt;</span></code></dt>
+<dd>Only return receivers that appear after the given ID.</dd>
+<dt><code class="docutils literal"><span class="pre">-o</span> <span class="pre">&lt;KEY:DIR&gt;,</span> <span class="pre">--sort</span> <span class="pre">&lt;KEY:DIR&gt;</span></code></dt>
+<dd>Sorting option which is a string containing a list of
+keys separated by commas. Each key can be optionally
+appended by a sort direction (:asc or :desc)</dd>
+<dt><code class="docutils literal"><span class="pre">-g,</span> <span class="pre">--global-project</span></code></dt>
+<dd>Indicate that the list should include receivers from
+all projects. This option is subject to access policy
+checking. Default is False.</dd>
+<dt><code class="docutils literal"><span class="pre">-F,</span> <span class="pre">--full-id</span></code></dt>
+<dd>Print full IDs in list.</dd>
+</dl>
+</div>
+<div class="section" id="senlin-receiver-show">
+<span id="id53"></span><h3>senlin receiver-show<a class="headerlink" href="senlin.html#senlin-receiver-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: senlin receiver-show &lt;RECEIVER&gt;</span>
+</pre></div>
+</div>
+<p>Show the receiver details.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;RECEIVER&gt;</span></code></dt>
+<dd>Name or ID of the receiver to show.</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="cinder.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Block Storage service (cinder) command-line client"></i></a>
+          
+          
+            <a href="compute.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Compute service (nova) command-line clients"></i></a>
+          
+            <a id="logABugLink3" href="senlin.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="senlin.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="murano.html">Application Catalog service (murano) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="freezer.html">Backup, Restore, and Disaster Recovery service (freezer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ironic.html">Bare Metal service (ironic) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cinder.html">Block Storage service (cinder) command-line client</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="senlin.html#">Clustering service (senlin) command-line client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="senlin.html#senlin-usage">senlin usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="senlin.html#senlin-optional-arguments">senlin optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute service (nova) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnum.html">Container Infrastructure Management service (magnum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database service (trove) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="designate.html">DNS service (designate) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image service (glance) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watcher.html">Infrastructure Optimization service (watcher) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barbican.html">Key Manager service (barbican) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monasca.html">Monitoring (monasca) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networking.html">Networking service (neutron) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tacker.html">NFV Orchestration service (tacker) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="swift.html">Object Storage service (swift) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heat.html">Orchestration service (heat) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloudkitty.html">Rating service (cloudkitty) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vitrage.html">RCA (Root Cause Analysis) service (vitrage) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manila.html">Shared File Systems service (manila) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solum.html">Software Development Lifecycle Automation service (solum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aodh.html">Telemetry Alarming service (aodh) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ceilometer.html">Telemetry Data Collection service (ceilometer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gnocchi.html">A time series storage and resources index service (gnocchi) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mistral.html">Workflow service (mistral) command-line client</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "senlin" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/cli-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "Clustering service (senlin) command-line client in Command-Line Interface Reference";
+    var fieldTags = "cli-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:39";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

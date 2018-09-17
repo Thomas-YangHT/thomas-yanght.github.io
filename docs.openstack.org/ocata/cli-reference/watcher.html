@@ -1,0 +1,1212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: Infrastructure Optimization service (watcher) command-line client</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>Infrastructure Optimization service (watcher) command-line client</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="glance-property-keys.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Image service property keys"></i></a>
+    
+    
+    <a href="barbican.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Key Manager service (barbican) command-line client"></i></a>
+    
+    <a id="logABugLink1" href="watcher.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="watcher.html#">Infrastructure Optimization service (watcher) command-line client</a><ul>
+<li><a class="reference internal" href="watcher.html#watcher-usage">watcher usage</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-optional-arguments">watcher optional arguments</a><ul>
+<li><a class="reference internal" href="watcher.html#watcher-action-list">watcher action list</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-action-show">watcher action show</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-actionplan-create">watcher actionplan create</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-actionplan-delete">watcher actionplan delete</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-actionplan-list">watcher actionplan list</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-actionplan-show">watcher actionplan show</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-actionplan-start">watcher actionplan start</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-actionplan-update">watcher actionplan update</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-audit-create">watcher audit create</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-audit-delete">watcher audit delete</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-audit-list">watcher audit list</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-audit-show">watcher audit show</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-audit-update">watcher audit update</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-audittemplate-create">watcher audittemplate create</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-audittemplate-delete">watcher audittemplate delete</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-audittemplate-list">watcher audittemplate list</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-audittemplate-show">watcher audittemplate show</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-audittemplate-update">watcher audittemplate update</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-goal-list">watcher goal list</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-goal-show">watcher goal show</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-scoringengine-list">watcher scoringengine list</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-scoringengine-show">watcher scoringengine show</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-service-list">watcher service list</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-service-show">watcher service show</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-strategy-list">watcher strategy list</a></li>
+<li><a class="reference internal" href="watcher.html#watcher-strategy-show">watcher strategy show</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="infrastructure-optimization-service-watcher-command-line-client">
+<h1>Infrastructure Optimization service (watcher) command-line client<a class="headerlink" href="watcher.html#infrastructure-optimization-service-watcher-command-line-client" title="Permalink to this headline">¶</a></h1>
+<p>The watcher client is the command-line interface (CLI) for
+the Infrastructure Optimization service (watcher) API and its extensions.</p>
+<p>This chapter documents <strong class="command">watcher</strong> version <code class="docutils literal"><span class="pre">1.0.0</span></code>.</p>
+<p>For help on a specific <strong class="command">watcher</strong> command, enter:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> watcher <span class="nb">help</span> COMMAND
+</pre></div>
+</div>
+<div class="section" id="watcher-usage">
+<span id="watcher-command-usage"></span><h2>watcher usage<a class="headerlink" href="watcher.html#watcher-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher [--version] [-v | -q] [--log-file LOG_FILE] [-h] [--debug]</span>
+<span class="go">               [--no-auth] [--os-identity-api-version &lt;identity-api-version&gt;]</span>
+<span class="go">               [--os-auth-url &lt;auth-url&gt;] [--os-region-name &lt;region-name&gt;]</span>
+<span class="go">               [--os-username &lt;auth-user-name&gt;] [--os-user-id &lt;auth-user-id&gt;]</span>
+<span class="go">               [--os-password &lt;auth-password&gt;]</span>
+<span class="go">               [--os-user-domain-id &lt;auth-user-domain-id&gt;]</span>
+<span class="go">               [--os-user-domain-name &lt;auth-user-domain-name&gt;]</span>
+<span class="go">               [--os-tenant-name &lt;auth-tenant-name&gt;]</span>
+<span class="go">               [--os-tenant-id &lt;tenant-id&gt;]</span>
+<span class="go">               [--os-project-id &lt;auth-project-id&gt;]</span>
+<span class="go">               [--os-project-name &lt;auth-project-name&gt;]</span>
+<span class="go">               [--os-project-domain-id &lt;auth-project-domain-id&gt;]</span>
+<span class="go">               [--os-project-domain-name &lt;auth-project-domain-name&gt;]</span>
+<span class="go">               [--os-auth-token &lt;auth-token&gt;]</span>
+<span class="go">               [--os-watcher-api-version &lt;os-watcher-api-version&gt;]</span>
+<span class="go">               [--os-endpoint-type OS_ENDPOINT_TYPE]</span>
+<span class="go">               [--os-endpoint-override &lt;endpoint-override&gt;] [--insecure]</span>
+<span class="go">               [--os-cacert &lt;ca-certificate&gt;] [--os-cert &lt;certificate&gt;]</span>
+<span class="go">               [--os-key &lt;key&gt;] [--timeout &lt;seconds&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="watcher-optional-arguments">
+<span id="watcher-command-options"></span><h2>watcher optional arguments<a class="headerlink" href="watcher.html#watcher-optional-arguments" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--version</span></code></dt>
+<dd>show program's version number and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></dt>
+<dd>Increase verbosity of output. Can be repeated.</dd>
+<dt><code class="docutils literal"><span class="pre">-q,</span> <span class="pre">--quiet</span></code></dt>
+<dd>Suppress output except warnings and errors.</dd>
+<dt><code class="docutils literal"><span class="pre">--log-file</span> <span class="pre">LOG_FILE</span></code></dt>
+<dd>Specify a file to log output. Disabled by default.</dd>
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>Show help message and exit.</dd>
+<dt><code class="docutils literal"><span class="pre">--debug</span></code></dt>
+<dd>Show tracebacks on errors.</dd>
+<dt><code class="docutils literal"><span class="pre">--no-auth,</span> <span class="pre">-N</span></code></dt>
+<dd>Do not use authentication.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-identity-api-version</span> <span class="pre">&lt;identity-api-version&gt;</span></code></dt>
+<dd>Specify Identity API version to use. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_IDENTITY_API_VERSION]</span></code> or 3.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-url</span> <span class="pre">&lt;auth-url&gt;,</span> <span class="pre">-A</span> <span class="pre">&lt;auth-url&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_AUTH_URL]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-region-name</span> <span class="pre">&lt;region-name&gt;,</span> <span class="pre">-R</span> <span class="pre">&lt;region-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_REGION_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-username</span> <span class="pre">&lt;auth-user-name&gt;,</span> <span class="pre">-U</span> <span class="pre">&lt;auth-user-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USERNAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-id</span> <span class="pre">&lt;auth-user-id&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USER_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-password</span> <span class="pre">&lt;auth-password&gt;,</span> <span class="pre">-P</span> <span class="pre">&lt;auth-password&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PASSWORD]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-id</span> <span class="pre">&lt;auth-user-domain-id&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USER_DOMAIN_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-name</span> <span class="pre">&lt;auth-user-domain-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USER_DOMAIN_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-name</span> <span class="pre">&lt;auth-tenant-name&gt;,</span> <span class="pre">-T</span> <span class="pre">&lt;auth-tenant-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TENANT_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-id</span> <span class="pre">&lt;tenant-id&gt;,</span> <span class="pre">-I</span> <span class="pre">&lt;tenant-id&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TENANT_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-id</span> <span class="pre">&lt;auth-project-id&gt;</span></code></dt>
+<dd>Another way to specify tenant ID. This option is
+mutually exclusive with --os-tenant-id. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_PROJECT_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-name</span> <span class="pre">&lt;auth-project-name&gt;</span></code></dt>
+<dd>Another way to specify tenant name. This option is
+mutually exclusive with --os-tenant-name. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_PROJECT_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-id</span> <span class="pre">&lt;auth-project-domain-id&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_DOMAIN_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-name</span> <span class="pre">&lt;auth-project-domain-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_DOMAIN_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-token</span> <span class="pre">&lt;auth-token&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_AUTH_TOKEN]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-watcher-api-version</span> <span class="pre">&lt;os-watcher-api-version&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_WATCHER_API_VERSION]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-endpoint-type</span> <span class="pre">OS_ENDPOINT_TYPE</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_ENDPOINT_TYPE]</span></code> or &quot;publicURL&quot;</dd>
+<dt><code class="docutils literal"><span class="pre">--os-endpoint-override</span> <span class="pre">&lt;endpoint-override&gt;</span></code></dt>
+<dd>Use this API endpoint instead of the Service Catalog.</dd>
+</dl>
+<div class="section" id="watcher-action-list">
+<span id="id1"></span><h3>watcher action list<a class="headerlink" href="watcher.html#watcher-action-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher action list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                           [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                           [--noindent]</span>
+<span class="go">                           [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                           [--action-plan &lt;action-plan&gt;] [--audit &lt;audit&gt;]</span>
+<span class="go">                           [--detail] [--limit &lt;limit&gt;] [--sort-key &lt;field&gt;]</span>
+<span class="go">                           [--sort-dir &lt;direction&gt;]</span>
+</pre></div>
+</div>
+<p>List information on retrieved actions.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--action-plan</span> <span class="pre">&lt;action-plan&gt;</span></code></dt>
+<dd>UUID of the action plan used for filtering.</dd>
+<dt><code class="docutils literal"><span class="pre">--audit</span> <span class="pre">&lt;audit&gt;</span></code></dt>
+<dd>UUID of the audit used for filtering.</dd>
+<dt><code class="docutils literal"><span class="pre">--detail</span></code></dt>
+<dd>Show detailed information about actions.</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Maximum number of actions to return per request, 0 for
+no limit. Default is the maximum number used by the
+Watcher API Service.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-key</span> <span class="pre">&lt;field&gt;</span></code></dt>
+<dd>Action field that will be used for sorting.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-dir</span> <span class="pre">&lt;direction&gt;</span></code></dt>
+<dd>Sort direction: &quot;asc&quot; (the default) or &quot;desc&quot;.</dd>
+</dl>
+</div>
+<div class="section" id="watcher-action-show">
+<span id="id2"></span><h3>watcher action show<a class="headerlink" href="watcher.html#watcher-action-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher action show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                           [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                           [--noindent] [--prefix PREFIX]</span>
+<span class="go">                           &lt;action&gt;</span>
+</pre></div>
+</div>
+<p>Show detailed information about a given action.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;action&gt;</span></code></dt>
+<dd>UUID of the action</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="watcher-actionplan-create">
+<span id="id3"></span><h3>watcher actionplan create<a class="headerlink" href="watcher.html#watcher-actionplan-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher actionplan create [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                 [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                 [--print-empty] [--noindent]</span>
+<span class="go">                                 [--prefix PREFIX] -a &lt;audit_template&gt;</span>
+<span class="go">                                 [-t &lt;audit_type&gt;]</span>
+</pre></div>
+</div>
+<p>Create new audit.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-a</span> <span class="pre">&lt;audit_template&gt;,</span> <span class="pre">--audit-template</span> <span class="pre">&lt;audit_template&gt;</span></code></dt>
+<dd>ActionPlan template used for this audit (name or
+uuid).</dd>
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">&lt;audit_type&gt;,</span> <span class="pre">--audit_type</span> <span class="pre">&lt;audit_type&gt;</span></code></dt>
+<dd>ActionPlan type.</dd>
+</dl>
+</div>
+<div class="section" id="watcher-actionplan-delete">
+<span id="id4"></span><h3>watcher actionplan delete<a class="headerlink" href="watcher.html#watcher-actionplan-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher actionplan delete [-h] &lt;action-plan&gt; [&lt;action-plan&gt; ...]</span>
+</pre></div>
+</div>
+<p>Delete action plan command.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;action-plan&gt;</span></code></dt>
+<dd>UUID of the action plan</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="watcher-actionplan-list">
+<span id="id5"></span><h3>watcher actionplan list<a class="headerlink" href="watcher.html#watcher-actionplan-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher actionplan list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                               [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                               [--print-empty] [--noindent]</span>
+<span class="go">                               [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                               [--audit &lt;audit&gt;] [--detail] [--limit &lt;limit&gt;]</span>
+<span class="go">                               [--sort-key &lt;field&gt;] [--sort-dir &lt;direction&gt;]</span>
+</pre></div>
+</div>
+<p>List information on retrieved action plans.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--audit</span> <span class="pre">&lt;audit&gt;</span></code></dt>
+<dd>UUID of an audit used for filtering.</dd>
+<dt><code class="docutils literal"><span class="pre">--detail</span></code></dt>
+<dd>Show detailed information about action plans.</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Maximum number of action plans to return per request,
+0 for no limit. Default is the maximum number used by
+the Watcher API Service.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-key</span> <span class="pre">&lt;field&gt;</span></code></dt>
+<dd>Action Plan field that will be used for sorting.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-dir</span> <span class="pre">&lt;direction&gt;</span></code></dt>
+<dd>Sort direction: &quot;asc&quot; (the default) or &quot;desc&quot;.</dd>
+</dl>
+</div>
+<div class="section" id="watcher-actionplan-show">
+<span id="id6"></span><h3>watcher actionplan show<a class="headerlink" href="watcher.html#watcher-actionplan-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher actionplan show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                               [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                               [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                               &lt;action-plan&gt;</span>
+</pre></div>
+</div>
+<p>Show detailed information about a given action plan.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;action-plan&gt;</span></code></dt>
+<dd>UUID of the action plan</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="watcher-actionplan-start">
+<span id="id7"></span><h3>watcher actionplan start<a class="headerlink" href="watcher.html#watcher-actionplan-start" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher actionplan start [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                                &lt;action-plan&gt;</span>
+</pre></div>
+</div>
+<p>Start action plan command.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;action-plan&gt;</span></code></dt>
+<dd>UUID of the action_plan.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="watcher-actionplan-update">
+<span id="id8"></span><h3>watcher actionplan update<a class="headerlink" href="watcher.html#watcher-actionplan-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher actionplan update [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                 [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                 [--print-empty] [--noindent]</span>
+<span class="go">                                 [--prefix PREFIX]</span>
+<span class="go">                                 &lt;action-plan&gt; &lt;op&gt; &lt;path=value&gt;</span>
+<span class="go">                                 [&lt;path=value&gt; ...]</span>
+</pre></div>
+</div>
+<p>Update action plan command.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;action-plan&gt;</span></code></dt>
+<dd>UUID of the action_plan.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;op&gt;</span></code></dt>
+<dd>Operation: 'add', 'replace', or 'remove'.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;path=value&gt;</span></code></dt>
+<dd>Attribute to add, replace, or remove. Can be specified
+multiple times. For 'remove', only &lt;path&gt; is
+necessary.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="watcher-audit-create">
+<span id="id9"></span><h3>watcher audit create<a class="headerlink" href="watcher.html#watcher-audit-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher audit create [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                            [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                            [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                            [-t &lt;audit_type&gt;] [-p &lt;name=value&gt;]</span>
+<span class="go">                            [-i &lt;interval&gt;] [-g &lt;goal&gt;] [-s &lt;strategy&gt;]</span>
+<span class="go">                            [-a &lt;audit_template&gt;] [--auto-trigger]</span>
+</pre></div>
+</div>
+<p>Create new audit.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">&lt;audit_type&gt;,</span> <span class="pre">--audit_type</span> <span class="pre">&lt;audit_type&gt;</span></code></dt>
+<dd>Audit type. It must be ONESHOT or CONTINUOUS. Default
+is ONESHOT.</dd>
+<dt><code class="docutils literal"><span class="pre">-p</span> <span class="pre">&lt;name=value&gt;,</span> <span class="pre">--parameter</span> <span class="pre">&lt;name=value&gt;</span></code></dt>
+<dd>Record strategy parameter/value metadata. Can be
+specified multiple times.</dd>
+<dt><code class="docutils literal"><span class="pre">-i</span> <span class="pre">&lt;interval&gt;,</span> <span class="pre">--interval</span> <span class="pre">&lt;interval&gt;</span></code></dt>
+<dd>Audit interval (in seconds). Only used if the audit is
+CONTINUOUS.</dd>
+<dt><code class="docutils literal"><span class="pre">-g</span> <span class="pre">&lt;goal&gt;,</span> <span class="pre">--goal</span> <span class="pre">&lt;goal&gt;</span></code></dt>
+<dd>Goal UUID or name associated to this audit.</dd>
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">&lt;strategy&gt;,</span> <span class="pre">--strategy</span> <span class="pre">&lt;strategy&gt;</span></code></dt>
+<dd>Strategy UUID or name associated to this audit.</dd>
+<dt><code class="docutils literal"><span class="pre">-a</span> <span class="pre">&lt;audit_template&gt;,</span> <span class="pre">--audit-template</span> <span class="pre">&lt;audit_template&gt;</span></code></dt>
+<dd>Audit template used for this audit (name or uuid).</dd>
+<dt><code class="docutils literal"><span class="pre">--auto-trigger</span></code></dt>
+<dd>Trigger automatically action plan once audit is
+succeeded.</dd>
+</dl>
+</div>
+<div class="section" id="watcher-audit-delete">
+<span id="id10"></span><h3>watcher audit delete<a class="headerlink" href="watcher.html#watcher-audit-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher audit delete [-h] &lt;audit&gt; [&lt;audit&gt; ...]</span>
+</pre></div>
+</div>
+<p>Delete audit command.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;audit&gt;</span></code></dt>
+<dd>UUID of the audit</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="watcher-audit-list">
+<span id="id11"></span><h3>watcher audit list<a class="headerlink" href="watcher.html#watcher-audit-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher audit list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                          [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                          [--noindent] [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                          [--detail] [--goal &lt;goal&gt;] [--strategy &lt;strategy&gt;]</span>
+<span class="go">                          [--limit &lt;limit&gt;] [--sort-key &lt;field&gt;]</span>
+<span class="go">                          [--sort-dir &lt;direction&gt;]</span>
+</pre></div>
+</div>
+<p>List information on retrieved audits.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--detail</span></code></dt>
+<dd>Show detailed information about audits.</dd>
+<dt><code class="docutils literal"><span class="pre">--goal</span> <span class="pre">&lt;goal&gt;</span></code></dt>
+<dd>UUID or name of the goal used for filtering.</dd>
+<dt><code class="docutils literal"><span class="pre">--strategy</span> <span class="pre">&lt;strategy&gt;</span></code></dt>
+<dd>UUID or name of the strategy used for filtering.</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Maximum number of audits to return per request, 0 for
+no limit. Default is the maximum number used by the
+Watcher API Service.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-key</span> <span class="pre">&lt;field&gt;</span></code></dt>
+<dd>Audit field that will be used for sorting.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-dir</span> <span class="pre">&lt;direction&gt;</span></code></dt>
+<dd>Sort direction: &quot;asc&quot; (the default) or &quot;desc&quot;.</dd>
+</dl>
+</div>
+<div class="section" id="watcher-audit-show">
+<span id="id12"></span><h3>watcher audit show<a class="headerlink" href="watcher.html#watcher-audit-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher audit show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                          [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                          [--noindent] [--prefix PREFIX]</span>
+<span class="go">                          &lt;audit&gt;</span>
+</pre></div>
+</div>
+<p>Show detailed information about a given audit.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;audit&gt;</span></code></dt>
+<dd>UUID of the audit</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="watcher-audit-update">
+<span id="id13"></span><h3>watcher audit update<a class="headerlink" href="watcher.html#watcher-audit-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher audit update [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                            [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                            [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                            &lt;audit&gt; &lt;op&gt; &lt;path=value&gt; [&lt;path=value&gt; ...]</span>
+</pre></div>
+</div>
+<p>Update audit command.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;audit&gt;</span></code></dt>
+<dd>UUID of the audit.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;op&gt;</span></code></dt>
+<dd>Operation: 'add', 'replace', or 'remove'.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;path=value&gt;</span></code></dt>
+<dd>Attribute to add, replace, or remove. Can be specified
+multiple times. For 'remove', only &lt;path&gt; is
+necessary.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="watcher-audittemplate-create">
+<span id="id14"></span><h3>watcher audittemplate create<a class="headerlink" href="watcher.html#watcher-audittemplate-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher audittemplate create [-h]</span>
+<span class="go">                                    [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                    [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                    [--print-empty] [--noindent]</span>
+<span class="go">                                    [--prefix PREFIX] [-s &lt;strategy&gt;]</span>
+<span class="go">                                    [-d &lt;description&gt;] [--scope &lt;path&gt;]</span>
+<span class="go">                                    &lt;name&gt; &lt;goal&gt;</span>
+</pre></div>
+</div>
+<p>Create new audit template.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Name for this audit template.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;goal&gt;</span></code></dt>
+<dd>Goal UUID or name associated to this audit template.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">&lt;strategy&gt;,</span> <span class="pre">--strategy</span> <span class="pre">&lt;strategy&gt;</span></code></dt>
+<dd>Strategy UUID or name associated to this audit
+template.</dd>
+<dt><code class="docutils literal"><span class="pre">-d</span> <span class="pre">&lt;description&gt;,</span> <span class="pre">--description</span> <span class="pre">&lt;description&gt;</span></code></dt>
+<dd>Description of the audit template.</dd>
+<dt><code class="docutils literal"><span class="pre">--scope</span> <span class="pre">&lt;path&gt;</span></code></dt>
+<dd><p class="first">Part of the cluster on which an audit will be done.
+Can be provided either in yaml or json file.
+YAML example:
+---- host_aggregates:
+- id: 1
+- id: 2
+- id: 3
+- availability_zones:
+- name: AZ1
+- name: AZ2
+- exclude:
+- instances:
+- uuid: UUID1
+- uuid: UUID2
+- compute_nodes:
+- name: compute1</p>
+<p class="last">JSON example:
+[{'host_aggregates': [
+{'id': 1},
+{'id': 2},
+{'id': 3}]},
+{'availability_zones': [
+{'name': 'AZ1'},
+{'name': 'AZ2'}]},
+{'exclude': [
+{'instances': [
+{'uuid': 'UUID1'},
+{'uuid': 'UUID2'}
+]},
+{'compute_nodes': [
+{'name': 'compute1'}
+]}
+]}]</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="watcher-audittemplate-delete">
+<span id="id15"></span><h3>watcher audittemplate delete<a class="headerlink" href="watcher.html#watcher-audittemplate-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher audittemplate delete [-h]</span>
+<span class="go">                                    &lt;audit-template&gt; [&lt;audit-template&gt; ...]</span>
+</pre></div>
+</div>
+<p>Delete audit template command.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;audit-template&gt;</span></code></dt>
+<dd>UUID or name of the audit template</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="watcher-audittemplate-list">
+<span id="id16"></span><h3>watcher audittemplate list<a class="headerlink" href="watcher.html#watcher-audittemplate-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher audittemplate list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                                  [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                  [--print-empty] [--noindent]</span>
+<span class="go">                                  [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                                  [--detail] [--goal &lt;goal&gt;]</span>
+<span class="go">                                  [--strategy &lt;strategy&gt;] [--limit &lt;limit&gt;]</span>
+<span class="go">                                  [--sort-key &lt;field&gt;]</span>
+<span class="go">                                  [--sort-dir &lt;direction&gt;]</span>
+</pre></div>
+</div>
+<p>List information on retrieved audit templates.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--detail</span></code></dt>
+<dd>Show detailed information about audit templates.</dd>
+<dt><code class="docutils literal"><span class="pre">--goal</span> <span class="pre">&lt;goal&gt;</span></code></dt>
+<dd>UUID or name of the goal used for filtering.</dd>
+<dt><code class="docutils literal"><span class="pre">--strategy</span> <span class="pre">&lt;strategy&gt;</span></code></dt>
+<dd>UUID or name of the strategy used for filtering.</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Maximum number of audit templates to return per
+request, 0 for no limit. Default is the maximum number
+used by the Watcher API Service.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-key</span> <span class="pre">&lt;field&gt;</span></code></dt>
+<dd>Audit template field that will be used for sorting.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-dir</span> <span class="pre">&lt;direction&gt;</span></code></dt>
+<dd>Sort direction: &quot;asc&quot; (the default) or &quot;desc&quot;.</dd>
+</dl>
+</div>
+<div class="section" id="watcher-audittemplate-show">
+<span id="id17"></span><h3>watcher audittemplate show<a class="headerlink" href="watcher.html#watcher-audittemplate-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher audittemplate show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                  [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                  [--print-empty] [--noindent]</span>
+<span class="go">                                  [--prefix PREFIX]</span>
+<span class="go">                                  &lt;audit-template&gt;</span>
+</pre></div>
+</div>
+<p>Show detailed information about a given audit template.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;audit-template&gt;</span></code></dt>
+<dd>UUID or name of the audit template</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="watcher-audittemplate-update">
+<span id="id18"></span><h3>watcher audittemplate update<a class="headerlink" href="watcher.html#watcher-audittemplate-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher audittemplate update [-h]</span>
+<span class="go">                                    [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                    [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                    [--print-empty] [--noindent]</span>
+<span class="go">                                    [--prefix PREFIX]</span>
+<span class="go">                                    &lt;audit-template&gt; &lt;op&gt; &lt;path=value&gt;</span>
+<span class="go">                                    [&lt;path=value&gt; ...]</span>
+</pre></div>
+</div>
+<p>Update audit template command.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;audit-template&gt;</span></code></dt>
+<dd>UUID or name of the audit_template.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;op&gt;</span></code></dt>
+<dd>Operation: 'add', 'replace', or 'remove'.</dd>
+<dt><code class="docutils literal"><span class="pre">&lt;path=value&gt;</span></code></dt>
+<dd>Attribute to add, replace, or remove. Can be specified
+multiple times. For 'remove', only &lt;path&gt; is
+necessary.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="watcher-goal-list">
+<span id="id19"></span><h3>watcher goal list<a class="headerlink" href="watcher.html#watcher-goal-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher goal list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                         [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                         [--noindent] [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                         [--detail] [--limit &lt;limit&gt;] [--sort-key &lt;field&gt;]</span>
+<span class="go">                         [--sort-dir &lt;direction&gt;]</span>
+</pre></div>
+</div>
+<p>List information on retrieved goals.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--detail</span></code></dt>
+<dd>Show detailed information about each goal.</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Maximum number of goals to return per request, 0 for
+no limit. Default is the maximum number used by the
+Watcher API Service.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-key</span> <span class="pre">&lt;field&gt;</span></code></dt>
+<dd>Goal field that will be used for sorting.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-dir</span> <span class="pre">&lt;direction&gt;</span></code></dt>
+<dd>Sort direction: &quot;asc&quot; (the default) or &quot;desc&quot;.</dd>
+</dl>
+</div>
+<div class="section" id="watcher-goal-show">
+<span id="id20"></span><h3>watcher goal show<a class="headerlink" href="watcher.html#watcher-goal-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher goal show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                         [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                         [--noindent] [--prefix PREFIX]</span>
+<span class="go">                         &lt;goal&gt;</span>
+</pre></div>
+</div>
+<p>Show detailed information about a given goal.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;goal&gt;</span></code></dt>
+<dd>UUID or name of the goal</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="watcher-scoringengine-list">
+<span id="id21"></span><h3>watcher scoringengine list<a class="headerlink" href="watcher.html#watcher-scoringengine-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher scoringengine list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                                  [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                  [--print-empty] [--noindent]</span>
+<span class="go">                                  [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                                  [--detail] [--limit &lt;limit&gt;]</span>
+<span class="go">                                  [--sort-key &lt;field&gt;]</span>
+<span class="go">                                  [--sort-dir &lt;direction&gt;]</span>
+</pre></div>
+</div>
+<p>List information on retrieved scoring engines.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--detail</span></code></dt>
+<dd>Show detailed information about scoring engines.</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Maximum number of actions to return per request, 0 for
+no limit. Default is the maximum number used by the
+Watcher API Service.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-key</span> <span class="pre">&lt;field&gt;</span></code></dt>
+<dd>Action field that will be used for sorting.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-dir</span> <span class="pre">&lt;direction&gt;</span></code></dt>
+<dd>Sort direction: &quot;asc&quot; (the default) or &quot;desc&quot;.</dd>
+</dl>
+</div>
+<div class="section" id="watcher-scoringengine-show">
+<span id="id22"></span><h3>watcher scoringengine show<a class="headerlink" href="watcher.html#watcher-scoringengine-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher scoringengine show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                  [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                  [--print-empty] [--noindent]</span>
+<span class="go">                                  [--prefix PREFIX]</span>
+<span class="go">                                  &lt;scoring_engine&gt;</span>
+</pre></div>
+</div>
+<p>Show detailed information about a given scoring engine.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;scoring_engine&gt;</span></code></dt>
+<dd>Name of the scoring engine</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="watcher-service-list">
+<span id="id23"></span><h3>watcher service list<a class="headerlink" href="watcher.html#watcher-service-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher service list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                            [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                            [--print-empty] [--noindent]</span>
+<span class="go">                            [--quote {all,minimal,none,nonnumeric}] [--detail]</span>
+<span class="go">                            [--limit &lt;limit&gt;] [--sort-key &lt;field&gt;]</span>
+<span class="go">                            [--sort-dir &lt;direction&gt;]</span>
+</pre></div>
+</div>
+<p>List information on retrieved services.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--detail</span></code></dt>
+<dd>Show detailed information about each service.</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Maximum number of services to return per request, 0
+for no limit. Default is the maximum number used by
+the Watcher API Service.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-key</span> <span class="pre">&lt;field&gt;</span></code></dt>
+<dd>Goal field that will be used for sorting.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-dir</span> <span class="pre">&lt;direction&gt;</span></code></dt>
+<dd>Sort direction: &quot;asc&quot; (the default) or &quot;desc&quot;.</dd>
+</dl>
+</div>
+<div class="section" id="watcher-service-show">
+<span id="id24"></span><h3>watcher service show<a class="headerlink" href="watcher.html#watcher-service-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher service show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                            [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                            [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                            &lt;service&gt;</span>
+</pre></div>
+</div>
+<p>Show detailed information about a given service.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;service&gt;</span></code></dt>
+<dd>ID or name of the service</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="watcher-strategy-list">
+<span id="id25"></span><h3>watcher strategy list<a class="headerlink" href="watcher.html#watcher-strategy-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher strategy list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                             [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                             [--print-empty] [--noindent]</span>
+<span class="go">                             [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                             [--goal &lt;goal&gt;] [--detail] [--limit &lt;limit&gt;]</span>
+<span class="go">                             [--sort-key &lt;field&gt;] [--sort-dir &lt;direction&gt;]</span>
+</pre></div>
+</div>
+<p>List information on retrieved strategies.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--goal</span> <span class="pre">&lt;goal&gt;</span></code></dt>
+<dd>UUID or name of the goal</dd>
+<dt><code class="docutils literal"><span class="pre">--detail</span></code></dt>
+<dd>Show detailed information about each strategy.</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;limit&gt;</span></code></dt>
+<dd>Maximum number of strategies to return per request, 0
+for no limit. Default is the maximum number used by
+the Watcher API Service.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-key</span> <span class="pre">&lt;field&gt;</span></code></dt>
+<dd>Goal field that will be used for sorting.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort-dir</span> <span class="pre">&lt;direction&gt;</span></code></dt>
+<dd>Sort direction: &quot;asc&quot; (the default) or &quot;desc&quot;.</dd>
+</dl>
+</div>
+<div class="section" id="watcher-strategy-show">
+<span id="id26"></span><h3>watcher strategy show<a class="headerlink" href="watcher.html#watcher-strategy-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: watcher strategy show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                             [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                             [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                             &lt;strategy&gt;</span>
+</pre></div>
+</div>
+<p>Show detailed information about a given strategy.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">&lt;strategy&gt;</span></code></dt>
+<dd>UUID or name of the strategy</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="glance-property-keys.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Image service property keys"></i></a>
+          
+          
+            <a href="barbican.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Key Manager service (barbican) command-line client"></i></a>
+          
+            <a id="logABugLink3" href="watcher.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="watcher.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="murano.html">Application Catalog service (murano) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="freezer.html">Backup, Restore, and Disaster Recovery service (freezer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ironic.html">Bare Metal service (ironic) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cinder.html">Block Storage service (cinder) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="senlin.html">Clustering service (senlin) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute service (nova) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnum.html">Container Infrastructure Management service (magnum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database service (trove) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="designate.html">DNS service (designate) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image service (glance) command-line clients</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="watcher.html#">Infrastructure Optimization service (watcher) command-line client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="watcher.html#watcher-usage">watcher usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="watcher.html#watcher-optional-arguments">watcher optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="barbican.html">Key Manager service (barbican) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monasca.html">Monitoring (monasca) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networking.html">Networking service (neutron) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tacker.html">NFV Orchestration service (tacker) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="swift.html">Object Storage service (swift) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heat.html">Orchestration service (heat) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloudkitty.html">Rating service (cloudkitty) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vitrage.html">RCA (Root Cause Analysis) service (vitrage) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manila.html">Shared File Systems service (manila) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solum.html">Software Development Lifecycle Automation service (solum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aodh.html">Telemetry Alarming service (aodh) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ceilometer.html">Telemetry Data Collection service (ceilometer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gnocchi.html">A time series storage and resources index service (gnocchi) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mistral.html">Workflow service (mistral) command-line client</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "watcher" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/cli-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "Infrastructure Optimization service (watcher) command-line client in Command-Line Interface Reference";
+    var fieldTags = "cli-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:39";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

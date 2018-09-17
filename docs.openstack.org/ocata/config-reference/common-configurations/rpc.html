@@ -1,0 +1,845 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: RPC messaging configurations</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="../_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="../_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="../_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="../_static/css/combined.css" rel="stylesheet">
+<link href="../_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+<link rel="stylesheet" href="../_static/sphinxmark.css" type="text/css" />
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>RPC messaging configurations</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="policy.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Policy configurations"></i></a>
+    
+    
+    <a href="healthcheck.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Healthcheck middleware plug-ins"></i></a>
+    
+    <a id="logABugLink1" href="rpc.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:41</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="../index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="rpc.html#">RPC messaging configurations</a><ul>
+<li><a class="reference internal" href="rpc.html#configure-messaging">Configure messaging</a></li>
+<li><a class="reference internal" href="rpc.html#configure-rabbitmq">Configure RabbitMQ</a></li>
+<li><a class="reference internal" href="rpc.html#configure-zeromq">Configure ZeroMQ</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="rpc-messaging-configurations">
+<h1>RPC messaging configurations<a class="headerlink" href="rpc.html#rpc-messaging-configurations" title="Permalink to this headline">¶</a></h1>
+<p>OpenStack services use advanced message queuing protocol (AMQP),
+an open standard for messaging middleware.
+This messaging middleware enables the OpenStack services that run on
+multiple servers to talk to each other. OpenStack Oslo RPC supports
+two implementations of AMQP: RabbitMQ and ZeroMQ.</p>
+<div class="section" id="configure-messaging">
+<h2>Configure messaging<a class="headerlink" href="rpc.html#configure-messaging" title="Permalink to this headline">¶</a></h2>
+<p>Use these options to configure the RPC messaging driver.</p>
+<span id="common-amqp"></span><table border="1" class="config-ref-table docutils" id="id1">
+<caption><span class="caption-text">Description of AMQP configuration options</span><a class="headerlink" href="rpc.html#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[DEFAULT]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">control_exchange</span></code> = <code class="docutils literal"><span class="pre">openstack</span></code></td>
+<td>(String) The default exchange under which topics are scoped. May be overridden by an exchange name specified in the transport_url option.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">default_publisher_id</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) Default publisher_id for outgoing notifications</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">transport_url</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) A URL representing the messaging driver to use and its full configuration. If not set, we fall back to the rpc_backend option and driver specific configuration.</td>
+</tr>
+</tbody>
+</table>
+<span id="common-rpc"></span><table border="1" class="config-ref-table docutils" id="id2">
+<caption><span class="caption-text">Description of RPC configuration options</span><a class="headerlink" href="rpc.html#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[DEFAULT]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">notification_format</span></code> = <code class="docutils literal"><span class="pre">both</span></code></td>
+<td>(String) Specifies which notification format shall be used by nova.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rpc_backend</span></code> = <code class="docutils literal"><span class="pre">rabbit</span></code></td>
+<td>(String) The messaging driver to use, defaults to rabbit. Other drivers include amqp and zmq.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">rpc_cast_timeout</span></code> = <code class="docutils literal"><span class="pre">-1</span></code></td>
+<td>(Integer) Seconds to wait before a cast expires (TTL). The default value of -1 specifies an infinite linger period. The value of 0 specifies no linger period. Pending messages shall be discarded immediately when the socket is closed. Only supported by impl_zmq.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rpc_conn_pool_size</span></code> = <code class="docutils literal"><span class="pre">30</span></code></td>
+<td>(Integer) Size of RPC connection pool.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">rpc_poll_timeout</span></code> = <code class="docutils literal"><span class="pre">1</span></code></td>
+<td>(Integer) The default number of seconds that poll should wait. Poll raises timeout exception when timeout expired.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rpc_response_timeout</span></code> = <code class="docutils literal"><span class="pre">60</span></code></td>
+<td>(Integer) Seconds to wait for a response from a call.</td>
+</tr>
+<tr class="row-odd"><td><strong>[cells]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rpc_driver_queue_base</span></code> = <code class="docutils literal"><span class="pre">cells.intercell</span></code></td>
+<td>(String) RPC driver queue base When sending a message to another cell by JSON-ifying the message and making an RPC cast to &#8216;process_message&#8217;, a base queue is used. This option defines the base queue name to be used when communicating between cells. Various topics by message type will be appended to this. Possible values: * The base queue name to be used when communicating between cells. Services which consume this: * nova-cells Related options: * None</td>
+</tr>
+<tr class="row-odd"><td><strong>[oslo_concurrency]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">disable_process_locking</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Enables or disables inter-process locks.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">lock_path</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) Directory to use for lock files. For security, the specified directory should only be writable by the user running the processes that need locking. Defaults to environment variable OSLO_LOCK_PATH. If external locks are used, a lock path must be set.</td>
+</tr>
+<tr class="row-even"><td><strong>[oslo_messaging]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">event_stream_topic</span></code> = <code class="docutils literal"><span class="pre">neutron_lbaas_event</span></code></td>
+<td>(String) topic name for receiving events from a queue</td>
+</tr>
+<tr class="row-even"><td><strong>[oslo_messaging_amqp]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">allow_insecure_clients</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Accept clients using either SSL or plain TCP</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">broadcast_prefix</span></code> = <code class="docutils literal"><span class="pre">broadcast</span></code></td>
+<td>(String) address prefix used when broadcasting to all servers</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">container_name</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) Name for the AMQP container</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">group_request_prefix</span></code> = <code class="docutils literal"><span class="pre">unicast</span></code></td>
+<td>(String) address prefix when sending to any server in group</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">idle_timeout</span></code> = <code class="docutils literal"><span class="pre">0</span></code></td>
+<td>(Integer) Timeout for inactive connections (in seconds)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">password</span></code> =</td>
+<td>(String) Password for message broker authentication</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">sasl_config_dir</span></code> =</td>
+<td>(String) Path to directory that contains the SASL configuration</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">sasl_config_name</span></code> =</td>
+<td>(String) Name of configuration file (without .conf suffix)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">sasl_mechanisms</span></code> =</td>
+<td>(String) Space separated list of acceptable SASL mechanisms</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">server_request_prefix</span></code> = <code class="docutils literal"><span class="pre">exclusive</span></code></td>
+<td>(String) address prefix used when sending to a specific server</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ssl_ca_file</span></code> =</td>
+<td>(String) CA certificate PEM file to verify server certificate</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ssl_cert_file</span></code> =</td>
+<td>(String) Identifying certificate PEM file to present to clients</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ssl_key_file</span></code> =</td>
+<td>(String) Private key PEM file used to sign cert_file certificate</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ssl_key_password</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) Password for decrypting ssl_key_file (if encrypted)</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">trace</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Debug: dump AMQP frames to stdout</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">username</span></code> =</td>
+<td>(String) User name for message broker authentication</td>
+</tr>
+<tr class="row-odd"><td><strong>[oslo_messaging_notifications]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">driver</span></code> = <code class="docutils literal"><span class="pre">[]</span></code></td>
+<td>(Multi-valued) The Drivers(s) to handle sending notifications. Possible values are messaging, messagingv2, routing, log, test, noop</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">topics</span></code> = <code class="docutils literal"><span class="pre">notifications</span></code></td>
+<td>(List) AMQP topic used for OpenStack notifications.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">transport_url</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) A URL representing the messaging driver to use for notifications. If not set, we fall back to the same configuration used for RPC.</td>
+</tr>
+<tr class="row-odd"><td><strong>[upgrade_levels]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">baseapi</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) Set a version cap for messages sent to the base api in any service</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="configure-rabbitmq">
+<h2>Configure RabbitMQ<a class="headerlink" href="rpc.html#configure-rabbitmq" title="Permalink to this headline">¶</a></h2>
+<p>OpenStack Oslo RPC uses <code class="docutils literal"><span class="pre">RabbitMQ</span></code> by default.
+The <code class="docutils literal"><span class="pre">rpc_backend</span></code> option is not required as long as <code class="docutils literal"><span class="pre">RabbitMQ</span></code>
+is the default messaging system. However, if it is included
+in the configuration, you must set it to <code class="docutils literal"><span class="pre">rabbit</span></code>:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="na">rpc_backend</span> <span class="o">=</span> <span class="s">rabbit</span>
+</pre></div>
+</div>
+<p>You can configure messaging communication for different installation
+scenarios, tune retries for RabbitMQ, and define the size of the RPC
+thread pool. To monitor notifications through <code class="docutils literal"><span class="pre">RabbitMQ</span></code>,
+you must set the <code class="docutils literal"><span class="pre">notification_driver</span></code> option to
+<code class="docutils literal"><span class="pre">nova.openstack.common.notifier.rpc_notifier</span></code>.
+The default value for sending usage data is sixty seconds plus
+a random number of seconds from zero to sixty.</p>
+<p>Use the options described in the table below to configure the
+<code class="docutils literal"><span class="pre">RabbitMQ</span></code> message system.</p>
+<span id="oslo-messaging-rabbit"></span><table border="1" class="config-ref-table docutils" id="id3">
+<caption><span class="caption-text">Description of RabbitMQ configuration options</span><a class="headerlink" href="rpc.html#id3" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[oslo_messaging_rabbit]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">amqp_auto_delete</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Auto-delete queues in AMQP.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">amqp_durable_queues</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Use durable queues in AMQP.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">channel_max</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(Integer) Maximum number of channels to allow</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">default_notification_exchange</span></code> = <code class="docutils literal"><span class="pre">${control_exchange}_notification</span></code></td>
+<td>(String) Exchange name for for sending notifications</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">default_notification_retry_attempts</span></code> = <code class="docutils literal"><span class="pre">-1</span></code></td>
+<td>(Integer) Reconnecting retry count in case of connectivity problem during sending notification, -1 means infinite retry.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">default_rpc_exchange</span></code> = <code class="docutils literal"><span class="pre">${control_exchange}_rpc</span></code></td>
+<td>(String) Exchange name for sending RPC messages</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">default_rpc_retry_attempts</span></code> = <code class="docutils literal"><span class="pre">-1</span></code></td>
+<td>(Integer) Reconnecting retry count in case of connectivity problem during sending RPC message, -1 means infinite retry. If actual retry attempts in not 0 the rpc request could be processed more then one time</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">fake_rabbit</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Deprecated, use rpc_backend=kombu+memory or rpc_backend=fake</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">frame_max</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(Integer) The maximum byte size for an AMQP frame</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">heartbeat_interval</span></code> = <code class="docutils literal"><span class="pre">1</span></code></td>
+<td>(Integer) How often to send heartbeats for consumer&#8217;s connections</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">heartbeat_rate</span></code> = <code class="docutils literal"><span class="pre">2</span></code></td>
+<td>(Integer) How often times during the heartbeat_timeout_threshold we check the heartbeat.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">heartbeat_timeout_threshold</span></code> = <code class="docutils literal"><span class="pre">60</span></code></td>
+<td>(Integer) Number of seconds after which the Rabbit broker is considered down if heartbeat&#8217;s keep-alive fails (0 disable the heartbeat). EXPERIMENTAL</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">host_connection_reconnect_delay</span></code> = <code class="docutils literal"><span class="pre">0.25</span></code></td>
+<td>(Floating point) Set delay for reconnection to some host which has connection error</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">kombu_compression</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(String) EXPERIMENTAL: Possible values are: gzip, bz2. If not set compression will not be used. This option may notbe available in future versions.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">kombu_failover_strategy</span></code> = <code class="docutils literal"><span class="pre">round-robin</span></code></td>
+<td>(String) Determines how the next RabbitMQ node is chosen in case the one we are currently connected to becomes unavailable. Takes effect only if more than one RabbitMQ node is provided in config.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">kombu_missing_consumer_retry_timeout</span></code> = <code class="docutils literal"><span class="pre">60</span></code></td>
+<td>(Integer) How long to wait a missing client before abandoning to send it its replies. This value should not be longer than rpc_response_timeout.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">kombu_reconnect_delay</span></code> = <code class="docutils literal"><span class="pre">1.0</span></code></td>
+<td>(Floating point) How long to wait before reconnecting in response to an AMQP consumer cancel notification.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">kombu_ssl_ca_certs</span></code> =</td>
+<td>(String) SSL certification authority file (valid only if SSL enabled).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">kombu_ssl_certfile</span></code> =</td>
+<td>(String) SSL cert file (valid only if SSL enabled).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">kombu_ssl_keyfile</span></code> =</td>
+<td>(String) SSL key file (valid only if SSL enabled).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">kombu_ssl_version</span></code> =</td>
+<td>(String) SSL version to use (valid only if SSL enabled). Valid values are TLSv1 and SSLv23. SSLv2, SSLv3, TLSv1_1, and TLSv1_2 may be available on some distributions.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">notification_listener_prefetch_count</span></code> = <code class="docutils literal"><span class="pre">100</span></code></td>
+<td>(Integer) Max number of not acknowledged message which RabbitMQ can send to notification listener.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">notification_persistence</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Persist notification messages.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">notification_retry_delay</span></code> = <code class="docutils literal"><span class="pre">0.25</span></code></td>
+<td>(Floating point) Reconnecting retry delay in case of connectivity problem during sending notification message</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">pool_max_overflow</span></code> = <code class="docutils literal"><span class="pre">0</span></code></td>
+<td>(Integer) Maximum number of connections to create above <cite>pool_max_size</cite>.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">pool_max_size</span></code> = <code class="docutils literal"><span class="pre">10</span></code></td>
+<td>(Integer) Maximum number of connections to keep queued.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">pool_recycle</span></code> = <code class="docutils literal"><span class="pre">600</span></code></td>
+<td>(Integer) Lifetime of a connection (since creation) in seconds or None for no recycling. Expired connections are closed on acquire.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">pool_stale</span></code> = <code class="docutils literal"><span class="pre">60</span></code></td>
+<td>(Integer) Threshold at which inactive (since release) connections are considered stale in seconds or None for no staleness. Stale connections are closed on acquire.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">pool_timeout</span></code> = <code class="docutils literal"><span class="pre">30</span></code></td>
+<td>(Integer) Default number of seconds to wait for a connections to available</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rabbit_ha_queues</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Try to use HA queues in RabbitMQ (x-ha-policy: all). If you change this option, you must wipe the RabbitMQ database. In RabbitMQ 3.0, queue mirroring is no longer controlled by the x-ha-policy argument when declaring a queue. If you just want to make sure that all queues (except those with auto-generated names) are mirrored across all nodes, run: &#8220;rabbitmqctl set_policy HA &#8216;^(?!amq.).*&#8217; &#8216;{&#8220;ha-mode&#8221;: &#8220;all&#8221;}&#8217; &#8220;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">rabbit_host</span></code> = <code class="docutils literal"><span class="pre">localhost</span></code></td>
+<td>(String) The RabbitMQ broker address where a single node is used.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rabbit_hosts</span></code> = <code class="docutils literal"><span class="pre">$rabbit_host:$rabbit_port</span></code></td>
+<td>(List) RabbitMQ HA cluster host:port pairs.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">rabbit_interval_max</span></code> = <code class="docutils literal"><span class="pre">30</span></code></td>
+<td>(Integer) Maximum interval of RabbitMQ connection retries. Default is 30 seconds.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rabbit_login_method</span></code> = <code class="docutils literal"><span class="pre">AMQPLAIN</span></code></td>
+<td>(String) The RabbitMQ login method.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">rabbit_max_retries</span></code> = <code class="docutils literal"><span class="pre">0</span></code></td>
+<td>(Integer) Maximum number of RabbitMQ connection retries. Default is 0 (infinite retry count).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rabbit_password</span></code> = <code class="docutils literal"><span class="pre">guest</span></code></td>
+<td>(String) The RabbitMQ password.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">rabbit_port</span></code> = <code class="docutils literal"><span class="pre">5672</span></code></td>
+<td>(Port number) The RabbitMQ broker port where a single node is used.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rabbit_qos_prefetch_count</span></code> = <code class="docutils literal"><span class="pre">0</span></code></td>
+<td>(Integer) Specifies the number of messages to prefetch. Setting to zero allows unlimited messages.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">rabbit_retry_backoff</span></code> = <code class="docutils literal"><span class="pre">2</span></code></td>
+<td>(Integer) How long to backoff for between retries when connecting to RabbitMQ.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rabbit_retry_interval</span></code> = <code class="docutils literal"><span class="pre">1</span></code></td>
+<td>(Integer) How frequently to retry connecting with RabbitMQ.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">rabbit_transient_queues_ttl</span></code> = <code class="docutils literal"><span class="pre">1800</span></code></td>
+<td>(Integer) Positive integer representing duration in seconds for queue TTL (x-expires). Queues which are unused for the duration of the TTL are automatically deleted. The parameter affects only reply and fanout queues.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rabbit_use_ssl</span></code> = <code class="docutils literal"><span class="pre">False</span></code></td>
+<td>(Boolean) Connect over SSL for RabbitMQ.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">rabbit_userid</span></code> = <code class="docutils literal"><span class="pre">guest</span></code></td>
+<td>(String) The RabbitMQ userid.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rabbit_virtual_host</span></code> = <code class="docutils literal"><span class="pre">/</span></code></td>
+<td>(String) The RabbitMQ virtual host.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">rpc_listener_prefetch_count</span></code> = <code class="docutils literal"><span class="pre">100</span></code></td>
+<td>(Integer) Max number of not acknowledged message which RabbitMQ can send to rpc listener.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rpc_queue_expiration</span></code> = <code class="docutils literal"><span class="pre">60</span></code></td>
+<td>(Integer) Time to live for rpc queues without consumers in seconds.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">rpc_reply_exchange</span></code> = <code class="docutils literal"><span class="pre">${control_exchange}_rpc_reply</span></code></td>
+<td>(String) Exchange name for receiving RPC replies</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rpc_reply_listener_prefetch_count</span></code> = <code class="docutils literal"><span class="pre">100</span></code></td>
+<td>(Integer) Max number of not acknowledged message which RabbitMQ can send to rpc reply listener.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">rpc_reply_retry_attempts</span></code> = <code class="docutils literal"><span class="pre">-1</span></code></td>
+<td>(Integer) Reconnecting retry count in case of connectivity problem during sending reply. -1 means infinite retry during rpc_timeout</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rpc_reply_retry_delay</span></code> = <code class="docutils literal"><span class="pre">0.25</span></code></td>
+<td>(Floating point) Reconnecting retry delay in case of connectivity problem during sending reply.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">rpc_retry_delay</span></code> = <code class="docutils literal"><span class="pre">0.25</span></code></td>
+<td>(Floating point) Reconnecting retry delay in case of connectivity problem during sending RPC message</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">socket_timeout</span></code> = <code class="docutils literal"><span class="pre">0.25</span></code></td>
+<td>(Floating point) Set socket timeout in seconds for connection&#8217;s socket</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">ssl</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(Boolean) Enable SSL</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">ssl_options</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(Dict) Arguments passed to ssl.wrap_socket</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">tcp_user_timeout</span></code> = <code class="docutils literal"><span class="pre">0.25</span></code></td>
+<td>(Floating point) Set TCP_USER_TIMEOUT in seconds for connection&#8217;s socket</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="configure-zeromq">
+<h2>Configure ZeroMQ<a class="headerlink" href="rpc.html#configure-zeromq" title="Permalink to this headline">¶</a></h2>
+<p>Use these options to configure the <code class="docutils literal"><span class="pre">ZeroMQ</span></code> messaging system for OpenStack
+Oslo RPC. <code class="docutils literal"><span class="pre">ZeroMQ</span></code> is not the default messaging system, so you must enable
+it by setting the <code class="docutils literal"><span class="pre">rpc_backend</span></code> option.</p>
+<span id="common-zeromq"></span><table border="1" class="config-ref-table docutils" id="id4">
+<caption><span class="caption-text">Description of ZeroMQ configuration options</span><a class="headerlink" href="rpc.html#id4" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Configuration option = Default value</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>[DEFAULT]</strong></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">rpc_zmq_bind_address</span></code> = <code class="docutils literal"><span class="pre">*</span></code></td>
+<td>(String) ZeroMQ bind address. Should be a wildcard (*), an ethernet interface, or IP. The &#8220;host&#8221; option should point or resolve to this address.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rpc_zmq_bind_port_retries</span></code> = <code class="docutils literal"><span class="pre">100</span></code></td>
+<td>(Integer) Number of retries to find free port number before fail with ZMQBindError.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">rpc_zmq_concurrency</span></code> = <code class="docutils literal"><span class="pre">eventlet</span></code></td>
+<td>(String) Type of concurrency used. Either &#8220;native&#8221; or &#8220;eventlet&#8221;</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rpc_zmq_contexts</span></code> = <code class="docutils literal"><span class="pre">1</span></code></td>
+<td>(Integer) Number of ZeroMQ contexts, defaults to 1.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">rpc_zmq_host</span></code> = <code class="docutils literal"><span class="pre">localhost</span></code></td>
+<td>(String) Name of this node. Must be a valid hostname, FQDN, or IP address. Must match &#8220;host&#8221; option, if running Nova.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rpc_zmq_ipc_dir</span></code> = <code class="docutils literal"><span class="pre">/var/run/openstack</span></code></td>
+<td>(String) Directory for holding IPC sockets.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">rpc_zmq_matchmaker</span></code> = <code class="docutils literal"><span class="pre">redis</span></code></td>
+<td>(String) MatchMaker driver.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rpc_zmq_max_port</span></code> = <code class="docutils literal"><span class="pre">65536</span></code></td>
+<td>(Integer) Maximal port number for random ports range.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">rpc_zmq_min_port</span></code> = <code class="docutils literal"><span class="pre">49152</span></code></td>
+<td>(Port number) Minimal port number for random ports range.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">rpc_zmq_topic_backlog</span></code> = <code class="docutils literal"><span class="pre">None</span></code></td>
+<td>(Integer) Maximum number of ingress messages to locally buffer per topic. Default is unlimited.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">use_pub_sub</span></code> = <code class="docutils literal"><span class="pre">True</span></code></td>
+<td>(Boolean) Use PUB/SUB pattern for fanout methods. PUB/SUB always uses proxy.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">zmq_target_expire</span></code> = <code class="docutils literal"><span class="pre">120</span></code></td>
+<td>(Integer) Expiration timeout in seconds of a name service record about existing target ( &lt; 0 means no timeout).</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="policy.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Policy configurations"></i></a>
+          
+          
+            <a href="healthcheck.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Healthcheck middleware plug-ins"></i></a>
+          
+            <a id="logABugLink3" href="rpc.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:41</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="../_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="rpc.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="../index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../config-overview.html">OpenStack configuration overview</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../common-configurations.html">Common configurations</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="auth.html">Authentication and authorization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cache.html">Cache configurations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="database.html">Database configurations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging.html">Logging configurations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="policy.html">Policy configurations</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="rpc.html#">RPC messaging configurations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="healthcheck.html">Healthcheck middleware plug-ins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cors.html">Cross-origin resource sharing</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../application-catalog.html">Application Catalog service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../bare-metal.html">Bare Metal service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../block-storage.html">Block Storage service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clustering.html">Clustering service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../compute.html">Compute service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dashboard.html">Dashboard</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../data-processing.html">Data Processing service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../database.html">Database service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../identity.html">Identity service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../image.html">Image service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../message.html">Message service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../networking.html">Networking service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../object-storage.html">Object Storage service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../orchestration.html">Orchestration service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../shared-file-systems.html">Shared File Systems service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../telemetry.html">Telemetry service</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../policy-yaml-file.html">The policy.yaml file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../policy-json-file.html">The policy.json file</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="../_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="../_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="../_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="../_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="../_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "common-configurations/rpc" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/config-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "RPC messaging configurations in Configuration Reference";
+    var fieldTags = "config-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:41";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

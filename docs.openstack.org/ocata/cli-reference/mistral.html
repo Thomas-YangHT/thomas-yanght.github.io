@@ -1,0 +1,1780 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: Workflow service (mistral) command-line client</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>Workflow service (mistral) command-line client</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="gnocchi.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: A time series storage and resources index service (gnocchi) command-line client"></i></a>
+    
+    
+    <a id="logABugLink1" href="mistral.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="mistral.html#">Workflow service (mistral) command-line client</a><ul>
+<li><a class="reference internal" href="mistral.html#mistral-usage">mistral usage</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-optional-arguments">mistral optional arguments</a><ul>
+<li><a class="reference internal" href="mistral.html#mistral-action-create">mistral action-create</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-action-delete">mistral action-delete</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-action-execution-delete">mistral action-execution-delete</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-action-execution-get">mistral action-execution-get</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-action-execution-get-input">mistral action-execution-get-input</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-action-execution-get-output">mistral action-execution-get-output</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-action-execution-list">mistral action-execution-list</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-action-execution-update">mistral action-execution-update</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-action-get">mistral action-get</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-action-get-definition">mistral action-get-definition</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-action-list">mistral action-list</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-action-update">mistral action-update</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-action-validate">mistral action-validate</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-cron-trigger-create">mistral cron-trigger-create</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-cron-trigger-delete">mistral cron-trigger-delete</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-cron-trigger-get">mistral cron-trigger-get</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-cron-trigger-list">mistral cron-trigger-list</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-environment-create">mistral environment-create</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-environment-delete">mistral environment-delete</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-environment-get">mistral environment-get</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-environment-list">mistral environment-list</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-environment-update">mistral environment-update</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-execution-create">mistral execution-create</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-execution-delete">mistral execution-delete</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-execution-get">mistral execution-get</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-execution-get-input">mistral execution-get-input</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-execution-get-output">mistral execution-get-output</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-execution-list">mistral execution-list</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-execution-update">mistral execution-update</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-member-create">mistral member-create</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-member-delete">mistral member-delete</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-member-get">mistral member-get</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-member-list">mistral member-list</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-member-update">mistral member-update</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-run-action">mistral run-action</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-service-list">mistral service-list</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-task-get">mistral task-get</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-task-get-published">mistral task-get-published</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-task-get-result">mistral task-get-result</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-task-list">mistral task-list</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-task-rerun">mistral task-rerun</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-workbook-create">mistral workbook-create</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-workbook-delete">mistral workbook-delete</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-workbook-get">mistral workbook-get</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-workbook-get-definition">mistral workbook-get-definition</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-workbook-list">mistral workbook-list</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-workbook-update">mistral workbook-update</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-workbook-validate">mistral workbook-validate</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-workflow-create">mistral workflow-create</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-workflow-delete">mistral workflow-delete</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-workflow-get">mistral workflow-get</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-workflow-get-definition">mistral workflow-get-definition</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-workflow-list">mistral workflow-list</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-workflow-update">mistral workflow-update</a></li>
+<li><a class="reference internal" href="mistral.html#mistral-workflow-validate">mistral workflow-validate</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="workflow-service-mistral-command-line-client">
+<h1>Workflow service (mistral) command-line client<a class="headerlink" href="mistral.html#workflow-service-mistral-command-line-client" title="Permalink to this headline">¶</a></h1>
+<p>The mistral client is the command-line interface (CLI) for
+the Workflow service (mistral) API and its extensions.</p>
+<p>This chapter documents <strong class="command">mistral</strong> version <code class="docutils literal"><span class="pre">3.0.0</span></code>.</p>
+<p>For help on a specific <strong class="command">mistral</strong> command, enter:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> mistral <span class="nb">help</span> COMMAND
+</pre></div>
+</div>
+<div class="section" id="mistral-usage">
+<span id="mistral-command-usage"></span><h2>mistral usage<a class="headerlink" href="mistral.html#mistral-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral [--version] [-v] [--log-file LOG_FILE] [-q] [-h] [--debug]</span>
+<span class="go">               [--os-mistral-url MISTRAL_URL]</span>
+<span class="go">               [--os-mistral-version MISTRAL_VERSION]</span>
+<span class="go">               [--os-mistral-service-type SERVICE_TYPE]</span>
+<span class="go">               [--os-mistral-endpoint-type ENDPOINT_TYPE]</span>
+<span class="go">               [--os-username USERNAME] [--os-password PASSWORD]</span>
+<span class="go">               [--os-tenant-id TENANT_ID] [--os-tenant-name TENANT_NAME]</span>
+<span class="go">               [--os-auth-token TOKEN]</span>
+<span class="go">               [--os-project-domain-name PROJECT_DOMAIN_NAME]</span>
+<span class="go">               [--os-user-domain-name USER_DOMAIN_NAME]</span>
+<span class="go">               [--os-auth-url AUTH_URL] [--os-cert OS_CERT] [--os-key OS_KEY]</span>
+<span class="go">               [--os-cacert OS_CACERT] [--os-region-name REGION_NAME]</span>
+<span class="go">               [--insecure] [--auth-type AUTH_TYPE]</span>
+<span class="go">               [--openid-client-id CLIENT_ID]</span>
+<span class="go">               [--openid-client-secret CLIENT_SECRET]</span>
+<span class="go">               [--os-target-username TARGET_USERNAME]</span>
+<span class="go">               [--os-target-password TARGET_PASSWORD]</span>
+<span class="go">               [--os-target-tenant-id TARGET_TENANT_ID]</span>
+<span class="go">               [--os-target-tenant-name TARGET_TENANT_NAME]</span>
+<span class="go">               [--os-target-auth-token TARGET_TOKEN]</span>
+<span class="go">               [--os-target-auth-url TARGET_AUTH_URL]</span>
+<span class="go">               [--os-target_cacert TARGET_CACERT]</span>
+<span class="go">               [--os-target-region-name TARGET_REGION_NAME]</span>
+<span class="go">               [--os-target-user-domain-name TARGET_USER_DOMAIN_NAME]</span>
+<span class="go">               [--os-target-project-domain-name TARGET_PROJECT_DOMAIN_NAME]</span>
+<span class="go">               [--target_insecure] [--profile HMAC_KEY]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="mistral-optional-arguments">
+<span id="mistral-command-options"></span><h2>mistral optional arguments<a class="headerlink" href="mistral.html#mistral-optional-arguments" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--version</span></code></dt>
+<dd>Show program's version number and exit.</dd>
+<dt><code class="docutils literal"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></dt>
+<dd>Increase verbosity of output. Can be repeated.</dd>
+<dt><code class="docutils literal"><span class="pre">--log-file</span> <span class="pre">LOG_FILE</span></code></dt>
+<dd>Specify a file to log output. Disabled by
+default.</dd>
+<dt><code class="docutils literal"><span class="pre">-q,</span> <span class="pre">--quiet</span></code></dt>
+<dd>Suppress output except warnings and errors.</dd>
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>Show this help message and exit.</dd>
+<dt><code class="docutils literal"><span class="pre">--debug</span></code></dt>
+<dd>Show tracebacks on errors.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-mistral-url</span> <span class="pre">MISTRAL_URL</span></code></dt>
+<dd>Mistral API host (Env: OS_MISTRAL_URL)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-mistral-version</span> <span class="pre">MISTRAL_VERSION</span></code></dt>
+<dd>Mistral API version (default = v2) (Env:
+OS_MISTRAL_VERSION)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-mistral-service-type</span> <span class="pre">SERVICE_TYPE</span></code></dt>
+<dd>Mistral service-type (should be the same name
+as in keystone-endpoint) (default =
+workflowv2) (Env: OS_MISTRAL_SERVICE_TYPE)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-mistral-endpoint-type</span> <span class="pre">ENDPOINT_TYPE</span></code></dt>
+<dd>Mistral endpoint-type (should be the same name
+as in keystone-endpoint) (default = publicURL)
+(Env: OS_MISTRAL_ENDPOINT_TYPE)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-username</span> <span class="pre">USERNAME</span></code></dt>
+<dd>Authentication username (Env: OS_USERNAME)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-password</span> <span class="pre">PASSWORD</span></code></dt>
+<dd>Authentication password (Env: OS_PASSWORD)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-id</span> <span class="pre">TENANT_ID</span></code></dt>
+<dd>Authentication tenant identifier (Env:
+OS_TENANT_ID)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-name</span> <span class="pre">TENANT_NAME</span></code></dt>
+<dd>Authentication tenant name (Env:
+OS_TENANT_NAME)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-token</span> <span class="pre">TOKEN</span></code></dt>
+<dd>Authentication token (Env: OS_AUTH_TOKEN)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-name</span> <span class="pre">PROJECT_DOMAIN_NAME</span></code></dt>
+<dd>Authentication project domain name (Env:
+OS_PROJECT_DOMAIN_NAME)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-name</span> <span class="pre">USER_DOMAIN_NAME</span></code></dt>
+<dd>Authentication user domain name (Env:
+OS_USER_DOMAIN_NAME)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-url</span> <span class="pre">AUTH_URL</span></code></dt>
+<dd>Authentication URL (Env: OS_AUTH_URL)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-cert</span> <span class="pre">OS_CERT</span></code></dt>
+<dd>Client Certificate (Env: OS_CERT)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-key</span> <span class="pre">OS_KEY</span></code></dt>
+<dd>Client Key (Env: OS_KEY)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-cacert</span> <span class="pre">OS_CACERT</span></code></dt>
+<dd>Authentication CA Certificate (Env: OS_CACERT)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-region-name</span> <span class="pre">REGION_NAME</span></code></dt>
+<dd>Region name (Env: OS_REGION_NAME)</dd>
+<dt><code class="docutils literal"><span class="pre">--insecure</span></code></dt>
+<dd>Disables SSL/TLS certificate verification
+(Env: MISTRALCLIENT_INSECURE)</dd>
+<dt><code class="docutils literal"><span class="pre">--auth-type</span> <span class="pre">AUTH_TYPE</span></code></dt>
+<dd>Authentication type. Valid options are:
+['keystone', 'keycloak-oidc']. (Env:
+MISTRAL_AUTH_TYPE)</dd>
+<dt><code class="docutils literal"><span class="pre">--openid-client-id</span> <span class="pre">CLIENT_ID</span></code></dt>
+<dd>Client ID (according to OpenID Connect). (Env:
+OPENID_CLIENT_ID)</dd>
+<dt><code class="docutils literal"><span class="pre">--openid-client-secret</span> <span class="pre">CLIENT_SECRET</span></code></dt>
+<dd>Client secret (according to OpenID Connect)
+(Env: OPENID_CLIENT_SECRET)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-target-username</span> <span class="pre">TARGET_USERNAME</span></code></dt>
+<dd>Authentication username for target cloud (Env:
+OS_TARGET_USERNAME)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-target-password</span> <span class="pre">TARGET_PASSWORD</span></code></dt>
+<dd>Authentication password for target cloud (Env:
+OS_TARGET_PASSWORD)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-target-tenant-id</span> <span class="pre">TARGET_TENANT_ID</span></code></dt>
+<dd>Authentication tenant identifier for target
+cloud (Env: OS_TARGET_TENANT_ID)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-target-tenant-name</span> <span class="pre">TARGET_TENANT_NAME</span></code></dt>
+<dd>Authentication tenant name for target cloud
+(Env: OS_TARGET_TENANT_NAME)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-target-auth-token</span> <span class="pre">TARGET_TOKEN</span></code></dt>
+<dd>Authentication token for target cloud (Env:
+OS_TARGET_AUTH_TOKEN)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-target-auth-url</span> <span class="pre">TARGET_AUTH_URL</span></code></dt>
+<dd>Authentication URL for target cloud (Env:
+OS_TARGET_AUTH_URL)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-target_cacert</span> <span class="pre">TARGET_CACERT</span></code></dt>
+<dd>Authentication CA Certificate for target cloud
+(Env: OS_TARGET_CACERT)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-target-region-name</span> <span class="pre">TARGET_REGION_NAME</span></code></dt>
+<dd>Region name for target cloud(Env:
+OS_TARGET_REGION_NAME)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-target-user-domain-name</span> <span class="pre">TARGET_USER_DOMAIN_NAME</span></code></dt>
+<dd>User domain name for target cloud(Env:
+OS_TARGET_USER_DOMAIN_NAME)</dd>
+<dt><code class="docutils literal"><span class="pre">--os-target-project-domain-name</span> <span class="pre">TARGET_PROJECT_DOMAIN_NAME</span></code></dt>
+<dd>Project domain name for target cloud(Env:
+OS_TARGET_PROJECT_DOMAIN_NAME)</dd>
+<dt><code class="docutils literal"><span class="pre">--target_insecure</span></code></dt>
+<dd>Disables SSL/TLS certificate verification for
+target cloud (Env:
+TARGET_MISTRALCLIENT_INSECURE)</dd>
+<dt><code class="docutils literal"><span class="pre">--profile</span> <span class="pre">HMAC_KEY</span></code></dt>
+<dd>HMAC key to use for encrypting context data
+for performance profiling of operation. This
+key should be one of the values configured for
+the osprofiler middleware in mistral, it is
+specified in the profiler section of the
+mistral configuration (i.e.
+/etc/mistral/mistral.conf). Without the key,
+profiling will not be triggered even if
+osprofiler is enabled on the server side.</dd>
+</dl>
+<div class="section" id="mistral-action-create">
+<span id="id1"></span><h3>mistral action-create<a class="headerlink" href="mistral.html#mistral-action-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral action-create [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                             [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                             [--print-empty] [--noindent]</span>
+<span class="go">                             [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                             [--public]</span>
+<span class="go">                             definition</span>
+</pre></div>
+</div>
+<p>Create new action.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">definition</span></code></dt>
+<dd>Action definition file</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--public</span></code></dt>
+<dd>With this flag action will be marked as &quot;public&quot;.</dd>
+</dl>
+</div>
+<div class="section" id="mistral-action-delete">
+<span id="id2"></span><h3>mistral action-delete<a class="headerlink" href="mistral.html#mistral-action-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral action-delete [-h] action [action ...]</span>
+</pre></div>
+</div>
+<p>Delete action.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">action</span></code></dt>
+<dd>Name or ID of action(s).</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-action-execution-delete">
+<span id="id3"></span><h3>mistral action-execution-delete<a class="headerlink" href="mistral.html#mistral-action-execution-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral action-execution-delete [-h]</span>
+<span class="go">                                       action_execution [action_execution ...]</span>
+</pre></div>
+</div>
+<p>Delete action execution.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">action_execution</span></code></dt>
+<dd>Id of action execution identifier(s).</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-action-execution-get">
+<span id="id4"></span><h3>mistral action-execution-get<a class="headerlink" href="mistral.html#mistral-action-execution-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral action-execution-get [-h]</span>
+<span class="go">                                    [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                    [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                    [--print-empty] [--noindent]</span>
+<span class="go">                                    [--prefix PREFIX]</span>
+<span class="go">                                    action_execution</span>
+</pre></div>
+</div>
+<p>Show specific Action execution.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">action_execution</span></code></dt>
+<dd>Action execution ID.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-action-execution-get-input">
+<span id="id5"></span><h3>mistral action-execution-get-input<a class="headerlink" href="mistral.html#mistral-action-execution-get-input" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral action-execution-get-input [-h] id</span>
+</pre></div>
+</div>
+<p>Show Action execution input data.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">id</span></code></dt>
+<dd>Action execution ID.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-action-execution-get-output">
+<span id="id6"></span><h3>mistral action-execution-get-output<a class="headerlink" href="mistral.html#mistral-action-execution-get-output" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral action-execution-get-output [-h] id</span>
+</pre></div>
+</div>
+<p>Show Action execution output data.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">id</span></code></dt>
+<dd>Action execution ID.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-action-execution-list">
+<span id="id7"></span><h3>mistral action-execution-list<a class="headerlink" href="mistral.html#mistral-action-execution-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral action-execution-list [-h]</span>
+<span class="go">                                     [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                                     [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                     [--print-empty] [--noindent]</span>
+<span class="go">                                     [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                                     [task_execution_id]</span>
+</pre></div>
+</div>
+<p>List all Action executions.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">task_execution_id</span></code></dt>
+<dd>Task execution ID.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-action-execution-update">
+<span id="id8"></span><h3>mistral action-execution-update<a class="headerlink" href="mistral.html#mistral-action-execution-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral action-execution-update [-h]</span>
+<span class="go">                                       [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                       [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                       [--print-empty] [--noindent]</span>
+<span class="go">                                       [--prefix PREFIX]</span>
+<span class="go">                                       [--state {IDLE,RUNNING,SUCCESS,ERROR,CANCELLED}]</span>
+<span class="go">                                       [--output OUTPUT]</span>
+<span class="go">                                       id</span>
+</pre></div>
+</div>
+<p>Update specific Action execution.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">id</span></code></dt>
+<dd>Action execution ID.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--state</span> <span class="pre">{IDLE,RUNNING,SUCCESS,ERROR,CANCELLED}</span></code></dt>
+<dd>Action execution state</dd>
+<dt><code class="docutils literal"><span class="pre">--output</span> <span class="pre">OUTPUT</span></code></dt>
+<dd>Action execution output</dd>
+</dl>
+</div>
+<div class="section" id="mistral-action-get">
+<span id="id9"></span><h3>mistral action-get<a class="headerlink" href="mistral.html#mistral-action-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral action-get [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                          [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                          [--noindent] [--prefix PREFIX]</span>
+<span class="go">                          action</span>
+</pre></div>
+</div>
+<p>Show specific action.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">action</span></code></dt>
+<dd>Action (name or ID)</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-action-get-definition">
+<span id="id10"></span><h3>mistral action-get-definition<a class="headerlink" href="mistral.html#mistral-action-get-definition" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral action-get-definition [-h] name</span>
+</pre></div>
+</div>
+<p>Show action definition.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">name</span></code></dt>
+<dd>Action name</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-action-list">
+<span id="id11"></span><h3>mistral action-list<a class="headerlink" href="mistral.html#mistral-action-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral action-list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                           [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                           [--noindent]</span>
+<span class="go">                           [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                           [--filter FILTERS]</span>
+</pre></div>
+</div>
+<p>List all actions.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--filter</span> <span class="pre">FILTERS</span></code></dt>
+<dd>Filters. Can be repeated.</dd>
+</dl>
+</div>
+<div class="section" id="mistral-action-update">
+<span id="id12"></span><h3>mistral action-update<a class="headerlink" href="mistral.html#mistral-action-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral action-update [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                             [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                             [--print-empty] [--noindent]</span>
+<span class="go">                             [--quote {all,minimal,none,nonnumeric}] [--id ID]</span>
+<span class="go">                             [--public]</span>
+<span class="go">                             definition</span>
+</pre></div>
+</div>
+<p>Update action.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">definition</span></code></dt>
+<dd>Action definition file</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--id</span> <span class="pre">ID</span></code></dt>
+<dd>Action ID.</dd>
+<dt><code class="docutils literal"><span class="pre">--public</span></code></dt>
+<dd>With this flag action will be marked as &quot;public&quot;.</dd>
+</dl>
+</div>
+<div class="section" id="mistral-action-validate">
+<span id="id13"></span><h3>mistral action-validate<a class="headerlink" href="mistral.html#mistral-action-validate" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral action-validate [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                               [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                               [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                               definition</span>
+</pre></div>
+</div>
+<p>Validate action.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">definition</span></code></dt>
+<dd>action definition file</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-cron-trigger-create">
+<span id="id14"></span><h3>mistral cron-trigger-create<a class="headerlink" href="mistral.html#mistral-cron-trigger-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral cron-trigger-create [-h]</span>
+<span class="go">                                   [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                   [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                   [--print-empty] [--noindent]</span>
+<span class="go">                                   [--prefix PREFIX] [--params PARAMS]</span>
+<span class="go">                                   [--pattern &lt;* * * * *&gt;]</span>
+<span class="go">                                   [--first-time &lt;YYYY-MM-DD HH:MM&gt;]</span>
+<span class="go">                                   [--count &lt;integer&gt;]</span>
+<span class="go">                                   name workflow_identifier [workflow_input]</span>
+</pre></div>
+</div>
+<p>Create new trigger.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">name</span></code></dt>
+<dd>Cron trigger name</dd>
+<dt><code class="docutils literal"><span class="pre">workflow_identifier</span></code></dt>
+<dd>Workflow name or ID</dd>
+<dt><code class="docutils literal"><span class="pre">workflow_input</span></code></dt>
+<dd>Workflow input</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--params</span> <span class="pre">PARAMS</span></code></dt>
+<dd>Workflow params</dd>
+<dt><code class="docutils literal"><span class="pre">--pattern</span> <span class="pre">&lt;*</span> <span class="pre">*</span> <span class="pre">*</span> <span class="pre">*</span> <span class="pre">*&gt;</span></code></dt>
+<dd>Cron trigger pattern</dd>
+<dt><code class="docutils literal"><span class="pre">--first-time</span> <span class="pre">&lt;YYYY-MM-DD</span> <span class="pre">HH:MM&gt;</span></code></dt>
+<dd>Date and time of the first execution</dd>
+<dt><code class="docutils literal"><span class="pre">--count</span> <span class="pre">&lt;integer&gt;</span></code></dt>
+<dd>Number of wanted executions</dd>
+</dl>
+</div>
+<div class="section" id="mistral-cron-trigger-delete">
+<span id="id15"></span><h3>mistral cron-trigger-delete<a class="headerlink" href="mistral.html#mistral-cron-trigger-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral cron-trigger-delete [-h] cron_trigger [cron_trigger ...]</span>
+</pre></div>
+</div>
+<p>Delete trigger.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">cron_trigger</span></code></dt>
+<dd>Name of cron trigger(s).</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-cron-trigger-get">
+<span id="id16"></span><h3>mistral cron-trigger-get<a class="headerlink" href="mistral.html#mistral-cron-trigger-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral cron-trigger-get [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                                cron_trigger</span>
+</pre></div>
+</div>
+<p>Show specific cron trigger.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">cron_trigger</span></code></dt>
+<dd>Cron trigger name</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-cron-trigger-list">
+<span id="id17"></span><h3>mistral cron-trigger-list<a class="headerlink" href="mistral.html#mistral-cron-trigger-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral cron-trigger-list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                                 [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                 [--print-empty] [--noindent]</span>
+<span class="go">                                 [--quote {all,minimal,none,nonnumeric}]</span>
+</pre></div>
+</div>
+<p>List all cron triggers.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-environment-create">
+<span id="id18"></span><h3>mistral environment-create<a class="headerlink" href="mistral.html#mistral-environment-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral environment-create [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                  [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                  [--print-empty] [--noindent]</span>
+<span class="go">                                  [--prefix PREFIX]</span>
+<span class="go">                                  file</span>
+</pre></div>
+</div>
+<p>Create new environment.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">file</span></code></dt>
+<dd>Environment configuration file in JSON or YAML</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-environment-delete">
+<span id="id19"></span><h3>mistral environment-delete<a class="headerlink" href="mistral.html#mistral-environment-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral environment-delete [-h] environment [environment ...]</span>
+</pre></div>
+</div>
+<p>Delete environment.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">environment</span></code></dt>
+<dd>Name of environment(s).</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-environment-get">
+<span id="id20"></span><h3>mistral environment-get<a class="headerlink" href="mistral.html#mistral-environment-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral environment-get [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                               [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                               [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                               environment</span>
+</pre></div>
+</div>
+<p>Show specific environment.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">environment</span></code></dt>
+<dd>Environment name</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-environment-list">
+<span id="id21"></span><h3>mistral environment-list<a class="headerlink" href="mistral.html#mistral-environment-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral environment-list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                                [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                [--print-empty] [--noindent]</span>
+<span class="go">                                [--quote {all,minimal,none,nonnumeric}]</span>
+</pre></div>
+</div>
+<p>List all environments.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-environment-update">
+<span id="id22"></span><h3>mistral environment-update<a class="headerlink" href="mistral.html#mistral-environment-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral environment-update [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                  [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                  [--print-empty] [--noindent]</span>
+<span class="go">                                  [--prefix PREFIX]</span>
+<span class="go">                                  file</span>
+</pre></div>
+</div>
+<p>Update environment.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">file</span></code></dt>
+<dd>Environment configuration file in JSON or YAML</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-execution-create">
+<span id="id23"></span><h3>mistral execution-create<a class="headerlink" href="mistral.html#mistral-execution-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral execution-create [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                                [-d DESCRIPTION]</span>
+<span class="go">                                workflow_identifier [workflow_input] [params]</span>
+</pre></div>
+</div>
+<p>Create new execution.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">workflow_identifier</span></code></dt>
+<dd>Workflow ID or name. Workflow name will be deprecated
+sinceMitaka.</dd>
+<dt><code class="docutils literal"><span class="pre">workflow_input</span></code></dt>
+<dd>Workflow input</dd>
+<dt><code class="docutils literal"><span class="pre">params</span></code></dt>
+<dd>Workflow additional parameters</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-d</span> <span class="pre">DESCRIPTION,</span> <span class="pre">--description</span> <span class="pre">DESCRIPTION</span></code></dt>
+<dd>Execution description</dd>
+</dl>
+</div>
+<div class="section" id="mistral-execution-delete">
+<span id="id24"></span><h3>mistral execution-delete<a class="headerlink" href="mistral.html#mistral-execution-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral execution-delete [-h] execution [execution ...]</span>
+</pre></div>
+</div>
+<p>Delete execution.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">execution</span></code></dt>
+<dd>Id of execution identifier(s).</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-execution-get">
+<span id="id25"></span><h3>mistral execution-get<a class="headerlink" href="mistral.html#mistral-execution-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral execution-get [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                             [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                             [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                             execution</span>
+</pre></div>
+</div>
+<p>Show specific execution.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">execution</span></code></dt>
+<dd>Execution identifier</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-execution-get-input">
+<span id="id26"></span><h3>mistral execution-get-input<a class="headerlink" href="mistral.html#mistral-execution-get-input" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral execution-get-input [-h] id</span>
+</pre></div>
+</div>
+<p>Show execution input data.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">id</span></code></dt>
+<dd>Execution ID</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-execution-get-output">
+<span id="id27"></span><h3>mistral execution-get-output<a class="headerlink" href="mistral.html#mistral-execution-get-output" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral execution-get-output [-h] id</span>
+</pre></div>
+</div>
+<p>Show execution output data.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">id</span></code></dt>
+<dd>Execution ID</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-execution-list">
+<span id="id28"></span><h3>mistral execution-list<a class="headerlink" href="mistral.html#mistral-execution-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral execution-list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                              [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                              [--print-empty] [--noindent]</span>
+<span class="go">                              [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                              [--task [TASK]] [--marker [MARKER]]</span>
+<span class="go">                              [--limit [LIMIT]] [--sort_keys [SORT_KEYS]]</span>
+<span class="go">                              [--sort_dirs [SORT_DIRS]] [--filter FILTERS]</span>
+</pre></div>
+</div>
+<p>List all executions.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--task</span> <span class="pre">[TASK]</span></code></dt>
+<dd>Parent task execution ID associated with workflow
+execution list.</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">[MARKER]</span></code></dt>
+<dd>The last execution uuid of the previous page, displays
+list of executions after &quot;marker&quot;.</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">[LIMIT]</span></code></dt>
+<dd>Maximum number of executions to return in a single
+result.</dd>
+<dt><code class="docutils literal"><span class="pre">--sort_keys</span> <span class="pre">[SORT_KEYS]</span></code></dt>
+<dd>Comma-separated list of sort keys to sort results by.
+Default: created_at. Example: mistral execution-list
+--sort_keys=id,description</dd>
+<dt><code class="docutils literal"><span class="pre">--sort_dirs</span> <span class="pre">[SORT_DIRS]</span></code></dt>
+<dd>Comma-separated list of sort directions. Default: asc.
+Example: mistral execution-list
+--sort_keys=id,description --sort_dirs=asc,desc</dd>
+<dt><code class="docutils literal"><span class="pre">--filter</span> <span class="pre">FILTERS</span></code></dt>
+<dd>Filters. Can be repeated.</dd>
+</dl>
+</div>
+<div class="section" id="mistral-execution-update">
+<span id="id29"></span><h3>mistral execution-update<a class="headerlink" href="mistral.html#mistral-execution-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral execution-update [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                                [-s {RUNNING,PAUSED,SUCCESS,ERROR,CANCELLED}]</span>
+<span class="go">                                [-e ENV] [-d DESCRIPTION]</span>
+<span class="go">                                id</span>
+</pre></div>
+</div>
+<p>Update execution.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">id</span></code></dt>
+<dd>Execution identifier</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">{RUNNING,PAUSED,SUCCESS,ERROR,CANCELLED},</span> <span class="pre">--state</span> <span class="pre">{RUNNING,PAUSED,SUCCESS,ERROR,CANCELLED}</span></code></dt>
+<dd>Execution state</dd>
+<dt><code class="docutils literal"><span class="pre">-e</span> <span class="pre">ENV,</span> <span class="pre">--env</span> <span class="pre">ENV</span></code></dt>
+<dd>Environment variables</dd>
+<dt><code class="docutils literal"><span class="pre">-d</span> <span class="pre">DESCRIPTION,</span> <span class="pre">--description</span> <span class="pre">DESCRIPTION</span></code></dt>
+<dd>Execution description</dd>
+</dl>
+</div>
+<div class="section" id="mistral-member-create">
+<span id="id30"></span><h3>mistral member-create<a class="headerlink" href="mistral.html#mistral-member-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral member-create [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                             [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                             [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                             resource_id resource_type member_id</span>
+</pre></div>
+</div>
+<p>Shares a resource to another tenant.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">resource_id</span></code></dt>
+<dd>Resource ID to be shared.</dd>
+<dt><code class="docutils literal"><span class="pre">resource_type</span></code></dt>
+<dd>Resource type.</dd>
+<dt><code class="docutils literal"><span class="pre">member_id</span></code></dt>
+<dd>Project ID to whom the resource is shared to.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-member-delete">
+<span id="id31"></span><h3>mistral member-delete<a class="headerlink" href="mistral.html#mistral-member-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral member-delete [-h] resource resource_type member_id</span>
+</pre></div>
+</div>
+<p>Delete a resource sharing relationship.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">resource</span></code></dt>
+<dd>Resource ID to be shared.</dd>
+<dt><code class="docutils literal"><span class="pre">resource_type</span></code></dt>
+<dd>Resource type.</dd>
+<dt><code class="docutils literal"><span class="pre">member_id</span></code></dt>
+<dd>Project ID to whom the resource is shared to.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-member-get">
+<span id="id32"></span><h3>mistral member-get<a class="headerlink" href="mistral.html#mistral-member-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral member-get [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                          [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                          [--noindent] [--prefix PREFIX] [-m MEMBER_ID]</span>
+<span class="go">                          resource resource_type</span>
+</pre></div>
+</div>
+<p>Show specific member information.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">resource</span></code></dt>
+<dd>Resource ID to be shared.</dd>
+<dt><code class="docutils literal"><span class="pre">resource_type</span></code></dt>
+<dd>Resource type.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">MEMBER_ID,</span> <span class="pre">--member-id</span> <span class="pre">MEMBER_ID</span></code></dt>
+<dd>Project ID to whom the resource is shared to. No need
+to provide this param if you are the resource member.</dd>
+</dl>
+</div>
+<div class="section" id="mistral-member-list">
+<span id="id33"></span><h3>mistral member-list<a class="headerlink" href="mistral.html#mistral-member-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral member-list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                           [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                           [--noindent]</span>
+<span class="go">                           [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                           resource_id resource_type</span>
+</pre></div>
+</div>
+<p>List all members.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">resource_id</span></code></dt>
+<dd>Resource id to be shared.</dd>
+<dt><code class="docutils literal"><span class="pre">resource_type</span></code></dt>
+<dd>Resource type.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-member-update">
+<span id="id34"></span><h3>mistral member-update<a class="headerlink" href="mistral.html#mistral-member-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral member-update [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                             [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                             [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                             [-m MEMBER_ID] [-s {pending,accepted,rejected}]</span>
+<span class="go">                             resource_id resource_type</span>
+</pre></div>
+</div>
+<p>Update resource sharing status.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">resource_id</span></code></dt>
+<dd>Resource ID to be shared.</dd>
+<dt><code class="docutils literal"><span class="pre">resource_type</span></code></dt>
+<dd>Resource type.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">MEMBER_ID,</span> <span class="pre">--member-id</span> <span class="pre">MEMBER_ID</span></code></dt>
+<dd>Project ID to whom the resource is shared to. No need
+to provide this param if you are the resource member.</dd>
+<dt><code class="docutils literal"><span class="pre">-s</span> <span class="pre">{pending,accepted,rejected},</span> <span class="pre">--status</span> <span class="pre">{pending,accepted,rejected}</span></code></dt>
+<dd>status of the sharing.</dd>
+</dl>
+</div>
+<div class="section" id="mistral-run-action">
+<span id="id35"></span><h3>mistral run-action<a class="headerlink" href="mistral.html#mistral-run-action" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral run-action [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                          [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                          [--noindent] [--prefix PREFIX] [-s] [--run-sync]</span>
+<span class="go">                          [-t TARGET]</span>
+<span class="go">                          name [input]</span>
+</pre></div>
+</div>
+<p>Create new Action execution or just run specific action.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">name</span></code></dt>
+<dd>Action name to execute.</dd>
+<dt><code class="docutils literal"><span class="pre">input</span></code></dt>
+<dd>Action input.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-s,</span> <span class="pre">--save-result</span></code></dt>
+<dd>Save the result into DB.</dd>
+<dt><code class="docutils literal"><span class="pre">--run-sync</span></code></dt>
+<dd>Run the action synchronously.</dd>
+<dt><code class="docutils literal"><span class="pre">-t</span> <span class="pre">TARGET,</span> <span class="pre">--target</span> <span class="pre">TARGET</span></code></dt>
+<dd>Action will be executed on &lt;target&gt; executor.</dd>
+</dl>
+</div>
+<div class="section" id="mistral-service-list">
+<span id="id36"></span><h3>mistral service-list<a class="headerlink" href="mistral.html#mistral-service-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral service-list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                            [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                            [--print-empty] [--noindent]</span>
+<span class="go">                            [--quote {all,minimal,none,nonnumeric}]</span>
+</pre></div>
+</div>
+<p>List all services.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-task-get">
+<span id="id37"></span><h3>mistral task-get<a class="headerlink" href="mistral.html#mistral-task-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral task-get [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                        [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                        [--noindent] [--prefix PREFIX]</span>
+<span class="go">                        task</span>
+</pre></div>
+</div>
+<p>Show specific task.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">task</span></code></dt>
+<dd>Task identifier</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-task-get-published">
+<span id="id38"></span><h3>mistral task-get-published<a class="headerlink" href="mistral.html#mistral-task-get-published" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral task-get-published [-h] id</span>
+</pre></div>
+</div>
+<p>Show task published variables.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">id</span></code></dt>
+<dd>Task ID</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-task-get-result">
+<span id="id39"></span><h3>mistral task-get-result<a class="headerlink" href="mistral.html#mistral-task-get-result" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral task-get-result [-h] id</span>
+</pre></div>
+</div>
+<p>Show task output data.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">id</span></code></dt>
+<dd>Task ID</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-task-list">
+<span id="id40"></span><h3>mistral task-list<a class="headerlink" href="mistral.html#mistral-task-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral task-list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                         [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                         [--noindent] [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                         [--filter FILTERS]</span>
+<span class="go">                         [workflow_execution]</span>
+</pre></div>
+</div>
+<p>List all tasks.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">workflow_execution</span></code></dt>
+<dd>Workflow execution ID associated with list of Tasks.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--filter</span> <span class="pre">FILTERS</span></code></dt>
+<dd>Filters. Can be repeated.</dd>
+</dl>
+</div>
+<div class="section" id="mistral-task-rerun">
+<span id="id41"></span><h3>mistral task-rerun<a class="headerlink" href="mistral.html#mistral-task-rerun" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral task-rerun [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                          [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                          [--noindent] [--prefix PREFIX] [--resume] [-e ENV]</span>
+<span class="go">                          id</span>
+</pre></div>
+</div>
+<p>Rerun an existing task.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">id</span></code></dt>
+<dd>Task identifier</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--resume</span></code></dt>
+<dd>rerun only failed or unstarted action executions for
+with-items task</dd>
+<dt><code class="docutils literal"><span class="pre">-e</span> <span class="pre">ENV,</span> <span class="pre">--env</span> <span class="pre">ENV</span></code></dt>
+<dd>Environment variables</dd>
+</dl>
+</div>
+<div class="section" id="mistral-workbook-create">
+<span id="id42"></span><h3>mistral workbook-create<a class="headerlink" href="mistral.html#mistral-workbook-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral workbook-create [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                               [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                               [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                               definition</span>
+</pre></div>
+</div>
+<p>Create new workbook.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">definition</span></code></dt>
+<dd>Workbook definition file</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-workbook-delete">
+<span id="id43"></span><h3>mistral workbook-delete<a class="headerlink" href="mistral.html#mistral-workbook-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral workbook-delete [-h] workbook [workbook ...]</span>
+</pre></div>
+</div>
+<p>Delete workbook.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">workbook</span></code></dt>
+<dd>Name of workbook(s).</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-workbook-get">
+<span id="id44"></span><h3>mistral workbook-get<a class="headerlink" href="mistral.html#mistral-workbook-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral workbook-get [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                            [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                            [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                            workbook</span>
+</pre></div>
+</div>
+<p>Show specific workbook.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">workbook</span></code></dt>
+<dd>Workbook name</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-workbook-get-definition">
+<span id="id45"></span><h3>mistral workbook-get-definition<a class="headerlink" href="mistral.html#mistral-workbook-get-definition" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral workbook-get-definition [-h] name</span>
+</pre></div>
+</div>
+<p>Show workbook definition.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">name</span></code></dt>
+<dd>Workbook name</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-workbook-list">
+<span id="id46"></span><h3>mistral workbook-list<a class="headerlink" href="mistral.html#mistral-workbook-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral workbook-list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                             [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                             [--print-empty] [--noindent]</span>
+<span class="go">                             [--quote {all,minimal,none,nonnumeric}]</span>
+</pre></div>
+</div>
+<p>List all workbooks.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-workbook-update">
+<span id="id47"></span><h3>mistral workbook-update<a class="headerlink" href="mistral.html#mistral-workbook-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral workbook-update [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                               [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                               [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                               definition</span>
+</pre></div>
+</div>
+<p>Update workbook.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">definition</span></code></dt>
+<dd>Workbook definition file</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-workbook-validate">
+<span id="id48"></span><h3>mistral workbook-validate<a class="headerlink" href="mistral.html#mistral-workbook-validate" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral workbook-validate [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                 [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                 [--print-empty] [--noindent]</span>
+<span class="go">                                 [--prefix PREFIX]</span>
+<span class="go">                                 definition</span>
+</pre></div>
+</div>
+<p>Validate workbook.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">definition</span></code></dt>
+<dd>Workbook definition file</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-workflow-create">
+<span id="id49"></span><h3>mistral workflow-create<a class="headerlink" href="mistral.html#mistral-workflow-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral workflow-create [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                               [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                               [--print-empty] [--noindent]</span>
+<span class="go">                               [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                               [--public]</span>
+<span class="go">                               definition</span>
+</pre></div>
+</div>
+<p>Create new workflow.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">definition</span></code></dt>
+<dd>Workflow definition file.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--public</span></code></dt>
+<dd>With this flag workflow will be marked as &quot;public&quot;.</dd>
+</dl>
+</div>
+<div class="section" id="mistral-workflow-delete">
+<span id="id50"></span><h3>mistral workflow-delete<a class="headerlink" href="mistral.html#mistral-workflow-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral workflow-delete [-h] workflow [workflow ...]</span>
+</pre></div>
+</div>
+<p>Delete workflow.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">workflow</span></code></dt>
+<dd>Name or ID of workflow(s).</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-workflow-get">
+<span id="id51"></span><h3>mistral workflow-get<a class="headerlink" href="mistral.html#mistral-workflow-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral workflow-get [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                            [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                            [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                            workflow</span>
+</pre></div>
+</div>
+<p>Show specific workflow.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">workflow</span></code></dt>
+<dd>Workflow ID or name.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-workflow-get-definition">
+<span id="id52"></span><h3>mistral workflow-get-definition<a class="headerlink" href="mistral.html#mistral-workflow-get-definition" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral workflow-get-definition [-h] identifier</span>
+</pre></div>
+</div>
+<p>Show workflow definition.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">identifier</span></code></dt>
+<dd>Workflow ID or name.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="mistral-workflow-list">
+<span id="id53"></span><h3>mistral workflow-list<a class="headerlink" href="mistral.html#mistral-workflow-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral workflow-list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                             [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                             [--print-empty] [--noindent]</span>
+<span class="go">                             [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                             [--filter FILTERS]</span>
+</pre></div>
+</div>
+<p>List all workflows.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--filter</span> <span class="pre">FILTERS</span></code></dt>
+<dd>Filters. Can be repeated.</dd>
+</dl>
+</div>
+<div class="section" id="mistral-workflow-update">
+<span id="id54"></span><h3>mistral workflow-update<a class="headerlink" href="mistral.html#mistral-workflow-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral workflow-update [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                               [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                               [--print-empty] [--noindent]</span>
+<span class="go">                               [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                               [--id ID] [--public]</span>
+<span class="go">                               definition</span>
+</pre></div>
+</div>
+<p>Update workflow.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">definition</span></code></dt>
+<dd>Workflow definition</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--id</span> <span class="pre">ID</span></code></dt>
+<dd>Workflow ID.</dd>
+<dt><code class="docutils literal"><span class="pre">--public</span></code></dt>
+<dd>With this flag workflow will be marked as &quot;public&quot;.</dd>
+</dl>
+</div>
+<div class="section" id="mistral-workflow-validate">
+<span id="id55"></span><h3>mistral workflow-validate<a class="headerlink" href="mistral.html#mistral-workflow-validate" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: mistral workflow-validate [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                 [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                 [--print-empty] [--noindent]</span>
+<span class="go">                                 [--prefix PREFIX]</span>
+<span class="go">                                 definition</span>
+</pre></div>
+</div>
+<p>Validate workflow.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">definition</span></code></dt>
+<dd>Workflow definition file</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="gnocchi.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: A time series storage and resources index service (gnocchi) command-line client"></i></a>
+          
+          
+            <a id="logABugLink3" href="mistral.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="mistral.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="murano.html">Application Catalog service (murano) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="freezer.html">Backup, Restore, and Disaster Recovery service (freezer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ironic.html">Bare Metal service (ironic) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cinder.html">Block Storage service (cinder) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="senlin.html">Clustering service (senlin) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute service (nova) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnum.html">Container Infrastructure Management service (magnum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database service (trove) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="designate.html">DNS service (designate) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image service (glance) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watcher.html">Infrastructure Optimization service (watcher) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barbican.html">Key Manager service (barbican) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monasca.html">Monitoring (monasca) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networking.html">Networking service (neutron) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tacker.html">NFV Orchestration service (tacker) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="swift.html">Object Storage service (swift) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heat.html">Orchestration service (heat) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloudkitty.html">Rating service (cloudkitty) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vitrage.html">RCA (Root Cause Analysis) service (vitrage) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manila.html">Shared File Systems service (manila) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solum.html">Software Development Lifecycle Automation service (solum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aodh.html">Telemetry Alarming service (aodh) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ceilometer.html">Telemetry Data Collection service (ceilometer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gnocchi.html">A time series storage and resources index service (gnocchi) command-line client</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="mistral.html#">Workflow service (mistral) command-line client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="mistral.html#mistral-usage">mistral usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mistral.html#mistral-optional-arguments">mistral optional arguments</a></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "mistral" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/cli-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "Workflow service (mistral) command-line client in Command-Line Interface Reference";
+    var fieldTags = "cli-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:39";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,1087 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: Key Manager service (barbican) command-line client</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>Key Manager service (barbican) command-line client</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="watcher.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Infrastructure Optimization service (watcher) command-line client"></i></a>
+    
+    
+    <a href="monasca.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Monitoring (monasca) command-line client"></i></a>
+    
+    <a id="logABugLink1" href="barbican.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="barbican.html#">Key Manager service (barbican) command-line client</a><ul>
+<li><a class="reference internal" href="barbican.html#barbican-usage">barbican usage</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-optional-arguments">barbican optional arguments</a><ul>
+<li><a class="reference internal" href="barbican.html#barbican-acl-delete">barbican acl delete</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-acl-get">barbican acl get</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-acl-submit">barbican acl submit</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-acl-user-add">barbican acl user add</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-acl-user-remove">barbican acl user remove</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-ca-get">barbican ca get</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-ca-list">barbican ca list</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-secret-container-create">barbican secret container create</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-secret-container-delete">barbican secret container delete</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-secret-container-get">barbican secret container get</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-secret-container-list">barbican secret container list</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-secret-delete">barbican secret delete</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-secret-get">barbican secret get</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-secret-list">barbican secret list</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-secret-order-create">barbican secret order create</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-secret-order-delete">barbican secret order delete</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-secret-order-get">barbican secret order get</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-secret-order-list">barbican secret order list</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-secret-store">barbican secret store</a></li>
+<li><a class="reference internal" href="barbican.html#barbican-secret-update">barbican secret update</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="key-manager-service-barbican-command-line-client">
+<h1>Key Manager service (barbican) command-line client<a class="headerlink" href="barbican.html#key-manager-service-barbican-command-line-client" title="Permalink to this headline">¶</a></h1>
+<p>The barbican client is the command-line interface (CLI) for
+the Key Manager service (barbican) API and its extensions.</p>
+<p>This chapter documents <strong class="command">barbican</strong> version <code class="docutils literal"><span class="pre">4.2.0</span></code>.</p>
+<p>For help on a specific <strong class="command">barbican</strong> command, enter:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> barbican <span class="nb">help</span> COMMAND
+</pre></div>
+</div>
+<div class="section" id="barbican-usage">
+<span id="barbican-command-usage"></span><h2>barbican usage<a class="headerlink" href="barbican.html#barbican-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican [--version] [-v | -q] [--log-file LOG_FILE] [-h] [--debug]</span>
+<span class="go">                [--no-auth] [--os-identity-api-version &lt;identity-api-version&gt;]</span>
+<span class="go">                [--os-auth-url &lt;auth-url&gt;] [--os-username &lt;auth-user-name&gt;]</span>
+<span class="go">                [--os-user-id &lt;auth-user-id&gt;] [--os-password &lt;auth-password&gt;]</span>
+<span class="go">                [--os-user-domain-id &lt;auth-user-domain-id&gt;]</span>
+<span class="go">                [--os-user-domain-name &lt;auth-user-domain-name&gt;]</span>
+<span class="go">                [--os-tenant-name &lt;auth-tenant-name&gt;]</span>
+<span class="go">                [--os-tenant-id &lt;tenant-id&gt;]</span>
+<span class="go">                [--os-project-id &lt;auth-project-id&gt;]</span>
+<span class="go">                [--os-project-name &lt;auth-project-name&gt;]</span>
+<span class="go">                [--os-project-domain-id &lt;auth-project-domain-id&gt;]</span>
+<span class="go">                [--os-project-domain-name &lt;auth-project-domain-name&gt;]</span>
+<span class="go">                [--os-auth-token &lt;auth-token&gt;] [--endpoint &lt;barbican-url&gt;]</span>
+<span class="go">                [--interface &lt;barbican-interface&gt;]</span>
+<span class="go">                [--service-type &lt;barbican-service-type&gt;]</span>
+<span class="go">                [--service-name &lt;barbican-service-name&gt;]</span>
+<span class="go">                [--region-name &lt;barbican-region-name&gt;]</span>
+<span class="go">                [--barbican-api-version &lt;barbican-api-version&gt;] [--insecure]</span>
+<span class="go">                [--os-cacert &lt;ca-certificate&gt;] [--os-cert &lt;certificate&gt;]</span>
+<span class="go">                [--os-key &lt;key&gt;] [--timeout &lt;seconds&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="barbican-optional-arguments">
+<span id="barbican-command-options"></span><h2>barbican optional arguments<a class="headerlink" href="barbican.html#barbican-optional-arguments" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--version</span></code></dt>
+<dd>show program's version number and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></dt>
+<dd>Increase verbosity of output. Can be repeated.</dd>
+<dt><code class="docutils literal"><span class="pre">-q,</span> <span class="pre">--quiet</span></code></dt>
+<dd>Suppress output except warnings and errors.</dd>
+<dt><code class="docutils literal"><span class="pre">--log-file</span> <span class="pre">LOG_FILE</span></code></dt>
+<dd>Specify a file to log output. Disabled by default.</dd>
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>Show help message and exit.</dd>
+<dt><code class="docutils literal"><span class="pre">--debug</span></code></dt>
+<dd>Show tracebacks on errors.</dd>
+<dt><code class="docutils literal"><span class="pre">--no-auth,</span> <span class="pre">-N</span></code></dt>
+<dd>Do not use authentication.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-identity-api-version</span> <span class="pre">&lt;identity-api-version&gt;</span></code></dt>
+<dd>Specify Identity API version to use. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_IDENTITY_API_VERSION]</span></code> or 3.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-url</span> <span class="pre">&lt;auth-url&gt;,</span> <span class="pre">-A</span> <span class="pre">&lt;auth-url&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_AUTH_URL]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-username</span> <span class="pre">&lt;auth-user-name&gt;,</span> <span class="pre">-U</span> <span class="pre">&lt;auth-user-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USERNAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-id</span> <span class="pre">&lt;auth-user-id&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USER_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-password</span> <span class="pre">&lt;auth-password&gt;,</span> <span class="pre">-P</span> <span class="pre">&lt;auth-password&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PASSWORD]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-id</span> <span class="pre">&lt;auth-user-domain-id&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USER_DOMAIN_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-user-domain-name</span> <span class="pre">&lt;auth-user-domain-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_USER_DOMAIN_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-name</span> <span class="pre">&lt;auth-tenant-name&gt;,</span> <span class="pre">-T</span> <span class="pre">&lt;auth-tenant-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TENANT_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-tenant-id</span> <span class="pre">&lt;tenant-id&gt;,</span> <span class="pre">-I</span> <span class="pre">&lt;tenant-id&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_TENANT_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-id</span> <span class="pre">&lt;auth-project-id&gt;</span></code></dt>
+<dd>Another way to specify tenant ID. This option is
+mutually exclusive with --os-tenant-id. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_PROJECT_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-name</span> <span class="pre">&lt;auth-project-name&gt;</span></code></dt>
+<dd>Another way to specify tenant name. This option is
+mutually exclusive with --os-tenant-name. Defaults to
+<code class="docutils literal"><span class="pre">env[OS_PROJECT_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-id</span> <span class="pre">&lt;auth-project-domain-id&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_DOMAIN_ID]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-project-domain-name</span> <span class="pre">&lt;auth-project-domain-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_PROJECT_DOMAIN_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-token</span> <span class="pre">&lt;auth-token&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[OS_AUTH_TOKEN]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--endpoint</span> <span class="pre">&lt;barbican-url&gt;,</span> <span class="pre">-E</span> <span class="pre">&lt;barbican-url&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[BARBICAN_ENDPOINT]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--interface</span> <span class="pre">&lt;barbican-interface&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[BARBICAN_INTERFACE]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--service-type</span> <span class="pre">&lt;barbican-service-type&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[BARBICAN_SERVICE_TYPE]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--service-name</span> <span class="pre">&lt;barbican-service-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[BARBICAN_SERVICE_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--region-name</span> <span class="pre">&lt;barbican-region-name&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[BARBICAN_REGION_NAME]</span></code>.</dd>
+<dt><code class="docutils literal"><span class="pre">--barbican-api-version</span> <span class="pre">&lt;barbican-api-version&gt;</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[BARBICAN_API_VERSION]</span></code>.</dd>
+</dl>
+<div class="section" id="barbican-acl-delete">
+<span id="id1"></span><h3>barbican acl delete<a class="headerlink" href="barbican.html#barbican-acl-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican acl delete [-h] URI</span>
+</pre></div>
+</div>
+<p>Delete ACLs for a secret or container as identified by its href.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">URI</span></code></dt>
+<dd>The URI reference for the secret or container.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="barbican-acl-get">
+<span id="id2"></span><h3>barbican acl get<a class="headerlink" href="barbican.html#barbican-acl-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican acl get [-h] [-f {csv,html,json,table,value,yaml}] [-c COLUMN]</span>
+<span class="go">                        [--max-width &lt;integer&gt;] [--print-empty] [--noindent]</span>
+<span class="go">                        [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                        URI</span>
+</pre></div>
+</div>
+<p>Retrieve ACLs for a secret or container by providing its href.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">URI</span></code></dt>
+<dd>The URI reference for the secret or container.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="barbican-acl-submit">
+<span id="id3"></span><h3>barbican acl submit<a class="headerlink" href="barbican.html#barbican-acl-submit" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican acl submit [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                           [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                           [--noindent]</span>
+<span class="go">                           [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                           [--user [USERS]]</span>
+<span class="go">                           [--project-access | --no-project-access]</span>
+<span class="go">                           [--operation-type {read}]</span>
+<span class="go">                           URI</span>
+</pre></div>
+</div>
+<p>Submit ACL on a secret or container as identified by its href.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">URI</span></code></dt>
+<dd>The URI reference for the secret or container.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--user</span> <span class="pre">[USERS],</span> <span class="pre">-u</span> <span class="pre">[USERS]</span></code></dt>
+<dd>Keystone userid(s) for ACL.</dd>
+<dt><code class="docutils literal"><span class="pre">--project-access</span></code></dt>
+<dd>Flag to enable project access behavior.</dd>
+<dt><code class="docutils literal"><span class="pre">--no-project-access</span></code></dt>
+<dd>Flag to disable project access behavior.</dd>
+<dt><code class="docutils literal"><span class="pre">--operation-type</span> <span class="pre">{read},</span> <span class="pre">-o</span> <span class="pre">{read}</span></code></dt>
+<dd>Type of Barbican operation ACL is set for</dd>
+</dl>
+</div>
+<div class="section" id="barbican-acl-user-add">
+<span id="id4"></span><h3>barbican acl user add<a class="headerlink" href="barbican.html#barbican-acl-user-add" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican acl user add [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                             [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                             [--print-empty] [--noindent]</span>
+<span class="go">                             [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                             [--user [USERS]]</span>
+<span class="go">                             [--project-access | --no-project-access]</span>
+<span class="go">                             [--operation-type {read}]</span>
+<span class="go">                             URI</span>
+</pre></div>
+</div>
+<p>Add ACL users to a secret or container as identified by its href.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">URI</span></code></dt>
+<dd>The URI reference for the secret or container.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--user</span> <span class="pre">[USERS],</span> <span class="pre">-u</span> <span class="pre">[USERS]</span></code></dt>
+<dd>Keystone userid(s) for ACL.</dd>
+<dt><code class="docutils literal"><span class="pre">--project-access</span></code></dt>
+<dd>Flag to enable project access behavior.</dd>
+<dt><code class="docutils literal"><span class="pre">--no-project-access</span></code></dt>
+<dd>Flag to disable project access behavior.</dd>
+<dt><code class="docutils literal"><span class="pre">--operation-type</span> <span class="pre">{read},</span> <span class="pre">-o</span> <span class="pre">{read}</span></code></dt>
+<dd>Type of Barbican operation ACL is set for</dd>
+</dl>
+</div>
+<div class="section" id="barbican-acl-user-remove">
+<span id="id5"></span><h3>barbican acl user remove<a class="headerlink" href="barbican.html#barbican-acl-user-remove" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican acl user remove [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                                [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                [--print-empty] [--noindent]</span>
+<span class="go">                                [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                                [--user [USERS]]</span>
+<span class="go">                                [--project-access | --no-project-access]</span>
+<span class="go">                                [--operation-type {read}]</span>
+<span class="go">                                URI</span>
+</pre></div>
+</div>
+<p>Remove ACL users from a secret or container as identified by its href.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">URI</span></code></dt>
+<dd>The URI reference for the secret or container.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--user</span> <span class="pre">[USERS],</span> <span class="pre">-u</span> <span class="pre">[USERS]</span></code></dt>
+<dd>Keystone userid(s) for ACL.</dd>
+<dt><code class="docutils literal"><span class="pre">--project-access</span></code></dt>
+<dd>Flag to enable project access behavior.</dd>
+<dt><code class="docutils literal"><span class="pre">--no-project-access</span></code></dt>
+<dd>Flag to disable project access behavior.</dd>
+<dt><code class="docutils literal"><span class="pre">--operation-type</span> <span class="pre">{read},</span> <span class="pre">-o</span> <span class="pre">{read}</span></code></dt>
+<dd>Type of Barbican operation ACL is set for</dd>
+</dl>
+</div>
+<div class="section" id="barbican-ca-get">
+<span id="id6"></span><h3>barbican ca get<a class="headerlink" href="barbican.html#barbican-ca-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican ca get [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                       [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                       [--noindent] [--prefix PREFIX]</span>
+<span class="go">                       URI</span>
+</pre></div>
+</div>
+<p>Retrieve a CA by providing its URI.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">URI</span></code></dt>
+<dd>The URI reference for the CA.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="barbican-ca-list">
+<span id="id7"></span><h3>barbican ca list<a class="headerlink" href="barbican.html#barbican-ca-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican ca list [-h] [-f {csv,html,json,table,value,yaml}] [-c COLUMN]</span>
+<span class="go">                        [--max-width &lt;integer&gt;] [--print-empty] [--noindent]</span>
+<span class="go">                        [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                        [--limit LIMIT] [--offset OFFSET] [--name NAME]</span>
+</pre></div>
+</div>
+<p>List cas.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">LIMIT,</span> <span class="pre">-l</span> <span class="pre">LIMIT</span></code></dt>
+<dd>specify the limit to the number of items to list per
+page (default: 10; maximum: 100)</dd>
+<dt><code class="docutils literal"><span class="pre">--offset</span> <span class="pre">OFFSET,</span> <span class="pre">-o</span> <span class="pre">OFFSET</span></code></dt>
+<dd>specify the page offset (default: 0)</dd>
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">NAME,</span> <span class="pre">-n</span> <span class="pre">NAME</span></code></dt>
+<dd>specify the ca name (default: None)</dd>
+</dl>
+</div>
+<div class="section" id="barbican-secret-container-create">
+<span id="id8"></span><h3>barbican secret container create<a class="headerlink" href="barbican.html#barbican-secret-container-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican secret container create [-h]</span>
+<span class="go">                                        [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                        [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                        [--print-empty] [--noindent]</span>
+<span class="go">                                        [--prefix PREFIX] [--name NAME]</span>
+<span class="go">                                        [--type TYPE] [--secret SECRET]</span>
+</pre></div>
+</div>
+<p>Store a container in Barbican.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">NAME,</span> <span class="pre">-n</span> <span class="pre">NAME</span></code></dt>
+<dd>a human-friendly name.</dd>
+<dt><code class="docutils literal"><span class="pre">--type</span> <span class="pre">TYPE</span></code></dt>
+<dd>type of container to create (default: generic).</dd>
+<dt><code class="docutils literal"><span class="pre">--secret</span> <span class="pre">SECRET,</span> <span class="pre">-s</span> <span class="pre">SECRET</span></code></dt>
+<dd>one secret to store in a container (can be set
+multiple times). Example: --secret
+&quot;private_key=https://url.test/v1/secrets/1-2-3-4&quot;</dd>
+</dl>
+</div>
+<div class="section" id="barbican-secret-container-delete">
+<span id="id9"></span><h3>barbican secret container delete<a class="headerlink" href="barbican.html#barbican-secret-container-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican secret container delete [-h] URI</span>
+</pre></div>
+</div>
+<p>Delete a container by providing its href.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">URI</span></code></dt>
+<dd>The URI reference for the container</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="barbican-secret-container-get">
+<span id="id10"></span><h3>barbican secret container get<a class="headerlink" href="barbican.html#barbican-secret-container-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican secret container get [-h]</span>
+<span class="go">                                     [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                     [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                     [--print-empty] [--noindent]</span>
+<span class="go">                                     [--prefix PREFIX]</span>
+<span class="go">                                     URI</span>
+</pre></div>
+</div>
+<p>Retrieve a container by providing its URI.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">URI</span></code></dt>
+<dd>The URI reference for the container.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="barbican-secret-container-list">
+<span id="id11"></span><h3>barbican secret container list<a class="headerlink" href="barbican.html#barbican-secret-container-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican secret container list [-h]</span>
+<span class="go">                                      [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                                      [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                      [--print-empty] [--noindent]</span>
+<span class="go">                                      [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                                      [--limit LIMIT] [--offset OFFSET]</span>
+<span class="go">                                      [--name NAME] [--type TYPE]</span>
+</pre></div>
+</div>
+<p>List containers.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">LIMIT,</span> <span class="pre">-l</span> <span class="pre">LIMIT</span></code></dt>
+<dd>specify the limit to the number of items to list per
+page (default: 10; maximum: 100)</dd>
+<dt><code class="docutils literal"><span class="pre">--offset</span> <span class="pre">OFFSET,</span> <span class="pre">-o</span> <span class="pre">OFFSET</span></code></dt>
+<dd>specify the page offset (default: 0)</dd>
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">NAME,</span> <span class="pre">-n</span> <span class="pre">NAME</span></code></dt>
+<dd>specify the container name (default: None)</dd>
+<dt><code class="docutils literal"><span class="pre">--type</span> <span class="pre">TYPE,</span> <span class="pre">-t</span> <span class="pre">TYPE</span></code></dt>
+<dd>specify the type filter for the list (default: None).</dd>
+</dl>
+</div>
+<div class="section" id="barbican-secret-delete">
+<span id="id12"></span><h3>barbican secret delete<a class="headerlink" href="barbican.html#barbican-secret-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican secret delete [-h] URI</span>
+</pre></div>
+</div>
+<p>Delete a secret by providing its URI.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">URI</span></code></dt>
+<dd>The URI reference for the secret</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="barbican-secret-get">
+<span id="id13"></span><h3>barbican secret get<a class="headerlink" href="barbican.html#barbican-secret-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican secret get [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                           [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                           [--noindent] [--prefix PREFIX] [--decrypt]</span>
+<span class="go">                           [--payload]</span>
+<span class="go">                           [--payload_content_type PAYLOAD_CONTENT_TYPE]</span>
+<span class="go">                           URI</span>
+</pre></div>
+</div>
+<p>Retrieve a secret by providing its URI.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">URI</span></code></dt>
+<dd>The URI reference for the secret.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--decrypt,</span> <span class="pre">-d</span></code></dt>
+<dd>if specified, retrieve the unencrypted secret data;
+the data type can be specified with --payload-content-type.</dd>
+<dt><code class="docutils literal"><span class="pre">--payload,</span> <span class="pre">-p</span></code></dt>
+<dd>if specified, retrieve the unencrypted secret data;
+the
+data
+type
+can
+be
+specified
+with
+--payload-content-type.
+If
+the
+user
+wishes
+to
+only
+retrieve
+the
+value
+of
+the payload they must add &quot;-f value&quot; to format
+returning only the value of the payload</dd>
+<dt><code class="docutils literal"><span class="pre">--payload_content_type</span> <span class="pre">PAYLOAD_CONTENT_TYPE,</span> <span class="pre">-t</span> <span class="pre">PAYLOAD_CONTENT_TYPE</span></code></dt>
+<dd>the content type of the decrypted secret (default:
+text/plain.</dd>
+</dl>
+</div>
+<div class="section" id="barbican-secret-list">
+<span id="id14"></span><h3>barbican secret list<a class="headerlink" href="barbican.html#barbican-secret-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican secret list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                            [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                            [--print-empty] [--noindent]</span>
+<span class="go">                            [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                            [--limit LIMIT] [--offset OFFSET] [--name NAME]</span>
+<span class="go">                            [--algorithm ALGORITHM] [--bit-length BIT_LENGTH]</span>
+<span class="go">                            [--mode MODE]</span>
+</pre></div>
+</div>
+<p>List secrets.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">LIMIT,</span> <span class="pre">-l</span> <span class="pre">LIMIT</span></code></dt>
+<dd>specify the limit to the number of items to list per
+page (default: 10; maximum: 100)</dd>
+<dt><code class="docutils literal"><span class="pre">--offset</span> <span class="pre">OFFSET,</span> <span class="pre">-o</span> <span class="pre">OFFSET</span></code></dt>
+<dd>specify the page offset (default: 0)</dd>
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">NAME,</span> <span class="pre">-n</span> <span class="pre">NAME</span></code></dt>
+<dd>specify the secret name (default: None)</dd>
+<dt><code class="docutils literal"><span class="pre">--algorithm</span> <span class="pre">ALGORITHM,</span> <span class="pre">-a</span> <span class="pre">ALGORITHM</span></code></dt>
+<dd>the algorithm filter for the list(default: None).</dd>
+<dt><code class="docutils literal"><span class="pre">--bit-length</span> <span class="pre">BIT_LENGTH,</span> <span class="pre">-b</span> <span class="pre">BIT_LENGTH</span></code></dt>
+<dd>the bit length filter for the list (default: 0).</dd>
+<dt><code class="docutils literal"><span class="pre">--mode</span> <span class="pre">MODE,</span> <span class="pre">-m</span> <span class="pre">MODE</span></code></dt>
+<dd>the algorithm mode filter for the list (default:
+None).</dd>
+</dl>
+</div>
+<div class="section" id="barbican-secret-order-create">
+<span id="id15"></span><h3>barbican secret order create<a class="headerlink" href="barbican.html#barbican-secret-order-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican secret order create [-h]</span>
+<span class="go">                                    [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                    [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                    [--print-empty] [--noindent]</span>
+<span class="go">                                    [--prefix PREFIX] [--name NAME]</span>
+<span class="go">                                    [--algorithm ALGORITHM]</span>
+<span class="go">                                    [--bit-length BIT_LENGTH] [--mode MODE]</span>
+<span class="go">                                    [--payload-content-type PAYLOAD_CONTENT_TYPE]</span>
+<span class="go">                                    [--expiration EXPIRATION]</span>
+<span class="go">                                    [--request-type REQUEST_TYPE]</span>
+<span class="go">                                    [--subject-dn SUBJECT_DN]</span>
+<span class="go">                                    [--source-container-ref SOURCE_CONTAINER_REF]</span>
+<span class="go">                                    [--ca-id CA_ID] [--profile PROFILE]</span>
+<span class="go">                                    [--request-file REQUEST_FILE]</span>
+<span class="go">                                    type</span>
+</pre></div>
+</div>
+<p>Create a new order.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">type</span></code></dt>
+<dd>the type of the order (key, asymmetric, certificate)
+to create.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">NAME,</span> <span class="pre">-n</span> <span class="pre">NAME</span></code></dt>
+<dd>a human-friendly name.</dd>
+<dt><code class="docutils literal"><span class="pre">--algorithm</span> <span class="pre">ALGORITHM,</span> <span class="pre">-a</span> <span class="pre">ALGORITHM</span></code></dt>
+<dd>the algorithm to be used with the requested key
+(default: aes).</dd>
+<dt><code class="docutils literal"><span class="pre">--bit-length</span> <span class="pre">BIT_LENGTH,</span> <span class="pre">-b</span> <span class="pre">BIT_LENGTH</span></code></dt>
+<dd>the bit length of the requested secret key (default:
+256).</dd>
+<dt><code class="docutils literal"><span class="pre">--mode</span> <span class="pre">MODE,</span> <span class="pre">-m</span> <span class="pre">MODE</span></code></dt>
+<dd>the algorithm mode to be used with the requested key
+(default: cbc).</dd>
+<dt><code class="docutils literal"><span class="pre">--payload-content-type</span> <span class="pre">PAYLOAD_CONTENT_TYPE,</span> <span class="pre">-t</span> <span class="pre">PAYLOAD_CONTENT_TYPE</span></code></dt>
+<dd>the type/format of the secret to be generated
+(default: application/octet-stream).</dd>
+<dt><code class="docutils literal"><span class="pre">--expiration</span> <span class="pre">EXPIRATION,</span> <span class="pre">-x</span> <span class="pre">EXPIRATION</span></code></dt>
+<dd>the expiration time for the secret in ISO 8601 format.</dd>
+<dt><code class="docutils literal"><span class="pre">--request-type</span> <span class="pre">REQUEST_TYPE</span></code></dt>
+<dd>the type of the certificate request.</dd>
+<dt><code class="docutils literal"><span class="pre">--subject-dn</span> <span class="pre">SUBJECT_DN</span></code></dt>
+<dd>the subject of the certificate.</dd>
+<dt><code class="docutils literal"><span class="pre">--source-container-ref</span> <span class="pre">SOURCE_CONTAINER_REF</span></code></dt>
+<dd>the source of the certificate when using stored-key
+requests.</dd>
+<dt><code class="docutils literal"><span class="pre">--ca-id</span> <span class="pre">CA_ID</span></code></dt>
+<dd>the identifier of the CA to use for the certificate
+request.</dd>
+<dt><code class="docutils literal"><span class="pre">--profile</span> <span class="pre">PROFILE</span></code></dt>
+<dd>the profile of certificate to use.</dd>
+<dt><code class="docutils literal"><span class="pre">--request-file</span> <span class="pre">REQUEST_FILE</span></code></dt>
+<dd>the file containing the CSR.</dd>
+</dl>
+</div>
+<div class="section" id="barbican-secret-order-delete">
+<span id="id16"></span><h3>barbican secret order delete<a class="headerlink" href="barbican.html#barbican-secret-order-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican secret order delete [-h] URI</span>
+</pre></div>
+</div>
+<p>Delete an order by providing its href.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">URI</span></code></dt>
+<dd>The URI reference for the order</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="barbican-secret-order-get">
+<span id="id17"></span><h3>barbican secret order get<a class="headerlink" href="barbican.html#barbican-secret-order-get" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican secret order get [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                 [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                 [--print-empty] [--noindent]</span>
+<span class="go">                                 [--prefix PREFIX]</span>
+<span class="go">                                 URI</span>
+</pre></div>
+</div>
+<p>Retrieve an order by providing its URI.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">URI</span></code></dt>
+<dd>The URI reference order.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="barbican-secret-order-list">
+<span id="id18"></span><h3>barbican secret order list<a class="headerlink" href="barbican.html#barbican-secret-order-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican secret order list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                                  [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                  [--print-empty] [--noindent]</span>
+<span class="go">                                  [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                                  [--limit LIMIT] [--offset OFFSET]</span>
+</pre></div>
+</div>
+<p>List orders.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">LIMIT,</span> <span class="pre">-l</span> <span class="pre">LIMIT</span></code></dt>
+<dd>specify the limit to the number of items to list per
+page (default: 10; maximum: 100)</dd>
+<dt><code class="docutils literal"><span class="pre">--offset</span> <span class="pre">OFFSET,</span> <span class="pre">-o</span> <span class="pre">OFFSET</span></code></dt>
+<dd>specify the page offset (default: 0)</dd>
+</dl>
+</div>
+<div class="section" id="barbican-secret-store">
+<span id="id19"></span><h3>barbican secret store<a class="headerlink" href="barbican.html#barbican-secret-store" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican secret store [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                             [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                             [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                             [--name NAME] [--payload PAYLOAD]</span>
+<span class="go">                             [--secret-type SECRET_TYPE]</span>
+<span class="go">                             [--payload-content-type PAYLOAD_CONTENT_TYPE]</span>
+<span class="go">                             [--payload-content-encoding PAYLOAD_CONTENT_ENCODING]</span>
+<span class="go">                             [--algorithm ALGORITHM] [--bit-length BIT_LENGTH]</span>
+<span class="go">                             [--mode MODE] [--expiration EXPIRATION]</span>
+</pre></div>
+</div>
+<p>Store a secret in Barbican.</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--name</span> <span class="pre">NAME,</span> <span class="pre">-n</span> <span class="pre">NAME</span></code></dt>
+<dd>a human-friendly name.</dd>
+<dt><code class="docutils literal"><span class="pre">--payload</span> <span class="pre">PAYLOAD,</span> <span class="pre">-p</span> <span class="pre">PAYLOAD</span></code></dt>
+<dd>the unencrypted secret; if provided, you must also
+provide a payload_content_type</dd>
+<dt><code class="docutils literal"><span class="pre">--secret-type</span> <span class="pre">SECRET_TYPE,</span> <span class="pre">-s</span> <span class="pre">SECRET_TYPE</span></code></dt>
+<dd>the secret type; must be one of symmetric, public,
+private, certificate, passphrase, opaque (default)</dd>
+<dt><code class="docutils literal"><span class="pre">--payload-content-type</span> <span class="pre">PAYLOAD_CONTENT_TYPE,</span> <span class="pre">-t</span> <span class="pre">PAYLOAD_CONTENT_TYPE</span></code></dt>
+<dd>the type/format of the provided secret data;
+&quot;text/plain&quot; is assumed to be UTF-8; required when
+--payload is supplied.</dd>
+<dt><code class="docutils literal"><span class="pre">--payload-content-encoding</span> <span class="pre">PAYLOAD_CONTENT_ENCODING,</span> <span class="pre">-e</span> <span class="pre">PAYLOAD_CONTENT_ENCODING</span></code></dt>
+<dd>required if --payload-content-type is &quot;application
+/octet-stream&quot;.</dd>
+<dt><code class="docutils literal"><span class="pre">--algorithm</span> <span class="pre">ALGORITHM,</span> <span class="pre">-a</span> <span class="pre">ALGORITHM</span></code></dt>
+<dd>the algorithm (default: aes).</dd>
+<dt><code class="docutils literal"><span class="pre">--bit-length</span> <span class="pre">BIT_LENGTH,</span> <span class="pre">-b</span> <span class="pre">BIT_LENGTH</span></code></dt>
+<dd>the bit length (default: 256).</dd>
+<dt><code class="docutils literal"><span class="pre">--mode</span> <span class="pre">MODE,</span> <span class="pre">-m</span> <span class="pre">MODE</span></code></dt>
+<dd>the algorithm mode; used only for reference (default:
+cbc)</dd>
+<dt><code class="docutils literal"><span class="pre">--expiration</span> <span class="pre">EXPIRATION,</span> <span class="pre">-x</span> <span class="pre">EXPIRATION</span></code></dt>
+<dd>the expiration time for the secret in ISO 8601 format.</dd>
+</dl>
+</div>
+<div class="section" id="barbican-secret-update">
+<span id="id20"></span><h3>barbican secret update<a class="headerlink" href="barbican.html#barbican-secret-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: barbican secret update [-h] URI payload</span>
+</pre></div>
+</div>
+<p>Update a secret with no payload in Barbican.</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">URI</span></code></dt>
+<dd>The URI reference for the secret.</dd>
+<dt><code class="docutils literal"><span class="pre">payload</span></code></dt>
+<dd>the unencrypted secret</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="watcher.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Infrastructure Optimization service (watcher) command-line client"></i></a>
+          
+          
+            <a href="monasca.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Monitoring (monasca) command-line client"></i></a>
+          
+            <a id="logABugLink3" href="barbican.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="barbican.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="murano.html">Application Catalog service (murano) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="freezer.html">Backup, Restore, and Disaster Recovery service (freezer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ironic.html">Bare Metal service (ironic) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cinder.html">Block Storage service (cinder) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="senlin.html">Clustering service (senlin) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute service (nova) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnum.html">Container Infrastructure Management service (magnum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database service (trove) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="designate.html">DNS service (designate) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image service (glance) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watcher.html">Infrastructure Optimization service (watcher) command-line client</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="barbican.html#">Key Manager service (barbican) command-line client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="barbican.html#barbican-usage">barbican usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="barbican.html#barbican-optional-arguments">barbican optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="monasca.html">Monitoring (monasca) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networking.html">Networking service (neutron) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tacker.html">NFV Orchestration service (tacker) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="swift.html">Object Storage service (swift) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heat.html">Orchestration service (heat) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloudkitty.html">Rating service (cloudkitty) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vitrage.html">RCA (Root Cause Analysis) service (vitrage) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manila.html">Shared File Systems service (manila) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solum.html">Software Development Lifecycle Automation service (solum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aodh.html">Telemetry Alarming service (aodh) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ceilometer.html">Telemetry Data Collection service (ceilometer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gnocchi.html">A time series storage and resources index service (gnocchi) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mistral.html">Workflow service (mistral) command-line client</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "barbican" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/cli-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "Key Manager service (barbican) command-line client in Command-Line Interface Reference";
+    var fieldTags = "cli-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:39";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>

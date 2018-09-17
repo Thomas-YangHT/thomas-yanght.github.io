@@ -1,0 +1,1429 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+
+    <title>OpenStack Docs: A time series storage and resources index service (gnocchi) command-line client</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Bootstrap CSS -->
+<link href="_static/css/bootstrap.css" rel="stylesheet">
+
+<!-- Pygments CSS -->
+<link href="_static/css/native.css" rel="stylesheet">
+
+<!-- Fonts -->
+<link href="_static/css/font-awesome.css" rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,700' rel='stylesheet' type='text/css'>
+
+<!-- Custom CSS -->
+<link href="_static/css/combined.css" rel="stylesheet">
+<link href="_static/css/styles.css" rel="stylesheet">
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+  
+
+
+<!-- Google Analytics -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-17511903-1', 'auto');
+ga('send', 'pageview');
+</script>
+<!-- End Google Analytics -->
+
+  </head>
+  <body>
+<nav class="navbar navbar-default inner" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target="#bs-example-navbar-collapse-1" data-toggle="collapse" type="button">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <div class="brand-wrapper">
+        <a class="navbar-brand" href="https://docs.openstack.org/"></a>
+      </div>
+      <div class="search-icon show"><i class="fa fa-search"></i> Search</div></div>
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="search-container tiny">
+        <div id="gcse">
+          <script type="text/javascript">
+(function() {
+  var cx = '000108871792296872333:noj9nikm74i';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+          </script>
+          <gcse:search gname="standard"></gcse:search>
+        </div>
+        <i class="fa fa-times close-search"></i>
+      </div>
+      <ul class="nav navbar-nav navbar-main show">
+        <li>
+          <div id="gcse-mobile">
+            <gcse:search gname="mobile"></gcse:search>
+          </div>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/software/" class="drop" id="dropdownMenuSoftware">Software <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuSoftware">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/project-navigator/">Project Navigator</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sample-configs/">Sample Configs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/software/security/">Security</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/start/">Get Started</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/roadmap/">Roadmap</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/latest-release/">Latest Release</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/software/sourcecode/">Source Code</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/user-stories/" class="drop" id="dropdownMenuUsers">Users <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuUsers">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/user-stories/">Overview</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/telecoms-and-nfv/">Telecoms and NFV</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/enterprise/">OpenStack in the Enterprise</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/appdev/">Application Developers & ISVs</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/surveys/landing">User Survey</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/community/" class="drop" id="dropdownMenuCommunity">Community <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuCommunity">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/">Welcome! Start Here</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/">OpenStack Foundation</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://wiki.openstack.org">OpenStack Wiki</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://groups.openstack.org">User Groups</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/speakers/">Speakers Bureau</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/foundation/companies/">Supporting Companies</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/jobs/">Jobs</a></li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/join/">Join The Community</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/marketplace/">Marketplace</a>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/events/" class="drop" id="dropdownMenuEvents">Events <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">Overview</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/summit/">The OpenStack Summit</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/community/events/">More OpenStack Events</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/community/events/#openstack_days">OpenStack Days</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://www.openstack.org/learn/" class="drop" id="dropdownMenuLearn">Learn <i class="fa fa-caret-down"></i></a>
+          <ul class="dropdown-menu dropdown-hover" role="menu" aria-labelledby="dropdownMenuEvents">
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/marketplace/training/">Training</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/marketplace/coa/">Get Certified</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://ask.openstack.org/">Ask a Technical Question</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://superuser.openstack.org/">Superuser Magazine</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/videos/">Summit Videos</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="https://www.openstack.org/analysts/">Analyst Reports</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/news/">News</a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="http://www.openstack.org/blog/">Blog</a></li>
+          </ul>
+        </li>
+        <li>
+          <a href="http://docs.openstack.org/">Docs</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+    <div class="container docs-book-wrapper">
+      <div class="row">
+        <div class="col-lg-9 col-md-8 col-sm-8 col-lg-push-3 col-md-push-4 col-sm-push-4">
+<div class="row">
+  <div class="col-lg-8">
+      <h2>A time series storage and resources index service (gnocchi) command-line client</h2>
+    
+  </div>
+  <div class="docs-actions">
+    
+    <a href="ceilometer.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Telemetry Data Collection service (ceilometer) command-line client"></i></a>
+    
+    
+    <a href="mistral.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Workflow service (mistral) command-line client"></i></a>
+    
+    <a id="logABugLink1" href="gnocchi.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+  </div>
+</div>
+          <div class="row docs-byline">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="docs-top-contents">
+
+<h5><a href="index.html">Contents</a></h5>
+<ul>
+<li><a class="reference internal" href="gnocchi.html#">A time series storage and resources index service (gnocchi) command-line client</a><ul>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-usage">gnocchi usage</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-optional-arguments">gnocchi optional arguments</a><ul>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-archive-policy-create">gnocchi archive-policy create</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-archive-policy-delete">gnocchi archive-policy delete</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-archive-policy-list">gnocchi archive-policy list</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-archive-policy-show">gnocchi archive-policy show</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-archive-policy-update">gnocchi archive-policy update</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-archive-policy-rule-create">gnocchi archive-policy-rule create</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-archive-policy-rule-delete">gnocchi archive-policy-rule delete</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-archive-policy-rule-list">gnocchi archive-policy-rule list</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-archive-policy-rule-show">gnocchi archive-policy-rule show</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-benchmark-measures-add">gnocchi benchmark measures add</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-benchmark-measures-show">gnocchi benchmark measures show</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-benchmark-metric-create">gnocchi benchmark metric create</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-benchmark-metric-show">gnocchi benchmark metric show</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-capabilities-list">gnocchi capabilities list</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-measures-add">gnocchi measures add</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-measures-aggregation">gnocchi measures aggregation</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-measures-batch-metrics">gnocchi measures batch-metrics</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-measures-batch-resources-metrics">gnocchi measures batch-resources-metrics</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-measures-show">gnocchi measures show</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-metric-create">gnocchi metric create</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-metric-delete">gnocchi metric delete</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-metric-list">gnocchi metric list</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-metric-show">gnocchi metric show</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-resource-batch-delete">gnocchi resource batch delete</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-resource-create">gnocchi resource create</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-resource-delete">gnocchi resource delete</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-resource-history">gnocchi resource history</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-resource-list">gnocchi resource list</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-resource-show">gnocchi resource show</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-resource-update">gnocchi resource update</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-resource-type-create">gnocchi resource-type create</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-resource-type-delete">gnocchi resource-type delete</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-resource-type-list">gnocchi resource-type list</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-resource-type-show">gnocchi resource-type show</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-resource-type-update">gnocchi resource-type update</a></li>
+<li><a class="reference internal" href="gnocchi.html#gnocchi-status">gnocchi status</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+              <div class="docs-body">
+
+  <div class="section" id="a-time-series-storage-and-resources-index-service-gnocchi-command-line-client">
+<h1>A time series storage and resources index service (gnocchi) command-line client<a class="headerlink" href="gnocchi.html#a-time-series-storage-and-resources-index-service-gnocchi-command-line-client" title="Permalink to this headline">¶</a></h1>
+<p>The gnocchi client is the command-line interface (CLI) for
+the A time series storage and resources index service (gnocchi) API
+and its extensions.</p>
+<p>This chapter documents <strong class="command">gnocchi</strong> version <code class="docutils literal"><span class="pre">3.1.1</span></code>.</p>
+<p>For help on a specific <strong class="command">gnocchi</strong> command, enter:</p>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> gnocchi <span class="nb">help</span> COMMAND
+</pre></div>
+</div>
+<div class="section" id="gnocchi-usage">
+<span id="gnocchi-command-usage"></span><h2>gnocchi usage<a class="headerlink" href="gnocchi.html#gnocchi-usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi [--version] [-v | -q] [--log-file LOG_FILE] [-h] [--debug]</span>
+<span class="go">               [--gnocchi-api-version GNOCCHI_API_VERSION] [--insecure]</span>
+<span class="go">               [--os-cacert &lt;ca-certificate&gt;] [--os-cert &lt;certificate&gt;]</span>
+<span class="go">               [--os-key &lt;key&gt;] [--timeout &lt;seconds&gt;] [--os-auth-type &lt;name&gt;]</span>
+<span class="go">               [--user &lt;gnocchi user&gt;] [--endpoint &lt;gnocchi endpoint&gt;]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="gnocchi-optional-arguments">
+<span id="gnocchi-command-options"></span><h2>gnocchi optional arguments<a class="headerlink" href="gnocchi.html#gnocchi-optional-arguments" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">--version</span></code></dt>
+<dd>show program's version number and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-v,</span> <span class="pre">--verbose</span></code></dt>
+<dd>Increase verbosity of output. Can be repeated.</dd>
+<dt><code class="docutils literal"><span class="pre">-q,</span> <span class="pre">--quiet</span></code></dt>
+<dd>Suppress output except warnings and errors.</dd>
+<dt><code class="docutils literal"><span class="pre">--log-file</span> <span class="pre">LOG_FILE</span></code></dt>
+<dd>Specify a file to log output. Disabled by default.</dd>
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>Show help message and exit.</dd>
+<dt><code class="docutils literal"><span class="pre">--debug</span></code></dt>
+<dd>Show tracebacks on errors.</dd>
+<dt><code class="docutils literal"><span class="pre">--gnocchi-api-version</span> <span class="pre">GNOCCHI_API_VERSION</span></code></dt>
+<dd>Defaults to <code class="docutils literal"><span class="pre">env[GNOCCHI_API_VERSION]</span></code> or 1.</dd>
+<dt><code class="docutils literal"><span class="pre">--os-auth-type</span> <span class="pre">&lt;name&gt;,</span> <span class="pre">--os-auth-plugin</span> <span class="pre">&lt;name&gt;</span></code></dt>
+<dd>Authentication type to use</dd>
+</dl>
+<div class="section" id="gnocchi-archive-policy-create">
+<span id="id1"></span><h3>gnocchi archive-policy create<a class="headerlink" href="gnocchi.html#gnocchi-archive-policy-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi archive-policy create [-h]</span>
+<span class="go">                                     [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                     [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                     [--print-empty] [--noindent]</span>
+<span class="go">                                     [--prefix PREFIX] -d &lt;DEFINITION&gt;</span>
+<span class="go">                                     [-b BACK_WINDOW] [-m AGGREGATION_METHODS]</span>
+<span class="go">                                     name</span>
+</pre></div>
+</div>
+<p>Create an archive policy</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">name</span></code></dt>
+<dd>name of the archive policy</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-d</span> <span class="pre">&lt;DEFINITION&gt;,</span> <span class="pre">--definition</span> <span class="pre">&lt;DEFINITION&gt;</span></code></dt>
+<dd>two attributes (separated by ',') of an archive policy
+definition with its name and value separated with a
+':'</dd>
+<dt><code class="docutils literal"><span class="pre">-b</span> <span class="pre">BACK_WINDOW,</span> <span class="pre">--back-window</span> <span class="pre">BACK_WINDOW</span></code></dt>
+<dd>back window of the archive policy</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">AGGREGATION_METHODS,</span> <span class="pre">--aggregation-method</span> <span class="pre">AGGREGATION_METHODS</span></code></dt>
+<dd>aggregation method of the archive policy</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-archive-policy-delete">
+<span id="id2"></span><h3>gnocchi archive-policy delete<a class="headerlink" href="gnocchi.html#gnocchi-archive-policy-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi archive-policy delete [-h] name</span>
+</pre></div>
+</div>
+<p>Delete an archive policy</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">name</span></code></dt>
+<dd>Name of the archive policy</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-archive-policy-list">
+<span id="id3"></span><h3>gnocchi archive-policy list<a class="headerlink" href="gnocchi.html#gnocchi-archive-policy-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi archive-policy list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                                   [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                   [--print-empty] [--noindent]</span>
+<span class="go">                                   [--quote {all,minimal,none,nonnumeric}]</span>
+</pre></div>
+</div>
+<p>List archive policies</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-archive-policy-show">
+<span id="id4"></span><h3>gnocchi archive-policy show<a class="headerlink" href="gnocchi.html#gnocchi-archive-policy-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi archive-policy show [-h]</span>
+<span class="go">                                   [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                   [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                   [--print-empty] [--noindent]</span>
+<span class="go">                                   [--prefix PREFIX]</span>
+<span class="go">                                   name</span>
+</pre></div>
+</div>
+<p>Show an archive policy</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">name</span></code></dt>
+<dd>Name of the archive policy</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-archive-policy-update">
+<span id="id5"></span><h3>gnocchi archive-policy update<a class="headerlink" href="gnocchi.html#gnocchi-archive-policy-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi archive-policy update [-h]</span>
+<span class="go">                                     [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                     [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                     [--print-empty] [--noindent]</span>
+<span class="go">                                     [--prefix PREFIX] -d &lt;DEFINITION&gt;</span>
+<span class="go">                                     name</span>
+</pre></div>
+</div>
+<p>Update an archive policy</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">name</span></code></dt>
+<dd>name of the archive policy</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-d</span> <span class="pre">&lt;DEFINITION&gt;,</span> <span class="pre">--definition</span> <span class="pre">&lt;DEFINITION&gt;</span></code></dt>
+<dd>two attributes (separated by ',') of an archive policy
+definition with its name and value separated with a
+':'</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-archive-policy-rule-create">
+<span id="id6"></span><h3>gnocchi archive-policy-rule create<a class="headerlink" href="gnocchi.html#gnocchi-archive-policy-rule-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi archive-policy-rule create [-h]</span>
+<span class="go">                                          [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                          [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                          [--print-empty] [--noindent]</span>
+<span class="go">                                          [--prefix PREFIX] -a</span>
+<span class="go">                                          ARCHIVE_POLICY_NAME -m</span>
+<span class="go">                                          METRIC_PATTERN</span>
+<span class="go">                                          name</span>
+</pre></div>
+</div>
+<p>Create an archive policy rule</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">name</span></code></dt>
+<dd>Rule name</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-a</span> <span class="pre">ARCHIVE_POLICY_NAME,</span> <span class="pre">--archive-policy-name</span> <span class="pre">ARCHIVE_POLICY_NAME</span></code></dt>
+<dd>Archive policy name</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">METRIC_PATTERN,</span> <span class="pre">--metric-pattern</span> <span class="pre">METRIC_PATTERN</span></code></dt>
+<dd>Wildcard of metric name to match</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-archive-policy-rule-delete">
+<span id="id7"></span><h3>gnocchi archive-policy-rule delete<a class="headerlink" href="gnocchi.html#gnocchi-archive-policy-rule-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi archive-policy-rule delete [-h] name</span>
+</pre></div>
+</div>
+<p>Delete an archive policy rule</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">name</span></code></dt>
+<dd>Name of the archive policy rule</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-archive-policy-rule-list">
+<span id="id8"></span><h3>gnocchi archive-policy-rule list<a class="headerlink" href="gnocchi.html#gnocchi-archive-policy-rule-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi archive-policy-rule list [-h]</span>
+<span class="go">                                        [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                                        [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                        [--print-empty] [--noindent]</span>
+<span class="go">                                        [--quote {all,minimal,none,nonnumeric}]</span>
+</pre></div>
+</div>
+<p>List archive policy rules</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-archive-policy-rule-show">
+<span id="id9"></span><h3>gnocchi archive-policy-rule show<a class="headerlink" href="gnocchi.html#gnocchi-archive-policy-rule-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi archive-policy-rule show [-h]</span>
+<span class="go">                                        [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                        [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                        [--print-empty] [--noindent]</span>
+<span class="go">                                        [--prefix PREFIX]</span>
+<span class="go">                                        name</span>
+</pre></div>
+</div>
+<p>Show an archive policy rule</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">name</span></code></dt>
+<dd>Name of the archive policy rule</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-benchmark-measures-add">
+<span id="id10"></span><h3>gnocchi benchmark measures add<a class="headerlink" href="gnocchi.html#gnocchi-benchmark-measures-add" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi benchmark measures add [-h] [--resource-id RESOURCE_ID]</span>
+<span class="go">                                      [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                      [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                      [--print-empty] [--noindent]</span>
+<span class="go">                                      [--prefix PREFIX] [--workers WORKERS]</span>
+<span class="go">                                      --count COUNT [--batch BATCH]</span>
+<span class="go">                                      [--timestamp-start TIMESTAMP_START]</span>
+<span class="go">                                      [--timestamp-end TIMESTAMP_END] [--wait]</span>
+<span class="go">                                      metric</span>
+</pre></div>
+</div>
+<p>Do benchmark testing of adding measurements</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">metric</span></code></dt>
+<dd>ID or name of the metric</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-id</span> <span class="pre">RESOURCE_ID,</span> <span class="pre">-r</span> <span class="pre">RESOURCE_ID</span></code></dt>
+<dd>ID of the resource</dd>
+<dt><code class="docutils literal"><span class="pre">--workers</span> <span class="pre">WORKERS,</span> <span class="pre">-w</span> <span class="pre">WORKERS</span></code></dt>
+<dd>Number of workers to use</dd>
+<dt><code class="docutils literal"><span class="pre">--count</span> <span class="pre">COUNT,</span> <span class="pre">-n</span> <span class="pre">COUNT</span></code></dt>
+<dd>Number of total measures to send</dd>
+<dt><code class="docutils literal"><span class="pre">--batch</span> <span class="pre">BATCH,</span> <span class="pre">-b</span> <span class="pre">BATCH</span></code></dt>
+<dd>Number of measures to send in each batch</dd>
+<dt><code class="docutils literal"><span class="pre">--timestamp-start</span> <span class="pre">TIMESTAMP_START,</span> <span class="pre">-s</span> <span class="pre">TIMESTAMP_START</span></code></dt>
+<dd>First timestamp to use</dd>
+<dt><code class="docutils literal"><span class="pre">--timestamp-end</span> <span class="pre">TIMESTAMP_END,</span> <span class="pre">-e</span> <span class="pre">TIMESTAMP_END</span></code></dt>
+<dd>Last timestamp to use</dd>
+<dt><code class="docutils literal"><span class="pre">--wait</span></code></dt>
+<dd>Wait for all measures to be processed</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-benchmark-measures-show">
+<span id="id11"></span><h3>gnocchi benchmark measures show<a class="headerlink" href="gnocchi.html#gnocchi-benchmark-measures-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi benchmark measures show [-h]</span>
+<span class="go">                                       [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                       [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                       [--print-empty] [--noindent]</span>
+<span class="go">                                       [--prefix PREFIX]</span>
+<span class="go">                                       [--resource-id RESOURCE_ID]</span>
+<span class="go">                                       [--aggregation AGGREGATION]</span>
+<span class="go">                                       [--start START] [--stop STOP]</span>
+<span class="go">                                       [--granularity GRANULARITY] [--refresh]</span>
+<span class="go">                                       [--resample RESAMPLE]</span>
+<span class="go">                                       [--workers WORKERS] --count COUNT</span>
+<span class="go">                                       metric</span>
+</pre></div>
+</div>
+<p>Do benchmark testing of measurements show</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">metric</span></code></dt>
+<dd>ID or name of the metric</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-id</span> <span class="pre">RESOURCE_ID,</span> <span class="pre">-r</span> <span class="pre">RESOURCE_ID</span></code></dt>
+<dd>ID of the resource</dd>
+<dt><code class="docutils literal"><span class="pre">--aggregation</span> <span class="pre">AGGREGATION</span></code></dt>
+<dd>aggregation to retrieve</dd>
+<dt><code class="docutils literal"><span class="pre">--start</span> <span class="pre">START</span></code></dt>
+<dd>beginning of the period</dd>
+<dt><code class="docutils literal"><span class="pre">--stop</span> <span class="pre">STOP</span></code></dt>
+<dd>end of the period</dd>
+<dt><code class="docutils literal"><span class="pre">--granularity</span> <span class="pre">GRANULARITY</span></code></dt>
+<dd>granularity to retrieve</dd>
+<dt><code class="docutils literal"><span class="pre">--refresh</span></code></dt>
+<dd>force aggregation of all known measures</dd>
+<dt><code class="docutils literal"><span class="pre">--resample</span> <span class="pre">RESAMPLE</span></code></dt>
+<dd>granularity to resample time-series to (in seconds)</dd>
+<dt><code class="docutils literal"><span class="pre">--workers</span> <span class="pre">WORKERS,</span> <span class="pre">-w</span> <span class="pre">WORKERS</span></code></dt>
+<dd>Number of workers to use</dd>
+<dt><code class="docutils literal"><span class="pre">--count</span> <span class="pre">COUNT,</span> <span class="pre">-n</span> <span class="pre">COUNT</span></code></dt>
+<dd>Number of total measures to send</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-benchmark-metric-create">
+<span id="id12"></span><h3>gnocchi benchmark metric create<a class="headerlink" href="gnocchi.html#gnocchi-benchmark-metric-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi benchmark metric create [-h] [--resource-id RESOURCE_ID]</span>
+<span class="go">                                       [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                       [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                       [--print-empty] [--noindent]</span>
+<span class="go">                                       [--prefix PREFIX]</span>
+<span class="go">                                       [--archive-policy-name ARCHIVE_POLICY_NAME]</span>
+<span class="go">                                       [--workers WORKERS] --count COUNT</span>
+<span class="go">                                       [--keep]</span>
+</pre></div>
+</div>
+<p>Do benchmark testing of metric creation</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-id</span> <span class="pre">RESOURCE_ID,</span> <span class="pre">-r</span> <span class="pre">RESOURCE_ID</span></code></dt>
+<dd>ID of the resource</dd>
+<dt><code class="docutils literal"><span class="pre">--archive-policy-name</span> <span class="pre">ARCHIVE_POLICY_NAME,</span> <span class="pre">-a</span> <span class="pre">ARCHIVE_POLICY_NAME</span></code></dt>
+<dd>name of the archive policy</dd>
+<dt><code class="docutils literal"><span class="pre">--workers</span> <span class="pre">WORKERS,</span> <span class="pre">-w</span> <span class="pre">WORKERS</span></code></dt>
+<dd>Number of workers to use</dd>
+<dt><code class="docutils literal"><span class="pre">--count</span> <span class="pre">COUNT,</span> <span class="pre">-n</span> <span class="pre">COUNT</span></code></dt>
+<dd>Number of metrics to create</dd>
+<dt><code class="docutils literal"><span class="pre">--keep,</span> <span class="pre">-k</span></code></dt>
+<dd>Keep created metrics</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-benchmark-metric-show">
+<span id="id13"></span><h3>gnocchi benchmark metric show<a class="headerlink" href="gnocchi.html#gnocchi-benchmark-metric-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi benchmark metric show [-h] [--resource-id RESOURCE_ID]</span>
+<span class="go">                                     [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                     [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                     [--print-empty] [--noindent]</span>
+<span class="go">                                     [--prefix PREFIX] [--workers WORKERS]</span>
+<span class="go">                                     --count COUNT</span>
+<span class="go">                                     metric [metric ...]</span>
+</pre></div>
+</div>
+<p>Do benchmark testing of metric show</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">metric</span></code></dt>
+<dd>ID or name of the metrics</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-id</span> <span class="pre">RESOURCE_ID,</span> <span class="pre">-r</span> <span class="pre">RESOURCE_ID</span></code></dt>
+<dd>ID of the resource</dd>
+<dt><code class="docutils literal"><span class="pre">--workers</span> <span class="pre">WORKERS,</span> <span class="pre">-w</span> <span class="pre">WORKERS</span></code></dt>
+<dd>Number of workers to use</dd>
+<dt><code class="docutils literal"><span class="pre">--count</span> <span class="pre">COUNT,</span> <span class="pre">-n</span> <span class="pre">COUNT</span></code></dt>
+<dd>Number of metrics to get</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-capabilities-list">
+<span id="id14"></span><h3>gnocchi capabilities list<a class="headerlink" href="gnocchi.html#gnocchi-capabilities-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi capabilities list [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                 [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                 [--print-empty] [--noindent]</span>
+<span class="go">                                 [--prefix PREFIX]</span>
+</pre></div>
+</div>
+<p>List capabilities</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-measures-add">
+<span id="id15"></span><h3>gnocchi measures add<a class="headerlink" href="gnocchi.html#gnocchi-measures-add" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi measures add [-h] [--resource-id RESOURCE_ID] -m MEASURE metric</span>
+</pre></div>
+</div>
+<p>Add measurements to a metric</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">metric</span></code></dt>
+<dd>ID or name of the metric</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-id</span> <span class="pre">RESOURCE_ID,</span> <span class="pre">-r</span> <span class="pre">RESOURCE_ID</span></code></dt>
+<dd>ID of the resource</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">MEASURE,</span> <span class="pre">--measure</span> <span class="pre">MEASURE</span></code></dt>
+<dd>timestamp and value of a measure separated with a '&#64;'</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-measures-aggregation">
+<span id="id16"></span><h3>gnocchi measures aggregation<a class="headerlink" href="gnocchi.html#gnocchi-measures-aggregation" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi measures aggregation [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                                    [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                    [--print-empty] [--noindent]</span>
+<span class="go">                                    [--quote {all,minimal,none,nonnumeric}] -m</span>
+<span class="go">                                    METRIC [METRIC ...]</span>
+<span class="go">                                    [--aggregation AGGREGATION]</span>
+<span class="go">                                    [--reaggregation REAGGREGATION]</span>
+<span class="go">                                    [--start START] [--stop STOP]</span>
+<span class="go">                                    [--granularity GRANULARITY]</span>
+<span class="go">                                    [--needed-overlap NEEDED_OVERLAP]</span>
+<span class="go">                                    [--query QUERY]</span>
+<span class="go">                                    [--resource-type RESOURCE_TYPE]</span>
+<span class="go">                                    [--groupby GROUPBY] [--refresh]</span>
+<span class="go">                                    [--resample RESAMPLE] [--fill FILL]</span>
+</pre></div>
+</div>
+<p>Get measurements of aggregated metrics</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">METRIC</span> <span class="pre">[METRIC</span> <span class="pre">...],</span> <span class="pre">--metric</span> <span class="pre">METRIC</span> <span class="pre">[METRIC</span> <span class="pre">...]</span></code></dt>
+<dd>metrics IDs or metric name</dd>
+<dt><code class="docutils literal"><span class="pre">--aggregation</span> <span class="pre">AGGREGATION</span></code></dt>
+<dd>granularity aggregation function to retrieve</dd>
+<dt><code class="docutils literal"><span class="pre">--reaggregation</span> <span class="pre">REAGGREGATION</span></code></dt>
+<dd>groupby aggregation function to retrieve</dd>
+<dt><code class="docutils literal"><span class="pre">--start</span> <span class="pre">START</span></code></dt>
+<dd>beginning of the period</dd>
+<dt><code class="docutils literal"><span class="pre">--stop</span> <span class="pre">STOP</span></code></dt>
+<dd>end of the period</dd>
+<dt><code class="docutils literal"><span class="pre">--granularity</span> <span class="pre">GRANULARITY</span></code></dt>
+<dd>granularity to retrieve</dd>
+<dt><code class="docutils literal"><span class="pre">--needed-overlap</span> <span class="pre">NEEDED_OVERLAP</span></code></dt>
+<dd>percent of datapoints in each metrics required</dd>
+<dt><code class="docutils literal"><span class="pre">--query</span> <span class="pre">QUERY</span></code></dt>
+<dd>A query to filter resource. The syntax is a
+combination of attribute, operator and value. For
+example: id=90d58eea-70d7-4294-a49a-170dcdf44c3c would
+filter resource with a certain id. More complex
+queries can be built, e.g.: not (flavor_id!=&quot;1&quot; and
+memory&gt;=24). Use &quot;&quot; to force data to be interpreted as
+string. Supported operators are: not, and, ∧ or, ∨,
+&gt;=, &lt;=, !=, &gt;, &lt;, =, ==, eq, ne, lt, gt, ge, le, in,
+like, ≠, ≥, ≤, like, in.</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-type</span> <span class="pre">RESOURCE_TYPE</span></code></dt>
+<dd>Resource type to query</dd>
+<dt><code class="docutils literal"><span class="pre">--groupby</span> <span class="pre">GROUPBY</span></code></dt>
+<dd>Attribute to use to group resources</dd>
+<dt><code class="docutils literal"><span class="pre">--refresh</span></code></dt>
+<dd>force aggregation of all known measures</dd>
+<dt><code class="docutils literal"><span class="pre">--resample</span> <span class="pre">RESAMPLE</span></code></dt>
+<dd>granularity to resample time-series to (in seconds)</dd>
+<dt><code class="docutils literal"><span class="pre">--fill</span> <span class="pre">FILL</span></code></dt>
+<dd>Value to use when backfilling timestamps with missing
+values in a subset of series. Value should be a float
+or 'null'.</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-measures-batch-metrics">
+<span id="id17"></span><h3>gnocchi measures batch-metrics<a class="headerlink" href="gnocchi.html#gnocchi-measures-batch-metrics" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi measures batch-metrics [-h] file</span>
+</pre></div>
+</div>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">file</span></code></dt>
+<dd>File containing measurements to batch or - for stdin (see
+Gnocchi REST API docs for the format</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-measures-batch-resources-metrics">
+<span id="id18"></span><h3>gnocchi measures batch-resources-metrics<a class="headerlink" href="gnocchi.html#gnocchi-measures-batch-resources-metrics" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi measures batch-resources-metrics [-h] [--create-metrics] file</span>
+</pre></div>
+</div>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">file</span></code></dt>
+<dd>File containing measurements to batch or - for stdin (see
+Gnocchi REST API docs for the format</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--create-metrics</span></code></dt>
+<dd>Create unknown metrics</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-measures-show">
+<span id="id19"></span><h3>gnocchi measures show<a class="headerlink" href="gnocchi.html#gnocchi-measures-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi measures show [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                             [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                             [--print-empty] [--noindent]</span>
+<span class="go">                             [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                             [--resource-id RESOURCE_ID]</span>
+<span class="go">                             [--aggregation AGGREGATION] [--start START]</span>
+<span class="go">                             [--stop STOP] [--granularity GRANULARITY]</span>
+<span class="go">                             [--refresh] [--resample RESAMPLE]</span>
+<span class="go">                             metric</span>
+</pre></div>
+</div>
+<p>Get measurements of a metric</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">metric</span></code></dt>
+<dd>ID or name of the metric</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-id</span> <span class="pre">RESOURCE_ID,</span> <span class="pre">-r</span> <span class="pre">RESOURCE_ID</span></code></dt>
+<dd>ID of the resource</dd>
+<dt><code class="docutils literal"><span class="pre">--aggregation</span> <span class="pre">AGGREGATION</span></code></dt>
+<dd>aggregation to retrieve</dd>
+<dt><code class="docutils literal"><span class="pre">--start</span> <span class="pre">START</span></code></dt>
+<dd>beginning of the period</dd>
+<dt><code class="docutils literal"><span class="pre">--stop</span> <span class="pre">STOP</span></code></dt>
+<dd>end of the period</dd>
+<dt><code class="docutils literal"><span class="pre">--granularity</span> <span class="pre">GRANULARITY</span></code></dt>
+<dd>granularity to retrieve</dd>
+<dt><code class="docutils literal"><span class="pre">--refresh</span></code></dt>
+<dd>force aggregation of all known measures</dd>
+<dt><code class="docutils literal"><span class="pre">--resample</span> <span class="pre">RESAMPLE</span></code></dt>
+<dd>granularity to resample time-series to (in seconds)</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-metric-create">
+<span id="id20"></span><h3>gnocchi metric create<a class="headerlink" href="gnocchi.html#gnocchi-metric-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi metric create [-h] [--resource-id RESOURCE_ID]</span>
+<span class="go">                             [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                             [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                             [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                             [--archive-policy-name ARCHIVE_POLICY_NAME]</span>
+<span class="go">                             [--unit UNIT]</span>
+<span class="go">                             [METRIC_NAME]</span>
+</pre></div>
+</div>
+<p>Create a metric</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">METRIC_NAME</span></code></dt>
+<dd>Name of the metric</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-id</span> <span class="pre">RESOURCE_ID,</span> <span class="pre">-r</span> <span class="pre">RESOURCE_ID</span></code></dt>
+<dd>ID of the resource</dd>
+<dt><code class="docutils literal"><span class="pre">--archive-policy-name</span> <span class="pre">ARCHIVE_POLICY_NAME,</span> <span class="pre">-a</span> <span class="pre">ARCHIVE_POLICY_NAME</span></code></dt>
+<dd>name of the archive policy</dd>
+<dt><code class="docutils literal"><span class="pre">--unit</span> <span class="pre">UNIT,</span> <span class="pre">-u</span> <span class="pre">UNIT</span></code></dt>
+<dd>unit of the metric</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-metric-delete">
+<span id="id21"></span><h3>gnocchi metric delete<a class="headerlink" href="gnocchi.html#gnocchi-metric-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi metric delete [-h] [--resource-id RESOURCE_ID]</span>
+<span class="go">                             metric [metric ...]</span>
+</pre></div>
+</div>
+<p>Delete a metric</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">metric</span></code></dt>
+<dd>IDs or names of the metric</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-id</span> <span class="pre">RESOURCE_ID,</span> <span class="pre">-r</span> <span class="pre">RESOURCE_ID</span></code></dt>
+<dd>ID of the resource</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-metric-list">
+<span id="id22"></span><h3>gnocchi metric list<a class="headerlink" href="gnocchi.html#gnocchi-metric-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi metric list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                           [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                           [--noindent]</span>
+<span class="go">                           [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                           [--limit &lt;LIMIT&gt;] [--marker &lt;MARKER&gt;]</span>
+<span class="go">                           [--sort &lt;SORT&gt;]</span>
+</pre></div>
+</div>
+<p>List metrics</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></dt>
+<dd>Number of metrics to return (Default is server
+default)</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">&lt;MARKER&gt;</span></code></dt>
+<dd>Last item of the previous listing. Return the next
+results after this value</dd>
+<dt><code class="docutils literal"><span class="pre">--sort</span> <span class="pre">&lt;SORT&gt;</span></code></dt>
+<dd>Sort of metric attribute (example: user_id:desc-nullslast</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-metric-show">
+<span id="id23"></span><h3>gnocchi metric show<a class="headerlink" href="gnocchi.html#gnocchi-metric-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi metric show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                           [-c COLUMN] [--max-width &lt;integer&gt;] [--print-empty]</span>
+<span class="go">                           [--noindent] [--prefix PREFIX]</span>
+<span class="go">                           [--resource-id RESOURCE_ID]</span>
+<span class="go">                           metric</span>
+</pre></div>
+</div>
+<p>Show a metric</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">metric</span></code></dt>
+<dd>ID or name of the metric</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--resource-id</span> <span class="pre">RESOURCE_ID,</span> <span class="pre">-r</span> <span class="pre">RESOURCE_ID</span></code></dt>
+<dd>ID of the resource</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-resource-batch-delete">
+<span id="id24"></span><h3>gnocchi resource batch delete<a class="headerlink" href="gnocchi.html#gnocchi-resource-batch-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi resource batch delete [-h]</span>
+<span class="go">                                     [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                     [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                     [--print-empty] [--noindent]</span>
+<span class="go">                                     [--prefix PREFIX] [--type RESOURCE_TYPE]</span>
+<span class="go">                                     query</span>
+</pre></div>
+</div>
+<p>Delete a batch of resources based on attribute values</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">query</span></code></dt>
+<dd>A query to filter resource. The syntax is a
+combination of attribute, operator and value. For
+example: id=90d58eea-70d7-4294-a49a-170dcdf44c3c would
+filter resource with a certain id. More complex
+queries can be built, e.g.: not (flavor_id!=&quot;1&quot; and
+memory&gt;=24). Use &quot;&quot; to force data to be interpreted as
+string. Supported operators are: not, and, ∧ or, ∨,
+&gt;=, &lt;=, !=, &gt;, &lt;, =, ==, eq, ne, lt, gt, ge, le, in,
+like, ≠, ≥, ≤, like, in.</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--type</span> <span class="pre">RESOURCE_TYPE,</span> <span class="pre">-t</span> <span class="pre">RESOURCE_TYPE</span></code></dt>
+<dd>Type of resource</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-resource-create">
+<span id="id25"></span><h3>gnocchi resource create<a class="headerlink" href="gnocchi.html#gnocchi-resource-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi resource create [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                               [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                               [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                               [--type RESOURCE_TYPE] [-a ATTRIBUTE]</span>
+<span class="go">                               [-m ADD_METRIC] [-n CREATE_METRIC]</span>
+<span class="go">                               resource_id</span>
+</pre></div>
+</div>
+<p>Create a resource</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">resource_id</span></code></dt>
+<dd>ID of the resource</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--type</span> <span class="pre">RESOURCE_TYPE,</span> <span class="pre">-t</span> <span class="pre">RESOURCE_TYPE</span></code></dt>
+<dd>Type of resource</dd>
+<dt><code class="docutils literal"><span class="pre">-a</span> <span class="pre">ATTRIBUTE,</span> <span class="pre">--attribute</span> <span class="pre">ATTRIBUTE</span></code></dt>
+<dd>name and value of an attribute separated with a ':'</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">ADD_METRIC,</span> <span class="pre">--add-metric</span> <span class="pre">ADD_METRIC</span></code></dt>
+<dd>name:id of a metric to add</dd>
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">CREATE_METRIC,</span> <span class="pre">--create-metric</span> <span class="pre">CREATE_METRIC</span></code></dt>
+<dd>name:archive_policy_name of a metric to create</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-resource-delete">
+<span id="id26"></span><h3>gnocchi resource delete<a class="headerlink" href="gnocchi.html#gnocchi-resource-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi resource delete [-h] resource_id</span>
+</pre></div>
+</div>
+<p>Delete a resource</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">resource_id</span></code></dt>
+<dd>ID of the resource</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-resource-history">
+<span id="id27"></span><h3>gnocchi resource history<a class="headerlink" href="gnocchi.html#gnocchi-resource-history" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi resource history [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                                [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                [--print-empty] [--noindent]</span>
+<span class="go">                                [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                                [--details] [--limit &lt;LIMIT&gt;]</span>
+<span class="go">                                [--marker &lt;MARKER&gt;] [--sort &lt;SORT&gt;]</span>
+<span class="go">                                [--type RESOURCE_TYPE]</span>
+<span class="go">                                resource_id</span>
+</pre></div>
+</div>
+<p>Show the history of a resource</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">resource_id</span></code></dt>
+<dd>ID of a resource</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--details</span></code></dt>
+<dd>Show all attributes of generic resources</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></dt>
+<dd>Number of resources to return (Default is server
+default)</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">&lt;MARKER&gt;</span></code></dt>
+<dd>Last item of the previous listing. Return the next
+results after this value</dd>
+<dt><code class="docutils literal"><span class="pre">--sort</span> <span class="pre">&lt;SORT&gt;</span></code></dt>
+<dd>Sort of resource attribute (example: user_id:desc-nullslast</dd>
+<dt><code class="docutils literal"><span class="pre">--type</span> <span class="pre">RESOURCE_TYPE,</span> <span class="pre">-t</span> <span class="pre">RESOURCE_TYPE</span></code></dt>
+<dd>Type of resource</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-resource-list">
+<span id="id28"></span><h3>gnocchi resource list<a class="headerlink" href="gnocchi.html#gnocchi-resource-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi resource list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                             [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                             [--print-empty] [--noindent]</span>
+<span class="go">                             [--quote {all,minimal,none,nonnumeric}]</span>
+<span class="go">                             [--details] [--history] [--limit &lt;LIMIT&gt;]</span>
+<span class="go">                             [--marker &lt;MARKER&gt;] [--sort &lt;SORT&gt;]</span>
+<span class="go">                             [--type RESOURCE_TYPE]</span>
+</pre></div>
+</div>
+<p>List resources</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--details</span></code></dt>
+<dd>Show all attributes of generic resources</dd>
+<dt><code class="docutils literal"><span class="pre">--history</span></code></dt>
+<dd>Show history of the resources</dd>
+<dt><code class="docutils literal"><span class="pre">--limit</span> <span class="pre">&lt;LIMIT&gt;</span></code></dt>
+<dd>Number of resources to return (Default is server
+default)</dd>
+<dt><code class="docutils literal"><span class="pre">--marker</span> <span class="pre">&lt;MARKER&gt;</span></code></dt>
+<dd>Last item of the previous listing. Return the next
+results after this value</dd>
+<dt><code class="docutils literal"><span class="pre">--sort</span> <span class="pre">&lt;SORT&gt;</span></code></dt>
+<dd>Sort of resource attribute (example: user_id:desc-nullslast</dd>
+<dt><code class="docutils literal"><span class="pre">--type</span> <span class="pre">RESOURCE_TYPE,</span> <span class="pre">-t</span> <span class="pre">RESOURCE_TYPE</span></code></dt>
+<dd>Type of resource</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-resource-show">
+<span id="id29"></span><h3>gnocchi resource show<a class="headerlink" href="gnocchi.html#gnocchi-resource-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi resource show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                             [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                             [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                             [--type RESOURCE_TYPE]</span>
+<span class="go">                             resource_id</span>
+</pre></div>
+</div>
+<p>Show a resource</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">resource_id</span></code></dt>
+<dd>ID of a resource</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--type</span> <span class="pre">RESOURCE_TYPE,</span> <span class="pre">-t</span> <span class="pre">RESOURCE_TYPE</span></code></dt>
+<dd>Type of resource</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-resource-update">
+<span id="id30"></span><h3>gnocchi resource update<a class="headerlink" href="gnocchi.html#gnocchi-resource-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi resource update [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                               [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                               [--print-empty] [--noindent] [--prefix PREFIX]</span>
+<span class="go">                               [--type RESOURCE_TYPE] [-a ATTRIBUTE]</span>
+<span class="go">                               [-m ADD_METRIC] [-n CREATE_METRIC]</span>
+<span class="go">                               [-d DELETE_METRIC]</span>
+<span class="go">                               resource_id</span>
+</pre></div>
+</div>
+<p>Update a resource</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">resource_id</span></code></dt>
+<dd>ID of the resource</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">--type</span> <span class="pre">RESOURCE_TYPE,</span> <span class="pre">-t</span> <span class="pre">RESOURCE_TYPE</span></code></dt>
+<dd>Type of resource</dd>
+<dt><code class="docutils literal"><span class="pre">-a</span> <span class="pre">ATTRIBUTE,</span> <span class="pre">--attribute</span> <span class="pre">ATTRIBUTE</span></code></dt>
+<dd>name and value of an attribute separated with a ':'</dd>
+<dt><code class="docutils literal"><span class="pre">-m</span> <span class="pre">ADD_METRIC,</span> <span class="pre">--add-metric</span> <span class="pre">ADD_METRIC</span></code></dt>
+<dd>name:id of a metric to add</dd>
+<dt><code class="docutils literal"><span class="pre">-n</span> <span class="pre">CREATE_METRIC,</span> <span class="pre">--create-metric</span> <span class="pre">CREATE_METRIC</span></code></dt>
+<dd>name:archive_policy_name of a metric to create</dd>
+<dt><code class="docutils literal"><span class="pre">-d</span> <span class="pre">DELETE_METRIC,</span> <span class="pre">--delete-metric</span> <span class="pre">DELETE_METRIC</span></code></dt>
+<dd>Name of a metric to delete</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-resource-type-create">
+<span id="id31"></span><h3>gnocchi resource-type create<a class="headerlink" href="gnocchi.html#gnocchi-resource-type-create" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi resource-type create [-h]</span>
+<span class="go">                                    [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                    [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                    [--print-empty] [--noindent]</span>
+<span class="go">                                    [--prefix PREFIX] [-a ATTRIBUTE]</span>
+<span class="go">                                    name</span>
+</pre></div>
+</div>
+<p>Create a resource type</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">name</span></code></dt>
+<dd>name of the resource type</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-a</span> <span class="pre">ATTRIBUTE,</span> <span class="pre">--attribute</span> <span class="pre">ATTRIBUTE</span></code></dt>
+<dd>attribute definition, attribute_name:attribute_type:at
+tribute_is_required:attribute_type_option_name=attribu
+te_type_option_value:… For example:
+display_name:string:true:max_length=255</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-resource-type-delete">
+<span id="id32"></span><h3>gnocchi resource-type delete<a class="headerlink" href="gnocchi.html#gnocchi-resource-type-delete" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi resource-type delete [-h] name</span>
+</pre></div>
+</div>
+<p>Delete a resource type</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">name</span></code></dt>
+<dd>name of the resource type</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-resource-type-list">
+<span id="id33"></span><h3>gnocchi resource-type list<a class="headerlink" href="gnocchi.html#gnocchi-resource-type-list" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi resource-type list [-h] [-f {csv,html,json,table,value,yaml}]</span>
+<span class="go">                                  [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                  [--print-empty] [--noindent]</span>
+<span class="go">                                  [--quote {all,minimal,none,nonnumeric}]</span>
+</pre></div>
+</div>
+<p>List resource types</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-resource-type-show">
+<span id="id34"></span><h3>gnocchi resource-type show<a class="headerlink" href="gnocchi.html#gnocchi-resource-type-show" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi resource-type show [-h] [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                  [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                  [--print-empty] [--noindent]</span>
+<span class="go">                                  [--prefix PREFIX]</span>
+<span class="go">                                  name</span>
+</pre></div>
+</div>
+<p>Show a resource type</p>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">name</span></code></dt>
+<dd>name of the resource type</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-resource-type-update">
+<span id="id35"></span><h3>gnocchi resource-type update<a class="headerlink" href="gnocchi.html#gnocchi-resource-type-update" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi resource-type update [-h]</span>
+<span class="go">                                    [-f {html,json,shell,table,value,yaml}]</span>
+<span class="go">                                    [-c COLUMN] [--max-width &lt;integer&gt;]</span>
+<span class="go">                                    [--print-empty] [--noindent]</span>
+<span class="go">                                    [--prefix PREFIX] [-a ATTRIBUTE]</span>
+<span class="go">                                    [-r REMOVE_ATTRIBUTE]</span>
+<span class="go">                                    name</span>
+</pre></div>
+</div>
+<p><strong>Positional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">name</span></code></dt>
+<dd>name of the resource type</dd>
+</dl>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+<dt><code class="docutils literal"><span class="pre">-a</span> <span class="pre">ATTRIBUTE,</span> <span class="pre">--attribute</span> <span class="pre">ATTRIBUTE</span></code></dt>
+<dd>attribute definition, attribute_name:attribute_type:at
+tribute_is_required:attribute_type_option_name=attribu
+te_type_option_value:… For example:
+display_name:string:true:max_length=255</dd>
+<dt><code class="docutils literal"><span class="pre">-r</span> <span class="pre">REMOVE_ATTRIBUTE,</span> <span class="pre">--remove-attribute</span> <span class="pre">REMOVE_ATTRIBUTE</span></code></dt>
+<dd>attribute name</dd>
+</dl>
+</div>
+<div class="section" id="gnocchi-status">
+<span id="id36"></span><h3>gnocchi status<a class="headerlink" href="gnocchi.html#gnocchi-status" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="go">usage: gnocchi status [-h] [-f {html,json,shell,table,value,yaml}] [-c COLUMN]</span>
+<span class="go">                      [--max-width &lt;integer&gt;] [--print-empty] [--noindent]</span>
+<span class="go">                      [--prefix PREFIX]</span>
+</pre></div>
+</div>
+<p>Show the status of measurements processing</p>
+<p><strong>Optional arguments:</strong></p>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">-h,</span> <span class="pre">--help</span></code></dt>
+<dd>show this help message and exit</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+              </div>
+            </div>
+          </div>
+          <div class="docs-actions">
+          
+            <a href="ceilometer.html"><i class="fa fa-angle-double-left" data-toggle="tooltip" data-placement="top" title="Previous: Telemetry Data Collection service (ceilometer) command-line client"></i></a>
+          
+          
+            <a href="mistral.html"><i class="fa fa-angle-double-right" data-toggle="tooltip" data-placement="top" title="Next: Workflow service (mistral) command-line client"></i></a>
+          
+            <a id="logABugLink3" href="gnocchi.html" target="_blank" title="Found an error? Report a bug against this page"><i class="fa fa-bug" data-toggle="tooltip" data-placement="top" title="Report a Bug"></i></a>
+          </div>
+          <div class="row docs-byline bottom">
+            <div class="docs-updated">updated: 2018-02-08 07:39</div>
+          </div>
+          <div class="row">
+            <div class="col-lg-8 col-md-8 col-sm-8 docs-license">
+<a href="https://creativecommons.org/licenses/by/3.0/">
+ <img src="_static/images/docs/license.png" alt="Creative Commons Attribution 3.0 License"/>
+</a>
+<p>
+ Except where otherwise noted, this document is licensed under
+ <a href="https://creativecommons.org/licenses/by/3.0/">Creative Commons
+ Attribution 3.0 License</a>. See all <a href="http://www.openstack.org/legal">
+ OpenStack Legal Documents</a>.
+</p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 docs-actions-wrapper">
+            <!-- ID buglinkbottom added so that pre-filled doc bugs
+                 are sent to Launchpad projects related to the document -->
+              <a href="gnocchi.html#" id="logABugLink2" class="docs-footer-actions"><i class="fa fa-bug"></i> found an error? report a bug</a>
+              <a href="http://ask.openstack.org" class="docs-footer-actions"><i class="fa fa-question-circle"></i> questions?</a>
+            </div>
+          </div>
+        </div>
+<div class="col-lg-3 col-md-4 col-sm-4 col-lg-pull-9 col-md-pull-8 col-sm-pull-8 docs-sidebar">
+  <div class="btn-group docs-sidebar-releases">
+    <button onclick="location.href='/'" class="btn docs-sidebar-home" data-toggle="tooltip" data-placement="top" title="Docs Home"><i class="fa fa-arrow-circle-o-left"></i></button>
+<button href="#" type="button" data-toggle="dropdown" class="btn docs-sidebar-release-select">OpenStack Documentation<i class="fa fa-caret-down"></i></button>
+    <ul class="dropdown-menu docs-sidebar-dropdown" role="menu" aria-labelledby="dLabel">
+      <li role="presentation" class="dropdown-header">Guides</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#install-guides">Install Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#user-guides">User Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#configuration-guides">Configuration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#ops-and-admin-guides">Operations and Administration Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#api-guides">API Guides</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/index.html#contributor-guides">Contributor Guides</a></li>
+      <li role="presentation" class="dropdown-header">Languages</li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ja/">日本語 (Japanese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/de/">Deutsch (German)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/fr/">Français (French)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/pt_BR/">Português (Portuguese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/zh_CN/">简体中文 (Simplified Chinese)</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="http://docs.openstack.org/ko_KR/">한국어 (Korean)</a></li>
+    </ul>
+  </div>
+  <div class="docs-sidebar-toc">
+    <div class="docs-sidebar-section" id="table-of-contents">
+      <a href="index.html" class="docs-sidebar-section-title"><h4>Contents</h4></a>
+      <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="murano.html">Application Catalog service (murano) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="freezer.html">Backup, Restore, and Disaster Recovery service (freezer) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ironic.html">Bare Metal service (ironic) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cinder.html">Block Storage service (cinder) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="senlin.html">Clustering service (senlin) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compute.html">Compute service (nova) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="magnum.html">Container Infrastructure Management service (magnum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="database.html">Database service (trove) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="designate.html">DNS service (designate) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image service (glance) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watcher.html">Infrastructure Optimization service (watcher) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="barbican.html">Key Manager service (barbican) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monasca.html">Monitoring (monasca) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="networking.html">Networking service (neutron) command-line clients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tacker.html">NFV Orchestration service (tacker) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="swift.html">Object Storage service (swift) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="heat.html">Orchestration service (heat) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cloudkitty.html">Rating service (cloudkitty) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vitrage.html">RCA (Root Cause Analysis) service (vitrage) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manila.html">Shared File Systems service (manila) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solum.html">Software Development Lifecycle Automation service (solum) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="aodh.html">Telemetry Alarming service (aodh) command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ceilometer.html">Telemetry Data Collection service (ceilometer) command-line client</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="gnocchi.html#">A time series storage and resources index service (gnocchi) command-line client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gnocchi.html#gnocchi-usage">gnocchi usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gnocchi.html#gnocchi-optional-arguments">gnocchi optional arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="mistral.html">Workflow service (mistral) command-line client</a></li>
+</ul>
+
+    </div>
+  </div>
+</div>
+      </div>
+    </div>
+<footer>
+  <div class="container">
+    <div class="row footer-links">
+      <div class="col-lg-2 col-sm-2">
+        <h3>OpenStack</h3>
+        <ul>
+          <li><a href="http://openstack.org/projects/">Projects</a></li>
+          <li><a href="http://openstack.org/projects/openstack-security/">OpenStack Security</a></li>
+          <li><a href="http://openstack.org/projects/openstack-faq/">Common Questions</a></li>
+          <li><a href="http://openstack.org/blog/">Blog</a></li>
+          <li><a href="http://openstack.org/news/">News</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Community</h3>
+        <ul>
+          <li><a href="http://openstack.org/community/">User Groups</a></li>
+          <li><a href="http://openstack.org/community/events/">Events</a></li>
+          <li><a href="http://openstack.org/community/jobs/">Jobs</a></li>
+          <li><a href="http://openstack.org/foundation/companies/">Companies</a></li>
+          <li><a href="http://docs.openstack.org/infra/manual/developers.html">Contribute</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Documentation</h3>
+        <ul>
+          <li><a href="http://docs.openstack.org">OpenStack Manuals</a></li>
+          <li><a href="http://openstack.org/software/start/">Getting Started</a></li>
+          <li><a href="http://developer.openstack.org">API Documentation</a></li>
+          <li><a href="https://wiki.openstack.org">Wiki</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-sm-2">
+        <h3>Branding & Legal</h3>
+        <ul>
+          <li><a href="http://openstack.org/brand/">Logos & Guidelines</a></li>
+          <li><a href="http://openstack.org/brand/openstack-trademark-policy/">Trademark Policy</a></li>
+          <li><a href="http://openstack.org/privacy/">Privacy Policy</a></li>
+          <li><a href="https://wiki.openstack.org/wiki/How_To_Contribute#Contributor_License_Agreement">OpenStack CLA</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-sm-4">
+        <h3>Stay In Touch</h3>
+        <a href="https://twitter.com/OpenStack" target="_blank" class="social-icons footer-twitter"></a>
+        <a href="https://www.facebook.com/openstack" target="_blank" class="social-icons footer-facebook"></a>
+        <a href="https://www.linkedin.com/company/openstack" target="_blank" class="social-icons footer-linkedin"></a>
+        <a href="https://www.youtube.com/user/OpenStackFoundation" target="_blank" class="social-icons footer-youtube"></a>
+        <p class="fine-print">
+          The OpenStack project is provided under the
+          <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache 2.0 license</a>. Openstack.org is powered by
+          <a href="http://rackspace.com" target="_blank">Rackspace Cloud Computing</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+<!-- jQuery -->
+<script type="text/javascript" src="_static/js/jquery-3.1.1.js"></script>
+
+<!-- Bootstrap JavaScript -->
+<script type="text/javascript" src="_static/js/bootstrap.js"></script>
+
+<!-- The rest of the JS -->
+<script type="text/javascript" src="_static/js/navigation.js"></script>
+
+<!-- Docs JS -->
+<script type="text/javascript" src="_static/js/docs.js"></script>
+
+<!-- Popovers -->
+<script type="text/javascript" src="_static/js/webui-popover.js"></script>
+
+<!-- Javascript for page -->
+<script language="JavaScript">
+/* build a description of this page including SHA, source location on git repo,
+   build time and the project's launchpad bug tag. Set the HREF of the bug
+   buttons */
+
+    var lineFeed = "%0A";
+    var gitURL = "Source: Can't derive source file URL";
+
+    /* there have been cases where "pagename" wasn't set; better check for it */
+        /* The URL of the source file on Git is based on the giturl variable
+           in conf.py, which must be manually initialized to the source file
+           URL in Git.
+           "pagename" is a standard sphinx parameter containing the name of
+           the source file, without extension.                             */
+
+        var sourceFile = "gnocchi" + ".rst";
+        gitURL = "Source: https://git.openstack.org/cgit/openstack/openstack-manuals/tree/doc/cli-reference/source" + "/" + sourceFile;
+
+    /* gitsha, project and bug_tag rely on variables in conf.py */
+    var gitSha = "SHA: 4ad6860c2d8531fd122db0b8b89a923cefdb682f";
+        var bugProject = "openstack-manuals";
+        var bugTitle = "A time series storage and resources index service (gnocchi) command-line client in Command-Line Interface Reference";
+    var fieldTags = "cli-reference";
+
+    /* "last_updated" is the build date and time. It relies on the
+       conf.py variable "html_last_updated_fmt", which should include
+       year/month/day as well as hours and minutes                   */
+    var buildstring = "Release: 15.0.0 on 2018-02-08 07:39";
+
+    var fieldComment = encodeURI(buildstring) +
+                       lineFeed + encodeURI(gitSha) +
+                       lineFeed + encodeURI(gitURL) ;
+
+    logABug(bugTitle, bugProject, fieldComment, fieldTags);
+</script>
+
+<!-- Javascript for search boxes (both sidebar and top nav) -->
+<script type="text/javascript">
+(function() {
+var cx = '000108871792296872333:noj9nikm74i';
+var gcse = document.createElement('script');
+gcse.type = 'text/javascript';
+gcse.async = true;
+gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+'//www.google.com/cse/cse.js?cx=' + cx;
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+
+  </body>
+</html>
