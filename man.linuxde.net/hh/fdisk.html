@@ -1,0 +1,201 @@
+<!DOCTYPE html><html lang="zh-cn"><head><meta charset="UTF-8" /><meta name="renderer" content="webkit" /><meta http-equiv="X-UA-Compatible" content="IE=edge" /><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" /><link rel="shortcut icon" href="/favicon.ico?v=1.0.8" type="image/x-icon" /><link rel="pingback" href="http://man.yunwei.edu/xmlrpc.php" /><link href="http://man.yunwei.edu/wp-content/themes/pc_mobile/style.css?v=1.0.8" rel="stylesheet" type="text/css" /><title>fdisk命令_Linux fdisk 命令用法详解：查看磁盘使用情况和磁盘分区</title><link rel='canonical' href='http://man.yunwei.edu/fdisk' /></head><body><div id="header" class="clearfix"><h2 id="logo" class="left"><a title="Linux命令大全" href="http://man.yunwei.edu/">Linux命令大全</a></h2><ul id="menu-main" class="right toggle-target"><li id="menu-item-4" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home current-post-parent menu-item-4"><a href="http://man.yunwei.edu/">首页搜索</a></li><li id="menu-item-2474" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2474"><a href="http://www.linuxprobe.com/">Linux书籍</a></li><li id="menu-item-6" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-6"><a href="http://man.yunwei.edu/par/2">系统管理</a></li><li id="menu-item-7" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-7"><a href="http://man.yunwei.edu/par/5">网络管理</a></li><li id="menu-item-8" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-8"><a href="http://man.yunwei.edu/par/4">软件·打印·开发·工具</a></li><li id="menu-item-9" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-9"><a href="http://man.yunwei.edu/par/1">文件和目录管理</a></li><li id="menu-item-10" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-10"><a href="http://man.yunwei.edu/par/3">硬件·内核·Shell·监测</a></li></ul> <span id="menu-main-toggle" class="toggle-btn" toggle-target="#menu-main"></span></div><div id="main-single" class="main-layout clearfix"><div class="right arc-wrap"><div id="position-wrap" class="clearfix"><div class="position left">当前位置：<a href="http://man.yunwei.edu">首页</a> &raquo; <a href="http://man.yunwei.edu/par/3" rel="category tag">硬件·内核·Shell·监测</a> &raquo; fdisk</div></div><div id="title" class="clearfix"><h1 class="left">fdisk命令</h1><div class="right"> <a href="http://man.yunwei.edu/sub/%e7%a3%81%e7%9b%98%e7%ae%a1%e7%90%86" rel="tag">磁盘管理</a></div></div><div id="ad-arc-top" class="ad"></div><div id="arc-body"><p> <strong>fdisk命令</strong>用于观察硬盘实体使用情况，也可对硬盘分区。它采用传统的问答式界面，而非类似DOS&nbsp;fdisk的cfdisk互动式操作界面，因此在使用上较为不便，但功能却丝毫不打折扣。</p><h3> 语法<br /></h3><pre>
+fdisk(选项)(参数)</pre><h3> 选项<br /></h3><pre>
+-b&lt;分区大小&gt;：指定每个分区的大小；
+-l：列出指定的外围设备的分区表状况；
+-s&lt;分区编号&gt;：将指定的分区大小输出到标准输出上，单位为区块；
+-u：搭配&quot;-l&quot;参数列表，会用分区数目取代柱面数目，来表示每个分区的起始地址；
+-v：显示版本信息。</pre><h3> 参数<br /></h3><p> 设备文件：指定要进行分区或者显示分区的硬盘设备文件。</p><h3> 实例<br /></h3><p> 首先选择要进行操作的磁盘：</p><pre>
+[root@localhost ~]# fdisk /dev/sdb</pre><p> 输入<code>m</code>列出可以执行的命令：</p><pre>
+<span class='wp_keywordlink'><a href="http://man.yunwei.edu/command" title="command命令" target="_blank">command</a></span> (m for <span class='wp_keywordlink'><a href="http://man.yunwei.edu/help" title="help命令" target="_blank">help</a></span>): <span style="color:#FF0000;">m</span>
+Command action
+   a   toggle a bootable flag
+   b   edit bsd disklabel
+   c   toggle the dos compatibility flag
+   d   delete a partition
+   l   list known partition types
+   m   print this menu
+   n   add a new partition
+   o   create a new empty DOS partition table
+   p   print the partition table
+   q   quit without saving changes
+   s   create a new empty Sun disklabel
+   t   change a partition&#39;s system <span class='wp_keywordlink'><a href="http://man.yunwei.edu/id" title="id命令" target="_blank">id</a></span>
+   u   change display/entry units
+   v   verify the partition table
+   <span class='wp_keywordlink'><a href="http://man.yunwei.edu/w" title="w命令" target="_blank">w</a></span>   <span class='wp_keywordlink'><a href="http://man.yunwei.edu/write" title="write命令" target="_blank">write</a></span> table to disk and <span class='wp_keywordlink'><a href="http://man.yunwei.edu/exit" title="exit命令" target="_blank">exit</a></span>
+   x   extra functionality (experts only)</pre><p> 输入<code>p</code>列出磁盘目前的分区情况：</p><pre>
+Command (m for help): <span style="color:#FF0000;">p</span>
+
+Disk /dev/sdb: 3221 MB, 3221225472 bytes
+255 heads, 63 sectors/track, 391 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1               1           1        8001   8e  Linux LVM
+/dev/sdb2               2          26      200812+  83  Linux</pre><p> 输入<code>d</code>然后选择分区，删除现有分区：</p><pre>
+Command (m for help): <span style="color:#FF0000;">d</span>
+Partition number (1-4): 1
+
+Command (m for help): <span style="color:#FF0000;">d</span>
+Selected partition 2</pre><p> 查看分区情况，确认分区已经删除：</p><pre>
+Command (m for help): <span style="color:#FF0000;">print</span>
+
+Disk /dev/sdb: 3221 MB, 3221225472 bytes
+255 heads, 63 sectors/track, 391 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+
+   Device Boot      Start         End      Blocks   Id  System
+
+Command (m for help):</pre><p> 输入<code>n</code>建立新的磁盘分区，首先建立两个主磁盘分区：</p><pre>
+Command (m for help): <span style="color:#FF0000;">n</span>
+Command action
+   e   extended
+   p   primary partition (1-4)
+<span style="color:#FF0000;">p    //建立主分区</span>
+Partition number (1-4): <span style="color:#FF0000;">1  //分区号</span>
+First cylinder (1-391, default 1):  <span style="color:#FF0000;">//分区起始位置</span>
+Using default value 1
+<span class='wp_keywordlink'><a href="http://man.yunwei.edu/last" title="last命令" target="_blank">last</a></span> cylinder or +size or +sizeM or +sizeK (1-391, default 391): <span style="color:#FF0000;">100  //分区结束位置，单位为扇区</span>
+
+Command (m for help): <span style="color:#FF0000;">n  //再建立一个分区</span>
+Command action
+   e   extended
+   p   primary partition (1-4)
+p 
+Partition number (1-4): <span style="color:#FF0000;">2  //分区号为2</span>
+First cylinder (101-391, default 101):
+Using default value 101
+Last cylinder or +size or +sizeM or +sizeK (101-391, default 391): <span style="color:#FF0000;">+200M  //分区结束位置，单位为M</span></pre><p> 确认分区建立成功：</p><pre>
+Command (m for help): <span style="color:#FF0000;">p</span>
+
+Disk /dev/sdb: 3221 MB, 3221225472 bytes
+255 heads, 63 sectors/track, 391 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1               1         100      803218+  83  Linux
+/dev/sdb2             101         125      200812+  83  Linux</pre><p> 再建立一个逻辑分区：</p><pre>
+Command (m for help): <span style="color:#FF0000;">n</span>
+Command action
+   e   extended
+   p   primary partition (1-4)
+<span style="color:#FF0000;">e  //选择扩展分区</span>
+Partition number (1-4): 3
+First cylinder (126-391, default 126):
+Using default value 126
+Last cylinder or +size or +sizeM or +sizeK (126-391, default 391):
+Using default value 391</pre><p> 确认扩展分区建立成功：</p><pre>
+Command (m for help): <span style="color:#FF0000;">p</span>
+
+Disk /dev/sdb: 3221 MB, 3221225472 bytes
+255 heads, 63 sectors/track, 391 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1               1         100      803218+  83  Linux
+/dev/sdb2             101         125      200812+  83  Linux
+/dev/sdb3             126         391     2136645    5  Extended</pre><p> 在扩展分区上建立两个逻辑分区：</p><pre>
+Command (m for help): <span style="color:#FF0000;">n</span>
+Command action
+   l   logical (5 or over)
+   p   primary partition (1-4)
+<span style="color:#FF0000;">l //选择逻辑分区</span>
+First cylinder (126-391, default 126):
+Using default value 126
+Last cylinder or +size or +sizeM or +sizeK (126-391, default 391): +400M    
+
+Command (m for help): n
+Command action
+   l   logical (5 or over)
+   p   primary partition (1-4)
+<span style="color:#FF0000;">l</span>
+First cylinder (176-391, default 176):
+Using default value 176
+Last cylinder or +size or +sizeM or +sizeK (176-391, default 391):
+Using default value 391</pre><p> 确认逻辑分区建立成功：</p><pre>
+Command (m for help): <span style="color:#FF0000;">p</span>
+
+Disk /dev/sdb: 3221 MB, 3221225472 bytes
+255 heads, 63 sectors/track, 391 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1               1         100      803218+  83  Linux
+/dev/sdb2             101         125      200812+  83  Linux
+/dev/sdb3             126         391     2136645    5  Extended
+/dev/sdb5             126         175      401593+  83  Linux
+/dev/sdb6             176         391     1734988+  83  Linux
+
+Command (m for help):</pre><p> 从上面的结果我们可以看到，在硬盘sdb我们建立了2个主分区（sdb1，sdb2），1个扩展分区（sdb3），2个逻辑分区（sdb5，sdb6）</p><p> 注意：主分区和扩展分区的磁盘号位1-4，也就是说最多有4个主分区或者扩展分区，逻辑分区开始的磁盘号为5，因此在这个实验中试没有sdb4的。</p><p> 最后对分区操作进行保存：</p><pre>
+Command (m for help): <span style="color:#FF0000;">w</span>
+The partition table has been altered!
+
+Calling ioctl() to re-<span class='wp_keywordlink'><a href="http://man.yunwei.edu/read" title="read命令" target="_blank">read</a></span> partition table.
+Syncing disks.</pre><p> 建立好分区之后我们还需要对分区进行格式化才能在系统中使用磁盘。</p><p> 在sdb1上建立ext2分区：</p><pre>
+<span style="color:#B22222;">[root@localhost ~]# <span class='wp_keywordlink'><a href="http://man.yunwei.edu/mkfs" title="mkfs命令" target="_blank">mkfs</a></span>.ext2 /dev/sdb1</span>
+<span class='wp_keywordlink'><a href="http://man.yunwei.edu/mke2fs" title="mke2fs命令" target="_blank">mke2fs</a></span> 1.39 (29-May-2006)
+Filesystem label=
+OS <span class='wp_keywordlink'><a href="http://man.yunwei.edu/type" title="type命令" target="_blank">type</a></span>: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+100576 inodes, 200804 blocks
+10040 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=209715200
+7 block <span class='wp_keywordlink'><a href="http://man.yunwei.edu/groups" title="groups命令" target="_blank">groups</a></span>
+32768 blocks per group, 32768 fragments per group
+14368 inodes per group
+Superblock backups stored on blocks:
+        32768, 98304, 163840
+
+Writing inode tables: done                           
+Writing superblocks and filesystem accounting information: done
+
+This filesystem will be automatically checked every 32 mounts or
+180 days, whichever comes first.  Use <span class='wp_keywordlink'><a href="http://man.yunwei.edu/tune2fs" title="tune2fs命令" target="_blank">tune2fs</a></span> -c or -i to override.</pre><p> 在sdb6上建立ext3分区：</p><pre>
+<span style="color:#B22222;">[root@localhost ~]# mkfs.ext3 /dev/sdb6</span>
+mke2fs 1.39 (29-May-2006)
+Filesystem label=
+OS type: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+217280 inodes, 433747 blocks
+21687 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=444596224
+14 block groups
+32768 blocks per group, 32768 fragments per group
+15520 inodes per group
+Superblock backups stored on blocks:
+        32768, 98304, 163840, 229376, 294912
+
+Writing inode tables: done                           
+Creating journal (8192 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+This filesystem will be automatically checked every 32 mounts or
+180 days, whichever comes first.  Use tune2fs -c or -i to override.
+[root@localhost ~]#</pre><p> 建立两个目录<code>/oracle</code>和<code>/web</code>，将新建好的两个分区挂载到系统：</p><pre>
+[root@localhost ~]# <span class='wp_keywordlink'><a href="http://man.yunwei.edu/mkdir" title="mkdir命令" target="_blank">mkdir</a></span> /oracle
+[root@localhost ~]# mkdir /web
+[root@localhost ~]# <span class='wp_keywordlink'><a href="http://man.yunwei.edu/mount" title="mount命令" target="_blank">mount</a></span> /dev/sdb1 /oracle
+[root@localhost ~]# mount /dev/sdb6 /web</pre><p> 查看分区挂载情况：</p><pre>
+<span style="color:#B22222;">[root@localhost ~]# <span class='wp_keywordlink'><a href="http://man.yunwei.edu/df" title="df命令" target="_blank">df</a></span> -h</span>
+文件系统              容量  已用 可用 已用% 挂载点
+/dev/mapper/VolGroup00-LogVol00
+                      6.7G  2.8G  3.6G  44% /
+/dev/sda1              99M   12M   82M  13% /boot
+tmpfs                 125M     0  125M   0% /dev/shm
+/dev/sdb1             773M  808K  733M   1% /oracle
+/dev/sdb6             1.7G   35M  1.6G   3% /web</pre><p> 如果需要每次开机自动挂载则需要修改<code>/etc/fstab</code>文件，加入两行配置：</p><pre>
+<span style="color:#B22222;">[root@localhost ~]# vim /etc/fstab</span>
+
+/dev/VolGroup00/LogVol00 /                       ext3    defaults        1 1
+LABEL=/boot             /boot                   ext3    defaults        1 2
+tmpfs                   /dev/shm                tmpfs   defaults        0 0
+devpts                  /dev/pts                devpts  gid=5,mode=620  0 0
+sysfs                   /sys                    sysfs   defaults        0 0
+proc                    /proc                   proc    defaults        0 0
+/dev/VolGroup00/LogVol01 swap                    swap    defaults        0 0
+/dev/sdb1               /oracle                 ext2    defaults        0 0
+/dev/sdb6               /web                    ext3    defaults        0 0</pre></div><div id="ad-arc-bottom"><p><a class="col-link" href="/taobaojiqiao" target="_blank">【站长推荐】淘宝购物省钱小窍门，有些商品优惠力度高达50%，非常夸张！</a></p></div></div><div id="sidebar" class="left"><div class="box"><h3 class="title">相关命令</h3><ul class="body list-col-1 clearfix"><li><a href="http://man.yunwei.edu/mkinitrd" title="mkinitrd">mkinitrd</a></li><li><a href="http://man.yunwei.edu/vgchange" title="vgchange">vgchange</a></li><li><a href="http://man.yunwei.edu/lilo" title="lilo">lilo</a></li><li><a href="http://man.yunwei.edu/vgreduce" title="vgreduce">vgreduce</a></li><li><a href="http://man.yunwei.edu/grub" title="grub">grub</a></li><li><a href="http://man.yunwei.edu/vgextend" title="vgextend">vgextend</a></li><li><a href="http://man.yunwei.edu/mknod" title="mknod">mknod</a></li><li><a href="http://man.yunwei.edu/vgcreate" title="vgcreate">vgcreate</a></li><li><a href="http://man.yunwei.edu/pvcreate" title="pvcreate">pvcreate</a></li><li><a href="http://man.yunwei.edu/lvresize" title="lvresize">lvresize</a></li><li><a href="http://man.yunwei.edu/lsblk" title="lsblk">lsblk</a></li><li><a href="http://man.yunwei.edu/blkid" title="blkid">blkid</a></li><li><a href="http://man.yunwei.edu/vgremove" title="vgremove">vgremove</a></li><li><a href="http://man.yunwei.edu/pvdisplay" title="pvdisplay">pvdisplay</a></li><li><a href="http://man.yunwei.edu/lvremove" title="lvremove">lvremove</a></li><li><a href="http://man.yunwei.edu/badblocks" title="badblocks">badblocks</a></li><li><a href="http://man.yunwei.edu/parted" title="parted">parted</a></li><li><a href="http://man.yunwei.edu/mkisofs" title="mkisofs">mkisofs</a></li><li><a href="http://man.yunwei.edu/lvreduce" title="lvreduce">lvreduce</a></li><li><a href="http://man.yunwei.edu/partprobe" title="partprobe">partprobe</a></li></ul></div><div class="box mobile-hide"><h3 class="title">送福利</h3><ul class="body list-col-1 clearfix"><li><a href="/taobaojiqiao" target="_blank" style="color: #008000;">淘宝购物省钱小窍门，有些商品优惠力度高达50%，非常夸张！</a></li></ul></div><div id="sidebar_search_box" class="box"><form action="http://man.yunwei.edu/" method="post"> <input class="search-input " type="text" name="ss" id="ss" value="命令直达(输入完整命令)" onFocus="if (value =='命令直达(输入完整命令)'){value =''}" onBlur="if (value ==''){value='命令直达(输入完整命令)'}" /> <input class="search-submit button mobile-visible" type="submit" value="进入" /></form><form action="http://man.yunwei.edu/"> <input class="search-input" type="text" name="s" id="s" value="模糊搜索(输入关键词)" onFocus="if (value =='模糊搜索(输入关键词)'){value =''}" onBlur="if (value ==''){value='模糊搜索(输入关键词)'}" /> <input class="search-submit button mobile-visible" type="submit" value="搜索" /></form></div><div class="box"><h3 class="title"><a href="/download/">Linux下载</a></h3><ul class="body list-col-1 clearfix"><li><a href="/download/Ubuntu">Ubuntu下载</a></li><li><a href="/download/CentOS">CentOS下载</a></li></ul></div></div></div><div id="footer-wrap"><div id="btn-backtop" title="返回顶部">返回顶部↑</div><div id="footer"><div class="info box"> <a href="http://man.yunwei.edu" title="Linux命令大全">Linux命令大全</a> <span class="split"></span> <a href="http://man.yunwei.edu/about_us" title="关于/联系">关于/联系</a> <span class="split"></span> 收藏本站请使用Ctrl+D <span class="split"></span> <a href="http://man.yunwei.edu/shell-script" target="_blank">Shell脚本攻略</a> <span class="split"></span> <a href="http://man.yunwei.edu/docs/shell_regex.html" target="_blank">Shell正则表达式</a> <span class="split"></span> 共收录 <span style="font-size: 16px; color:#74b147;">638</span> 条Linux系统命令</div><div class="desc box">在Linux命令大全（man.yunwei.edu）可以查询您所需要的Linux命令教程和相关实例。如果您觉得本站内容对您有所帮助，请推荐给更多需要帮助的人。</div></div></div> <script type="text/javascript" src="http://man.yunwei.edu/wp-content/themes/pc_mobile/js/jquery-1.8.3.min.js?v=1.0.8"></script> <script type="text/javascript" src="http://man.yunwei.edu/wp-content/themes/pc_mobile/js/common.js?v=1.0.8"></script> <div style="display:none"><script src="http://s19.cnzz.com/z_stat.php?id=1271307540&web_id=1271307540" language="JavaScript"></script></div></body></html>

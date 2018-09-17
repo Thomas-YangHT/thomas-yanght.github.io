@@ -1,0 +1,38 @@
+<!DOCTYPE html><html lang="zh-cn"><head><meta charset="UTF-8" /><meta name="renderer" content="webkit" /><meta http-equiv="X-UA-Compatible" content="IE=edge" /><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" /><link rel="shortcut icon" href="../favicon.ico?v=1.0.8" type="image/x-icon" /><link rel="pingback" href="../xmlrpc.php" /><link href="http://man.linuxde.net/wp-content/themes/pc_mobile/style.css?v=1.0.8" rel="stylesheet" type="text/css" /><title>Shell函数的定义、执行、传参和递归函数_Linux命令大全</title><link rel='canonical' href='shell-4' /><link rel="stylesheet" href="http://man.linuxde.net/wp-content/plugins/wp-content-index/wp-content-index.css" type="text/css" type="text/css" media="all" /></head><body><div id="header" class="clearfix"><h2 id="logo" class="left"><a title="Linux命令大全" href="../index.html">Linux命令大全</a></h2><ul id="menu-main" class="right toggle-target"><li id="menu-item-4" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-4"><a href="../index.html">首页搜索</a></li><li id="menu-item-2474" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2474"><a href="http://www.linuxprobe.com/">Linux书籍</a></li><li id="menu-item-6" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-6"><a href="../par/2">系统管理</a></li><li id="menu-item-7" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-7"><a href="../par/5">网络管理</a></li><li id="menu-item-8" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-8"><a href="../par/4">软件·打印·开发·工具</a></li><li id="menu-item-9" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-9"><a href="../par/1">文件和目录管理</a></li><li id="menu-item-10" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-10"><a href="../par/3">硬件·内核·Shell·监测</a></li></ul> <span id="menu-main-toggle" class="toggle-btn" toggle-target="#menu-main"></span></div><div id="main-page-full" class="main-layout"><div class="arc-wrap"><div id="position-wrap" class="clearfix"><div class="position left">当前位置：<a href="../index.html">首页</a> &raquo; Shell函数的定义、执行、传参和递归函数</div></div><div id="title" class="clearfix"><h1>Shell函数的定义、执行、传参和递归函数</h1></div><div id="arc-body"><div id="content-index" class="content-index" style="float:right;"><div class="content-index-title">本文索引</div><span class="content-index-toctoggle">[<a id="content-index-togglelink" href="javascript:content_index_toggleToc()">隐藏</a>]</span> <script type="text/javascript" language="javascript">window.content_index_showTocToggle=true;function content_index_toggleToc(){var tts="显示";var tth="隐藏";if(window.content_index_showTocToggle){window.content_index_showTocToggle=false;document.getElementById("content-index-contents").style.display="none";document.getElementById("content-index-togglelink").innerHTML=tts}else{window.content_index_showTocToggle=true;document.getElementById("content-index-contents").style.display="block";document.getElementById("content-index-togglelink").innerHTML=tth}}</script> <ul id="content-index-contents"><li class="content-index-level-1"><a href="shell-4#shell函数的定义、执行与传参" title="shell函数的定义、执行与传参"><span>shell函数的定义、执行与传参</span></a></li><li class="content-index-level-1"><a href="shell-4#递归函数" title="递归函数"><span>递归函数</span></a></li></ul></div><p> Bash（Bourne Again shell）也跟其他编程语言一样也支持函数，一般在编写大型脚本中需要用到，它可以将shell脚本程序划分成一个个功能相对独立的代码块，使代码的模块化更好，结构更加清晰，并可以有效地减少程序的代码量。但是bash作为一种解释性语言，bash 在编程能力方面提供的支持并不像其他编译性的语言（例如 C 语言）那样完善，执行效率也会低很多。</p><h3 id="shell函数的定义、执行与传参"> shell函数的定义、执行与传参<br /></h3><p> <strong>定义</strong></p><p> 格式1</p><pre>
+function name() {
+ <span class='wp_keywordlink'><a href="http://man.linuxde.net/command" title="command命令" target="_blank">command</a></span> sequence(<span style="font-family: Arial, Verdana, sans-serif;">命令序列</span><span style="font-family: Arial, Verdana, sans-serif;">);</span>
+}</pre><p> 格式2</p><pre>
+name() {
+ Command sequence(命令序列);
+}
+</pre><p> 可以带<code>function name()</code>定义，也可以直接<code>name()</code>定义，不带任何参数。&nbsp;</p><p> <strong>执行</strong></p><pre>
+name;</pre><p> 直接使用函数名称即可调用某个函数。</p><p> <strong>传递参数</strong></p><pre>
+<span style="color:#008000;">#!/bin/bash</span>
+<span style="color:#a52a2a;">aa=&quot;this is aa&quot;
+bb=&quot;this is bb&quot;</span>
+function name() {                  #定义函数name
+<span style="color:#00f;">        local cc=&quot;this is cc&quot;      #定义局部变量$cc
+        local <span class='wp_keywordlink'><a href="../dd" title="dd命令" target="_blank">dd</a></span>=&quot;this is dd&quot;      #定义局部变量$dd</span>
+        <span style="color:#a52a2a;"><span class='wp_keywordlink'><a href="../echo" title="echo命令" target="_blank">echo</a></span> $aa, $bb              #访问参数1和参数2</span>
+        <span style="color:#00f;">echo $cc                   #打印局部变量
+</span><span style="color:#ff8c00;">        return 0                   #shell函数返回值是整形，并且在0~257之间。</span>
+}
+
+<span style="color:#00f;">echo $dd                           #这里将会打印不生效，因为dd是局部变量。</span>
+name                               #使用函数name
+</pre><p> 上例中：</p><ul><li> aa 和 bb 定义的是全局变量。</li><li> cc 和 dd 定义的是局部变量，只能在函数 name 中使用。</li><li> <span style="color:#a52a2a;"><code>$aa</code>是第一个参数<code>$1</code>，<code>$bb</code>是第一个参数<code>$2</code>，以此类推<code>$n</code>是第n个参数<code>$n</code>。</span></li><li> <code>return 0</code>参数返回，可以显示加：<code>return 返回</code>，如果不加，将以最后一条命令运行结果作为返回值。</li></ul><h3 id="递归函数"> 递归函数<br /></h3><p> bash也支持递归函数（能够调用自身的函数）例如：</p><pre>
+#!/bin/bash
+
+function name() {
+        echo $1
+        name hello
+        <span class='wp_keywordlink'><a href="http://man.linuxde.net/sleep" title="sleep命令" target="_blank">sleep</a></span> 1
+}
+name
+</pre><p> 运行此脚本后不断打印出hello，按<code>Ctrl+C</code>结束。</p><p> <strong>递归经典：fork 炸弹</strong></p><p> 可能很多人都曾经听说过 fork 炸弹，它实际上只是一个非常简单的递归程序，程序所做的事情只有一样：这个递归函数能够调用自身，不算的生成新的进程，这会导致这个简单的程序迅速耗尽系统里面的所有资源，造成拒绝服务攻击。</p><pre>
+.()
+{
+.|.&amp;
+}
+;
+.</pre><ul><li> 第 1 行说明下面要定义一个函数，函数名为小数点，没有可选参数。</li><li> 第 2 行表示函数体开始。</li><li> 第 3 行是函数体真正要做的事情，首先它递归调用本函数，然后利用管道调用一个新进程（它要做的事情也是递归调用本函数），并将其放到后台执行。</li><li> 第 4 行表示函数体结束。</li><li> 第 5 行并不会执行什么操作，在命令行中用来分隔两个命令用。从总体来看，它表明这段程序包含两个部分，首先定义了一个函数，然后调用这个函数。</li><li> 第 6 行表示调用本函数。&nbsp;</li></ul></div></div></div><div id="footer-wrap"><div id="btn-backtop" title="返回顶部">返回顶部↑</div><div id="footer"><div class="info box"> <a href="../index.html" title="Linux命令大全">Linux命令大全</a> <span class="split"></span> <a href="../about_us" title="关于/联系">关于/联系</a> <span class="split"></span> 收藏本站请使用Ctrl+D <span class="split"></span> <a href="../shell-script" target="_blank">Shell脚本攻略</a> <span class="split"></span> <a href="../docs/shell_regex.html" target="_blank">Shell正则表达式</a> <span class="split"></span> 共收录 <span style="font-size: 16px; color:#74b147;">603</span> 条Linux系统命令</div><div class="desc box">在Linux命令大全（man.linuxde.net）可以查询您所需要的Linux命令教程和相关实例。如果您觉得本站内容对您有所帮助，请推荐给更多需要帮助的人。</div></div></div> <script type="text/javascript" src="http://man.linuxde.net/wp-content/themes/pc_mobile/js/jquery-1.8.3.min.js?v=1.0.8"></script> <script type="text/javascript" src="http://man.linuxde.net/wp-content/themes/pc_mobile/js/common.js?v=1.0.8"></script> <div style="display:none"><script src="http://s19.cnzz.com/z_stat.php?id=1271307540&web_id=1271307540" language="JavaScript"></script></div></body></html>

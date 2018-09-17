@@ -1,0 +1,59 @@
+<!DOCTYPE html><html lang="zh-cn"><head><meta charset="UTF-8" /><meta name="renderer" content="webkit" /><meta http-equiv="X-UA-Compatible" content="IE=edge" /><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" /><link rel="shortcut icon" href="../favicon.ico?v=1.0.8" type="image/x-icon" /><link rel="pingback" href="../xmlrpc.php" /><link href="http://man.linuxde.net/wp-content/themes/pc_mobile/style.css?v=1.0.8" rel="stylesheet" type="text/css" /><title>文件的描述符和重定向_Linux命令大全</title><link rel='canonical' href='shell-2' /><link rel="stylesheet" href="http://man.linuxde.net/wp-content/plugins/wp-content-index/wp-content-index.css" type="text/css" type="text/css" media="all" /></head><body><div id="header" class="clearfix"><h2 id="logo" class="left"><a title="Linux命令大全" href="../index.html">Linux命令大全</a></h2><ul id="menu-main" class="right toggle-target"><li id="menu-item-4" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-4"><a href="../index.html">首页搜索</a></li><li id="menu-item-2474" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2474"><a href="http://www.linuxprobe.com/">Linux书籍</a></li><li id="menu-item-6" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-6"><a href="../par/2">系统管理</a></li><li id="menu-item-7" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-7"><a href="../par/5">网络管理</a></li><li id="menu-item-8" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-8"><a href="../par/4">软件·打印·开发·工具</a></li><li id="menu-item-9" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-9"><a href="../par/1">文件和目录管理</a></li><li id="menu-item-10" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-10"><a href="../par/3">硬件·内核·Shell·监测</a></li></ul> <span id="menu-main-toggle" class="toggle-btn" toggle-target="#menu-main"></span></div><div id="main-page-full" class="main-layout"><div class="arc-wrap"><div id="position-wrap" class="clearfix"><div class="position left">当前位置：<a href="../index.html">首页</a> &raquo; 文件的描述符和重定向</div></div><div id="title" class="clearfix"><h1>文件的描述符和重定向</h1></div><div id="arc-body"><div id="content-index" class="content-index" style="float:right;"><div class="content-index-title">本文索引</div><span class="content-index-toctoggle">[<a id="content-index-togglelink" href="javascript:content_index_toggleToc()">隐藏</a>]</span> <script type="text/javascript" language="javascript">window.content_index_showTocToggle=true;function content_index_toggleToc(){var tts="显示";var tth="隐藏";if(window.content_index_showTocToggle){window.content_index_showTocToggle=false;document.getElementById("content-index-contents").style.display="none";document.getElementById("content-index-togglelink").innerHTML=tts}else{window.content_index_showTocToggle=true;document.getElementById("content-index-contents").style.display="block";document.getElementById("content-index-togglelink").innerHTML=tth}}</script> <ul id="content-index-contents"><li class="content-index-level-1"><a href="shell-2#系统预留文件描述符" title="系统预留文件描述符"><span>系统预留文件描述符</span></a></li><li class="content-index-level-1"><a href="shell-2#tee命令" title="tee命令"><span>tee命令</span></a></li><li class="content-index-level-1"><a href="shell-2#重定向脚本内的文本片段（多行文本）" title="重定向脚本内的文本片段（多行文本）"><span>重定向脚本内的文本片段（多行文本）</span></a></li><li class="content-index-level-1"><a href="shell-2#自定义文件描述符" title="自定义文件描述符"><span>自定义文件描述符</span></a></li></ul></div><p> 文件描述符是和文件的输入、输出相关联的<strong>非负整数</strong>，Linux内核（kernel）利用文件描述符（<span class='wp_keywordlink'><a href="http://man.linuxde.net/file" title="file命令" target="_blank">file</a></span> descriptor）来访问文件。打开现存文件或新建文件时，内核会返回一个文件描述符。读写文件也需要使用文件描述符来指定待读写的文件。常见的文件描述符是<strong>stdin</strong>、<strong>stdout</strong>和<strong>stderr</strong>。</p><h3 id="系统预留文件描述符"> 系统预留文件描述符<br /></h3><ul><li> <strong>0</strong> &mdash;&mdash; stdin（标准输入）</li><li> <strong>1</strong> &mdash;&mdash; stdout（标准输出）</li><li> <strong>2</strong> &mdash;&mdash; stderr（标准错误）</li></ul><p> 重定向将输入文本<strong>通过截取模式</strong>保存到文件：</p><pre>
+<span class='wp_keywordlink'><a href="../echo" title="echo命令" target="_blank">echo</a></span> &quot;this is a text line one&quot; &gt; <span class='wp_keywordlink'><a href="http://man.linuxde.net/test" title="test命令" target="_blank">test</a></span>.txt</pre><p> 写入到文件之前，文件内容首先会被清空。</p><p> 重定向将输入文本<strong>通过追加模式</strong>保存到文件：</p><pre>
+echo &quot;this is a text line one&quot; &gt;&gt; test.txt</pre><p> 写入到文件之后，会追加到文件结尾。</p><p> <strong>标准错误输出：</strong></p><pre>
+[root@localhost text]# <span class='wp_keywordlink'><a href="../cat" title="cat命令" target="_blank">cat</a></span> linuxde.net
+<span style="color:#808080;">cat: linuxde.net: No such file or directory</span>
+</pre><p> <strong>标准错误输出的重定向方法：</strong></p><pre>
+方法一：
+[root@localhost text]# cat linuxde.net 2&gt; out.txt  <span style="color:#008000;">//没有任何错误提示，正常运行。
+</span>方法二：
+[root@localhost text]# cat linuxde.net &amp;&gt; out.txt
+</pre><p> 因为错误信息被保存到了out.txt文件中。</p><pre>
+[root@localhost text]# cat linuxde.net 2&gt; /dev/null</pre><p> 将错误输出丢弃到<code>/dev/null</code>中，/dev/null是一个特殊的设备文件，这个文件接受到任何数据都会被丢系，通常被称为位桶、黑洞。</p><h3 id="tee命令"> <span class='wp_keywordlink'>tee</span>命令<br /></h3><p> tee命令可以将数据重定向到文件，另一方面还可以提供一份重定向数据的副本作为后续命令的stdin。</p><p> <img alt="文件的描述符和重定向" class="alignnone size-full wp-image-2374" height="253" src="../wp-content/uploads/2016/04/081959qqF.png" width="400" /></p><p> 在终端打印stdout同时重定向到文件中：</p><pre>
+<span class='wp_keywordlink'><a href="../ls" title="ls命令" target="_blank">ls</a></span> | tee out.txt
+1.sh
+1.txt
+2.txt
+eee.tst
+EEE.tst
+one
+out.txt
+string2
+www.pdf
+WWW.pdf
+WWW.pef</pre><pre>
+[root@localhost text]# ls | tee out.txt | cat -n
+     1  1.sh
+     2  1.txt
+     3  2.txt
+     4  eee.tst
+     5  EEE.tst
+     6  one
+     7  out.txt
+     8  string2
+     9  www.pdf
+    10  WWW.pdf
+    11  WWW.pef
+</pre><h3 id="重定向脚本内的文本片段（多行文本）"> 重定向脚本内的文本片段（多行文本）<br /></h3><pre>
+#!/bin/bash
+<span style="color:#f00;">cat &lt;&lt;EOF&gt;text.log</span>
+this is a text line1
+this is a text line2
+this is a text line3
+<span style="color:#f00;">EOF</span></pre><p> 在<code>cat &lt;&lt;EOF&gt;text.log</code>与下一个<code>EOF</code>行之间的所有文本都会当作stdin数据输入到<span style="color:#f00;">text.log</span>中。</p><h3 id="自定义文件描述符"> 自定义文件描述符<br /></h3><p> 除了0、1和2分别是<strong>stdin</strong>、<strong>stdout</strong>和<strong>stderr</strong>的系统预留描述符，我们还可以使用<code><span class='wp_keywordlink'><a href="http://man.linuxde.net/exec" title="exec命令" target="_blank">exec</a></span>命令</code>创建自定义文件描述符，文件的的打开模式有<strong>只读模式</strong>、<strong>截断模式</strong>和<strong>追加模式</strong>。</p><p> <strong>&lt; 操作符用于从文件中读取至stdin：</strong></p><pre>
+echo this is a test line &gt; input.txt
+exec 3&lt;input.txt    //自定义文件描述符3打开并读取文件
+</pre><p> 在命令中使用文件描述符3：</p><pre>
+cat &lt;&amp;3
+<span style="color:#808080;">this is a test line</span>
+</pre><p> 这里需要注意只能读取一次，如果再次使用需要重新创建文件描述符。</p><p> <strong>&gt; 操作符用于截断模式的文件写入（数据在文件内容被截断之后写入）：</strong></p><pre>
+exec 4&gt;output.txt
+echo this is a new line &gt;&amp;4
+cat output.txt
+<span style="color:#808080;">this is a new line</span>
+</pre><p> <strong>&gt;&gt; 操作符用于追加模式的文件写入（添加数据到文件中，原有数据不会丢失）：</strong></p><pre>
+exec 5&gt;&gt;output.txt
+echo this is a appended line &gt;&amp;5
+cat output.txt
+<span style="color:#808080;">this is a new line
+this is a appended lin</span></pre></div></div></div><div id="footer-wrap"><div id="btn-backtop" title="返回顶部">返回顶部↑</div><div id="footer"><div class="info box"> <a href="../index.html" title="Linux命令大全">Linux命令大全</a> <span class="split"></span> <a href="../about_us" title="关于/联系">关于/联系</a> <span class="split"></span> 收藏本站请使用Ctrl+D <span class="split"></span> <a href="../shell-script" target="_blank">Shell脚本攻略</a> <span class="split"></span> <a href="../docs/shell_regex.html" target="_blank">Shell正则表达式</a> <span class="split"></span> 共收录 <span style="font-size: 16px; color:#74b147;">603</span> 条Linux系统命令</div><div class="desc box">在Linux命令大全（man.linuxde.net）可以查询您所需要的Linux命令教程和相关实例。如果您觉得本站内容对您有所帮助，请推荐给更多需要帮助的人。</div></div></div> <script type="text/javascript" src="http://man.linuxde.net/wp-content/themes/pc_mobile/js/jquery-1.8.3.min.js?v=1.0.8"></script> <script type="text/javascript" src="http://man.linuxde.net/wp-content/themes/pc_mobile/js/common.js?v=1.0.8"></script> <div style="display:none"><script src="http://s19.cnzz.com/z_stat.php?id=1271307540&web_id=1271307540" language="JavaScript"></script></div></body></html>

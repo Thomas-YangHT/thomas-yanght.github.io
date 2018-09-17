@@ -1,0 +1,84 @@
+<!DOCTYPE html><html lang="zh-cn"><head><meta charset="UTF-8" /><meta name="renderer" content="webkit" /><meta http-equiv="X-UA-Compatible" content="IE=edge" /><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" /><link rel="shortcut icon" href="/favicon.ico?v=1.0.8" type="image/x-icon" /><link rel="pingback" href="http://man.yunwei.edu/xmlrpc.php" /><link href="http://man.yunwei.edu/wp-content/themes/pc_mobile/style.css?v=1.0.8" rel="stylesheet" type="text/css" /><title>parted命令_Linux parted 命令用法详解：磁盘分区和分区大小调整工具</title><link rel='canonical' href='http://man.yunwei.edu/parted' /></head><body><div id="header" class="clearfix"><h2 id="logo" class="left"><a title="Linux命令大全" href="http://man.yunwei.edu/">Linux命令大全</a></h2><ul id="menu-main" class="right toggle-target"><li id="menu-item-4" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home current-post-parent menu-item-4"><a href="http://man.yunwei.edu/">首页搜索</a></li><li id="menu-item-2474" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2474"><a href="http://www.linuxprobe.com/">Linux书籍</a></li><li id="menu-item-6" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-6"><a href="http://man.yunwei.edu/par/2">系统管理</a></li><li id="menu-item-7" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-7"><a href="http://man.yunwei.edu/par/5">网络管理</a></li><li id="menu-item-8" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-8"><a href="http://man.yunwei.edu/par/4">软件·打印·开发·工具</a></li><li id="menu-item-9" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-9"><a href="http://man.yunwei.edu/par/1">文件和目录管理</a></li><li id="menu-item-10" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-10"><a href="http://man.yunwei.edu/par/3">硬件·内核·Shell·监测</a></li></ul> <span id="menu-main-toggle" class="toggle-btn" toggle-target="#menu-main"></span></div><div id="main-single" class="main-layout clearfix"><div class="right arc-wrap"><div id="position-wrap" class="clearfix"><div class="position left">当前位置：<a href="http://man.yunwei.edu">首页</a> &raquo; <a href="http://man.yunwei.edu/par/3" rel="category tag">硬件·内核·Shell·监测</a> &raquo; parted</div></div><div id="title" class="clearfix"><h1 class="left">parted命令</h1><div class="right"> <a href="http://man.yunwei.edu/sub/%e7%a3%81%e7%9b%98%e7%ae%a1%e7%90%86" rel="tag">磁盘管理</a></div></div><div id="ad-arc-top" class="ad"></div><div id="arc-body"><p> <strong>parted命令</strong>是由GNU组织开发的一款功能强大的磁盘分区和分区大小调整工具，与<span class='wp_keywordlink'><a href="http://man.yunwei.edu/fdisk" title="fdisk命令" target="_blank">fdisk</a></span>不同，它支持调整分区的大小。作为一种设计用于Linux的工具，它没有构建成处理与fdisk关联的多种分区类型，但是，它可以处理最常见的分区格式，包括：ext2、ext3、fat16、fat32、NTFS、ReiserFS、JFS、XFS、UFS、HFS以及Linux交换分区。</p><h3> 语法<br /></h3><pre>
+parted(选项)(参数)</pre><h3> 选项<br /></h3><pre>
+-h：显示帮助信息；
+-i：交互式模式；
+-s：脚本模式，不提示用户；
+-v：显示版本号。</pre><h3> 参数<br /></h3><ul><li> 设备：指定要分区的硬盘所对应的设备文件；</li><li> 命令：要执行的parted命令。</li></ul><h3> 实例<br /></h3><p> 从串行技术出现以来，越来越多用户选择使用大容量的SATA硬盘创建磁盘阵列；特别是MD1000/MD3000，很轻易就突破2T的LUN，故在此给大家一些指引。</p><p> 红帽企业 Linux 4 Update 4供对大于 2 terabytes（TB）的磁盘设备的支持。</p><p> 请参考以下操作步骤：</p><p> 注：</p><ul><li> 绿色代表你需要使用的命令。</li><li> 红色代表你需要注意到的输出信息，在后续需要使用。</li></ul><pre>
+[root@localhost ~]# <span style="color:#008000;">fdisk -l</span>
+Disk /dev/sda: 35.8 GB, 35862976512 bytes
+255 heads, 63 sectors/track, 4360 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+   Device Boot      Start         End      Blocks   <span class='wp_keywordlink'><a href="http://man.yunwei.edu/id" title="id命令" target="_blank">id</a></span>  System
+/dev/sda1   *           1          13      104391   83  Linux
+/dev/sda2              14         144     1052257+  82  Linux swap
+/dev/sda3             145        4360    33865020   83  Linux
+Disk /dev/sdb: 2147 MB, 2147483648 bytes
+255 heads, 63 sectors/track, 261 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+<span style="color:#FF0000;">Disk /dev/sdb doesn&#39;t contain a valid partition table</span></pre><pre>
+[root@localhost ~]# <span style="color:#008000;">parted /dev/sdb</span>
+GNU Parted Copyright (C) 1998 - 2004 <span class='wp_keywordlink'><a href="http://man.yunwei.edu/free" title="free命令" target="_blank">free</a></span> Software Foundation, Inc.
+This program is free software, covered by the GNU General Public License.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the GNU General Public License for <span class='wp_keywordlink'><a href="http://man.yunwei.edu/more" title="more命令" target="_blank">more</a></span> details.
+使用/dev/sdb
+(parted)<span style="color:#008000;">mklabel gpt</span>
+(parted)<span style="color:#008000;">print</span>
+/dev/sdb的磁盘几何结构：<span style="color:#FF0000;">0.000-2048.000</span>兆字节
+磁盘标签类型：<span style="color:#FF0000;">gpt</span>
+Minor   起始点       终止点 文件系统   名称                 标志
+(parted)<span style="color:#008000;">mkpart primary 0 2048</span>  <span style="color:#FF0000;">&lt;-----上面print显示的数字</span>
+(parted)<span style="color:#008000;">print</span>
+/dev/sdb的磁盘几何结构：0.000-2048.000兆字节
+磁盘标签类型：gpt
+Minor   起始点       终止点 文件系统   名称                 标志
+<span style="color:#FF0000;">1          0.017   2047.983</span>
+(parted)<span style="color:#008000;">quit</span>
+</pre><p> 如果必要，不要忘记更新<code>/etc/fstab</code>。</p><pre>
+[root@localhost ~]# <span style="color:#FF0000;">fdisk -l</span>
+Disk /dev/sda: 35.8 GB, 35862976512 bytes
+255 heads, 63 sectors/track, 4360 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *           1          13      104391   83  Linux
+/dev/sda2              14         144     1052257+  82  Linux swap
+/dev/sda3             145        4360    33865020   83  Linux
+<span style="color:#FF0000;">WARNING: GPT (GUID Partition Table) detected on &#39;/dev/sdb&#39;! The util fdisk doesn&#39;t support GPT. Use GNU Parted.
+ 
+Disk /dev/sdb: 2147 MB, 2147483648 bytes
+255 heads, 63 sectors/track, 261 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1               1         262     2097151+  ee  EFI GPT
+Partition 1 has different physical/logical beginnings (non-Linux?):
+     phys=(0, 0, 1) logical=(0,0, 2)
+Partition 1 has different physical/logical endings:
+     phys=(1023, 254, 63) logical=(261, 21, 16)</span></pre><pre>
+[root@localhost ~]# <span style="color:#008000;"><span class='wp_keywordlink'><a href="http://man.yunwei.edu/mkfs" title="mkfs命令" target="_blank">mkfs</a></span>.ext3 /dev/sdb1</span>
+<span class='wp_keywordlink'><a href="http://man.yunwei.edu/mke2fs" title="mke2fs命令" target="_blank">mke2fs</a></span> 1.35 (28-Feb-2004)
+Filesystem label=
+OS <span class='wp_keywordlink'><a href="http://man.yunwei.edu/type" title="type命令" target="_blank">type</a></span>: Linux
+Block size=4096 (log=2)
+Fragment size=4096 (log=2)
+262144 inodes, 524279 blocks
+26213 blocks (5.00%) reserved for the super user
+First data block=0
+Maximum filesystem blocks=536870912
+16 block <span class='wp_keywordlink'><a href="http://man.yunwei.edu/groups" title="groups命令" target="_blank">groups</a></span>
+32768 blocks per group, 32768 fragments per group
+16384 inodes per group
+Superblock backups stored on blocks:
+        32768, 98304, 163840, 229376, 294912
+Writing inode tables: done
+Creating journal (8192 blocks): done
+Writing superblocks and filesystem accounting information: done
+This filesystem will be automatically checked every 28 mounts or
+180 days, whichever comes first.  Use <span class='wp_keywordlink'><a href="http://man.yunwei.edu/tune2fs" title="tune2fs命令" target="_blank">tune2fs</a></span> -c or -i to override.</pre><pre>
+[root@localhost ~]# <span style="color:#008000;"><span class='wp_keywordlink'><a href="http://man.yunwei.edu/mount" title="mount命令" target="_blank">mount</a></span> /dev/sdb1 /mnt</span>
+[root@localhost ~]# <span style="color:#008000;"><span class='wp_keywordlink'><a href="http://man.yunwei.edu/df" title="df命令" target="_blank">df</a></span> -h</span>
+Filesystem            容量  已用 可用 已用% 挂载点
+/dev/sda3              &lt;?xml:namespace prefix = st1 /&gt;32G  2.6G   28G   9% /
+/dev/sda1              99M   12M   82M  13% /boot
+none                  252M     0  252M   0% /dev/shm
+/dev/sdb1             2.0G   36M  1.9G   2% /mnt</pre></div><div id="ad-arc-bottom"><p><a class="col-link" href="/taobaojiqiao" target="_blank">【站长推荐】淘宝购物省钱小窍门，有些商品优惠力度高达50%，非常夸张！</a></p></div></div><div id="sidebar" class="left"><div class="box"><h3 class="title">相关命令</h3><ul class="body list-col-1 clearfix"><li><a href="http://man.yunwei.edu/convertquota" title="convertquota">convertquota</a></li><li><a href="http://man.yunwei.edu/lsblk" title="lsblk">lsblk</a></li><li><a href="http://man.yunwei.edu/vgscan" title="vgscan">vgscan</a></li><li><a href="http://man.yunwei.edu/du" title="du">du</a></li><li><a href="http://man.yunwei.edu/lvdisplay" title="lvdisplay">lvdisplay</a></li><li><a href="http://man.yunwei.edu/lvextend" title="lvextend">lvextend</a></li><li><a href="http://man.yunwei.edu/mkbootdisk" title="mkbootdisk">mkbootdisk</a></li><li><a href="http://man.yunwei.edu/pvdisplay" title="pvdisplay">pvdisplay</a></li><li><a href="http://man.yunwei.edu/lilo" title="lilo">lilo</a></li><li><a href="http://man.yunwei.edu/pvremove" title="pvremove">pvremove</a></li><li><a href="http://man.yunwei.edu/blkid" title="blkid">blkid</a></li><li><a href="http://man.yunwei.edu/grub" title="grub">grub</a></li><li><a href="http://man.yunwei.edu/df" title="df">df</a></li><li><a href="http://man.yunwei.edu/fdisk" title="fdisk">fdisk</a></li><li><a href="http://man.yunwei.edu/hdparm" title="hdparm">hdparm</a></li><li><a href="http://man.yunwei.edu/lvcreate" title="lvcreate">lvcreate</a></li><li><a href="http://man.yunwei.edu/lvremove" title="lvremove">lvremove</a></li><li><a href="http://man.yunwei.edu/vgreduce" title="vgreduce">vgreduce</a></li><li><a href="http://man.yunwei.edu/vgchange" title="vgchange">vgchange</a></li><li><a href="http://man.yunwei.edu/lvresize" title="lvresize">lvresize</a></li></ul></div><div class="box mobile-hide"><h3 class="title">送福利</h3><ul class="body list-col-1 clearfix"><li><a href="/taobaojiqiao" target="_blank" style="color: #008000;">淘宝购物省钱小窍门，有些商品优惠力度高达50%，非常夸张！</a></li></ul></div><div id="sidebar_search_box" class="box"><form action="http://man.yunwei.edu/" method="post"> <input class="search-input " type="text" name="ss" id="ss" value="命令直达(输入完整命令)" onFocus="if (value =='命令直达(输入完整命令)'){value =''}" onBlur="if (value ==''){value='命令直达(输入完整命令)'}" /> <input class="search-submit button mobile-visible" type="submit" value="进入" /></form><form action="http://man.yunwei.edu/"> <input class="search-input" type="text" name="s" id="s" value="模糊搜索(输入关键词)" onFocus="if (value =='模糊搜索(输入关键词)'){value =''}" onBlur="if (value ==''){value='模糊搜索(输入关键词)'}" /> <input class="search-submit button mobile-visible" type="submit" value="搜索" /></form></div><div class="box"><h3 class="title"><a href="/download/">Linux下载</a></h3><ul class="body list-col-1 clearfix"><li><a href="/download/Ubuntu">Ubuntu下载</a></li><li><a href="/download/CentOS">CentOS下载</a></li></ul></div></div></div><div id="footer-wrap"><div id="btn-backtop" title="返回顶部">返回顶部↑</div><div id="footer"><div class="info box"> <a href="http://man.yunwei.edu" title="Linux命令大全">Linux命令大全</a> <span class="split"></span> <a href="http://man.yunwei.edu/about_us" title="关于/联系">关于/联系</a> <span class="split"></span> 收藏本站请使用Ctrl+D <span class="split"></span> <a href="http://man.yunwei.edu/shell-script" target="_blank">Shell脚本攻略</a> <span class="split"></span> <a href="http://man.yunwei.edu/docs/shell_regex.html" target="_blank">Shell正则表达式</a> <span class="split"></span> 共收录 <span style="font-size: 16px; color:#74b147;">638</span> 条Linux系统命令</div><div class="desc box">在Linux命令大全（man.yunwei.edu）可以查询您所需要的Linux命令教程和相关实例。如果您觉得本站内容对您有所帮助，请推荐给更多需要帮助的人。</div></div></div> <script type="text/javascript" src="http://man.yunwei.edu/wp-content/themes/pc_mobile/js/jquery-1.8.3.min.js?v=1.0.8"></script> <script type="text/javascript" src="http://man.yunwei.edu/wp-content/themes/pc_mobile/js/common.js?v=1.0.8"></script> <div style="display:none"><script src="http://s19.cnzz.com/z_stat.php?id=1271307540&web_id=1271307540" language="JavaScript"></script></div></body></html>

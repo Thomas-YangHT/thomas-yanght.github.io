@@ -1,0 +1,175 @@
+<!DOCTYPE html><html lang="zh-cn"><head><meta charset="UTF-8" /><meta name="renderer" content="webkit" /><meta http-equiv="X-UA-Compatible" content="IE=edge" /><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" /><link rel="shortcut icon" href="../favicon.ico?v=1.0.8" type="image/x-icon" /><link rel="pingback" href="../xmlrpc.php" /><link href="http://man.yunwei.edu/wp-content/themes/pc_mobile/style.css?v=1.0.8" rel="stylesheet" type="text/css" /><title>条件测试操作与流程控制语句_Linux命令大全</title><link rel='canonical' href='shell-5' /><link rel="stylesheet" href="http://man.yunwei.edu/wp-content/plugins/wp-content-index/wp-content-index.css" type="text/css" type="text/css" media="all" /></head><body><div id="header" class="clearfix"><h2 id="logo" class="left"><a title="Linux命令大全" href="../index.html">Linux命令大全</a></h2><ul id="menu-main" class="right toggle-target"><li id="menu-item-4" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-4"><a href="../index.html">首页搜索</a></li><li id="menu-item-2474" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2474"><a href="http://www.linuxprobe.com/">Linux书籍</a></li><li id="menu-item-6" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-6"><a href="../par/2">系统管理</a></li><li id="menu-item-7" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-7"><a href="../par/5">网络管理</a></li><li id="menu-item-8" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-8"><a href="../par/4">软件·打印·开发·工具</a></li><li id="menu-item-9" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-9"><a href="../par/1">文件和目录管理</a></li><li id="menu-item-10" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-10"><a href="../par/3">硬件·内核·Shell·监测</a></li></ul> <span id="menu-main-toggle" class="toggle-btn" toggle-target="#menu-main"></span></div><div id="main-page-full" class="main-layout"><div class="arc-wrap"><div id="position-wrap" class="clearfix"><div class="position left">当前位置：<a href="../index.html">首页</a> &raquo; 条件测试操作与流程控制语句</div></div><div id="title" class="clearfix"><h1>条件测试操作与流程控制语句</h1></div><div id="arc-body"><div id="content-index" class="content-index" style="float:right;"><div class="content-index-title">本文索引</div><span class="content-index-toctoggle">[<a id="content-index-togglelink" href="javascript:content_index_toggleToc()">隐藏</a>]</span> <script type="text/javascript" language="javascript">window.content_index_showTocToggle=true;function content_index_toggleToc(){var tts="显示";var tth="隐藏";if(window.content_index_showTocToggle){window.content_index_showTocToggle=false;document.getElementById("content-index-contents").style.display="none";document.getElementById("content-index-togglelink").innerHTML=tts}else{window.content_index_showTocToggle=true;document.getElementById("content-index-contents").style.display="block";document.getElementById("content-index-togglelink").innerHTML=tth}}</script> <ul id="content-index-contents"><li class="content-index-level-1"><a href="shell-5#条件测试操作" title="条件测试操作"><span>条件测试操作</span></a><ul class="children"><li class="content-index-level-2"><a href="shell-5#常用测试操作" title="常用测试操作"><span>常用测试操作</span></a></li><li class="content-index-level-2"><a href="shell-5#测试文件" title="测试文件"><span>测试文件</span></a></li><li class="content-index-level-2"><a href="shell-5#字符串比较" title="字符串比较"><span>字符串比较</span></a></li><li class="content-index-level-2"><a href="shell-5#整数值比较" title="整数值比较"><span>整数值比较</span></a></li><li class="content-index-level-2"><a href="shell-5#逻辑测试" title="逻辑测试"><span>逻辑测试</span></a></li></ul></li><li class="content-index-level-1"><a href="shell-5#流程控制语句" title="流程控制语句"><span>流程控制语句</span></a><ul class="children"><li class="content-index-level-2"><a href="shell-5#if条件语句" title="if条件语句"><span>if条件语句</span></a></li><li class="content-index-level-2"><a href="shell-5#for循环语句" title="for循环语句"><span>for循环语句</span></a></li><li class="content-index-level-2"><a href="shell-5#while循环语句" title="while循环语句"><span>while循环语句</span></a></li><li class="content-index-level-2"><a href="shell-5#case多重分支语句" title="case多重分支语句"><span>case多重分支语句</span></a></li><li class="content-index-level-2"><a href="shell-5#until循环语句" title="until循环语句"><span>until循环语句</span></a></li><li class="content-index-level-2"><a href="shell-5#shift迁移语句" title="shift迁移语句"><span>shift迁移语句</span></a></li><li class="content-index-level-2"><a href="shell-5#循环控制语句" title="循环控制语句"><span>循环控制语句</span></a></li></ul></li></ul></div><p> 在编写Shell脚本时候，经常需要判断两个字符串是否相等，检查文件状态或者是数字的测试等。Shell提供了对字符串、文件、数值等内容的条件测试以及逻辑流程控制。</p><h2 id="条件测试操作"> 条件测试操作<br /></h2><p> 程序中的流程控制是由比较和测试语句来处理的，bash具备多种与UNIX系统级特性相兼容的执行测试方法。</p><h3 id="常用测试操作"> 常用测试操作<br /></h3><p> <code><span class='wp_keywordlink'><a href="http://man.yunwei.edu/test" title="test命令" target="_blank">test</a></span></code>命令，测试特定的表达式是否成立，当条件成立时，命令执行后的返回值为0，否则为其他数值。</p><pre>
+<strong>格式1</strong>
+test 条件表达式
+<strong>格式2</strong>
+[ 条件表达式 ]       <span style="color:#008000;">//常用格式，使用方括号时，要注意在条件两边加上空格。</span></pre><p> <span style="color:#800000;">常见测试类型</span></p><ul><li> <span style="color:#800000;">测试文件状态</span></li><li> <span style="color:#800000;">字符串的比较</span></li><li> <span style="color:#800000;">整数值的比较</span></li><li> <span style="color:#800000;">逻辑测试</span></li></ul><h3 id="测试文件"> 测试文件<br /></h3><pre>
+<strong>格式</strong>
+ [ 操作符 文件或目录 ]</pre><p> 操作符：</p><ul><li> <span style="color:#f00;">-d</span>：测试是否为目录，是则为真（Directory）</li><li> <span style="color:#f00;">-e</span>：测试目录或文件是否存在，存在则为真（Exist）</li><li> <span style="color:#f00;">-f</span>：测试是否为文件，是则为真（<span class='wp_keywordlink'><a href="http://man.yunwei.edu/file" title="file命令" target="_blank">file</a></span>）</li><li> <span style="color:#f00;">-r</span>：测试当前用户是否有权限读取，是则为真（<span class='wp_keywordlink'><a href="http://man.yunwei.edu/read" title="read命令" target="_blank">read</a></span>）</li><li> <span style="color:#f00;">-<span class='wp_keywordlink'><a href="../w" title="w命令" target="_blank">w</a></span></span>：测试当前用户是否有权限写入，是这为真（<span class='wp_keywordlink'><a href="http://man.yunwei.edu/write" title="write命令" target="_blank">write</a></span>）</li><li> <span style="color:#f00;">-x</span>：测试当前用户是否可执行该文件，可执行则为真（Excute）</li><li> <span style="color:#f00;">-L</span>：测试是否为符号链接文件，是则为真（Link）</li><li> <span style="color:#f00;">-nt</span>：file1 -nt file2 如果 file1 比 file2 新（修改时间），则为真</li><li> <span style="color:#f00;">-ot</span>：file1 -ot file2 如果 file1 比 file2 旧（修改时间），则为真</li></ul><h3 id="字符串比较"> 字符串比较<br /></h3><pre>
+<strong>格式</strong>
+[ 字符串1 = 字符串2 ]
+[ 字符串1 != 字符串2 ]
+[ -z 字符串 ]</pre><p> 操作符：</p><ul><li> <span style="color:#f00;">=</span>：字符串内容相同则为真，就是说包含的文本一摸一样。</li><li> <span style="color:#f00;">!=</span>：字符串内容不同，则为真（!号表示相反的意思）</li><li> <span style="color:#f00;">-z</span>：字符串内容为空（长度为零）则为真</li><li> <span style="color:#f00;">-n</span>：字符串内容非空（长度非零）则为真</li><li> <span style="color:#f00;">&lt;</span>：string1 &lt; string2 如果string1在本地的字典序列中排在string2之前，则为真</li><li> <span style="color:#f00;">&gt;</span>：string2 如果string1在本地的字典序列中排在string2之后，则为真</li></ul><p> <span style="color:#f00;">注意点：</span></p><p> 1、字符串的 &ldquo;等于&rdquo; 比较，为了与<a href="http://zh.wikipedia.org/wiki/POSIX" target="_blank">POSIX</a>一致，在<code>[]</code>中使用<code>=</code>，（尽管<code>==</code>也可以可以用的）<br /> 2、注意在<code>=</code>前后各有一个空格，如果没有空格就是赋值的关系，不是比较的关系。<br /> 3、字符串的<code>&gt; &lt;</code>比较运算符，一般放在<code>[[ ]]</code>之中，而不是<code>test (&quot;[]&quot;)</code><br /> 4、字符串的<code>&gt; &lt;</code>比较的结果，与本地的locale有关，是按照其字典序列进行比较的</p><h3 id="整数值比较"> 整数值比较<br /></h3><pre>
+<strong>格式</strong>
+[ 整数1 操作符 整数2 ]</pre><ul><li> <span style="color:#f00;">-eq</span>：等于（equal）</li><li> <span style="color:#f00;">-ne</span>：不等于（not equal）</li><li> <span style="color:#f00;">-gt</span>：大于（Greater than）</li><li> <span style="color:#f00;">-lt</span>：小于（lesser than）</li><li> <span style="color:#f00;">-le</span>：小于等于（lesser or equal）</li><li> <span style="color:#f00;">-ge</span>：大于等于（Greater or equal）</li></ul><h3 id="逻辑测试"> 逻辑测试<br /></h3><pre>
+<strong>格式</strong>
+[ 表达式1 ] 操作符 [ 表达式2 ] ...
+</pre><p> 操作符</p><ul><li> <span style="color:#f00;">-a 或 &amp;&amp;</span> ：逻辑与，&ldquo;而且&rdquo;的意思，前后两个表达式都成立时整个测试结果才为真，否则为假</li><li> <span style="color:#f00;">-o 或 || </span>： 逻辑或，&ldquo;或者&rdquo;的意思，操作符两边至少一个为真时，结果为真，否为为假</li><li> <span style="color:#f00;">! </span>：逻辑否，当制定条件不成立时，返回结果为真</li></ul><h2 id="流程控制语句"> 流程控制语句<br /></h2><p> Shell有一套自己的流程控制语句，其中包括条件语句、循环语句、选择语句等。</p><h3 id="if条件语句"> if条件语句<br /></h3><p> <strong><span style="color:#f00;">if 单分支</span></strong>：当&ldquo;条件成立&rdquo;时执行相应的操作。</p><pre>
+<span style="color:#f00;">if</span> 条件测试操作
+  <span style="color:#f00;">then</span> 命令序列
+<span style="color:#f00;">fi</span></pre><p style="text-align: center;"> <img alt="if单分支" class="alignnone size-full wp-image-2387" height="144" src="../wp-content/uploads/2016/04/ifdfz.png" width="558" /><br /> if 单分支结构流程图</p><p> 示例</p><pre>
+<span style="color:#008000;">#!/bin/bash
+#当/boot分区的空间使用超过80%，就输出报警信息。</span>
+
+use=`<span class='wp_keywordlink'><a href="http://man.yunwei.edu/df" title="df命令" target="_blank">df</a></span> -hT | <span class='wp_keywordlink'><a href="http://man.yunwei.edu/grep" title="grep命令" target="_blank">grep</a></span> &quot;/boot&quot; | <span class='wp_keywordlink'><a href="http://man.yunwei.edu/awk" title="awk命令" target="_blank">awk</a></span> &#39;{print $6}&#39; | <span class='wp_keywordlink'><a href="../cut" title="cut命令" target="_blank">cut</a></span> -d &quot;%&quot; -f1`
+if [ $use -gt 80 ];
+  then
+    <span class='wp_keywordlink'><a href="../echo" title="echo命令" target="_blank">echo</a></span> &quot;Warning!!/boot disk is full&quot;
+fi</pre><p> <strong><span style="color:#f00;">if 双分支</span></strong>：当&ldquo;条件成立&rdquo;、&ldquo;条件不成立&rdquo;时执行不同操作。</p><pre>
+<span style="color:#f00;">if</span> 条件测试命令
+  <span style="color:#f00;">then</span> 命令序列1
+  <span style="color:#f00;">else</span> 命令序列2
+<span style="color:#f00;">fi</span></pre><p style="text-align: center;"> <img alt="if双分支" class="alignnone size-full wp-image-2389" height="147" src="../wp-content/uploads/2016/04/ifsfz.png" width="558" /><br /> <span style="text-align: center;">if 双分支结构流程图</span></p><p> 示例</p><pre>
+<span style="color:#008000;">#!/bin/bash
+#判断<span class='wp_keywordlink'><a href="http://man.yunwei.edu/iptables" title="iptables命令" target="_blank">iptables</a></span>是否在运行，如果已经在运行提示信息，如果没有开启它。</span>
+<span class='wp_keywordlink'><a href="http://man.yunwei.edu/service" title="service命令" target="_blank">service</a></span> iptables status &amp;&gt; /dev/null
+if [ $? -eq 0 ];
+  then
+    echo &quot;iptables service is running&quot;
+  else
+    service iptables restart
+fi
+</pre><p> <span style="color:#f00;"><strong>if 多分支</strong></span>：相当于if语句嵌套，针对多个条件执行不同操作。</p><pre>
+<span style="color:#f00;">if</span> 条件测试命令1 ; <span style="color:#f00;">then</span>
+ 命令序列1
+<span style="color:#f00;">elif</span> 条件测试命令2 ; <span style="color:#f00;">then</span>
+ 命令序列2
+<span style="color:#f00;">elif</span> ...
+<span style="color:#f00;">else</span>
+ 命令序列n
+<span style="color:#f00;">fi</span></pre><p style="text-align: center;"> <img alt="if多分支" class="alignnone size-full wp-image-2388" height="279" src="../wp-content/uploads/2016/04/ifduofz.png" width="649" /><br /> if多分支结构流程图</p><h3 id="for循环语句"> for循环语句<br /></h3><p> 根据标量的不同取值，重复执行一组命令操作。</p><pre>
+<span style="color:#f00;">for</span> 变量名 <span style="color:#f00;">in</span> 取值列表
+<span style="color:#f00;">do</span>
+ 命令序列
+<span style="color:#f00;">done</span></pre><p style="text-align: center;"> <img alt="for循环" class="alignnone size-full wp-image-2386" height="212" src="../wp-content/uploads/2016/04/for.png" width="554" /><br /> for循环语句流程图</p><p> <strong>for循环的几种应用形式：</strong></p><p> <span style="color:#a52a2a;">最基本的for循环： （传统的形式，for var in &hellip;)</span></p><pre>
+<span style="color:#008000;">#!/bin/bash</span>
+for x in one two three four
+do
+    echo number $x
+done </pre><p> <code>for</code>循环总是接收<code>in</code>语句之后的某种类型的字列表。在本例中，指定了四个英语单词，但是字列表也可以引用磁盘上的文件，甚至文件通配符。</p><p> <span style="color:#a52a2a;">对目录中的文件做for循环</span></p><pre>
+<span style="color:#008000;">#!/bin/bash</span>
+for x in /var/log/*
+do
+   #echo &quot;$x is a file living in /var/log&quot;
+   echo $(<span class='wp_keywordlink'><a href="../basename" title="basename命令" target="_blank">basename</a></span> $x) is a file living in /var/log
+done 
+</pre><p> 这个<code>$x</code>获得的是绝对路径文件名，可以使用<code>basename</code>可执行程序来除去前面的路径信息。如果只引用当前工作目录中的文件（例如如果输入<code>for x in *</code>），则产生的文件列表将没有路径信息的前缀。</p><p> <span style="color:#a52a2a;">对位置参数做for循环</span></p><pre>
+<span style="color:#008000;">#!/bin/bash</span>
+for thing in &quot;$@&quot;
+do
+   echo you typed ${thing}.
+done 
+</pre><p> <span style="color:#a52a2a;">for循环中用<code><span class='wp_keywordlink'><a href="http://man.yunwei.edu/seq" title="seq命令" target="_blank">seq</a></span></code>产生循环次数，加上C语言形式的for循环语句</span></p><pre>
+<span style="color:#008000;">#!/bin/bash</span>
+echo &quot;for: Traditional form: for var in ...&quot;
+for j in $(seq 1 5)
+do
+  echo $j
+done
+echo &quot;for: C language form: for (( exp1; exp2; exp3 ))&quot;
+for (( i=1; i&lt;=5; i++ ))
+do
+  echo &quot;i=$i&quot;
+done 
+</pre><p> 对于固定次数的循环，可以通过<code>seq</code>命令来实现，就不需要变量的自增了，这里的C语言for循环风格是挺熟悉的吧。</p><h3 id="while循环语句"> while循环语句<br /></h3><p> 重复测试指令的条件，只要条件为真则反复执行对应的命令操作，直到条件为假。如果使用<code>true</code>作为循环条件能够产生无限循环。</p><pre>
+<span style="color:#f00;">while</span> 命令表达式
+<span style="color:#f00;">do</span>
+ <span style="font-family: Arial, Verdana, sans-serif;"> 命令列表</span>
+<span style="color:#f00;">done</span></pre><p style="text-align: center;"> <img alt="while循环" class="alignnone size-full wp-image-2391" height="172" src="../wp-content/uploads/2016/04/while.png" width="653" /><br /> while循环流程图</p><p> 示例</p><pre>
+<span style="color:#008000;">#!/bin/bash
+#批量添加20个系统账户用户名依次为user1~20</span>
+i=1
+while [ $i -le 20 ]
+do
+ <span class='wp_keywordlink'><a href="http://man.yunwei.edu/useradd" title="useradd命令" target="_blank">useradd</a></span> user$1
+ echo &quot;123456&quot; | <span class='wp_keywordlink'><a href="http://man.yunwei.edu/passwd" title="passwd命令" target="_blank">passwd</a></span> --stdin user$i &amp;&gt; /dev/null
+ i=`<span class='wp_keywordlink'><a href="http://man.yunwei.edu/expr" title="expr命令" target="_blank">expr</a></span> $i + 1`
+done</pre><p> 只要特定条件为真，&rdquo;while&rdquo; 语句就会循环执行。</p><h3 id="case多重分支语句"> case多重分支语句<br /></h3><p> 根据变量的不通取值，分别执行不同的命令操作。</p><pre>
+<span style="color:#f00;">case</span> 变量值 <span style="color:#f00;">in
+</span> <span style="color:#f00;">模式1)</span>
+ 命令序列1
+<span style="color:#f00;">;;
+</span> <span style="color:#f00;">模式2)</span>
+ 命令序列2
+<span style="color:#f00;">;;</span>
+ &hellip;&hellip;
+<span style="color:#f00;">*)</span>
+ 默认执行的命令序列
+<span style="color:#f00;">;;</span>
+<span style="color:#f00;">esac</span></pre><p style="text-align: center;"> <img alt="case循环" class="alignnone size-full wp-image-2385" height="379" src="../wp-content/uploads/2016/04/case.png" width="710" /><br /> case多重分支语句流程图</p><p> 示例</p><pre>
+<span style="color:#008000;">#!/bin/bash</span>
+case $1 in
+start)
+  echo &quot;start <span class='wp_keywordlink'><a href="http://man.yunwei.edu/mysql" title="mysql命令" target="_blank">mysql</a></span>&quot;
+;;
+stop)
+  echo &quot;stop mysql&quot;
+;;
+*)
+  echo &quot;usage: $0 start|stop&quot;
+;;
+esac
+</pre><h3 id="until循环语句"> until循环语句<br /></h3><p> 根据条件执行重复操作，直到条件成立为止。<span style="color:#f00;"><code>Until</code>语句提供了与<code>while</code>语句相反的功能：只要特定条件为假，它们就重复循环，直到条件为真。</span></p><pre>
+<span style="color:#f00;">until</span> 条件测试命令
+<span style="color:#f00;">do</span>
+ 命令序列
+<span style="color:#f00;">done</span></pre><p style="text-align: center;"> <img alt="until循环" class="alignnone size-full wp-image-2390" height="170" src="../wp-content/uploads/2016/04/until.png" width="542" /><br /> until循环流程图</p><p> 示例</p><pre>
+<span style="color:#008000;">#!/bin/bash</span>
+myvar=1
+until [ $myvar -gt 10 ]
+do
+ echo $myvar
+ myvar=$(( $myvar + 1 ))
+done 
+</pre><h3 id="shift迁移语句"> shift迁移语句<br /></h3><p> 用于迁移位置变量，将<code>$1~$9</code>依次向左传递。</p><p> 例如：若当前脚本程序获得的位置变量如下：</p><pre>
+$1=file1、$2=file2、$3=file3、$4=file4
+</pre><p> 执行一次shift命令后，各位置变量为：</p><pre>
+$2=file2、$3=file3、$4=file4
+</pre><p> 在执行一次：</p><pre>
+$3=file3、$4=file4</pre><p> 示例</p><pre>
+<span style="color:#008000;">#!/bin/bash</span>
+res=0
+while [ $# -gt 0 ]
+do
+ res=`expr $res + $1`
+ <span style="color:#f00;">shift</span>
+done
+echo &quot;the <span class='wp_keywordlink'><a href="../sum" title="sum命令" target="_blank">sum</a></span> is:$res&quot;
+</pre><h3 id="循环控制语句"> 循环控制语句<br /></h3><p> <span style="color:#f00;"><strong>break语句</strong></span>：在<code>for、while、until</code>等循环语句中，用于跳出当前所在的循环体，执行循环体之后的语句。</p><p> 在while中的示例：</p><pre>
+while
+ do
+<span style="color:#808080;">commands
+commands</span>
+
+<span style="color:#f00;"> break--------+</span>
+              <span style="color:#f00;">|</span>
+<span style="color:#808080;">commands</span>      <span style="color:#f00;">|</span>
+<span style="color:#808080;">commands</span>     <span style="color:#f00;"> | 跳出</span>当前循环（通常在循环体中与条件语句一起使用）
+              <span style="color:#f00;">|</span>
+ done         <span style="color:#f00;">|</span>
+              <span style="color:#f00;">|</span>
+<span style="color:#808080;">commands</span><span style="color:#f00;">&lt;-----+</span>
+<span style="color:#808080;">commands</span></pre><p> <span style="color: rgb(255, 0, 0);"><strong>continue语句</strong></span>：在<code>for、while、until</code>等循环语句中，用于跳过循环体内余下的语句，重新判断条件以便执行下一次循环。</p><p> 在while中的示例：</p><pre>
+while<span style="color:#f00;">&lt;-------+</span>
+ do          <span style="color:#f00;">|</span>
+             <span style="color:#f00;">|</span>
+<span style="color:#808080;">commands     <span style="color:#f00;">| 跳回</span></span>当前循环，重新开始下一次循环（通常在循环体中与条件语句一起使用）<span style="color:#808080;">
+commands     <span style="color:#f00;">|</span></span>
+             <span style="color:#f00;">|</span>
+ <span style="color:#f00;">continue----+
+</span>
+<span style="color:#808080;">commands
+commands
+commands</span>
+ done
+<span style="color:#808080;">commands
+commands</span></pre></div></div></div><div id="footer-wrap"><div id="btn-backtop" title="返回顶部">返回顶部↑</div><div id="footer"><div class="info box"> <a href="../index.html" title="Linux命令大全">Linux命令大全</a> <span class="split"></span> <a href="../about_us" title="关于/联系">关于/联系</a> <span class="split"></span> 收藏本站请使用Ctrl+D <span class="split"></span> <a href="../shell-script" target="_blank">Shell脚本攻略</a> <span class="split"></span> <a href="../docs/shell_regex.html" target="_blank">Shell正则表达式</a> <span class="split"></span> 共收录 <span style="font-size: 16px; color:#74b147;">603</span> 条Linux系统命令</div><div class="desc box">在Linux命令大全（man.yunwei.edu）可以查询您所需要的Linux命令教程和相关实例。如果您觉得本站内容对您有所帮助，请推荐给更多需要帮助的人。</div></div></div> <script type="text/javascript" src="http://man.yunwei.edu/wp-content/themes/pc_mobile/js/jquery-1.8.3.min.js?v=1.0.8"></script> <script type="text/javascript" src="http://man.yunwei.edu/wp-content/themes/pc_mobile/js/common.js?v=1.0.8"></script> <div style="display:none"><script src="http://s19.cnzz.com/z_stat.php?id=1271307540&web_id=1271307540" language="JavaScript"></script></div></body></html>

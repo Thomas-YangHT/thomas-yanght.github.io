@@ -1,0 +1,99 @@
+<!DOCTYPE html><html lang="zh-cn"><head><meta charset="UTF-8" /><meta name="renderer" content="webkit" /><meta http-equiv="X-UA-Compatible" content="IE=edge" /><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" /><link rel="shortcut icon" href="favicon.ico?v=1.0.8" type="image/x-icon" /><link rel="pingback" href="xmlrpc.php" /><link href="http://Thomas-YangHT.github.io/man.linuxde.net/wp-content/themes/pc_mobile/style.css?v=1.0.8" rel="stylesheet" type="text/css" /><title>sort命令_Linux sort 命令用法详解：将文件进行排序并输出</title><link rel='canonical' href='sort' /></head><body><div id="header" class="clearfix"><h2 id="logo" class="left"><a title="Linux命令大全" href="index.html">Linux命令大全</a></h2><ul id="menu-main" class="right toggle-target"><li id="menu-item-4" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-4"><a href="index.html">首页搜索</a></li><li id="menu-item-2474" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-2474"><a href="http://www.linuxprobe.com/">Linux书籍</a></li><li id="menu-item-6" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-6"><a href="par/2">系统管理</a></li><li id="menu-item-7" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-7"><a href="par/5">网络管理</a></li><li id="menu-item-8" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-8"><a href="par/4">软件·打印·开发·工具</a></li><li id="menu-item-9" class="menu-item menu-item-type-taxonomy menu-item-object-category current-post-ancestor current-menu-parent current-post-parent menu-item-9"><a href="par/1">文件和目录管理</a></li><li id="menu-item-10" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-10"><a href="par/3">硬件·内核·Shell·监测</a></li></ul> <span id="menu-main-toggle" class="toggle-btn" toggle-target="#menu-main"></span></div><div id="main-single" class="main-layout clearfix"><div class="right arc-wrap"><div id="position-wrap" class="clearfix"><div class="position left">当前位置：<a href="index.html">首页</a> &raquo; <a href="par/1" rel="category tag">文件和目录管理</a> &raquo; sort</div></div><div id="title" class="clearfix"><h1 class="left">sort命令</h1><div class="right"> <a href="http://Thomas-YangHT.github.io/man.linuxde.net/sub/%e6%96%87%e4%bb%b6%e8%bf%87%e6%bb%a4%e5%88%86%e5%89%b2%e4%b8%8e%e5%90%88%e5%b9%b6" rel="tag">文件过滤分割与合并</a></div></div><div id="ad-arc-top" class="ad"></div><div id="arc-body"><p> <strong>sort命令</strong>是在Linux里非常有用，它将文件进行排序，并将排序结果标准输出。sort命令既可以从特定的文件，也可以从stdin中获取输入。</p><h3> 语法<br /></h3><pre>
+sort(选项)(参数)</pre><h3> 选项<br /></h3><pre>
+-b：忽略每行前面开始出的空格字符；
+-c：检查文件是否已经按照顺序排序；
+-d：排序时，处理英文字母、数字及空格字符外，忽略其他的字符；
+-f：排序时，将小写字母视为大写字母；
+-i：排序时，除了040至176之间的ASCII字符外，忽略其他的字符；
+-m：将几个排序号的文件进行合并；
+-M：将前面3个字母依照月份的缩写进行排序；
+-n：依照数值的大小排序；
+-o&lt;输出文件&gt;：将排序后的结果存入制定的文件；
+-r：以相反的顺序来排序；
+-t&lt;分隔字符&gt;：指定排序时所用的栏位分隔字符；
++&lt;起始栏位&gt;-&lt;结束栏位&gt;：以指定的栏位来排序，范围由起始栏位到结束栏位的前一栏位。</pre><h3> 参数<br /></h3><p> 文件：指定待排序的文件列表。</p><h3> 实例<br /></h3><p> sort将文件/文本的每一行作为一个单位，相互比较，比较原则是从首字符向后，依次按<a href="http://zh.wikipedia.org/zh/ASCII" target="_blank">ASCII</a>码值进行比较，最后将他们按升序输出。</p><pre>
+<span style="color:#FF0000;">[root@<span class='wp_keywordlink'><a href="http://Thomas-YangHT.github.io/man.linuxde.net/mail" title="mail命令" target="_blank">mail</a></span> text]# <span class='wp_keywordlink'><a href="cat" title="cat命令" target="_blank">cat</a></span> sort.txt</span>
+aaa:10:1.1
+ccc:30:3.3
+ddd:40:4.4
+bbb:20:2.2
+eee:50:5.5
+eee:50:5.5
+
+<span style="color:#FF0000;">[root@mail text]# sort sort.txt</span>
+aaa:10:1.1
+bbb:20:2.2
+ccc:30:3.3
+ddd:40:4.4
+eee:50:5.5
+eee:50:5.5</pre><p> 忽略相同行使用-u选项或者<span class='wp_keywordlink'><a href="uniq" title="uniq命令" target="_blank">uniq</a></span>：</p><pre>
+<span style="color:#FF0000;">[root@mail text]# cat sort.txt</span>
+aaa:10:1.1
+ccc:30:3.3
+ddd:40:4.4
+bbb:20:2.2
+eee:50:5.5
+eee:50:5.5
+
+<span style="color:#FF0000;">[root@mail text]# sort -u sort.txt</span>
+aaa:10:1.1
+bbb:20:2.2
+ccc:30:3.3
+ddd:40:4.4
+eee:50:5.5
+
+或者
+
+<span style="color:#FF0000;">[root@mail text]# uniq sort.txt</span>
+aaa:10:1.1
+ccc:30:3.3
+ddd:40:4.4
+bbb:20:2.2
+eee:50:5.5
+</pre><p> sort的-n、-r、-k、-t选项的使用：</p><pre>
+<span style="color:#FF0000;">[root@mail text]# cat sort.txt</span>
+AAA:BB:CC
+aaa:30:1.6
+ccc:50:3.3
+ddd:20:4.2
+bbb:10:2.5
+eee:40:5.4
+eee:60:5.1
+
+#将BB列按照数字从小到大顺序排列：
+<span style="color:#FF0000;">[root@mail text]# sort -nk 2 -t: sort.txt</span>
+AAA:BB:CC
+bbb:10:2.5
+ddd:20:4.2
+aaa:30:1.6
+eee:40:5.4
+ccc:50:3.3
+eee:60:5.1
+
+#将CC列数字从大到小顺序排列：
+<span style="color:#FF0000;">[root@mail text]# sort -nrk 3 -t: sort.txt</span>
+eee:40:5.4
+eee:60:5.1
+ddd:20:4.2
+ccc:50:3.3
+bbb:10:2.5
+aaa:30:1.6
+AAA:BB:CC
+
+# -n是按照数字大小排序，-r是以相反顺序，-k是指定需要爱排序的栏位，-t指定栏位分隔符为冒号</pre><p> <strong>-k选项的具体语法格式：</strong></p><p> -k选项的语法格式：</p><pre>
+FStart.CStart Modifie,FEnd.CEnd Modifier
+-------Start--------,-------End--------
+ FStart.CStart 选项  ,  FEnd.CEnd 选项
+</pre><p> 这个语法格式可以被其中的逗号<code>,</code>分为两大部分，<strong>Start</strong>部分和<strong>End</strong>部分。Start部分也由三部分组成，其中的Modifier部分就是我们之前说过的类似n和r的选项部分。我们重点说说<code>Start</code>部分的<code>FStart</code>和<code>C.Start</code>。<code>C.Start</code>也是可以省略的，省略的话就表示从本域的开头部分开始。<code>FStart.CStart</code>，其中<code>FStart</code>就是表示使用的域，而<code>CStart</code>则表示在<code>FStart</code>域中从第几个字符开始算&ldquo;排序首字符&rdquo;。同理，在End部分中，你可以设定<code>FEnd.CEnd</code>，如果你省略<code>.CEnd</code>，则表示结尾到&ldquo;域尾&rdquo;，即本域的最后一个字符。或者，如果你将CEnd设定为0(零)，也是表示结尾到&ldquo;域尾&rdquo;。</p><p> 从公司英文名称的第二个字母开始进行排序：</p><pre>
+<span style="color:#FF0000;">$ sort -t &#39; &#39; -k 1.2 facebook.txt</span>
+baidu 100 5000
+sohu 100 4500
+google 110 5000
+guge 50 3000
+</pre><p> 使用了<code>-k 1.2</code>，表示对第一个域的第二个字符开始到本域的最后一个字符为止的字符串进行排序。你会发现baidu因为第二个字母是a而名列榜首。sohu和 google第二个字符都是o，但sohu的h在google的o前面，所以两者分别排在第二和第三。guge只能屈居第四了。</p><p> 只针对公司英文名称的第二个字母进行排序，如果相同的按照员工工资进行降序排序：</p><pre>
+$ sort -t &#39; &#39; -k 1.2,1.2 -nrk 3,3 facebook.txt
+baidu 100 5000
+google 110 5000
+sohu 100 4500
+guge 50 3000
+</pre><p> 由于只对第二个字母进行排序，所以我们使用了<code>-k 1.2,1.2</code>的表示方式，表示我们&ldquo;只&rdquo;对第二个字母进行排序。（如果你问&ldquo;我使用<code>-k 1.2</code>怎么不行？&rdquo;，当然不行，因为你省略了End部分，这就意味着你将对从第二个字母起到本域最后一个字符为止的字符串进行排序）。对于员工工资进行排 序，我们也使用了<code>-k 3,3</code>，这是最准确的表述，表示我们&ldquo;只&rdquo;对本域进行排序，因为如果你省略了后面的3，就变成了我们&ldquo;对第3个域开始到最后一个域位置的内容进行排序&rdquo; 了。</p></div><div id="ad-arc-bottom"><p><a class="col-link" href="taobaojiqiao" target="_blank">【站长推荐】淘宝购物省钱小窍门，有些商品优惠力度高达50%，非常夸张！</a></p></div></div><div id="sidebar" class="left"><div class="box"><h3 class="title">相关命令</h3><ul class="body list-col-1 clearfix"><li><a href="http://Thomas-YangHT.github.io/man.linuxde.net/paste" title="paste">paste</a></li><li><a href="http://Thomas-YangHT.github.io/man.linuxde.net/split" title="split">split</a></li><li><a href="uniq" title="uniq">uniq</a></li><li><a href="http://Thomas-YangHT.github.io/man.linuxde.net/printf" title="printf">printf</a></li><li><a href="comm" title="comm">comm</a></li><li><a href="http://Thomas-YangHT.github.io/man.linuxde.net/unexpand" title="unexpand">unexpand</a></li><li><a href="http://Thomas-YangHT.github.io/man.linuxde.net/spell" title="spell">spell</a></li><li><a href="http://Thomas-YangHT.github.io/man.linuxde.net/grep" title="grep">grep</a></li><li><a href="http://Thomas-YangHT.github.io/man.linuxde.net/wc" title="wc">wc</a></li><li><a href="http://Thomas-YangHT.github.io/man.linuxde.net/ispell" title="ispell">ispell</a></li><li><a href="http://Thomas-YangHT.github.io/man.linuxde.net/egrep" title="egrep">egrep</a></li><li><a href="http://Thomas-YangHT.github.io/man.linuxde.net/col" title="col">col</a></li><li><a href="http://Thomas-YangHT.github.io/man.linuxde.net/fold" title="fold">fold</a></li><li><a href="http://Thomas-YangHT.github.io/man.linuxde.net/join" title="join">join</a></li><li><a href="http://Thomas-YangHT.github.io/man.linuxde.net/tac" title="tac">tac</a></li><li><a href="tr" title="tr">tr</a></li><li><a href="http://Thomas-YangHT.github.io/man.linuxde.net/look" title="look">look</a></li><li><a href="http://Thomas-YangHT.github.io/man.linuxde.net/fgrep" title="fgrep">fgrep</a></li><li><a href="http://Thomas-YangHT.github.io/man.linuxde.net/fmt" title="fmt">fmt</a></li><li><a href="http://Thomas-YangHT.github.io/man.linuxde.net/colrm" title="colrm">colrm</a></li></ul></div><div class="box mobile-hide"><h3 class="title">送福利</h3><ul class="body list-col-1 clearfix"><li><a href="taobaojiqiao" target="_blank" style="color: #008000;">淘宝购物省钱小窍门，有些商品优惠力度高达50%，非常夸张！</a></li></ul></div><div id="sidebar_search_box" class="box"><form action="index.html" method="post"> <input class="search-input " type="text" name="ss" id="ss" value="命令直达(输入完整命令)" onFocus="if (value =='命令直达(输入完整命令)'){value =''}" onBlur="if (value ==''){value='命令直达(输入完整命令)'}" /> <input class="search-submit button mobile-visible" type="submit" value="进入" /></form><form action="index.html"> <input class="search-input" type="text" name="s" id="s" value="模糊搜索(输入关键词)" onFocus="if (value =='模糊搜索(输入关键词)'){value =''}" onBlur="if (value ==''){value='模糊搜索(输入关键词)'}" /> <input class="search-submit button mobile-visible" type="submit" value="搜索" /></form></div><div class="box"><h3 class="title"><a href="download/index.html">Linux下载</a></h3><ul class="body list-col-1 clearfix"><li><a href="download/Ubuntu">Ubuntu下载</a></li><li><a href="download/CentOS">CentOS下载</a></li></ul></div></div></div><div id="footer-wrap"><div id="btn-backtop" title="返回顶部">返回顶部↑</div><div id="footer"><div class="info box"> <a href="index.html" title="Linux命令大全">Linux命令大全</a> <span class="split"></span> <a href="about_us" title="关于/联系">关于/联系</a> <span class="split"></span> 收藏本站请使用Ctrl+D <span class="split"></span> <a href="shell-script" target="_blank">Shell脚本攻略</a> <span class="split"></span> <a href="docs/shell_regex.html" target="_blank">Shell正则表达式</a> <span class="split"></span> 共收录 <span style="font-size: 16px; color:#74b147;">603</span> 条Linux系统命令</div><div class="desc box">在Linux命令大全（man.yunwei.edu）可以查询您所需要的Linux命令教程和相关实例。如果您觉得本站内容对您有所帮助，请推荐给更多需要帮助的人。</div></div></div> <script type="text/javascript" src="http://Thomas-YangHT.github.io/man.linuxde.net/wp-content/themes/pc_mobile/js/jquery-1.8.3.min.js?v=1.0.8"></script> <script type="text/javascript" src="http://Thomas-YangHT.github.io/man.linuxde.net/wp-content/themes/pc_mobile/js/common.js?v=1.0.8"></script> <div style="display:none"><script src="http://s19.cnzz.com/z_stat.php?id=1271307540&web_id=1271307540" language="JavaScript"></script></div></body></html>
