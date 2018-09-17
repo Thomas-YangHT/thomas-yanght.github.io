@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>SELECT INTO</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="SELECT" HREF="sql-select.html"><LINK REL="NEXT" TITLE="SET" HREF="sql-set.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/select_into.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="SELECT" HREF="sql-select.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="SET" HREF="sql-set.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-SELECTINTO"></A>SELECT INTO</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN80712"></A><H2>&#21517;&#31216;</H2>SELECT INTO&nbsp;--&nbsp;从一条查询的结果中定义一个新表</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN80717"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">[ WITH [ RECURSIVE ] <TT
+CLASS="REPLACEABLE"
+><I
+>with_query</I
+></TT
+> [, ...] ]
+SELECT [ ALL | DISTINCT [ ON ( <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> [, ...] ) ] ]
+    * | <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> [ [ AS ] <TT
+CLASS="REPLACEABLE"
+><I
+>output_name</I
+></TT
+> ] [, ...]
+    INTO [ TEMPORARY | TEMP | UNLOGGED ] [ TABLE ] <TT
+CLASS="REPLACEABLE"
+><I
+>new_table</I
+></TT
+>
+    [ FROM <TT
+CLASS="REPLACEABLE"
+><I
+>from_item</I
+></TT
+> [, ...] ]
+    [ WHERE <TT
+CLASS="REPLACEABLE"
+><I
+>condition</I
+></TT
+> ]
+    [ GROUP BY <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> [, ...] ]
+    [ HAVING <TT
+CLASS="REPLACEABLE"
+><I
+>condition</I
+></TT
+> [, ...] ]
+    [ WINDOW <TT
+CLASS="REPLACEABLE"
+><I
+>window_name</I
+></TT
+> AS ( <TT
+CLASS="REPLACEABLE"
+><I
+>window_definition</I
+></TT
+> ) [, ...] ]
+    [ { UNION | INTERSECT | EXCEPT } [ ALL | DISTINCT ] <TT
+CLASS="REPLACEABLE"
+><I
+>select</I
+></TT
+> ]
+    [ ORDER BY <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> [ ASC | DESC | USING <TT
+CLASS="REPLACEABLE"
+><I
+>operator</I
+></TT
+> ] [ NULLS { FIRST | LAST } ] [, ...] ]
+    [ LIMIT { <TT
+CLASS="REPLACEABLE"
+><I
+>count</I
+></TT
+> | ALL } ]
+    [ OFFSET <TT
+CLASS="REPLACEABLE"
+><I
+>start</I
+></TT
+> [ ROW | ROWS ] ]
+    [ FETCH { FIRST | NEXT } [ <TT
+CLASS="REPLACEABLE"
+><I
+>count</I
+></TT
+> ] { ROW | ROWS } ONLY ]
+    [ FOR { UPDATE | SHARE } [ OF <TT
+CLASS="REPLACEABLE"
+><I
+>table_name</I
+></TT
+> [, ...] ] [ NOWAIT ] [...] ]</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN80737"></A><H2>描述</H2><P><TT CLASS="COMMAND">SELECT INTO</TT>从一个查询中创建一个新表,并且将查询到的数据插入到新表中。数据并不返回给客户端，
+这一点和普通的<TT CLASS="COMMAND">SELECT</TT>不同。新表的字段具有和<TT CLASS="COMMAND">SELECT</TT>
+的输出字段相同的名字和数据类型。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN80743"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL">TEMPORARY</TT> 或 <TT CLASS="LITERAL">TEMP</TT></DT><DD><P>如果声明了这个关键字，那么该表是作为一个临时表创建的。
+请参考<A HREF="sql-createtable.html">CREATE TABLE</A>获取细节。</P></DD><DT><TT CLASS="LITERAL">UNLOGGED</TT></DT><DD><P>如果指定了，那么表作为一个非日志表创建。参阅<A HREF="sql-createtable.html">CREATE TABLE</A>获取详细信息。</P></DD><DT><TT CLASS="REPLACEABLE"><I>new_table</I></TT></DT><DD><P>要创建的表的名字(可以有模式修饰)。</P></DD></DL></DIV><P>所有其它参数都在<A HREF="sql-select.html">SELECT</A>中有详细描述。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN80766"></A><H2>注意</H2><P><A HREF="sql-createtableas.html">CREATE TABLE AS</A>的作用和<TT CLASS="COMMAND">SELECT INTO</TT>类似。
+建议使用<TT CLASS="COMMAND">CREATE TABLE AS</TT>语法。
+实际上，它是不能在<SPAN CLASS="APPLICATION">ECPG</SPAN>或<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>中使用的，
+因为它们对<TT CLASS="LITERAL">INTO</TT>子句的解释是不同的。而且，<TT CLASS="COMMAND">CREATE TABLE AS</TT>
+提供了<TT CLASS="COMMAND">SELECT INTO</TT>所提供功能的超集。</P><P>在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 8.1以前，<TT CLASS="COMMAND">SELECT INTO</TT>创建的表总是缺省包含 OID 。
+到了<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 8.1，这不再是缺省了，要想在新表中包含 OID ，
+可以打开<A HREF="runtime-config-compatible.html#GUC-DEFAULT-WITH-OIDS">default_with_oids</A>配置参数.命令<TT CLASS="COMMAND">CREATE TABLE AS</TT>可以使用<TT CLASS="LITERAL">WITH OIDS</TT>子句包含oid列。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN80784"></A><H2>例子</H2><P>创建一个新表<TT CLASS="LITERAL">films_recent</TT>，它的值包含来自<TT CLASS="LITERAL">films</TT>的最近的条目：
+</P><PRE CLASS="PROGRAMLISTING">SELECT * INTO films_recent FROM films WHERE date_prod &gt;= '2002-01-01';</PRE><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN80790"></A><H2>兼容性</H2><P>SQL 标准用<TT CLASS="COMMAND">SELECT INTO</TT>表示选取数值到一个宿主程序的标量变量中，
+而不是创建一个新表。这种用法实际上就是在<SPAN CLASS="APPLICATION">ECPG</SPAN>
+(<A HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html">第 33 &#31456;</A>) 和<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>(<A HREF="http://school.yunwei.edu/manual/PostgreSQL/plpgsql.html">第 40 &#31456;</A>)
+里的用途。<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>用<TT CLASS="COMMAND">SELECT INTO</TT>
+创建表是历史原因。在新代码里最好使用<TT CLASS="COMMAND">CREATE TABLE AS</TT>实现这个目的。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN80801"></A><H2>又见</H2><A HREF="sql-createtableas.html">CREATE TABLE AS</A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-select.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-set.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">SELECT</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">SET</TD></TR></TABLE></DIV></BODY></HTML>

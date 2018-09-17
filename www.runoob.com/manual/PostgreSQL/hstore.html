@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>hstore</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="额外提供的模块" HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html"><LINK REL="PREVIOUS" TITLE="fuzzystrmatch" HREF="fuzzystrmatch.html"><LINK REL="NEXT" TITLE="intagg" HREF="intagg.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/hstore.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="fuzzystrmatch" HREF="fuzzystrmatch.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; F. 额外提供的模块</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="intagg" HREF="intagg.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="HSTORE">F.16. hstore</A></H1><P>这个模块实现了<TT CLASS="TYPE">hstore</TT>数据类型，在单个<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>值中存储一组键/值对。
+这在不同的场景中是有用的，如很少检查带有许多属性的行，或半结构化的数据。
+键和值是简单的文本字符串。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN146102">F.16.1. <TT CLASS="TYPE">hstore</TT> 外部表示</A></H2><P><TT CLASS="TYPE">hstore</TT>的文本表示用于输入和输出，包括零个或更多由逗号分开的
+<TT CLASS="REPLACEABLE"><I>key</I></TT> <TT CLASS="LITERAL">=&gt;</TT> <TT CLASS="REPLACEABLE"><I>value</I></TT>对。一些例子：
+</P><PRE CLASS="SYNOPSIS">k =&gt; v
+foo =&gt; bar, baz =&gt; whatever
+"1-a" =&gt; "anything at all"</PRE><P>
+键/值对的顺序不重要（可能不在输出中复制）。忽略对和<TT CLASS="LITERAL">=&gt;</TT>符号周围的空格。
+包含空格、逗号、<TT CLASS="LITERAL">=</TT>或<TT CLASS="LITERAL">&gt;</TT>的键和值要加双引号。
+要在键或值中包含一个双引号或反斜杠，要用反斜杠转义。
+</P><P><TT CLASS="TYPE">hstore</TT>中的每个键都是唯一的。如果你用重复键声明一个<TT CLASS="TYPE">hstore</TT>，
+将只有一个存储在<TT CLASS="TYPE">hstore</TT>中，并且不保证会保存哪一个：
+</P><PRE CLASS="PROGRAMLISTING">SELECT 'a=&gt;1,a=&gt;2'::hstore;
+  hstore
+----------
+ "a"=&gt;"1"</PRE><P>
+</P><P>
+一个值（不是一个键）可以是SQL <TT CLASS="LITERAL">NULL</TT>。如：
+</P><PRE CLASS="PROGRAMLISTING">key =&gt; NULL</PRE><P>
+<TT CLASS="LITERAL">NULL</TT>关键字是大小写敏感的。要将<TT CLASS="LITERAL">NULL</TT>
+当做普通的字符串来对待就要给<TT CLASS="LITERAL">NULL</TT>加双引号。
+</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>记住<TT CLASS="TYPE">hstore</TT>文本格式，当用于输入时，在任何请求的引用或转义<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">之前</I></SPAN>应用。
+如果通过一个参数传递一个<TT CLASS="TYPE">hstore</TT>文本，那么不需要额外的处理。
+但是如果作为引用的文本常量传递，那么任何单引号字符和（依赖于
+<TT CLASS="VARNAME">standard_conforming_strings</TT>配置参数的设置）反斜杠字符需要正确的转义。
+参阅<A HREF="sql-syntax-lexical.html#SQL-SYNTAX-STRINGS">第 4.1.2.1 &#33410;</A>获取更多处理字符串常量的信息。</P></BLOCKQUOTE></DIV><P>在输出时，键和值总是包含在双引号中，即使并不严格需要也是这样。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN146133">F.16.2. <TT CLASS="TYPE">hstore</TT> 操作符和函数</A></H2><P><TT CLASS="LITERAL">hstore</TT>模块提供的操作符显示在<A HREF="hstore.html#HSTORE-OP-TABLE">&#34920; F-6</A>中，
+函数在<A HREF="hstore.html#HSTORE-FUNC-TABLE">&#34920; F-7</A>中。</P><DIV CLASS="TABLE"><A NAME="HSTORE-OP-TABLE"></A><P><B>&#34920; F-6. <TT CLASS="TYPE">hstore</TT> 操作符</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><COL><THEAD><TR><TH>操作符</TH><TH>描述</TH><TH>示例</TH><TH>结果</TH></TR></THEAD><TBODY><TR><TD><TT CLASS="TYPE">hstore</TT> <TT CLASS="LITERAL">-&gt;</TT> <TT CLASS="TYPE">text</TT></TD><TD>获得键的值(如果不存在为<TT CLASS="LITERAL">NULL</TT>)</TD><TD><TT CLASS="LITERAL">'a=&gt;x, b=&gt;y'::hstore -&gt; 'a'</TT></TD><TD><TT CLASS="LITERAL">x</TT></TD></TR><TR><TD><TT CLASS="TYPE">hstore</TT> <TT CLASS="LITERAL">-&gt;</TT> <TT CLASS="TYPE">text[]</TT></TD><TD>获得多个键的值(如果不存在为<TT CLASS="LITERAL">NULL</TT>)</TD><TD><TT CLASS="LITERAL">'a=&gt;x, b=&gt;y, c=&gt;z'::hstore -&gt; ARRAY['c','a']</TT></TD><TD><TT CLASS="LITERAL">{"z","x"}</TT></TD></TR><TR><TD><TT CLASS="TYPE">hstore</TT> <TT CLASS="LITERAL">||</TT> <TT CLASS="TYPE">hstore</TT></TD><TD>连接 <TT CLASS="TYPE">hstore</TT></TD><TD><TT CLASS="LITERAL">'a=&gt;b, c=&gt;d'::hstore || 'c=&gt;x, d=&gt;q'::hstore</TT></TD><TD><TT CLASS="LITERAL">"a"=&gt;"b", "c"=&gt;"x", "d"=&gt;"q"</TT></TD></TR><TR><TD><TT CLASS="TYPE">hstore</TT> <TT CLASS="LITERAL">?</TT> <TT CLASS="TYPE">text</TT></TD><TD><TT CLASS="TYPE">hstore</TT> 包含键吗?</TD><TD><TT CLASS="LITERAL">'a=&gt;1'::hstore ? 'a'</TT></TD><TD><TT CLASS="LITERAL">t</TT></TD></TR><TR><TD><TT CLASS="TYPE">hstore</TT> <TT CLASS="LITERAL">?&amp;</TT> <TT CLASS="TYPE">text[]</TT></TD><TD><TT CLASS="TYPE">hstore</TT> 包含所有指定的键?</TD><TD><TT CLASS="LITERAL">'a=&gt;1,b=&gt;2'::hstore ?&amp; ARRAY['a','b']</TT></TD><TD><TT CLASS="LITERAL">t</TT></TD></TR><TR><TD><TT CLASS="TYPE">hstore</TT> <TT CLASS="LITERAL">?|</TT> <TT CLASS="TYPE">text[]</TT></TD><TD><TT CLASS="TYPE">hstore</TT> 包含任何指定的键?</TD><TD><TT CLASS="LITERAL">'a=&gt;1,b=&gt;2'::hstore ?| ARRAY['b','c']</TT></TD><TD><TT CLASS="LITERAL">t</TT></TD></TR><TR><TD><TT CLASS="TYPE">hstore</TT> <TT CLASS="LITERAL">@&gt;</TT> <TT CLASS="TYPE">hstore</TT></TD><TD>左操作符包含右操作符?</TD><TD><TT CLASS="LITERAL">'a=&gt;b, b=&gt;1, c=&gt;NULL'::hstore @&gt; 'b=&gt;1'</TT></TD><TD><TT CLASS="LITERAL">t</TT></TD></TR><TR><TD><TT CLASS="TYPE">hstore</TT> <TT CLASS="LITERAL">&lt;@</TT> <TT CLASS="TYPE">hstore</TT></TD><TD>左操作符包含于右操作符?</TD><TD><TT CLASS="LITERAL">'a=&gt;c'::hstore &lt;@ 'a=&gt;b, b=&gt;1, c=&gt;NULL'</TT></TD><TD><TT CLASS="LITERAL">f</TT></TD></TR><TR><TD><TT CLASS="TYPE">hstore</TT> <TT CLASS="LITERAL">-</TT> <TT CLASS="TYPE">text</TT></TD><TD>从左操作符中删除键</TD><TD><TT CLASS="LITERAL">'a=&gt;1, b=&gt;2, c=&gt;3'::hstore - 'b'::text</TT></TD><TD><TT CLASS="LITERAL">"a"=&gt;"1", "c"=&gt;"3"</TT></TD></TR><TR><TD><TT CLASS="TYPE">hstore</TT> <TT CLASS="LITERAL">-</TT> <TT CLASS="TYPE">text[]</TT></TD><TD>从左操作符中删除键</TD><TD><TT CLASS="LITERAL">'a=&gt;1, b=&gt;2, c=&gt;3'::hstore - ARRAY['a','b']</TT></TD><TD><TT CLASS="LITERAL">"c"=&gt;"3"</TT></TD></TR><TR><TD><TT CLASS="TYPE">hstore</TT> <TT CLASS="LITERAL">-</TT> <TT CLASS="TYPE">hstore</TT></TD><TD>从左操作符中删除匹配对</TD><TD><TT CLASS="LITERAL">'a=&gt;1, b=&gt;2, c=&gt;3'::hstore - 'a=&gt;4, b=&gt;2'::hstore</TT></TD><TD><TT CLASS="LITERAL">"a"=&gt;"1", "c"=&gt;"3"</TT></TD></TR><TR><TD><TT CLASS="TYPE">record</TT> <TT CLASS="LITERAL">#=</TT> <TT CLASS="TYPE">hstore</TT></TD><TD>用<TT CLASS="TYPE">hstore</TT>里匹配的值替换<TT CLASS="TYPE">record</TT>里的字段</TD><TD>查看示例章节</TD><TD>&nbsp;</TD></TR><TR><TD><TT CLASS="LITERAL">%%</TT> <TT CLASS="TYPE">hstore</TT></TD><TD>转换<TT CLASS="TYPE">hstore</TT>为替换键和值的数组</TD><TD><TT CLASS="LITERAL">%% 'a=&gt;foo, b=&gt;bar'::hstore</TT></TD><TD><TT CLASS="LITERAL">{a,foo,b,bar}</TT></TD></TR><TR><TD><TT CLASS="LITERAL">%#</TT> <TT CLASS="TYPE">hstore</TT></TD><TD>转换<TT CLASS="TYPE">hstore</TT>为两维键/值数组</TD><TD><TT CLASS="LITERAL">%# 'a=&gt;foo, b=&gt;bar'::hstore</TT></TD><TD><TT CLASS="LITERAL">{{a,foo},{b,bar}}</TT></TD></TR></TBODY></TABLE></DIV><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>PostgreSQL 8.2之前，包含操作符<TT CLASS="LITERAL">@&gt;</TT>和<TT CLASS="LITERAL">&lt;@</TT>分别被称为<TT CLASS="LITERAL">@</TT>
+和<TT CLASS="LITERAL">~</TT>。这些名字现在仍然可用，但是已经废弃了并且最终将会被移除。
+请注意，旧的名字从大会移除，之前跟随着核心几何数据类型！</P></BLOCKQUOTE></DIV><DIV CLASS="TABLE"><A NAME="HSTORE-FUNC-TABLE"></A><P><B>&#34920; F-7. <TT CLASS="TYPE">hstore</TT> 函数</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><COL><COL><THEAD><TR><TH>函数</TH><TH>返回类型</TH><TH>描述</TH><TH>示例</TH><TH>结果</TH></TR></THEAD><TBODY><TR><TD><CODE CLASS="FUNCTION">hstore(record)</CODE></TD><TD><TT CLASS="TYPE">hstore</TT></TD><TD>从一个记录或行构造一个 <TT CLASS="TYPE">hstore</TT></TD><TD><TT CLASS="LITERAL">hstore(ROW(1,2))</TT></TD><TD><TT CLASS="LITERAL">f1=&gt;1,f2=&gt;2</TT></TD></TR><TR><TD><CODE CLASS="FUNCTION">hstore(text[])</CODE></TD><TD><TT CLASS="TYPE">hstore</TT></TD><TD>从一个数组构造一个<TT CLASS="TYPE">hstore</TT>，可能是一个键/值数组，也可能是一个两维数组</TD><TD><TT CLASS="LITERAL">hstore(ARRAY['a','1','b','2']) || hstore(ARRAY[['c','3'],['d','4']])</TT></TD><TD><TT CLASS="LITERAL">a=&gt;1, b=&gt;2, c=&gt;3, d=&gt;4</TT></TD></TR><TR><TD><CODE CLASS="FUNCTION">hstore(text[], text[])</CODE></TD><TD><TT CLASS="TYPE">hstore</TT></TD><TD>从一个单独的键和值数组构造一个<TT CLASS="TYPE">hstore</TT></TD><TD><TT CLASS="LITERAL">hstore(ARRAY['a','b'], ARRAY['1','2'])</TT></TD><TD><TT CLASS="LITERAL">"a"=&gt;"1","b"=&gt;"2"</TT></TD></TR><TR><TD><CODE CLASS="FUNCTION">hstore(text, text)</CODE></TD><TD><TT CLASS="TYPE">hstore</TT></TD><TD>制作单一项<TT CLASS="TYPE">hstore</TT></TD><TD><TT CLASS="LITERAL">hstore('a', 'b')</TT></TD><TD><TT CLASS="LITERAL">"a"=&gt;"b"</TT></TD></TR><TR><TD><CODE CLASS="FUNCTION">akeys(hstore)</CODE></TD><TD><TT CLASS="TYPE">text[]</TT></TD><TD>获取<TT CLASS="TYPE">hstore</TT>的键作为一个数组</TD><TD><TT CLASS="LITERAL">akeys('a=&gt;1,b=&gt;2')</TT></TD><TD><TT CLASS="LITERAL">{a,b}</TT></TD></TR><TR><TD><CODE CLASS="FUNCTION">skeys(hstore)</CODE></TD><TD><TT CLASS="TYPE">setof text</TT></TD><TD>获取<TT CLASS="TYPE">hstore</TT>的键作为一个集合</TD><TD><TT CLASS="LITERAL">skeys('a=&gt;1,b=&gt;2')</TT></TD><TD><PRE CLASS="PROGRAMLISTING">a
+b</PRE></TD></TR><TR><TD><CODE CLASS="FUNCTION">avals(hstore)</CODE></TD><TD><TT CLASS="TYPE">text[]</TT></TD><TD>获取<TT CLASS="TYPE">hstore</TT>的值作为一个数组</TD><TD><TT CLASS="LITERAL">avals('a=&gt;1,b=&gt;2')</TT></TD><TD><TT CLASS="LITERAL">{1,2}</TT></TD></TR><TR><TD><CODE CLASS="FUNCTION">svals(hstore)</CODE></TD><TD><TT CLASS="TYPE">setof text</TT></TD><TD>获取<TT CLASS="TYPE">hstore</TT>的值作为一个集合</TD><TD><TT CLASS="LITERAL">svals('a=&gt;1,b=&gt;2')</TT></TD><TD><PRE CLASS="PROGRAMLISTING">1
+2</PRE></TD></TR><TR><TD><CODE CLASS="FUNCTION">hstore_to_array(hstore)</CODE></TD><TD><TT CLASS="TYPE">text[]</TT></TD><TD>获取<TT CLASS="TYPE">hstore</TT>的键和值作为一个键值交替的数组</TD><TD><TT CLASS="LITERAL">hstore_to_array('a=&gt;1,b=&gt;2')</TT></TD><TD><TT CLASS="LITERAL">{a,1,b,2}</TT></TD></TR><TR><TD><CODE CLASS="FUNCTION">hstore_to_matrix(hstore)</CODE></TD><TD><TT CLASS="TYPE">text[]</TT></TD><TD>获取<TT CLASS="TYPE">hstore</TT>的键和值作为一个两维数组</TD><TD><TT CLASS="LITERAL">hstore_to_matrix('a=&gt;1,b=&gt;2')</TT></TD><TD><TT CLASS="LITERAL">{{a,1},{b,2}}</TT></TD></TR><TR><TD><CODE CLASS="FUNCTION">hstore_to_json(hstore)</CODE></TD><TD><TT CLASS="TYPE">json</TT></TD><TD>获取<TT CLASS="TYPE">hstore</TT>作为一个<TT CLASS="TYPE">json</TT>值</TD><TD><TT CLASS="LITERAL">hstore_to_json('"a key"=&gt;1, b=&gt;t, c=&gt;null, d=&gt;12345, e=&gt;012345, f=&gt;1.234, g=&gt;2.345e+4')</TT></TD><TD><TT CLASS="LITERAL">{"a key": "1", "b": "t", "c": null, "d": "12345", "e": "012345", "f": "1.234", "g": "2.345e+4"}</TT></TD></TR><TR><TD><CODE CLASS="FUNCTION">hstore_to_json_loose(hstore)</CODE></TD><TD><TT CLASS="TYPE">json</TT></TD><TD>获取<TT CLASS="TYPE">hstore</TT>作为一个<TT CLASS="TYPE">json</TT>值，但是试图区分数值和布尔值，所以它们在JSON中没有引号</TD><TD><TT CLASS="LITERAL">hstore_to_json_loose('"a key"=&gt;1, b=&gt;t, c=&gt;null, d=&gt;12345, e=&gt;012345, f=&gt;1.234, g=&gt;2.345e+4')</TT></TD><TD><TT CLASS="LITERAL">{"a key": 1, "b": true, "c": null, "d": 12345, "e": "012345", "f": 1.234, "g": 2.345e+4}</TT></TD></TR><TR><TD><CODE CLASS="FUNCTION">slice(hstore, text[])</CODE></TD><TD><TT CLASS="TYPE">hstore</TT></TD><TD>提取<TT CLASS="TYPE">hstore</TT>的一个子集</TD><TD><TT CLASS="LITERAL">slice('a=&gt;1,b=&gt;2,c=&gt;3'::hstore, ARRAY['b','c','x'])</TT></TD><TD><TT CLASS="LITERAL">"b"=&gt;"2", "c"=&gt;"3"</TT></TD></TR><TR><TD><CODE CLASS="FUNCTION">each(hstore)</CODE></TD><TD><TT CLASS="TYPE">setof(key text, value text)</TT></TD><TD>获取 <TT CLASS="TYPE">hstore</TT>的键和值作为一个集合</TD><TD><TT CLASS="LITERAL">select * from each('a=&gt;1,b=&gt;2')</TT></TD><TD><PRE CLASS="PROGRAMLISTING"> key | value
+-----+-------
+ a   | 1
+ b   | 2</PRE></TD></TR><TR><TD><CODE CLASS="FUNCTION">exist(hstore,text)</CODE></TD><TD><TT CLASS="TYPE">boolean</TT></TD><TD><TT CLASS="TYPE">hstore</TT> 包含键吗?</TD><TD><TT CLASS="LITERAL">exist('a=&gt;1','a')</TT></TD><TD><TT CLASS="LITERAL">t</TT></TD></TR><TR><TD><CODE CLASS="FUNCTION">defined(hstore,text)</CODE></TD><TD><TT CLASS="TYPE">boolean</TT></TD><TD><TT CLASS="TYPE">hstore</TT> 包含非<TT CLASS="LITERAL">NULL</TT>值的键吗?</TD><TD><TT CLASS="LITERAL">defined('a=&gt;NULL','a')</TT></TD><TD><TT CLASS="LITERAL">f</TT></TD></TR><TR><TD><CODE CLASS="FUNCTION">delete(hstore,text)</CODE></TD><TD><TT CLASS="TYPE">hstore</TT></TD><TD>删除匹配键的对</TD><TD><TT CLASS="LITERAL">delete('a=&gt;1,b=&gt;2','b')</TT></TD><TD><TT CLASS="LITERAL">"a"=&#62;"1"</TT></TD></TR><TR><TD><CODE CLASS="FUNCTION">delete(hstore,text[])</CODE></TD><TD><TT CLASS="TYPE">hstore</TT></TD><TD>删除匹配键的多个对</TD><TD><TT CLASS="LITERAL">delete('a=&gt;1,b=&gt;2,c=&gt;3',ARRAY['a','b'])</TT></TD><TD><TT CLASS="LITERAL">"c"=&#62;"3"</TT></TD></TR><TR><TD><CODE CLASS="FUNCTION">delete(hstore,hstore)</CODE></TD><TD><TT CLASS="TYPE">hstore</TT></TD><TD>删除匹配第二个参数中元素的对</TD><TD><TT CLASS="LITERAL">delete('a=&gt;1,b=&gt;2','a=&gt;4,b=&gt;2'::hstore)</TT></TD><TD><TT CLASS="LITERAL">"a"=&#62;"1"</TT></TD></TR><TR><TD><CODE CLASS="FUNCTION">populate_record(record,hstore)</CODE></TD><TD><TT CLASS="TYPE">record</TT></TD><TD>替换<TT CLASS="TYPE">record</TT>中匹配<TT CLASS="TYPE">hstore</TT>中的值的字段</TD><TD>参阅示例章节</TD><TD>&nbsp;</TD></TR></TBODY></TABLE></DIV><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>当<TT CLASS="TYPE">hstore</TT>值转换为<TT CLASS="TYPE">json</TT>时使用<CODE CLASS="FUNCTION">hstore_to_json</CODE>函数。</P></BLOCKQUOTE></DIV><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>函数<CODE CLASS="FUNCTION">populate_record</CODE>实际上是用<TT CLASS="TYPE">anyelement</TT>，
+而不是<TT CLASS="TYPE">record</TT>，声明为它的第一个参数，但是它将用运行时错误拒绝非记录类型。</P></BLOCKQUOTE></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN146574">F.16.3. 索引</A></H2><P><TT CLASS="TYPE">hstore</TT>有GiST 和 GIN索引支持<TT CLASS="LITERAL">@&gt;</TT>,
+<TT CLASS="LITERAL">?</TT>, <TT CLASS="LITERAL">?&amp;</TT> 和 <TT CLASS="LITERAL">?|</TT>操作符。例如：</P><PRE CLASS="PROGRAMLISTING">CREATE INDEX hidx ON testhstore USING GIST (h);
+
+CREATE INDEX hidx ON testhstore USING GIN (h);</PRE><P><TT CLASS="TYPE">hstore</TT>也为<TT CLASS="LITERAL">=</TT>操作符支持<TT CLASS="TYPE">btree</TT> 或 <TT CLASS="TYPE">hash</TT>索引。
+这允许<TT CLASS="TYPE">hstore</TT>字段声明为<TT CLASS="LITERAL">UNIQUE</TT>，或在<TT CLASS="LITERAL">GROUP BY</TT>,
+<TT CLASS="LITERAL">ORDER BY</TT> 或 <TT CLASS="LITERAL">DISTINCT</TT>表达式中使用。为<TT CLASS="TYPE">hstore</TT>
+值的排序顺序不是很有用，但是这些索引可能对于等价查找有用处。为<TT CLASS="LITERAL">=</TT>
+比较创建索引如下：</P><PRE CLASS="PROGRAMLISTING">CREATE INDEX hidx ON testhstore USING BTREE (h);
+
+CREATE INDEX hidx ON testhstore USING HASH (h);</PRE></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN146596">F.16.4. 例子</A></H2><P>添加一个键，或用新值更新一个现有的键：
+</P><PRE CLASS="PROGRAMLISTING">UPDATE tab SET h = h || hstore('c', '3');</PRE><P></P><P>删除一个键：
+</P><PRE CLASS="PROGRAMLISTING">UPDATE tab SET h = delete(h, 'k1');</PRE><P></P><P>
+转换<TT CLASS="TYPE">record</TT>为<TT CLASS="TYPE">hstore</TT>:
+</P><PRE CLASS="PROGRAMLISTING">CREATE TABLE test (col1 integer, col2 text, col3 text);
+INSERT INTO test VALUES (123, 'foo', 'bar');
+
+SELECT hstore(t) FROM test AS t;
+                   hstore                    
+---------------------------------------------
+ "col1"=&gt;"123", "col2"=&gt;"foo", "col3"=&gt;"bar"
+(1 row)</PRE><P>
+</P><P>
+转换<TT CLASS="TYPE">hstore</TT>为一个预先定义的<TT CLASS="TYPE">record</TT>类型：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TABLE test (col1 integer, col2 text, col3 text);
+
+SELECT * FROM populate_record(null::test,
+                              '"col1"=&gt;"456", "col2"=&gt;"zzz"');
+ col1 | col2 | col3 
+------+------+------
+  456 | zzz  | 
+(1 row)</PRE><P>
+</P><P>
+使用<TT CLASS="TYPE">hstore</TT>里的值修改现有的记录：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TABLE test (col1 integer, col2 text, col3 text);
+INSERT INTO test VALUES (123, 'foo', 'bar');
+
+SELECT (r).* FROM (SELECT t #= '"col3"=&gt;"baz"' AS r FROM test t) s;
+ col1 | col2 | col3 
+------+------+------
+  123 | foo  | baz
+(1 row)</PRE><P>
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN146613">F.16.5. 统计</A></H2><P><TT CLASS="TYPE">hstore</TT>类型，由于其内在的慷慨，可以包含大量不同的键。检查有效的键是应用的任务。
+下列的例子演示几个检查键和获取统计的技术。</P><P>简单例子：
+</P><PRE CLASS="PROGRAMLISTING">SELECT * FROM each('aaa=&gt;bq, b=&gt;NULL, ""=&gt;1');</PRE><P></P><P>使用一个表：
+</P><PRE CLASS="PROGRAMLISTING">SELECT (each(h)).key, (each(h)).value INTO stat FROM testhstore;</PRE><P></P><P>
+在线统计：
+</P><PRE CLASS="PROGRAMLISTING">SELECT key, count(*) FROM
+  (SELECT (each(h)).key FROM testhstore) AS stat
+  GROUP BY key
+  ORDER BY count DESC, key;
+    key    | count
+-----------+-------
+ line      |   883
+ query     |   207
+ pos       |   203
+ node      |   202
+ space     |   197
+ status    |   195
+ public    |   194
+ title     |   190
+ org       |   189
+...................</PRE><P>
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN146623">F.16.6. 兼容性</A></H2><P>自PostgreSQL 9.0起，<TT CLASS="TYPE">hstore</TT>使用一个不同于以前版本的内部表示。
+这样做对于转储/恢复升级没有什么障碍，因为文本表示（在转储中使用的）没有改变。</P><P>在一个二进制升级中，向上兼容是通过使新代码认识老格式的数据来维护的。
+这在处理还未被新代码修改的数据时会有一点性能代偿。通过像下面这样的<TT CLASS="LITERAL">UPDATE</TT>
+语句强制升级一个表字段中的所有值是可能的：
+</P><PRE CLASS="PROGRAMLISTING">UPDATE tablename SET hstorecol = hstorecol || '';</PRE><P></P><P>另一个方法是：
+</P><PRE CLASS="PROGRAMLISTING">ALTER TABLE tablename ALTER hstorecol TYPE hstore USING hstorecol || '';</PRE><P>
+<TT CLASS="COMMAND">ALTER TABLE</TT>方法要求在表上的一个排他锁，但是不会导致有旧行版本的表膨胀。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN146633">F.16.7. 作者</A></H2><P> Oleg Bartunov <CODE CLASS="EMAIL">&#60;<A HREF="mailto:oleg@sai.msu.su">oleg@sai.msu.su</A>&#62;</CODE>, Moscow, Moscow University, Russia
+</P><P> Teodor Sigaev <CODE CLASS="EMAIL">&#60;<A HREF="mailto:teodor@sigaev.ru">teodor@sigaev.ru</A>&#62;</CODE>, Moscow, Delta-Soft Ltd., Russia
+</P><P>Andrew Gierth <CODE CLASS="EMAIL">&#60;<A HREF="mailto:andrew@tao11.riddles.org.uk">andrew@tao11.riddles.org.uk</A>&#62;</CODE>附加的增强, United Kingdom</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="fuzzystrmatch.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="intagg.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">fuzzystrmatch</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">intagg</TD></TR></TABLE></DIV></BODY></HTML>

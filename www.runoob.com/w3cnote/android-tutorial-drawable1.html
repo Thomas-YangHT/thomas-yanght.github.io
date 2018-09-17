@@ -1,0 +1,1177 @@
+<!Doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta property="qc:admins" content="465267610762567726375" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>8.1.1 Android中的13种Drawable小结 Part 1 | 菜鸟教程</title>
+<link rel='dns-prefetch' href='http://s.w.org/' />
+<link rel="canonical" href="android-tutorial-drawable1.html" />
+<meta name="keywords" content="8.1.1 Android中的13种Drawable小结 Part 1">
+<meta name="description" content="本节引言：  从本节开始我们来学习Android中绘图与动画中的一些基础知识，为我们进阶部分的自定义 打下基础！而第一节我们来扣下Android中的Drawable！Android中给我们提供了多达13种的 Drawable，本节我们就来一个个撸一遍！      Drawable资源使用注意事项   Drawable分为两种： 一种是我们普通的图片资源，在Android Studio中我们一般放到res/mipmap目录下， 和以前的E..">
+<link rel="shortcut icon" href="http://static.runoob.com/images/favicon.ico" mce_href="//static.runoob.com/images/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="http://school.yunwei.edu/wp-content/themes/runoob/style.css?v=1.147" type="text/css" media="all" />
+<link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />
+<!--[if gte IE 9]><!-->
+  <script src="http://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+  <!--<![endif]-->
+<!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+<link rel="apple-touch-icon" href="http://static.runoob.com/images/icon/mobile-icon.png"/>
+<meta name="apple-mobile-web-app-title" content="菜鸟教程">
+</head>
+<body>
+<div class="container logo-search">
+<div class="col search row-search-mobile">
+<form action="http://school.yunwei.edu/w3cnote/index.php">
+<input class="placeholder" placeholder="搜索……" name="s" autocomplete="off">
+</form>
+</div>
+<div class="row">
+<div class="col logo">
+<h1><a href="http://school.yunwei.edu/">菜鸟教程 -- 学的不仅是技术，更是梦想！</a></h1>
+</div>
+<div class="col right-list">
+<button class="btn btn-responsive-nav btn-inverse" data-toggle="collapse" data-target=".nav-main-collapse" id="pull" style=""> <i class="fa fa-navicon"></i> </button>
+</div>
+<div class="col search search-desktop last">
+<form action="http://school.yunwei.edu/" target="_blank">
+<input class="placeholder" id="s" name="s" placeholder="搜索……" autocomplete="off">
+</form>
+</div>
+</div>
+</div>
+<div class="container navigation">
+<div class="row">
+<div class="col nav">
+<ul class="pc-nav" id="note-nav">
+<li><a href="http://school.yunwei.edu/">首页</a></li>
+<li><a href="index.html">笔记首页</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/android" title="Android 基础入门教程">Android</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/net-2" title="互联网">互联网</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/coderlife" title="程序员人生">程序员人生</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/joke" title="程序员笑话">程序员笑话</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/code" title="编程技术">编程技术</a></li>
+</ul>
+<ul class="mobile-nav">
+<li><a href="index.html">首页</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/android" target="_blank" title="Android 基础入门教程">Android</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/coderlife" target="_blank" title="程序员人生">鸡汤</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/joke" target="_blank" title="程序员笑话">逗乐</a></li>
+<a href="javascript:void(0)" class="search-reveal">Search</a>
+</ul>
+</div>
+</div>
+</div>
+<div class="container main">
+<div class="row">
+<div class="col left-column" style="display:none;">
+<div class="tab">Android 基础入门教程</div>
+<div class="sidebar-box gallery-list">
+<div class="design" id="leftcolumn">
+</div>
+</div>
+</div>
+<div class="col middle-column big-middle-column">
+<div class="article">
+<div class="article-heading">
+<h2>8.1.1 Android中的13种Drawable小结 Part 1</h2> <h3><em>分类</em> <a href="http://school.yunwei.edu/w3cnote_genre/android" title="Android 基础入门教程">Android 基础入门教程</a> </h3>
+</div>
+<div class="article-body note-body">
+<div class="article-intro">
+<h2>本节引言：</h2>
+<blockquote><p>从本节开始我们来学习Android中绘图与动画中的一些基础知识，为我们进阶部分的自定义
+打下基础！而第一节我们来扣下Android中的Drawable！Android中给我们提供了多达13种的
+Drawable，本节我们就来一个个撸一遍！</p>
+<p><img src="../wp-content/uploads/2015/10/57840489.jpg" alt="" /></p></blockquote>
+<hr />
+<h2>Drawable资源使用注意事项</h2>
+<blockquote><ul>
+<li>Drawable分为两种：
+一种是我们<strong>普通的图片资源</strong>，在Android Studio中我们一般放到res/mipmap目录下，
+和以前的Eclipse不一样哦！另外我们如果把工程切换成Android项目模式，我们直接
+往mipmap目录下丢图片即可，AS会自动分hdpi，xhdpi...！
+另一种是我们编写的<strong>XML形式的Drawable资源</strong>，我们一般把他们放到res/drawable目录
+下，比如最常见的按钮点击背景切换的Selctor！</li>
+<li>在XML我们直接通过@mipmap或者@drawable设置Drawable即可
+比如: android:background = "@mipmap/iv_icon_zhu" / "@drawable/btn_back_selctor"
+而在Java代码中我们可以通过Resource的getDrawable(R.mipmap.xxx)可以获得drawable资源
+如果是为某个控件设置背景，比如ImageView，我们可以直接调用控件.getDrawale()同样
+可以获得drawable对象！</li>
+<li>Android中drawable中的资源名称有约束，必须是：<strong>[a-z0-9_.]</strong>（即：只能是字母数字及<em>和.），
+而且不能以数字开头，否则编译会报错： Invalid file name: must contain only [a-z0-9</em>.]！
+小写啊！！！！小写！！！小写！——重要事情说三遍~</li>
+</ul>
+</blockquote>
+<p>好的，要注意的地方大概就这些，下面我们来对Android中给我们提供的13种Drawable进行学习！</p>
+<hr />
+<h2>1.ColorDrawable</h2>
+<blockquote><p>最简单的一种Drawable，当我们将ColorDrawable绘制到Canvas(画布)上的时候,
+会使用一种固定的颜色来填充Paint,然后在画布上绘制出一片单色区域!</p></blockquote>
+<h3>1).Java中定义ColorDrawable:</h3>
+<pre>
+ColorDrawable drawable = new ColorDrawable(0xffff2200);  
+txtShow.setBackground(drawable);  
+</pre>
+<h3>2).在xml中定义ColorDrawable:</h3>
+<pre>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;  
+&lt;color  
+    xmlns:android="http://schemas.android.com/apk/res/android"  
+    android:color="#FF0000"/&gt;  
+</pre>
+<p>当然上面这些用法,其实用得不多,更多的时候我们是在res/values目录下创建一个color.xml
+文件,然后把要用到的颜色值写到里面,需要的时候通过@color获得相应的值，比如：</p>
+<h3>3).建立一个color.xml文件</h3>
+<p>比如：
+</p>
+<pre>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;  
+&lt;resources&gt;  
+    &lt;color name="material_grey_100"&gt;#fff5f5f5&lt;/color&gt;
+    &lt;color name="material_grey_300"&gt;#ffe0e0e0&lt;/color&gt;
+    &lt;color name="material_grey_50"&gt;#fffafafa&lt;/color&gt;
+    &lt;color name="material_grey_600"&gt;#ff757575&lt;/color&gt;
+    &lt;color name="material_grey_800"&gt;#ff424242&lt;/color&gt;
+    &lt;color name="material_grey_850"&gt;#ff303030&lt;/color&gt;
+    &lt;color name="material_grey_900"&gt;#ff212121&lt;/color&gt;
+&lt;/resources&gt;
+</pre>
+<p>然后如果是在xml文件中话我们可以通过@color/xxx获得对应的color值
+如果是在Java中:</p>
+<pre>
+int mycolor = getResources().getColor(R.color.mycolor);    
+btn.setBackgroundColor(mycolor);  
+</pre>
+<p>ps:另外有一点要注意,如果我们在Java中直接定义颜色值的话,要加上0x,而且不能把透明度漏掉:</p>
+<pre>
+int mycolor = 0xff123456;    
+btn.setBackgroundColor(mycolor); 
+</pre>
+<h3>4).使用系统定义好的color:</h3>
+<p>比如:BLACK(黑色),BLUE(蓝色),CYAN(青色),GRAY(灰色),GREEN(绿色),RED(红色),WRITE(白色),YELLOW(黄色)!
+用法： <strong>btn.setBackgroundColor(Color.BLUE);</strong>
+也可以获得系统颜色再设置：
+</p>
+<pre>
+int getcolor = Resources.getSystem().getColor(android.R.color.holo_green_light);  
+btn.setBackgroundColor(getcolor);  
+</pre><p>
+xml中使用:<strong>android:background="@android:color/black"</strong></p>
+<h3>5).利用静态方法argb来设置颜色:</h3>
+<blockquote><p>Android使用一个int类型的数据表示颜色值,通常是十六进制,即0x开头，
+颜色值的定义是由透明度alpha和RGB(红绿蓝)三原色来定义的,以"#"开始,后面依次为: <br/>
+<strong>透明度-红-绿-蓝</strong>;eg:#RGB #ARGB #RRGGBB #AARRGGBB <br/>
+每个要素都由一个字节(8 bit)来表示,所以取值范围为0~255,在xml中设置颜色可以忽略透明度,
+但是如果你是在Java代码中的话就需要明确指出透明度的值了,省略的话表示完全透明,这个时候
+就没有效果了哦~比如:0xFF0000虽然表示红色,但是如果直接这样写,什么的没有,而应该这样写:
+0xFFFF0000,记Java代码设置颜色值,需要在前面添加上透明度~
+示例:(参数依次为:透明度,红色值,绿色值,蓝色值)
+<strong>txtShow.setBackgroundColor(Color.argb(0xff, 0x00, 0x00, 0x00));</strong></p></blockquote>
+<hr />
+<h2>2.NiewPatchDrawable</h2>
+<blockquote><p>就是.9图咯，在前面我们<a target="_top" title="1.6 .9(九妹)图片怎么玩" href="android-tutorial-9-image.html">1.6 .9(九妹)图片怎么玩</a>已经详细
+的给大家讲解了一下如何制作.9图片了！Android FrameWork在显示点九图时使用了高效的
+图形优化算法,我们不需要特殊的处理，就可以实现图片拉伸的自适应~
+另外在使用AS的时候要注意以下几点：</p>
+<ul>
+<li>1.点9图不能放在mipmap目录下，而需要放在drawable目录下！</li>
+<li>2.AS中的.9图，必须要有黑线，不然编译都不会通过，今早我的阿君表哥在群里说
+他司的美工给了他一个没有黑线的.9图，说使用某软件制作出来的，然后在Eclipse上
+是可以用的，没错是没黑线的.9，卧槽，然而我换到AS上，直接编译就不通过了！
+感觉是AS识别.9图的其中标准是需要有黑店或者黑线！另外表哥给出的一个去掉黑线的：
+<a href="9patch-9-remove-black-line.html">9patch(.9)怎么去掉自己画上的黑点/黑线</a>
+具体我没试，有兴趣可以自己试试，但是黑线真的那么碍眼么...我没强迫症不觉得！
+另外还有一点就是解压别人apk，拿.9素材的时候发现并没有黑线，同样也会报错！
+想要拿出有黑线的.9素材的话，需要反编译apk而非直接解压！！！反编译前面也
+介绍过了，这里就不详述了！</li>
+</ul>
+</blockquote>
+<p>接着介绍两个没什么卵用的东东：</p>
+<p><strong>xml定义NinePatchDrawable</strong>:</p>
+<pre>
+&lt;!--pic9.xml--&gt;  
+&lt;!--参数依次为:引用的.9图片,是否对位图进行抖动处理--&gt;  
+&lt;?xml version="1.0" encoding="utf-8"?&gt;  
+&lt;nine-patch  
+    xmlns:android="http://schemas.android.com/apk/res/android"  
+    android:src="@drawable/dule_pic"  
+    android:dither="true"/&gt;  
+</pre>
+<p><strong>使用Bitmap包装.9图片</strong>:</p>
+<pre>
+&lt;!--pic9.xml--&gt;  
+&lt;!--参数依次为:引用的.9图片,是否对位图进行抖动处理--&gt;  
+&lt;?xml version="1.0" encoding="utf-8"?&gt;  
+&lt;bitmap  
+    xmlns:android="http://schemas.android.com/apk/res/android"  
+    android:src="@drawable/dule_pic"  
+    android:dither="true"/&gt;
+</pre>
+<hr />
+<h2>3.ShapeDrawable</h2>
+<blockquote><p>形状的Drawable咯,定义基本的几何图形,如(矩形,圆形,线条等),根元素是&lt;shape../>
+节点比较多，相关的节点如下：</p>
+<ul>
+<li>① &lt;<strong>shape</strong>>:</li>
+<li>~ <strong>visible</strong>:设置是否可见</li>
+<li>~ <strong>shape</strong>:形状,可选:rectangle(矩形,包括正方形),oval(椭圆,包括圆),line(线段),ring(环形)</li>
+<li>~ <strong>innerRadiusRatio</strong>:当shape为ring才有效,表示环内半径所占半径的比率,如果设置了innerRadius,
+他会被忽略</li>
+<li>~ <strong>innerRadius</strong>:当shape为ring才有效,表示环的内半径的尺寸</li>
+<li>~ <strong>thicknessRatio</strong>:当shape为ring才有效,表环厚度占半径的比率</li>
+<li>~ <strong>thickness</strong>:当shape为ring才有效,表示环的厚度,即外半径与内半径的差</li>
+<li>~ <strong>useLevel</strong>:当shape为ring才有效,表示是否允许根据level来显示环的一部分</li>
+<li>②&lt;<strong>size</strong>>:</li>
+<li>~ <strong>width</strong>:图形形状宽度</li>
+<li>~ <strong>height</strong>:图形形状高度</li>
+<li>③&lt;<strong>gradient</strong>>：后面GradientDrawable再讲~</li>
+<li>④&lt;<strong>solid</strong>></li>
+<li>~ <strong>color</strong>:背景填充色,设置solid后会覆盖gradient设置的所有效果!!!!!!</li>
+<li>⑤&lt;<strong>stroke</strong>></li>
+<li>~ <strong>width</strong>:边框的宽度</li>
+<li>~ <strong>color</strong>:边框的颜色</li>
+<li>~ <strong>dashWidth</strong>:边框虚线段的长度</li>
+<li>~ <strong>dashGap</strong>:边框的虚线段的间距</li>
+<li>⑥&lt;<strong>conner</strong>></li>
+<li>~ <strong>radius</strong>:圆角半径,适用于上下左右四个角</li>
+<li>~ <strong>topLeftRadius</strong>,<strong>topRightRadius</strong>,<strong>BottomLeftRadius</strong>,<strong>tBottomRightRadius</strong>:
+依次是左上,右上,左下,右下的圆角值,按自己需要设置!</li>
+<li>⑦&lt;<strong>padding</strong>></li>
+<li>left,top,right,bottm:依次是左上右下方向上的边距!</li>
+</ul>
+</blockquote>
+<p><strong>使用示例</strong>：
+<a target="_top" title="2.3.1 TextView(文本框)详解" href="android-tutorial-textview.html">2.3.1 TextView(文本框)详解</a></p>
+<p><img src="../wp-content/uploads/2015/10/36413391.jpg" alt="" /></p>
+<hr />
+<h2>4.GradientDrawable</h2>
+<blockquote><p>一个具有渐变区域的Drawable，可以实现线性渐变,发散渐变和平铺渐变效果
+核心节点：&lt;<strong>gradient</strong>/>，有如下可选属性：</p>
+<ul>
+<li><strong>startColor</strong>:渐变的起始颜色</li>
+<li><strong>centerColor</strong>:渐变的中间颜色</li>
+<li><strong>endColor</strong>:渐变的结束颜色</li>
+<li><strong>type</strong>:渐变类型,可选(<strong>linear</strong>,<strong>radial</strong>,<strong>sweep</strong>),
+<strong>线性渐变</strong>(可设置渐变角度),发散渐变(中间向四周发散),平铺渐变</li>
+<li><strong>centerX</strong>:渐变中间亚瑟的x坐标,取值范围为:0~1</li>
+<li><strong>centerY</strong>:渐变中间颜色的Y坐标,取值范围为:0~1</li>
+<li><strong>angle</strong>:只有linear类型的渐变才有效,表示渐变角度,必须为45的倍数哦</li>
+<li><strong>gradientRadius</strong>:只有radial和sweep类型的渐变才有效,radial必须设置,表示渐变效果的半径</li>
+<li><strong>useLevel</strong>:判断是否根据level绘制渐变效果</li>
+</ul>
+</blockquote>
+<p><strong>代码示例</strong>：(三种渐变效果的演示)：</p>
+<p><strong>运行效果图</strong>：</p>
+<p><img src="../wp-content/uploads/2015/10/13354775.jpg" alt="" /></p>
+<p>先在drawable下创建三个渐变xml文件：</p>
+<p><strong>(线性渐变)gradient_linear.xml</strong>:</p>
+<pre>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval" &gt;
+    &lt;gradient
+        android:angle="90"
+        android:centerColor="#FFEB82"
+        android:endColor="#35B2DE"
+        android:startColor="#DEACAB" /&gt;
+
+    &lt;stroke
+        android:dashGap="5dip"
+        android:dashWidth="4dip"
+        android:width="3dip"
+        android:color="#fff" /&gt;
+&lt;/shape&gt;
+</pre>
+<p><strong>(发散渐变)gradient_radial.xml</strong>:</p>
+<pre>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:innerRadius="0dip"
+    android:shape="ring"
+    android:thickness="70dip"
+    android:useLevel="false" &gt;
+
+    &lt;gradient
+        android:centerColor="#FFEB82"
+        android:endColor="#35B2DE"
+        android:gradientRadius="70"
+        android:startColor="#DEACAB"
+        android:type="radial"
+        android:useLevel="false" /&gt;
+
+&lt;/shape&gt; 
+</pre>
+<p><strong>(平铺渐变)gradient_sweep.xml</strong>:</p>
+<pre>
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:innerRadiusRatio="8"
+    android:shape="ring"
+    android:thicknessRatio="3"
+    android:useLevel="false" &gt;
+
+    &lt;gradient
+        android:centerColor="#FFEB82"
+        android:endColor="#35B2DE"
+        android:startColor="#DEACAB"
+        android:type="sweep"
+        android:useLevel="false" /&gt;
+
+&lt;/shape&gt; 
+</pre>
+<p>调用三个drawable的<strong>activity_main.xml</strong>:</p>
+<pre>
+&lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"&gt;
+
+    &lt;TextView
+        android:id="@+id/txtShow1"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:background="@drawable/gradient_linear" /&gt;
+
+    &lt;TextView
+        android:id="@+id/txtShow2"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@drawable/gradient_radial" /&gt;
+
+    &lt;TextView
+        android:id="@+id/txtShow3"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/gradient_sweep" /&gt;
+
+&lt;/LinearLayout&gt;  
+</pre>
+<p>好的，就是那么简单~当然，如果想绘制更加复杂的图形的话,只用xml文件不远远不足的,
+更复杂的效果则需要通过Java代码来完成,下面演示的是摘自网上的一个源码:</p>
+<p>运行效果图：</p>
+<p><strong>实现代码</strong>：</p>
+<p><strong>MainActivity.java</strong>：</p>
+<pre>
+public class MainActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(new SampleView(this));
+    }
+
+    private static class SampleView extends View {
+        private ShapeDrawable[] mDrawables;
+
+        private static Shader makeSweep() {
+            return new SweepGradient(150, 25,
+                    new int[] { 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, 0xFFFF0000 },
+                    null);
+        }
+
+        private static Shader makeLinear() {
+            return new LinearGradient(0, 0, 50, 50,
+                    new int[] { 0xFFFF0000, 0xFF00FF00, 0xFF0000FF },
+                    null, Shader.TileMode.MIRROR);
+        }
+
+        private static Shader makeTiling() {
+            int[] pixels = new int[] { 0xFFFF0000, 0xFF00FF00, 0xFF0000FF, 0};
+            Bitmap bm = Bitmap.createBitmap(pixels, 2, 2,
+                    Bitmap.Config.ARGB_8888);
+
+            return new BitmapShader(bm, Shader.TileMode.REPEAT,
+                    Shader.TileMode.REPEAT);
+        }
+
+        private static class MyShapeDrawable extends ShapeDrawable {
+            private Paint mStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+            public MyShapeDrawable(Shape s) {
+                super(s);
+                mStrokePaint.setStyle(Paint.Style.STROKE);
+            }
+
+            public Paint getStrokePaint() {
+                return mStrokePaint;
+            }
+
+            @Override protected void onDraw(Shape s, Canvas c, Paint p) {
+                s.draw(c, p);
+                s.draw(c, mStrokePaint);
+            }
+        }
+
+        public SampleView(Context context) {
+            super(context);
+            setFocusable(true);
+
+            float[] outerR = new float[] { 12, 12, 12, 12, 0, 0, 0, 0 };
+            RectF inset = new RectF(6, 6, 6, 6);
+            float[] innerR = new float[] { 12, 12, 0, 0, 12, 12, 0, 0 };
+
+            Path path = new Path();
+            path.moveTo(50, 0);
+            path.lineTo(0, 50);
+            path.lineTo(50, 100);
+            path.lineTo(100, 50);
+            path.close();
+
+            mDrawables = new ShapeDrawable[7];
+            mDrawables[0] = new ShapeDrawable(new RectShape());
+            mDrawables[1] = new ShapeDrawable(new OvalShape());
+            mDrawables[2] = new ShapeDrawable(new RoundRectShape(outerR, null,
+                    null));
+            mDrawables[3] = new ShapeDrawable(new RoundRectShape(outerR, inset,
+                    null));
+            mDrawables[4] = new ShapeDrawable(new RoundRectShape(outerR, inset,
+                    innerR));
+            mDrawables[5] = new ShapeDrawable(new PathShape(path, 100, 100));
+            mDrawables[6] = new MyShapeDrawable(new ArcShape(45, -270));
+
+            mDrawables[0].getPaint().setColor(0xFFFF0000);
+            mDrawables[1].getPaint().setColor(0xFF00FF00);
+            mDrawables[2].getPaint().setColor(0xFF0000FF);
+            mDrawables[3].getPaint().setShader(makeSweep());
+            mDrawables[4].getPaint().setShader(makeLinear());
+            mDrawables[5].getPaint().setShader(makeTiling());
+            mDrawables[6].getPaint().setColor(0x88FF8844);
+
+            PathEffect pe = new DiscretePathEffect(10, 4);
+            PathEffect pe2 = new CornerPathEffect(4);
+            mDrawables[3].getPaint().setPathEffect(
+                    new ComposePathEffect(pe2, pe));
+
+            MyShapeDrawable msd = (MyShapeDrawable)mDrawables[6];
+            msd.getStrokePaint().setStrokeWidth(4);
+        }
+
+        @Override protected void onDraw(Canvas canvas) {
+
+            int x = 10;
+            int y = 10;
+            int width = 400;
+            int height = 100;
+
+            for (Drawable dr : mDrawables) {
+                dr.setBounds(x, y, x + width, y + height);
+                dr.draw(canvas);
+                y += height + 5;
+            }
+        }
+    }
+}
+</pre>
+<blockquote><p>代码使用了ShapeDrawable和PathEffect,前者是对普通图形的包装;包括:
+ArcShape,OvalShape,PathShape,RectShape,RoundRectShape!<br>
+而PathEffect则是路径特效,包括:CornerPathEffect,DashPathEffect和DiscretePathEffect
+可以制作复杂的图形边框...<br>
+关于这个GradoemtDrawable渐变就讲到这里,如果你对最后面这个玩意有兴趣的话,可以到:
+<a href="https://github.com/appium/android-apidemos/tree/master/src/io/appium/android/apis/graphics">appium/android-apidemos</a></p></blockquote>
+<hr />
+<h2>本节小结：</h2>
+<blockquote><p><img src="../wp-content/uploads/2015/10/57914902.jpg" alt="" /> 好的，本节就先学习ColorDrawable，NiewPatchDrawable，ShapeDrawable，GradientDrawable<br>
+四个Drawable先，当然这些都是炒冷饭，以前已经写过了，不过为了教程的完整性，还是决定
+在写一遍~另外，在写完基础教程后，以前写过的一些blog会删掉！</p></blockquote> </div>
+</div>
+<div class="previous-next-links">
+<div class="previous-design-link">← <a href="android-tutorial-drawerlayout.html" rel="prev"> 2.6.4 DrawerLayout(官方侧滑菜单)的简单使用</a> </div>
+<div class="next-design-link"><a href="android-tutorial-drawable2.html" rel="next"> 8.1.2 Android中的13种Drawable小结 Part 2</a> →</div>
+</div>
+<div class="article-heading-ad" id="w3cnote-ad728">
+<script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle" style="display:inline-block;min-width:300px;max-width:970px;width:100%;height:90px" data-ad-client="ca-pub-5751451760833794" data-ad-slot="1691338467" data-ad-format="horizontal"></ins>
+<script>
+			(adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
+</div>
+<style>
+@media screen and (max-width: 768px) {
+	#w3cnote-ad728 {
+		display: none;
+	}
+}
+p.note-author {
+    border-bottom: 1px solid #ddd;
+    font-size: 18px;
+    font-weight: bold;
+    color: #78a15a;
+    padding-bottom: 2px;
+    margin-bottom: 4px;
+}
+</style>
+<script>
+var aid = 14013;
+</script>
+</div>
+</div>
+<div class="listcol last right-column">
+<script type="text/javascript">
+jQuery(document).ready(function ($){
+	var total = $(".membership li").length;
+	var left_list = '';
+	href = window.location.href;
+	
+	$(".membership li").each(function(index, value){
+
+		left_list += $(this).html();
+
+		cur_href = $(this).find("a").attr("href");
+		cur_obj = $(this);
+		
+		if(href.match(cur_href) != null) {
+			if(index==0) {
+				$(".previous-design-link").hide();
+			}
+			if(index==(total-1)) {
+				$(".next-design-link").hide();
+			}
+			prev_href = cur_obj.prev("li").find("a").attr("href");
+			prev_title = cur_obj.prev("li").find("a").attr("title");
+
+			next_href = cur_obj.next("li").find("a").attr("href");
+			next_title = cur_obj.next("li").find("a").attr("title");
+			if(prev_title) {
+				$(".previous-design-link a").attr("href", prev_href);
+				$(".previous-design-link a").attr("title", prev_title);
+				$(".previous-design-link a").text(prev_title);
+			} else {
+				$(".previous-design-link").html("");
+			}
+
+			if(next_title) {
+				$(".next-design-link a").attr("href", next_href);
+				$(".next-design-link a").attr("title", next_title);
+				$(".next-design-link a").text(next_title);
+			} else {
+				$(".next-design-link").html("");
+			}
+		}
+	});
+
+	$("#leftcolumn").html(left_list);
+});
+	</script>
+<div class="sidebar-box cate-list">
+<div class="sidebar-box advertise-here list-link"">
+	<a href="javascript:void(0);">Android 基础入门教程(Q群号：153836263)</a>	</div>
+	
+	<ul class="membership">
+		
+	<li><a target="_top" title="1.0 Android基础入门教程" href="http://school.yunwei.edu/w3cnote/android-tutorial-intro.html" >1.0 Android基础入门教程</a></li>
+		
+	<li><a target="_top" title="1.0.1 2015年最新Android基础入门教程目录" href="android-tutorial-contents.html" >1.0.1 2015年最新Android基础入门教程目录</a></li>
+		
+	<li><a target="_top" title="1.1 背景相关与系统架构分析" href="android-tutorial-system-architecture-analysis.html" >1.1 背景相关与系统架构分析</a></li>
+		
+	<li><a target="_top" title="1.2 开发环境搭建" href="android-tutorial-development-environment-build.html" >1.2 开发环境搭建</a></li>
+		
+	<li><a target="_top" title="1.2.1 使用Eclipse + ADT + SDK开发Android APP" href="android-tutorial-eclipse-adt-sdk-app.html" >1.2.1 使用Eclipse + ADT + SDK开发Android APP</a></li>
+		
+	<li><a target="_top" title="1.2.2 使用Android Studio开发Android APP" href="android-tutorial-android-studio.html" >1.2.2 使用Android Studio开发Android APP</a></li>
+		
+	<li><a target="_top" title="1.3 SDK更新不了问题解决" href="android-tutorial-sdk-problem-solve.html" >1.3 SDK更新不了问题解决</a></li>
+		
+	<li><a target="_top" title="1.4 Genymotion模拟器安装" href="android-tutorial-genymotion-install.html" >1.4 Genymotion模拟器安装</a></li>
+		
+	<li><a target="_top" title="1.5.1 Git使用教程之本地仓库的基本操作" href="android-tutorial-git-repo-operate.html" >1.5.1 Git使用教程之本地仓库的基本操作</a></li>
+		
+	<li><a target="_top" title="1.5.2 Git之使用GitHub搭建远程仓库" href="android-tutorial-git-repo-create.html" >1.5.2 Git之使用GitHub搭建远程仓库</a></li>
+		
+	<li><a target="_top" title="1.6 .9(九妹)图片怎么玩" href="android-tutorial-9-image.html" >1.6 .9(九妹)图片怎么玩</a></li>
+		
+	<li><a target="_top" title="1.7 界面原型设计" href="android-tutorial-interface-design.html" >1.7 界面原型设计</a></li>
+		
+	<li><a target="_top" title="1.8 工程相关解析(各种文件，资源访问)" href="android-tutorial-project-src-analysis.html" >1.8 工程相关解析(各种文件，资源访问)</a></li>
+		
+	<li><a target="_top" title="1.9 Android程序签名打包" href="android-tutorial-sign-package.html" >1.9 Android程序签名打包</a></li>
+		
+	<li><a target="_top" title="1.11 反编译APK获取代码&资源" href="android-tutorial-decompile-apk-get-code-resources.html" >1.11 反编译APK获取代码&资源</a></li>
+		
+	<li><a target="_top" title="2.1 View与ViewGroup的概念" href="android-tutorial-view-viewgroup-intro.html" >2.1 View与ViewGroup的概念</a></li>
+		
+	<li><a target="_top" title="2.2.1 LinearLayout(线性布局)" href="android-tutorial-linearlayout.html" >2.2.1 LinearLayout(线性布局)</a></li>
+		
+	<li><a target="_top" title="2.2.2 RelativeLayout(相对布局)" href="android-tutorial-relativelayout.html" >2.2.2 RelativeLayout(相对布局)</a></li>
+		
+	<li><a target="_top" title="2.2.3 TableLayout(表格布局)" href="android-tutorial-tablelayout.html" >2.2.3 TableLayout(表格布局)</a></li>
+		
+	<li><a target="_top" title="2.2.4 FrameLayout(帧布局)" href="android-tutorial-framelayout.html" >2.2.4 FrameLayout(帧布局)</a></li>
+		
+	<li><a target="_top" title="2.2.5 GridLayout(网格布局)" href="android-tutorial-gridlayout.html" >2.2.5 GridLayout(网格布局)</a></li>
+		
+	<li><a target="_top" title="2.2.6 AbsoluteLayout(绝对布局)" href="android-tutorial-absolutelayout.html" >2.2.6 AbsoluteLayout(绝对布局)</a></li>
+		
+	<li><a target="_top" title="2.3.1 TextView(文本框)详解" href="android-tutorial-textview.html" >2.3.1 TextView(文本框)详解</a></li>
+		
+	<li><a target="_top" title="2.3.2 EditText(输入框)详解" href="android-tutorial-edittext.html" >2.3.2 EditText(输入框)详解</a></li>
+		
+	<li><a target="_top" title="2.3.3 Button(按钮)与ImageButton(图像按钮)" href="android-tutorial-button-imagebutton.html" >2.3.3 Button(按钮)与ImageButton(图像按钮)</a></li>
+		
+	<li><a target="_top" title="2.3.4 ImageView(图像视图)" href="android-tutorial-imageview.html" >2.3.4 ImageView(图像视图)</a></li>
+		
+	<li><a target="_top" title="2.3.5.RadioButton(单选按钮)&Checkbox(复选框)" href="android-tutorial-radiobutton-checkbox.html" >2.3.5.RadioButton(单选按钮)&Checkbox(复选框)</a></li>
+		
+	<li><a target="_top" title="2.3.6 开关按钮ToggleButton和开关Switch" href="android-tutorial-togglebutton-switch.html" >2.3.6 开关按钮ToggleButton和开关Switch</a></li>
+		
+	<li><a target="_top" title="2.3.7 ProgressBar(进度条)" href="android-tutorial-progressbar.html" >2.3.7 ProgressBar(进度条)</a></li>
+		
+	<li><a target="_top" title="2.3.8 SeekBar(拖动条)" href="android-tutorial-seekbar.html" >2.3.8 SeekBar(拖动条)</a></li>
+		
+	<li><a target="_top" title="2.3.9 RatingBar(星级评分条)" href="android-tutorial-ratingbar.html" >2.3.9 RatingBar(星级评分条)</a></li>
+		
+	<li><a target="_top" title="2.4.1 ScrollView(滚动条)" href="android-tutorial-scrollview.html" >2.4.1 ScrollView(滚动条)</a></li>
+		
+	<li><a target="_top" title="2.4.2 Date & Time组件(上)" href="android-tutorial-date-time-1.html" >2.4.2 Date & Time组件(上)</a></li>
+		
+	<li><a target="_top" title="2.4.3 Date & Time组件(下)" href="android-tutorial-date-time-2.html" >2.4.3 Date & Time组件(下)</a></li>
+		
+	<li><a target="_top" title="2.4.4 Adapter基础讲解" href="android-tutorial-adapter.html" >2.4.4 Adapter基础讲解</a></li>
+		
+	<li><a target="_top" title="2.4.5 ListView简单实用" href="android-tutorial-listview.html" >2.4.5 ListView简单实用</a></li>
+		
+	<li><a target="_top" title="2.4.6 BaseAdapter优化" href="android-tutorial-baseadapter.html" >2.4.6 BaseAdapter优化</a></li>
+		
+	<li><a target="_top" title="2.4.7ListView的焦点问题" href="android-tutorial-listview-focus.html" >2.4.7ListView的焦点问题</a></li>
+		
+	<li><a target="_top" title="2.4.8 ListView之checkbox错位问题解决" href="android-tutorial-listview-checkbox.html" >2.4.8 ListView之checkbox错位问题解决</a></li>
+		
+	<li><a target="_top" title="2.4.9 ListView的数据更新问题" href="android-tutorial-listview-update.html" >2.4.9 ListView的数据更新问题</a></li>
+		
+	<li><a target="_top" title="2.5.0 构建一个可复用的自定义BaseAdapter" href="android-tutorial-customer-baseadapter.html" >2.5.0 构建一个可复用的自定义BaseAdapter</a></li>
+		
+	<li><a target="_top" title="2.5.1 ListView Item多布局的实现" href="android-tutorial-listview-item.html" >2.5.1 ListView Item多布局的实现</a></li>
+		
+	<li><a target="_top" title="2.5.2 GridView(网格视图)的基本使用" href="android-tutorial-gridview.html" >2.5.2 GridView(网格视图)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.3 Spinner(列表选项框)的基本使用" href="android-tutorial-spinner.html" >2.5.3 Spinner(列表选项框)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.4 AutoCompleteTextView(自动完成文本框)的基本使用" href="android-tutorial-autocompletetextview.html" >2.5.4 AutoCompleteTextView(自动完成文本框)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.5 ExpandableListView(可折叠列表)的基本使用" href="android-tutorial-expandablelistview.html" >2.5.5 ExpandableListView(可折叠列表)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.6 ViewFlipper(翻转视图)的基本使用" href="android-tutorial-viewflipper.html" >2.5.6 ViewFlipper(翻转视图)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.7 Toast(吐司)的基本使用" href="android-tutorial-toast.html" >2.5.7 Toast(吐司)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.8 Notification(状态栏通知)详解" href="android-tutorial-notification.html" >2.5.8 Notification(状态栏通知)详解</a></li>
+		
+	<li><a target="_top" title="2.5.9 AlertDialog(对话框)详解" href="android-tutorial-alertdialog.html" >2.5.9 AlertDialog(对话框)详解</a></li>
+		
+	<li><a target="_top" title="2.6.0 其他几种常用对话框基本使用" href="android-tutorial-dialog.html" >2.6.0 其他几种常用对话框基本使用</a></li>
+		
+	<li><a target="_top" title="2.6.1 PopupWindow(悬浮框)的基本使用" href="android-tutorial-popupwindow.html" >2.6.1 PopupWindow(悬浮框)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.6.2 菜单(Menu)" href="android-tutorial-menu.html" >2.6.2 菜单(Menu)</a></li>
+		
+	<li><a target="_top" title="2.6.3 ViewPager的简单使用" href="android-tutorial-viewpager.html" >2.6.3 ViewPager的简单使用</a></li>
+		
+	<li><a target="_top" title="2.6.4 DrawerLayout(官方侧滑菜单)的简单使用" href="android-tutorial-drawerlayout.html" >2.6.4 DrawerLayout(官方侧滑菜单)的简单使用</a></li>
+		
+	<li><a target="_top" title="3.1.1 基于监听的事件处理机制" href="android-tutorial-listen-event-handle.html" >3.1.1 基于监听的事件处理机制</a></li>
+		
+	<li><a target="_top" title="3.2 基于回调的事件处理机制" href="android-tutorial-callback-event-handle.html" >3.2 基于回调的事件处理机制</a></li>
+		
+	<li><a target="_top" title="3.3 Handler消息传递机制浅析" href="android-tutorial-handler-message.html" >3.3 Handler消息传递机制浅析</a></li>
+		
+	<li><a target="_top" title="3.4 TouchListener PK OnTouchEvent + 多点触碰" href="android-tutorial-touchlistener-ontouchevent.html" >3.4 TouchListener PK OnTouchEvent + 多点触碰</a></li>
+		
+	<li><a target="_top" title="3.5 监听EditText的内容变化" href="android-tutorial-listener-edittext-change.html" >3.5 监听EditText的内容变化</a></li>
+		
+	<li><a target="_top" title="3.6 响应系统设置的事件(Configuration类)" href="android-tutorial-configuration.html" >3.6 响应系统设置的事件(Configuration类)</a></li>
+		
+	<li><a target="_top" title="3.7 AnsyncTask异步任务" href="android-tutorial-ansynctask.html" >3.7 AnsyncTask异步任务</a></li>
+		
+	<li><a target="_top" title="3.8 Gestures(手势)" href="android-tutorial-gestures.html" >3.8 Gestures(手势)</a></li>
+		
+	<li><a target="_top" title="4.1.1 Activity初学乍练" href="android-tutorial-activity.html" >4.1.1 Activity初学乍练</a></li>
+		
+	<li><a target="_top" title="4.1.2 Activity初窥门径" href="android-tutorial-activity-start.html" >4.1.2 Activity初窥门径</a></li>
+		
+	<li><a target="_top" title="4.1.3 Activity登堂入室" href="android-tutorial-activity-intro.html" >4.1.3 Activity登堂入室</a></li>
+		
+	<li><a target="_top" title="4.2.1 Service初涉" href="android-tutorial-service-1.html" >4.2.1 Service初涉</a></li>
+		
+	<li><a target="_top" title="4.2.2 Service进阶" href="android-tutorial-service-2.html" >4.2.2 Service进阶</a></li>
+		
+	<li><a target="_top" title="4.2.3 Service精通" href="android-tutorial-service-3.html" >4.2.3 Service精通</a></li>
+		
+	<li><a target="_top" title="4.3.1 BroadcastReceiver牛刀小试" href="android-tutorial-broadcastreceiver.html" >4.3.1 BroadcastReceiver牛刀小试</a></li>
+		
+	<li><a target="_top" title="4.3.2 BroadcastReceiver庖丁解牛" href="android-tutorial-broadcastreceiver-2.html" >4.3.2 BroadcastReceiver庖丁解牛</a></li>
+		
+	<li><a target="_top" title="4.4.1 ContentProvider初探" href="android-tutorial-contentprovider.html" >4.4.1 ContentProvider初探</a></li>
+		
+	<li><a target="_top" title="4.4.2 ContentProvider再探——Document Provider" href="android-tutorial-contentprovider-2.html" >4.4.2 ContentProvider再探——Document Provider</a></li>
+		
+	<li><a target="_top" title="4.5.1 Intent的基本使用" href="android-tutorial-intent-base.html" >4.5.1 Intent的基本使用</a></li>
+		
+	<li><a target="_top" title="4.5.2 Intent之复杂数据的传递" href="android-tutorial-intent-pass-data.html" >4.5.2 Intent之复杂数据的传递</a></li>
+		
+	<li><a target="_top" title="5.1 Fragment基本概述" href="android-tutorial-fragment-base.html" >5.1 Fragment基本概述</a></li>
+		
+	<li><a target="_top" title="5.2.1 Fragment实例精讲——底部导航栏的实现(方法1)" href="android-tutorial-fragment-demo1.html" >5.2.1 Fragment实例精讲——底部导航栏的实现(方法1)</a></li>
+		
+	<li><a target="_top" title="5.2.2 Fragment实例精讲——底部导航栏的实现(方法2)" href="android-tutorial-fragment-demo2.html" >5.2.2 Fragment实例精讲——底部导航栏的实现(方法2)</a></li>
+		
+	<li><a target="_top" title="5.2.3 Fragment实例精讲——底部导航栏的实现(方法3)" href="android-tutorial-fragment-demo3.html" >5.2.3 Fragment实例精讲——底部导航栏的实现(方法3)</a></li>
+		
+	<li><a target="_top" title="5.2.4 Fragment实例精讲——底部导航栏+ViewPager滑动切换页面" href="android-tutorial-fragment-demo4.html" >5.2.4 Fragment实例精讲——底部导航栏+ViewPager滑动切换页面</a></li>
+		
+	<li><a target="_top" title="5.2.5 Fragment实例精讲——新闻(购物)类App列表Fragment的简单实现" href="android-tutorial-fragment-demo5.html" >5.2.5 Fragment实例精讲——新闻(购物)类App列表Fragment的简单实现</a></li>
+		
+	<li><a target="_top" title="6.1 数据存储与访问之——文件存储读写" href="android-tutorial-file.html" >6.1 数据存储与访问之——文件存储读写</a></li>
+		
+	<li><a target="_top" title="6.2 数据存储与访问之——SharedPreferences保存用户偏好参数" href="android-tutorial-sharedpreferences.html" >6.2 数据存储与访问之——SharedPreferences保存用户偏好参数</a></li>
+		
+	<li><a target="_top" title="6.3.1 数据存储与访问之——初见SQLite数据库" href="android-tutorial-sqlite-intro.html" >6.3.1 数据存储与访问之——初见SQLite数据库</a></li>
+		
+	<li><a target="_top" title="6.3.2 数据存储与访问之——又见SQLite数据库" href="android-tutorial-sqlite-2.html" >6.3.2 数据存储与访问之——又见SQLite数据库</a></li>
+		
+	<li><a target="_top" title="7.1.1 Android网络编程要学的东西与Http协议学习" href="android-tutorial-http.html" >7.1.1 Android网络编程要学的东西与Http协议学习</a></li>
+		
+	<li><a target="_top" title="7.1.2 Android Http请求头与响应头的学习" href="android-tutorial-http-response-header.html" >7.1.2 Android Http请求头与响应头的学习</a></li>
+		
+	<li><a target="_top" title="7.1.3 Android HTTP请求方式:HttpURLConnection" href="android-tutorial-httpurlconnection.html" >7.1.3 Android HTTP请求方式:HttpURLConnection</a></li>
+		
+	<li><a target="_top" title="7.1.4 Android HTTP请求方式:HttpClient" href="android-tutorial-httpclient.html" >7.1.4 Android HTTP请求方式:HttpClient</a></li>
+		
+	<li><a target="_top" title="7.2.1 Android XML数据解析" href="android-tutorial-xml.html" >7.2.1 Android XML数据解析</a></li>
+		
+	<li><a target="_top" title="7.2.2 Android JSON数据解析" href="android-tutorial-json.html" >7.2.2 Android JSON数据解析</a></li>
+		
+	<li><a target="_top" title="7.3.1 Android 文件上传" href="android-tutorial-upload-file.html" >7.3.1 Android 文件上传</a></li>
+		
+	<li><a target="_top" title="7.3.2 Android 文件下载（1）" href="android-tutorial-download1.html" >7.3.2 Android 文件下载（1）</a></li>
+		
+	<li><a target="_top" title="7.3.3 Android 文件下载（2）" href="android-tutorial-download2.html" >7.3.3 Android 文件下载（2）</a></li>
+		
+	<li><a target="_top" title="7.4 Android 调用 WebService" href="android-tutorial-webservice.html" >7.4 Android 调用 WebService</a></li>
+		
+	<li><a target="_top" title="7.5.1 WebView(网页视图)基本用法" href="android-tutorial-webview.html" >7.5.1 WebView(网页视图)基本用法</a></li>
+		
+	<li><a target="_top" title="7.5.2 WebView和JavaScrip交互基础" href="android-tutorial-webview-javascrip.html" >7.5.2 WebView和JavaScrip交互基础</a></li>
+		
+	<li><a target="_top" title="7.5.3 Android 4.4后WebView的一些注意事项" href="android-tutorial-webview-attention.html" >7.5.3 Android 4.4后WebView的一些注意事项</a></li>
+		
+	<li><a target="_top" title="7.5.4 WebView文件下载" href="android-tutorial-webview-download-file.html" >7.5.4 WebView文件下载</a></li>
+		
+	<li><a target="_top" title="7.5.5 WebView缓存问题" href="android-tutorial-webview-cache.html" >7.5.5 WebView缓存问题</a></li>
+		
+	<li><a target="_top" title="7.5.6 WebView处理网页返回的错误码信息" href="android-tutorial-webview-error-code.html" >7.5.6 WebView处理网页返回的错误码信息</a></li>
+		
+	<li><a target="_top" title="7.6.1 Socket学习网络基础准备" href="android-tutorial-socket-intro.html" >7.6.1 Socket学习网络基础准备</a></li>
+		
+	<li><a target="_top" title="7.6.2 基于TCP协议的Socket通信(1)" href="android-tutorial-socket1.html" >7.6.2 基于TCP协议的Socket通信(1)</a></li>
+		
+	<li><a target="_top" title="7.6.3 基于TCP协议的Socket通信(2)" href="android-tutorial-socket2.html" >7.6.3 基于TCP协议的Socket通信(2)</a></li>
+		
+	<li><a target="_top" title="7.6.4 基于UDP协议的Socket通信" href="android-tutorial-udp-socket.html" >7.6.4 基于UDP协议的Socket通信</a></li>
+		<li>
+	8.1.1 Android中的13种Drawable小结 Part 1	</li>
+	
+		
+	<li><a target="_top" title="8.1.2 Android中的13种Drawable小结 Part 2" href="android-tutorial-drawable2.html" >8.1.2 Android中的13种Drawable小结 Part 2</a></li>
+		
+	<li><a target="_top" title="8.1.3 Android中的13种Drawable小结 Part 3" href="android-tutorial-drawable3.html" >8.1.3 Android中的13种Drawable小结 Part 3</a></li>
+		
+	<li><a target="_top" title="8.2.1 Bitmap(位图)全解析 Part 1" href="android-tutorial-bitmap1.html" >8.2.1 Bitmap(位图)全解析 Part 1</a></li>
+		
+	<li><a target="_top" title="8.2.2 Bitmap引起的OOM问题" href="android-tutorial-bitmap2.html" >8.2.2 Bitmap引起的OOM问题</a></li>
+		
+	<li><a target="_top" title="8.3.1 三个绘图工具类详解" href="android-tutorial-drawable-tool.html" >8.3.1 三个绘图工具类详解</a></li>
+		
+	<li><a target="_top" title="8.3.2 绘图类实战示例" href="android-tutorial-bitmap-demo.html" >8.3.2 绘图类实战示例</a></li>
+		
+	<li><a target="_top" title="8.3.3 Paint API之—— MaskFilter(面具)" href="android-tutorial-maskfilter.html" >8.3.3 Paint API之—— MaskFilter(面具)</a></li>
+		
+	<li><a target="_top" title="8.3.4 Paint API之—— Xfermode与PorterDuff详解(一)" href="android-tutorial-xfermode-porterduff.html" >8.3.4 Paint API之—— Xfermode与PorterDuff详解(一)</a></li>
+		
+	<li><a target="_top" title="8.3.5 Paint API之—— Xfermode与PorterDuff详解(二)" href="android-tutorial-xfermode-porterduff2.html" >8.3.5 Paint API之—— Xfermode与PorterDuff详解(二)</a></li>
+		
+	<li><a target="_top" title="8.3.6 Paint API之—— Xfermode与PorterDuff详解(三)" href="android-tutorial-xfermode-porterduff3.html" >8.3.6 Paint API之—— Xfermode与PorterDuff详解(三)</a></li>
+		
+	<li><a target="_top" title="8.3.7 Paint API之—— Xfermode与PorterDuff详解(四)" href="android-tutorial-xfermode-porterduff4.html" >8.3.7 Paint API之—— Xfermode与PorterDuff详解(四)</a></li>
+		
+	<li><a target="_top" title="8.3.8 Paint API之—— Xfermode与PorterDuff详解(五)" href="android-tutorial-xfermode-porterduff5.html" >8.3.8 Paint API之—— Xfermode与PorterDuff详解(五)</a></li>
+		
+	<li><a target="_top" title="8.3.9 Paint API之—— ColorFilter(颜色过滤器)(1/3)" href="android-tutorial-colorfilter1.html" >8.3.9 Paint API之—— ColorFilter(颜色过滤器)(1/3)</a></li>
+		
+	<li><a target="_top" title="8.3.10 Paint API之—— ColorFilter(颜色过滤器)(2-3)" href="android-tutorial-colorfilterl2.html" >8.3.10 Paint API之—— ColorFilter(颜色过滤器)(2-3)</a></li>
+		
+	<li><a target="_top" title="8.3.11 Paint API之—— ColorFilter(颜色过滤器)(3-3)" href="android-tutorial-colorfilter3.html" >8.3.11 Paint API之—— ColorFilter(颜色过滤器)(3-3)</a></li>
+		
+	<li><a target="_top" title="8.3.12 Paint API之—— PathEffect(路径效果)" href="android-tutorial-patheffect.html" >8.3.12 Paint API之—— PathEffect(路径效果)</a></li>
+		
+	<li><a target="_top" title="8.3.13 Paint API之—— Shader(图像渲染)" href="android-tutorial-shader.html" >8.3.13 Paint API之—— Shader(图像渲染)</a></li>
+		
+	<li><a target="_top" title="8.3.14 Paint几个枚举/常量值以及ShadowLayer阴影效果" href="android-tutorial-shadowlayer.html" >8.3.14 Paint几个枚举/常量值以及ShadowLayer阴影效果</a></li>
+		
+	<li><a target="_top" title="8.3.15 Paint API之——Typeface(字型)" href="android-tutorial-typeface.html" >8.3.15 Paint API之——Typeface(字型)</a></li>
+		
+	<li><a target="_top" title="8.3.16 Canvas API详解(Part 1)" href="android-tutorial-canvas-api1.html" >8.3.16 Canvas API详解(Part 1)</a></li>
+		
+	<li><a target="_top" title="8.3.17 Canvas API详解(Part 2)剪切方法合集" href="android-tutorial-canvas-api2.html" >8.3.17 Canvas API详解(Part 2)剪切方法合集</a></li>
+		
+	<li><a target="_top" title="8.3.18 Canvas API详解(Part 3)Matrix和drawBitmapMesh" href="android-tutorial-canvas-api3.html" >8.3.18 Canvas API详解(Part 3)Matrix和drawBitmapMesh</a></li>
+		
+	<li><a target="_top" title="8.4.1 Android动画合集之帧动画" href="android-tutorial-animation.html" >8.4.1 Android动画合集之帧动画</a></li>
+		
+	<li><a target="_top" title="8.4.2 Android动画合集之补间动画" href="android-tutorial-alphaanimation.html" >8.4.2 Android动画合集之补间动画</a></li>
+		
+	<li><a target="_top" title="8.4.3 Android动画合集之属性动画-初见" href="android-tutorial-valueanimator.html" >8.4.3 Android动画合集之属性动画-初见</a></li>
+		
+	<li><a target="_top" title="8.4.4 Android动画合集之属性动画-又见" href="android-tutorial-valueanimator2.html" >8.4.4 Android动画合集之属性动画-又见</a></li>
+		
+	<li><a target="_top" title="9.1 使用SoundPool播放音效(Duang~)" href="android-tutorial-soundpool.html" >9.1 使用SoundPool播放音效(Duang~)</a></li>
+		
+	<li><a target="_top" title="9.2 MediaPlayer播放音频与视频" href="android-tutorial-mediaplayer.html" >9.2 MediaPlayer播放音频与视频</a></li>
+		
+	<li><a target="_top" title="9.3 使用Camera拍照" href="android-tutorial-camera.html" >9.3 使用Camera拍照</a></li>
+		
+	<li><a target="_top" title="9.4 使用MediaRecord录音" href="android-tutorial-mediarecord.html" >9.4 使用MediaRecord录音</a></li>
+		
+	<li><a target="_top" title="10.1 TelephonyManager(电话管理器)" href="android-tutorial-telephonymanager.html" >10.1 TelephonyManager(电话管理器)</a></li>
+		
+	<li><a target="_top" title="10.2 SmsManager(短信管理器)" href="android-tutorial-smsmanager.html" >10.2 SmsManager(短信管理器)</a></li>
+		
+	<li><a target="_top" title="10.3 AudioManager(音频管理器)" href="android-tutorial-audiomanager.html" >10.3 AudioManager(音频管理器)</a></li>
+		
+	<li><a target="_top" title="10.4 Vibrator(振动器)" href="android-tutorial-vibrator.html" >10.4 Vibrator(振动器)</a></li>
+		
+	<li><a target="_top" title="10.5 AlarmManager(闹钟服务)" href="android-tutorial-alarmmanager.html" >10.5 AlarmManager(闹钟服务)</a></li>
+		
+	<li><a target="_top" title="10.6 PowerManager(电源服务)" href="android-tutorial-powermanager.html" >10.6 PowerManager(电源服务)</a></li>
+		
+	<li><a target="_top" title="10.7 WindowManager(窗口管理服务)" href="android-tutorial-windowmanager.html" >10.7 WindowManager(窗口管理服务)</a></li>
+		
+	<li><a target="_top" title="10.8 LayoutInflater(布局服务)" href="android-tutorial-layoutinflater.html" >10.8 LayoutInflater(布局服务)</a></li>
+		
+	<li><a target="_top" title="10.9 WallpaperManager(壁纸管理器)" href="android-tutorial-wallpapermanager.html" >10.9 WallpaperManager(壁纸管理器)</a></li>
+		
+	<li><a target="_top" title="10.10 传感器专题(1)——相关介绍" href="android-tutorial-sensor1.html" >10.10 传感器专题(1)——相关介绍</a></li>
+		
+	<li><a target="_top" title="10.11 传感器专题(2)——方向传感器" href="android-tutorial-sensor2.html" >10.11 传感器专题(2)——方向传感器</a></li>
+		
+	<li><a target="_top" title="10.12 传感器专题(3)——加速度/陀螺仪传感器" href="android-tutorial-sensor3.html" >10.12 传感器专题(3)——加速度/陀螺仪传感器</a></li>
+		
+	<li><a target="_top" title="10.12 传感器专题(4)——其他传感器了解" href="android-tutorial-sensor4.html" >10.12 传感器专题(4)——其他传感器了解</a></li>
+		
+	<li><a target="_top" title="10.14 Android GPS初涉" href="android-tutorial-gps.html" >10.14 Android GPS初涉</a></li>
+		
+	<li><a target="_top" title="11.0《2015最新Android基础入门教程》完结散花~" href="android-tutorial-end.html" >11.0《2015最新Android基础入门教程》完结散花~</a></li>
+		
+	<li><a target="_top" title="12.1Android 实战 ：DrySister看妹子应用(第一版) -- 项目搭建与简单实现" href="android-tutorial-exercise-1.html" >12.1Android 实战 ：DrySister看妹子应用(第一版) -- 项目搭建与简单实现</a></li>
+		
+	<li><a target="_top" title="12.2 DrySister看妹子应用(第一版)——2.解析后台数据" href="android-tutorial-exercise-2.html" >12.2 DrySister看妹子应用(第一版)——2.解析后台数据</a></li>
+		
+	<li><a target="_top" title="12.3 DrySister看妹子应用(第一版)——3.图片加载优化(写个图片缓存小框架)" href="android-tutorial-exercise-3.html" >12.3 DrySister看妹子应用(第一版)——3.图片加载优化(写个图片缓存小框架)</a></li>
+		
+	<li><a target="_top" title="12.4 DrySister看妹子应用(第一版)——4.添加数据缓存(加入SQLite)" href="android-tutorial-exercise-4.html" >12.4 DrySister看妹子应用(第一版)——4.添加数据缓存(加入SQLite)</a></li>
+		
+	<li><a target="_top" title="12.5 DrySister看妹子应用(第一版)——5.代码回顾，调整与日志类编写" href="android-tutorial-exercise-5.html" >12.5 DrySister看妹子应用(第一版)——5.代码回顾，调整与日志类编写</a></li>
+		
+	<li><a target="_top" title="12.6 DrySister看妹子应用(第一版)——6.图标制作，混淆，签名打包，APK瘦身，应用发布" href="android-tutorial-exercise-6-html.html" >12.6 DrySister看妹子应用(第一版)——6.图标制作，混淆，签名打包，APK瘦身，应用发布</a></li>
+	</ul></div>	</div>
+</div>
+
+
+<!-- 底部 -->
+
+
+<div id="footer" class="mar-t50">
+   <div class="runoob-block">
+    <div class="runoob cf">
+     <dl>
+      <dt>
+       在线实例
+      </dt>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/html/html-examples.html">HTML 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/css/css-examples.html">CSS 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/js/js-examples.html">JavaScript 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="../ajx/ajax-examples.html">Ajax 实例</a>
+      </dd>
+       <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/jquery/jquery-examples.html">jQuery 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/xml/xml-examples.html">XML 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="../html/java-examples.html">Java 实例</a>
+      </dd>
+     
+     </dl>
+     <dl>
+      <dt>
+      字符集&工具
+      </dt>
+      <dd>
+       &middot; <a target="_blank" href="../charsets.1">HTML 字符集设置</a>
+      </dd>
+      <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/html-ascii.html">HTML ASCII 字符集</a>
+      </dd>
+     <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/ref-entities.html">HTML ISO-8859-1</a>
+      </dd> 
+      <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/html-symbols.html">HTML 实体符号</a>
+      </dd>
+      <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/html-colorpicker.html">HTML 拾色器</a>
+      </dd>
+      <dd>
+       &middot; <a target="_blank" href="http://c.runoob.com/front-end/53">JSON 格式化工具</a>
+      </dd>
+     </dl>
+     <dl>
+      <dt>
+       最新更新
+      </dt>
+                   <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/w3cnote/php-different-include-and-require.html" title="PHP 中 include 和 require 的区别详解">PHP 中 include ...</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/react/react-lists-and-keys.html" title="React 列表 &#038; Keys">React 列表 &#03...</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/react/react-conditional-rendering.html" title="React 条件渲染">React 条件渲染</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/react/react-event-handle.html" title="React 事件处理">React 事件处理</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/w3cnote/csharp-polymorphism2.html" title="C# 中的多态性">C# 中的多态性</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/react/react-rendering-elements.html" title="React 元素渲染">React 元素渲染</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/w3cnote/python-append-deepcopy.html" title="Python append() 与深拷贝、浅拷贝">Python append()...</a>
+      </dd>
+             </dl>
+     <dl>
+      <dt>
+       站点信息
+      </dt>
+      <dd>
+       &middot;
+       <a target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=ssbDyoOAgfLU3crf09venNHd3w" rel="external nofollow">意见反馈</a>
+      <!--<a class="wxpopup" onclick="popFunction()">合作联系
+       <span class="popuptext" id="myPopup">微信：<strong>centos5</strong></span>
+      </a>-->
+      </dd>
+      <dd>
+       &middot;
+      <a target="_blank" href="http://school.yunwei.edu/disclaimer">免责声明</a>
+       </dd>
+       <!--
+       <dd style="display: block;">
+       &middot;
+      <a href="javascript:void(0)" onclick="dashangToggle()" style="font-weight:bold;color:#f00;" title="打赏，支持一下">打赏一下</a>
+       </dd>
+      -->
+      <dd>
+       &middot;
+       <a target="_blank" href="http://school.yunwei.edu/aboutus">关于我们</a>
+       </dd>
+      <dd>
+       &middot;
+      <a target="_blank" href="http://school.yunwei.edu/archives">文章归档</a>
+      </dd>
+      <!--
+      <dd>
+       &middot;
+      <a href="https://www.xiaoyouxi100.com/?from=runoob" onclick="_hmt.push(['_trackEvent', '小游戏', 'click', 'xiaoyouxi100']);" target="_blank" title="小游戏">小游戏</a>
+      </dd>
+      -->
+     </dl>
+    
+     <div class="search-share">
+      <div class="app-download">
+        <div>
+         <strong>关注微信</strong>
+        </div>
+      </div>
+      <div class="share">
+            <img width="128" height="128" src="http://school.yunwei.edu/wp-content/themes/runoob/assets/images/qrcode.png" />
+       </div>
+     </div>
+     
+    </div>
+   </div>
+   <div class="w-1000 copyright">
+     Copyright &copy; 2013-2018    <strong><a href="http://school.yunwei.edu/" target="_blank">菜鸟教程</a></strong>&nbsp;
+    <strong><a href="http://school.yunwei.edu/" target="_blank">runoob.com</a></strong> All Rights Reserved. 备案号：闽ICP备15012807号-1
+   </div>
+  </div>
+  <div class="fixed-btn">
+    <a class="go-top" href="javascript:void(0)" title="返回顶部"> <i class="fa fa-angle-up"></i></a>
+    <a class="qrcode"  href="javascript:void(0)" title="关注我们"><i class="fa fa-qrcode"></i></a>
+    <a class="writer" style="display:none" href="javascript:void(0)"   title="标记/收藏"><i class="fa fa-star" aria-hidden="true"></i></a>
+    <!-- qrcode modal -->
+    <div id="bottom-qrcode" class="modal panel-modal hide fade in">
+      <h4>微信关注</h4>
+      <div class="panel-body"><img alt="微信关注" width="128" height="128" src="http://school.yunwei.edu/wp-content/themes/runoob/assets/images/qrcode.png"></div> 
+    </div>
+  </div>
+
+  <div class="hide_box"></div>
+    <div class="shang_box">
+      <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="http://static.runoob.com/images/dashang/close.jpg" alt="取消" /></a>
+       
+      <div class="shang_tit">
+        <p>感谢您的支持，我会继续努力的!</p>
+      </div>
+      <div class="shang_payimg">
+        <img src="http://static.runoob.com/images/dashang/weipayimg.png" alt="扫码支持" title="扫一扫" />
+      </div>
+        <div class="pay_explain">扫码打赏，你说多少就多少</div>
+      <div class="shang_payselect">
+        <div class="pay_item checked" data-id="weipay">
+          <span class="radiobox"></span>
+          <span class="pay_logo"><img src="http://static.runoob.com/images/dashang/wechat.jpg" alt="微信" /></span>
+        </div>
+        <div class="pay_item" data-id="alipay">
+          <span class="radiobox"></span>
+          <span class="pay_logo"><img src="http://static.runoob.com/images/dashang/alipay.jpg" alt="支付宝" /></span>
+        </div>
+        
+      </div>
+      <div class="shang_info">
+        <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+        <p><a href="http://c.runoob.com/codedemo/5348" target="_blank"><span style=" font-size: 14px;color: #000;font-weight: bold;">点我查看本站打赏源码！</span></a></p>
+      </div>
+    </div>
+  <div id="testClick"></div>
+ <div style="display:none;">
+ 
+ <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3eec0b7da6548cf07db3bc477ea905ee";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-84264393-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-84264393-2');
+</script>
+</div>
+<script>
+window.jsui={
+    www: '//wschool.yunwei.edu',
+    uri: '//school.yunwei.edu/wp-content/themes/runoob'
+};
+</script>
+<style>
+ol,ul{list-style:none}.cd-switcher a{text-decoration:none;outline:0}.cd-switcher a:hover{text-decoration:underline}a:focus{outline:0;-moz-outline:0}.main_nav{width:300px;height:60px;margin:60px auto 10px auto}.main_nav li{float:left;width:60px;margin-right:10px;font-size:16px;padding:.6em 1em;border-radius:3em;background:#2f889a;text-align:center}.main_nav li a{color:#fff}.errtip{background-color:#fceaea;color:#db5353;padding:8px 15px;font-size:14px;border:1px solid #fc9797;border-radius:5px}.cd-user-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(52,54,66,0.9);z-index:3;overflow-y:auto;cursor:pointer;visibility:hidden;opacity:0;-webkit-transition:opacity .3s 0,visibility 0 .3s;-moz-transition:opacity .3s 0,visibility 0 .3s;transition:opacity .3s 0,visibility 0 .3s}.cd-user-modal.is-visible{visibility:visible;opacity:1;-webkit-transition:opacity .3s 0,visibility 0 0;-moz-transition:opacity .3s 0,visibility 0 0;transition:opacity .3s 0,visibility 0 0}.cd-user-modal.is-visible .cd-user-modal-container{-webkit-transform:translateY(0);-moz-transform:translateY(0);-ms-transform:translateY(0);-o-transform:translateY(0);transform:translateY(0)}.cd-user-modal-container{position:relative;width:90%;max-width:500px;background:#FFF;margin:3em auto 4em;cursor:auto;border-radius:.25em;-webkit-transform:translateY(-30px);-moz-transform:translateY(-30px);-ms-transform:translateY(-30px);-o-transform:translateY(-30px);transform:translateY(-30px);-webkit-transition-property:-webkit-transform;-moz-transition-property:-moz-transform;transition-property:transform;-webkit-transition-duration:.3s;-moz-transition-duration:.3s;transition-duration:.3s}.cd-user-modal-container .cd-switcher:after{content:"";display:table;clear:both}.cd-user-modal-container .cd-switcher li{width:50%;float:left;text-align:center}.cd-user-modal-container .cd-switcher li:first-child a{border-radius:.25em 0 0 0}.cd-user-modal-container .cd-switcher li:last-child a{border-radius:0 .25em 0 0}.cd-user-modal-container .cd-switcher a{font-size:1.2em;font-weight:bold;display:block;width:100%;height:50px;line-height:50px;background:#e8f1e2;color:#96b880}.cd-user-modal-container .cd-switcher a.selected{background:#FFF;color:#505260}@media only screen and (min-width:600px){.cd-user-modal-container{margin:4em auto}.cd-user-modal-container .cd-switcher a{height:70px;line-height:70px}}.cd-form{padding:1.4em}.cd-form .fieldset{position:relative;margin:1.4em 0}.cd-form .fieldset:first-child{margin-top:0}.cd-form .fieldset:last-child{margin-bottom:0}.cd-form label{font-size:16px;font-size:.875rem}.cd-form label.image-replace{display:inline-block;position:absolute;left:15px;top:50%;bottom:auto;-webkit-transform:translateY(-50%);-moz-transform:translateY(-50%);-ms-transform:translateY(-50%);-o-transform:translateY(-50%);transform:translateY(-50%);height:20px;width:20px;overflow:hidden;text-indent:100%;white-space:nowrap;color:transparent;text-shadow:none;background-repeat:no-repeat;background-position:50% 0}.cd-form label.cd-username{background-image:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-username.svg")}.cd-form label.cd-email{background-image:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-email.svg")}.cd-form label.cd-password{background-image:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-password.svg")}.cd-form input{margin:0;padding:0;border-radius:.25em}.cd-form input.full-width{width:80%}.cd-form input.full-width2{width:94%}.cd-form input.has-padding{padding:12px 20px 12px 50px}.cd-form input.has-border{border:1px solid #d2d8d8;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none;-o-appearance:none;appearance:none}.cd-form input.has-border:focus{border-color:#98b880;box-shadow:0 0 5px rgba(52,54,66,0.1);outline:0}.cd-form input.has-error{border:1px solid #d76666}.cd-form input[type=password]{padding-right:65px}.cd-form input[type=submit]{padding:16px 0;cursor:pointer;background:#96b97d;color:#FFF;font-weight:bold;border:0;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none;-o-appearance:none;appearance:none;font-size:1.2em;font-weight:bold}.no-touch .cd-form input[type=submit]:hover,.no-touch .cd-form input[type=submit]:focus{background:#3599ae;outline:0}@media only screen and (min-width:600px){.cd-form{padding:2em}.cd-form .fieldset{margin:2em 0}.cd-form .fieldset:first-child{margin-top:0}.cd-form .fieldset:last-child{margin-bottom:0}.cd-form input.has-padding{padding:16px 20px 16px 50px}.cd-form input[type=submit]{padding:16px 0}}.cd-close-form{display:block;position:absolute;width:40px;height:40px;right:0;top:-40px;background:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-close.svg") no-repeat center center;text-indent:100%;white-space:nowrap;overflow:hidden}@media only screen and (min-width:1170px){}#cd-login,#cd-signup,#cd-reset-password{display:none}#cd-login.is-selected,#cd-signup.is-selected,#cd-reset-password.is-selected{display:block}
+</style>
+<div class="cd-user-modal"> 
+	<div class="cd-user-modal-container">
+		<ul class="cd-switcher">
+			<li><a href="javascript:;">用户登录</a></li>
+			<li><a href="javascript:;">注册新用户</a></li>
+		</ul>
+
+		<div id="cd-login"> <!-- 登录表单 -->
+			<div class="cd-form">
+				<p class="fieldset">
+					<label class="image-replace cd-username" for="signin-username">用户名</label>
+					<input class="full-width has-padding has-border" id="signin-username" name=username type="text" placeholder="输入用户名">
+				</p>
+
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="signin-password">密码</label>
+					<input class="full-width has-padding has-border" id="signin-password" name="password" type="password"  placeholder="输入密码">
+				</p>
+				
+				<p class="fieldset">
+					<input type="checkbox" id="remember-me" checked>
+					<label for="remember-me">记住登录状态</label>
+          <a href="http://school.yunwei.edu/reset-password" style="float: right;padding-right: 20px;" target="_blank">忘记密码？</a>
+				</p>
+ 				<input type="hidden" name="action" value="signin">
+				<p class="fieldset">
+					<input class="full-width2" type="submit" value="登 录">
+				</p>
+        <div class="err-msg"></div>
+			</div>
+		</div>
+
+		<div id="cd-signup"> <!-- 注册表单 -->
+			<div class="cd-form">
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="verifycode">邀请码</label>
+					<input class="full-width has-padding has-border" id="signup-verifycode" name="verifycode" type="text"  placeholder="输入邀请码">
+				</p>
+				<p class="fieldset">
+					<label class="image-replace cd-username" for="signup-username">用户名</label>
+					<input class="full-width has-padding has-border" id="signup-username" name="name" type="text" placeholder="输入用户名">
+				</p>
+
+				<p class="fieldset">
+					<label class="image-replace cd-email" for="signup-email">邮箱</label>
+					<input class="full-width has-padding has-border" name="email" id="signup-email" type="email" placeholder="输入mail">
+				</p>
+
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="signup-password">密码</label>
+					<input class="full-width has-padding has-border" id="signup-password" name="password" type="password"  placeholder="输入密码">
+				</p>
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="signup-password2">重复输入密码</label>
+					<input class="full-width has-padding has-border" id="signup-password2" name="password2" type="password"  placeholder="重复输入密码">
+				</p>
+				
+				<!-- 
+				<p class="fieldset">
+					<input type="checkbox" id="accept-terms">
+					<label for="accept-terms">我已阅读并同意 <a href="javascript:;">用户协议</a></label>
+				</p>
+				 -->
+				 
+				 <input type="hidden" name="action" value="signup">
+				<p class="fieldset">
+					<input class="full-width2" type="submit" value="注册新用户">
+				</p>
+				<p class="fieldset">
+				  <a href="http://school.yunwei.edu/w3cnote/runoob-user-test-intro.html#invite" target="_blank">如何获取邀请码？</a>
+				  </p>
+				<div class="err-msg"></div>
+			</div>
+
+		</div>
+
+		<a href="javascript:;" class="cd-close-form">关闭</a>
+	</div>
+</div> 
+<script src="http://school.yunwei.edu/wp-content/themes/runoob/assets/js/main.js?v=1.188"></script>
+<script src="http://static.runoob.com/assets/libs/hl/run_prettify.js"></script>
+</body>
+</html>

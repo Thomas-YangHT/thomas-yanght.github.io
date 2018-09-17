@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>版本 6.0</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="版本 6.1" HREF="release-6-1.html"><LINK REL="NEXT" TITLE="版本 1.09" HREF="release-1-09.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-old.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="版本 6.1" HREF="release-6-1.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="版本 1.09" HREF="release-1-09.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-6-0">E.237. 版本 6.0</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>1997-01-29</P></BLOCKQUOTE></DIV><P>对于想从此版本以前的 <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+迁移到此版本的都需要做转储/恢复工作。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN143979">E.237.1. 从版本 1.09 迁移到版本 6.0</A></H2><P>这种迁移需要对1.09数据库完全转储，然后在6.0里将数据全部恢复回去。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN143982">E.237.2. 从 1.09 以前的版本迁移到版本 6.0</A></H2><P>从 1.* 以前的版本迁移首先要升级到 1.09 版本，因为在 1.02 版本中已经改善了 COPY 的输出格式。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN143985">E.237.3. 变化</A></H2><P></P><PRE CLASS="PROGRAMLISTING">Bug 修复
+---------
+ALTER TABLE bug - 运行 postgres 进程需要重读表定义
+允许 vacuum 运行在一个表或整个数据库上 (Bruce)
+修复数组
+修复数组内存写入溢出 (Kurt)
+修复难懂的 btree range/non-range bug (Dan)
+修复在某些类型如时间和日期上的哈希索引
+修复 pg_log 尺寸激增
+修复 lo_export() 上的权限 (Bruce)
+修复未初始化的读取内存 (Kurt)
+修复 ALTER TABLE ... char(3) bug (Bruce) 
+修复一些小的内存泄露
+修复 EXPLAIN 处理选项和改变了的 full_path 选项名
+修复 acl 权限分组的输出
+内存泄露（像 Purify 这样的工具的破坏） (Kurt)
+规则系统小幅度的改善
+修复 NOTIFY 
+为运行时检查新增 asserts
+彻底检查 parser/analyze 代码以适当的报告错误和提升速度
+Pg_dump -d 现在可以适当的处理 NULL (Bruce)
+阻止 SELECT NULL 使服务器崩溃 (Bruce) 
+当 INSERT ... SELECT columns 不匹配时适当的报告错误
+当插入字段名不正确时适当的报告错误
+psql \g filename 现在可以工作了 (Bruce)
+psql 修复一行上的多个声明有多个输出时的问题
+删除了重复的系统 OID
+SELECT * INTO TABLE . GROUP/ORDER BY 如果表已经存在则给出未连接的错误 (Bruce)
+修复了几个使后端崩溃的查询
+插入字符串中起始引号错误 (Bruce)
+提交空查询现在返回空状态，不只是 " " 查询 (Bruce)
+
+增强
+------------
+添加 EXPLAIN 手册页 (Bruce)
+添加 UNIQUE 索引功能 (Dan)
+添加 hostname/user 级别访问控制而不只是 hostname 和 user
+为 &lt;&gt; 添加同义词 != (Bruce)
+允许 "select oid,* from table"
+允许 BY,ORDER BY 通过编号指定字段，或通过非别名的 table.column (Bruce)
+允许从前端 COPY (Bryan)
+允许 GROUP BY 使用别名字段名 (Bruce)
+允许真实的压缩，不只是在同一页上重新使用 (Vadim)
+允许安装配置选项自动添加到本地用户 (Bryan)
+允许 libpq 区分文本值 '' 和 null (Bruce)
+允许非 postgres 用户在 destroydb 上有 createdb 权限
+允许限制谁可以创建 C 函数 (Bryan)
+允许限制谁可以在后端 COPY (Bryan)
+可以收缩表、pg_time 和 pg_log (Vadim &amp; Erich)
+改变调试级别 2 为只输出查询，改变调试标题布局 (Bruce)
+改变缺省小数常量表示从 float4 到 float8 (Bruce)
+当 postmaster 启动时设置 European 日期格式
+如果没有找到准确的大小写情况则执行小写的函数名
+修复 aggregate/GROUP 处理，允许 'select sum(func(x),sum(x+y) from z'
+Gist 现在包含在发布里 (Marc)
+本地用户的身份认证 (Bryan)
+实现了 BETWEEN 限定符 (Bruce)
+实现了 IN 限定符 (Bruce)
+libpq 有 PQgetisnull() (Bruce)
+改善了 libpq++
+新增选项到 initdb (Bryan)
+Pg_dump 允许转储 OID (Bruce)
+Pg_dump 为了速度在加载表之后创建索引 (Bruce)
+Pg_dumpall 转储所有数据库，和用户表
+为 NULL 值附加 Pginterface (Bruce)
+阻止 postmaster 作为 root 运行
+psql \h 和 \? 现在可读 (Bruce)
+psql 允许在行中任何地方有反向斜线，分号 (Bruce)
+psql 改变了查询中或引号中行的命令提示符 (Bruce)
+psql char(3) 现在在 \d 输出中作为 (bp)char 显示 (Bruce)
+psql 现在返回更精确的代码 (Bryan?)
+psql 更新帮助语法 (Bruce)
+重复访问和修复 vacuum (Vadim)
+减少回归差异的大小，删除时区名差异 (Bruce)
+删除编译时参数以启用二进制发布 (Bryan)
+HBA 标记的相反含义 (Bryan)
+本地用户的安全认证 (Bryan)
+加速 vacuum (Vadim)
+vacuum 现在有了 VERBOSE 选项 (Bruce)
+
+源代码树的改变
+-------------------
+所有函数现在有了和调用相比较的原型
+允许维护可以简单的在 Makefile.global 中禁用 (Bruce)
+改变在代码中使用的 oid 常量为 #define 名
+解耦 sparc 和 solaris 的定义 (Kurt)
+Gcc -Wall 编译只有来自不固定结构的警告
+主要包括文件 reorganization/reduction (Marc)
+Make 现在在编译失败时停止 (Bryan)
+Makefile 重组 (Bryan, Marc)
+合并 bsdi_2_1 到 bsdi (Bruce) 
+删除了监控程序
+更改名字 Postgres95 为 PostgreSQL
+新增 config.h 文件 (Marc, Bryan)
+PG_VERSION 现在设置为 6.0 并且被 postmaster 使用
+可移植性附加物，包括 Ultrix, DG/UX, AIX, 和 Solaris
+减少 #define 的数量，集中 #define
+删除系统表中重复的 OID (Dan)
+删除重复的系统目录信息或报告不匹配 (Dan)
+删除许多 os 特定的 #define
+重组目标文件 generation/location (Bryan, Marc)
+重组端口特定的文件位置 (Bryan, Marc)
+未使用的/未初始化的变量纠正</PRE><P></P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-6-1.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-1-09.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">版本 6.1</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">版本 1.09</TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>SPI_execute</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="接口函数" HREF="spi-interface.html"><LINK REL="PREVIOUS" TITLE="SPI_pop" HREF="spi-spi-pop.html"><LINK REL="NEXT" TITLE="SPI_exec" HREF="spi-spi-exec.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/spi.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="SPI_pop" HREF="spi-spi-pop.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="spi-interface.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="SPI_exec" HREF="spi-spi-exec.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SPI-SPI-EXECUTE"></A>SPI_execute</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN61367"></A><H2>&#21517;&#31216;</H2>SPI_execute&nbsp;--&nbsp;执行一条命令</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN61372"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">int SPI_execute(const char * <TT
+CLASS="PARAMETER"
+>command</TT
+>, bool <TT
+CLASS="PARAMETER"
+>read_only</TT
+>, long <TT
+CLASS="PARAMETER"
+>count</TT
+>)</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN61377"></A><H2>描述</H2><P><CODE CLASS="FUNCTION">SPI_execute</CODE>执行声明的 SQL 命令获取<TT CLASS="PARAMETER">count</TT>
+行。如果<TT CLASS="PARAMETER">read_only</TT>为<TT CLASS="LITERAL">true</TT>，命令必须是只读的，
+因此可以略微降低一些执行的开销。</P><P>这个函数只能在已连接的过程中调用。</P><P>如果<TT CLASS="PARAMETER">count</TT>是零，则在命令适合的所有行上执行。
+如果<TT CLASS="PARAMETER">count</TT>大于 0 ，那么将不会超过
+<TT CLASS="PARAMETER">count</TT>行被检索；当达到计数时执行停止，
+很像在查询中添加了一个<TT CLASS="LITERAL">LIMIT</TT>子句。比如，
+</P><PRE CLASS="PROGRAMLISTING">SPI_execute("SELECT * FROM foo", true, 5);</PRE><P>
+将从表中最多检索5行。请注意，这样一个限制只在命令实际返回行时有效。例如，
+</P><PRE CLASS="PROGRAMLISTING">SPI_execute("INSERT INTO foo SELECT * FROM bar", false, 5);</PRE><P>
+插入<TT CLASS="STRUCTNAME">bar</TT>中的所有行，忽略<TT CLASS="PARAMETER">count</TT>参数。
+不过，
+</P><PRE CLASS="PROGRAMLISTING">SPI_execute("INSERT INTO foo SELECT * FROM bar RETURNING *", false, 5);</PRE><P>
+将最多插入5行，因为在检索到第5个<TT CLASS="LITERAL">RETURNING</TT>结果行之后执行将停止。</P><P>你可以在一个字符串里传递多个命令。<CODE CLASS="FUNCTION">SPI_execute</CODE>
+返回最后执行的命令的结果。<TT CLASS="PARAMETER">count</TT>
+的限制独立地应用于每一个命令（即使实际只返回最后的结果）。
+限制不会应用于规则生成的隐藏命令。</P><P>如果<TT CLASS="PARAMETER">read_only</TT>是<TT CLASS="LITERAL">false</TT>，<CODE CLASS="FUNCTION">SPI_execute</CODE>
+递增命令计数器并且在字符串里执行每个命令之前计算一个新的<I CLASS="FIRSTTERM">快照</I>。
+如果当前事务的隔离级别是<TT CLASS="LITERAL">SERIALIZABLE</TT>或<TT CLASS="LITERAL">REPEATABLE READ</TT>，
+这个快照实际上并不改变，但是在<TT CLASS="LITERAL">READ COMMITTED</TT>模式里，
+这个快照更新允许每个命令看到其它会话的新提交的事务的结果。
+这样实际上是为了修改数据库的命令有一致的行为。</P><P>如果<TT CLASS="PARAMETER">read_only</TT>是<TT CLASS="LITERAL">true</TT>，<CODE CLASS="FUNCTION">SPI_execute</CODE>
+并不更新快照或者命令计数器，并且它只允许简单的<TT CLASS="COMMAND">SELECT</TT>
+命令出现在命令字符串里。这个命令使用为周围的查询建立起来的快照执行。
+这个执行模式比读/写模式执行得略微块些，因为它消除了每个命令的一些开销。
+并且它还允许制作真正的<I CLASS="FIRSTTERM">稳定</I>函数：因为随后的执行都将使用同一个快照，
+结果里不会有改变。</P><P>通常，在同一个使用 SPI 的函数里混杂只读和读写命令是不明智的；
+那样可能导致非常混乱的行为，因为只读的查询不能看到任何读写的查询做的数据库更新。</P><P>(最后)一条命令执行返回的结果的实际行数会放在全局的变量
+<TT CLASS="VARNAME">SPI_processed</TT>里。如果函数的返回值是<TT CLASS="SYMBOL">SPI_OK_SELECT</TT>、
+<TT CLASS="SYMBOL">SPI_OK_INSERT_RETURNING</TT>、<TT CLASS="SYMBOL">SPI_OK_DELETE_RETURNING</TT>
+或<TT CLASS="SYMBOL">SPI_OK_UPDATE_RETURNING</TT>，那么你可以使用全局指针
+<TT CLASS="LITERAL">SPITupleTable *SPI_tuptable</TT>访问结果行。一些实用命令
+(比如<TT CLASS="COMMAND">EXPLAIN</TT>)还返回行集合，并且<TT CLASS="LITERAL">SPI_tuptable</TT>
+也将在这种情况下包含结果。一些实用命令（<TT CLASS="COMMAND">COPY</TT>, <TT CLASS="COMMAND">CREATE TABLE AS</TT>）
+并不返回行集，所以<TT CLASS="LITERAL">SPI_tuptable</TT>为NULL，但是它们仍然返回
+<TT CLASS="VARNAME">SPI_processed</TT>中处理了的行数。</P><P>结构<TT CLASS="STRUCTNAME">SPITupleTable</TT>是这样定义的：
+</P><PRE CLASS="PROGRAMLISTING">typedef struct
+{
+    MemoryContext tuptabcxt;    /* memory context of result table */
+    uint32      alloced;        /* number of alloced vals */
+    uint32      free;           /* number of free vals */
+    TupleDesc   tupdesc;        /* row descriptor */
+    HeapTuple  *vals;           /* rows */
+} SPITupleTable;</PRE><P>
+<TT CLASS="STRUCTFIELD">vals</TT>是一个指向数据行的的指针数组(有效记录的数目由
+<TT CLASS="VARNAME">SPI_processed</TT>给出)。<TT CLASS="STRUCTFIELD">tupdesc</TT>是一个行描述符，
+你可以传递给 SPI 函数处理这些数据行。<TT CLASS="STRUCTFIELD">tuptabcxt</TT>、
+<TT CLASS="STRUCTFIELD">alloced</TT>和<TT CLASS="STRUCTFIELD">free</TT>是 SPI 的内部字段，
+并非给 SPI 调用者使用的。
+</P><P><CODE CLASS="FUNCTION">SPI_finish</CODE>释放所有在当前过程中分配的<TT CLASS="STRUCTNAME">SPITupleTable</TT>。
+如果你已经处理完特定的结果表，那么可以更早地释放它，方法是调用
+<CODE CLASS="FUNCTION">SPI_freetuptable</CODE>。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN61440"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL">const char * <TT CLASS="PARAMETER">command</TT></TT></DT><DD><P>包含要执行的命令的字符串</P></DD><DT><TT CLASS="LITERAL">bool <TT CLASS="PARAMETER">read_only</TT></TT></DT><DD><P><TT CLASS="LITERAL">true</TT>用于只读的执行</P></DD><DT><TT CLASS="LITERAL">long <TT CLASS="PARAMETER">count</TT></TT></DT><DD><P>返回的最大行数，或者没有限制时为<TT CLASS="LITERAL">0</TT></P></DD></DL></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="AEN61463"></A><H2>返回值</H2><P>如果命令执行成功，那么返回下列值之一(非负数)：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="SYMBOL">SPI_OK_SELECT</TT></DT><DD><P>如果执行了一个<TT CLASS="COMMAND">SELECT</TT>但不是<TT CLASS="COMMAND">SELECT INTO</TT></P></DD><DT><TT CLASS="SYMBOL">SPI_OK_SELINTO</TT></DT><DD><P>如果执行了一条<TT CLASS="COMMAND">SELECT INTO</TT></P></DD><DT><TT CLASS="SYMBOL">SPI_OK_INSERT</TT></DT><DD><P>如果执行了一条<TT CLASS="COMMAND">INSERT</TT></P></DD><DT><TT CLASS="SYMBOL">SPI_OK_DELETE</TT></DT><DD><P>如果执行了一条<TT CLASS="COMMAND">DELETE</TT></P></DD><DT><TT CLASS="SYMBOL">SPI_OK_UPDATE</TT></DT><DD><P>如果执行了一条<TT CLASS="COMMAND">UPDATE</TT></P></DD><DT><TT CLASS="SYMBOL">SPI_OK_INSERT_RETURNING</TT></DT><DD><P>如果执行了一条<TT CLASS="COMMAND">INSERT RETURNING</TT></P></DD><DT><TT CLASS="SYMBOL">SPI_OK_DELETE_RETURNING</TT></DT><DD><P>如果执行了一条<TT CLASS="COMMAND">DELETE RETURNING</TT></P></DD><DT><TT CLASS="SYMBOL">SPI_OK_UPDATE_RETURNING</TT></DT><DD><P>如果执行了一条<TT CLASS="COMMAND">UPDATE RETURNING</TT></P></DD><DT><TT CLASS="SYMBOL">SPI_OK_UTILITY</TT></DT><DD><P>如果执行了一条实用命令(比如<TT CLASS="COMMAND">CREATE TABLE</TT>)</P></DD><DT><TT CLASS="SYMBOL">SPI_OK_REWRITTEN</TT></DT><DD><P>如果该命令通过一个<A HREF="http://school.yunwei.edu/manual/PostgreSQL/rules.html">规则</A>重新写入了另一个类型的命令
+（比如，<TT CLASS="COMMAND">UPDATE</TT>变成一个<TT CLASS="COMMAND">INSERT</TT>）</P></DD></DL></DIV><P>
+</P><P>发生错误时，返回下列负数值之一：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="SYMBOL">SPI_ERROR_ARGUMENT</TT></DT><DD><P>如果<TT CLASS="PARAMETER">command</TT>是<TT CLASS="SYMBOL">NULL</TT>或
+<TT CLASS="PARAMETER">count</TT>小于 0</P></DD><DT><TT CLASS="SYMBOL">SPI_ERROR_COPY</TT></DT><DD><P>如果企图进行<TT CLASS="COMMAND">COPY TO stdout</TT>或<TT CLASS="COMMAND">COPY FROM stdin</TT></P></DD><DT><TT CLASS="SYMBOL">SPI_ERROR_TRANSACTION</TT></DT><DD><P>如果尝试事务操纵命令(<TT CLASS="COMMAND">BEGIN</TT>,
+<TT CLASS="COMMAND">COMMIT</TT>,
+<TT CLASS="COMMAND">ROLLBACK</TT>,
+<TT CLASS="COMMAND">SAVEPOINT</TT>,
+<TT CLASS="COMMAND">PREPARE TRANSACTION</TT>,
+<TT CLASS="COMMAND">COMMIT PREPARED</TT>,
+<TT CLASS="COMMAND">ROLLBACK PREPARED</TT>,
+或它们的变种)</P></DD><DT><TT CLASS="SYMBOL">SPI_ERROR_OPUNKNOWN</TT></DT><DD><P>命令类型未知(不应该发生)</P></DD><DT><TT CLASS="SYMBOL">SPI_ERROR_UNCONNECTED</TT></DT><DD><P>如果从一个未连接的过程中调用</P></DD></DL></DIV><P>
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN61569"></A><H2>注意</H2><P>所有SPI查询执行函数设置了<TT CLASS="VARNAME">SPI_processed</TT>和<TT CLASS="VARNAME">SPI_tuptable</TT>
+(只是一个指针，不是结构的内容)。如果你需要跨越后面的调用访问<CODE CLASS="FUNCTION">SPI_execute</CODE>
+或者另一个查询执行函数的结果表，那么需要把这两个全局变量保存到一个局部过程变量中。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="spi-spi-pop.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="spi-spi-exec.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">SPI_pop</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="spi-interface.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">SPI_exec</TD></TR></TABLE></DIV></BODY></HTML>

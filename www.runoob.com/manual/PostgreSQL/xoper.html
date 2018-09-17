@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>用户定义操作符</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="扩展SQL" HREF="http://school.yunwei.edu/manual/PostgreSQL/extend.html"><LINK REL="PREVIOUS" TITLE="用户定义类型" HREF="xtypes.html"><LINK REL="NEXT" TITLE="操作符优化信息" HREF="xoper-optimization.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/xoper.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="用户定义类型" HREF="xtypes.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/extend.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 35. 扩展<ACRONYM CLASS="ACRONYM">SQL</ACRONYM></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="操作符优化信息" HREF="xoper-optimization.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="XOPER">35.12. 用户定义操作符</A></H1><P>每个操作符都是对真正干活的对应函数的<SPAN CLASS="QUOTE">"语义修饰"</SPAN>；
+所以你在创建操作符之前必须先创建对应的函数。不过，一个操作符也并<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">不仅仅</I></SPAN>
+是语义修饰，因为它还带着可以帮助查询规划器优化查询使用该操作符的附加信息。
+下一节将用于解释这些附加信息。</P><P><SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>支持左目、右目、双目操作符。操作符可以重载；
+也就是说，同一个操作符名可以用于不同数目和类型的操作数的操作符。在执行一个查询的时候，
+系统从提供的操作数的数量和类型上判断需要调用哪个操作符。</P><P>
+下面是一个创建用于两个复数相加的操作符的例子。假设已经创建了<TT CLASS="TYPE">complex</TT>
+(见节<A HREF="xtypes.html">第 35.11 &#33410;</A>)类型的定义。首先需要做相加工作的函数；然后就可以定义操作符：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION complex_add(complex, complex)
+    RETURNS complex
+    AS '<TT
+CLASS="REPLACEABLE"
+><I
+>filename</I
+></TT
+>', 'complex_add'
+    LANGUAGE C IMMUTABLE STRICT;
+
+CREATE OPERATOR + (
+    leftarg = complex,
+    rightarg = complex,
+    procedure = complex_add,
+    commutator = +
+);</PRE><P>
+</P><P>现在可以执行像下面这样的查询：
+</P><PRE CLASS="SCREEN">SELECT (a + b) AS c FROM test_complex;
+
+        c
+-----------------
+ (5.2,6.05)
+ (133.42,144.95)</PRE><P>
+</P><P>在这里已经演示了如何创建双目操作符。要创建单目操作符，只需要省略<TT CLASS="LITERAL">leftarg</TT>
+或者<TT CLASS="LITERAL">rightarg</TT>即可。只有<TT CLASS="LITERAL">procedure</TT>子句和参数(argument)子句是
+<TT CLASS="COMMAND">CREATE OPERATOR</TT>里需要的条目。例子里演示的<TT CLASS="LITERAL">commutator</TT>
+子句是一个给查询优化器的可选暗示。关于<TT CLASS="LITERAL">commutator</TT>
+和其它优化器提示的详细信息在下节给出。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="xtypes.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="xoper-optimization.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">用户定义类型</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/extend.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">操作符优化信息</TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>pg_index</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="系统表" HREF="http://school.yunwei.edu/manual/PostgreSQL/catalogs.html"><LINK REL="PREVIOUS" TITLE="pg_foreign_table" HREF="catalog-pg-foreign-table.html"><LINK REL="NEXT" TITLE="pg_inherits" HREF="catalog-pg-inherits.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/catalogs.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="pg_foreign_table" HREF="catalog-pg-foreign-table.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/catalogs.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 47. 系统表</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="pg_inherits" HREF="catalog-pg-inherits.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="CATALOG-PG-INDEX">47.26. <TT CLASS="STRUCTNAME">pg_index</TT></A></H1><P><TT CLASS="STRUCTNAME">pg_index</TT>包含关于索引的一部分信息。其它的信息大多数在<TT CLASS="STRUCTNAME">pg_class</TT>。</P><DIV CLASS="TABLE"><A NAME="AEN93726"></A><P><B>&#34920; 47-26. <TT CLASS="STRUCTNAME">pg_index</TT> 字段</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><COL><THEAD><TR><TH>名字</TH><TH>类型</TH><TH>引用</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD><TT CLASS="STRUCTFIELD">indexrelid</TT></TD><TD><TT CLASS="TYPE">oid</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-class.html"><TT CLASS="STRUCTNAME">pg_class</TT></A>.oid</TT></TD><TD>这个索引在<TT CLASS="STRUCTNAME">pg_class</TT>里的记录的 OID</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">indrelid</TT></TD><TD><TT CLASS="TYPE">oid</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-class.html"><TT CLASS="STRUCTNAME">pg_class</TT></A>.oid</TT></TD><TD>使用这个索引的表在<TT CLASS="STRUCTNAME">pg_class</TT>里的记录的 OID</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">indnatts</TT></TD><TD><TT CLASS="TYPE">int2</TT></TD><TD>&nbsp;</TD><TD>索引中的字段数目(复制的<TT CLASS="LITERAL">pg_class.relnatts</TT>)</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">indisunique</TT></TD><TD><TT CLASS="TYPE">bool</TT></TD><TD>&nbsp;</TD><TD>如果为真，这是个唯一索引</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">indisprimary</TT></TD><TD><TT CLASS="TYPE">bool</TT></TD><TD>&nbsp;</TD><TD>如果为真，该索引代表该表的主键。这个字段为真的时候<TT CLASS="STRUCTFIELD">indisunique</TT>应该总是为真。</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">indisexclusion</TT></TD><TD><TT CLASS="TYPE">bool</TT></TD><TD>&nbsp;</TD><TD>如果为真，那么这个索引支持一个排除约束</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">indimmediate</TT></TD><TD><TT CLASS="TYPE">bool</TT></TD><TD>&nbsp;</TD><TD>如果为真，立即强制对插入进行唯一性检查(如果<TT CLASS="STRUCTFIELD">indisunique</TT>不为真则是不相关的)</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">indisclustered</TT></TD><TD><TT CLASS="TYPE">bool</TT></TD><TD>&nbsp;</TD><TD>如果为真，那么该表最后在这个索引上建了簇。</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">indisvalid</TT></TD><TD><TT CLASS="TYPE">bool</TT></TD><TD>&nbsp;</TD><TD>
+如果为真，那么该索引可以用于查询。如果为假，那么该索引可能不完整：
+仍然必须在<TT CLASS="COMMAND">INSERT</TT>/<TT CLASS="COMMAND">UPDATE</TT>操作时进行更新，不过不能安全的用于查询。
+如果是唯一索引，那么唯一属性也不保证为真。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">indcheckxmin</TT></TD><TD><TT CLASS="TYPE">bool</TT></TD><TD>&nbsp;</TD><TD>
+如果为真，查询必须不是使用索引，知道这个<TT CLASS="STRUCTNAME">pg_index</TT>行的<TT CLASS="STRUCTFIELD">xmin</TT>
+低于它们的<TT CLASS="SYMBOL">TransactionXmin</TT>事件地平线，因为该表可能包含他们能看到的不兼容的行的断热链。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">indisready</TT></TD><TD><TT CLASS="TYPE">bool</TT></TD><TD>&nbsp;</TD><TD>
+如果为真，该索引目前已准备好插入。如果为假，那么该索引必须通过<TT CLASS="COMMAND">INSERT</TT>/<TT CLASS="COMMAND">UPDATE</TT>
+操作忽略。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">indislive</TT></TD><TD><TT CLASS="TYPE">bool</TT></TD><TD>&nbsp;</TD><TD>
+如果为假，那么该索引正在被删除，并且应该被所有目的所忽略（包括热安全决策）
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">indkey</TT></TD><TD><TT CLASS="TYPE">int2vector</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-attribute.html"><TT CLASS="STRUCTNAME">pg_attribute</TT></A>.attnum</TT></TD><TD>
+这是一个包含<TT CLASS="STRUCTFIELD">indnatts</TT>值的数组，这些数组值表示这个索引所建立的表字段。
+比如一个值为<TT CLASS="LITERAL">1 3</TT>的意思是第一个字段和第三个字段组成这个索引键字。
+这个数组里的零表明对应的索引属性是在这个表字段上的一个表达式，而不是一个简单的字段引用。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">indcollation</TT></TD><TD><TT CLASS="TYPE">oidvector</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-collation.html"><TT CLASS="STRUCTNAME">pg_collation</TT></A>.oid</TT></TD><TD>
+对于每个在这个索引键字中的字段，这个字段包含用于这个索引的排序规则的OID。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">indclass</TT></TD><TD><TT CLASS="TYPE">oidvector</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-opclass.html"><TT CLASS="STRUCTNAME">pg_opclass</TT></A>.oid</TT></TD><TD>
+对于索引键字里面的每个字段，这个字段都包含一个指向所使用的操作符类的 OID ，
+参阅<A HREF="catalog-pg-opclass.html"><TT CLASS="STRUCTNAME">pg_opclass</TT></A>获取细节。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">indoption</TT></TD><TD><TT CLASS="TYPE">int2vector</TT></TD><TD>&nbsp;</TD><TD>
+这是<TT CLASS="STRUCTFIELD">indnatts</TT>值的一个数组，存储每个字段标志位。
+这个标志位的含义是通过索引的访问方式定义的。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">indexprs</TT></TD><TD><TT CLASS="TYPE">pg_node_tree</TT></TD><TD>&nbsp;</TD><TD>
+表达式树(以<CODE CLASS="FUNCTION">nodeToString()</CODE>形式表现)用于那些非简单字段引用的索引属性。
+它是一个列表，在<TT CLASS="STRUCTFIELD">indkey</TT>里面的每个零条目一个元素。
+如果所有索引属性都是简单的引用，则为空。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">indpred</TT></TD><TD><TT CLASS="TYPE">pg_node_tree</TT></TD><TD>&nbsp;</TD><TD>
+部分索引断言的表达式树(以<CODE CLASS="FUNCTION">nodeToString()</CODE>的形式表现)。
+如果不是部分索引，则是空字符串。
+</TD></TR></TBODY></TABLE></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="catalog-pg-foreign-table.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="catalog-pg-inherits.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><TT CLASS="STRUCTNAME">pg_foreign_table</TT></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/catalogs.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><TT CLASS="STRUCTNAME">pg_inherits</TT></TD></TR></TABLE></DIV></BODY></HTML>

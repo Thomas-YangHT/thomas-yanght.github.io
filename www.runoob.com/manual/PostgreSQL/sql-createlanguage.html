@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>CREATE LANGUAGE</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="CREATE INDEX" HREF="sql-createindex.html"><LINK REL="NEXT" TITLE="CREATE MATERIALIZED VIEW" HREF="sql-creatematerializedview.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/create_language.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="CREATE INDEX" HREF="sql-createindex.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="CREATE MATERIALIZED VIEW" HREF="sql-creatematerializedview.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-CREATELANGUAGE"></A>CREATE LANGUAGE</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN70868"></A><H2>&#21517;&#31216;</H2>CREATE LANGUAGE&nbsp;--&nbsp;定义一种新过程语言</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN70873"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">CREATE [ OR REPLACE ] [ PROCEDURAL ] LANGUAGE <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+>
+CREATE [ OR REPLACE ] [ TRUSTED ] [ PROCEDURAL ] LANGUAGE <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+>
+    HANDLER <TT
+CLASS="REPLACEABLE"
+><I
+>call_handler</I
+></TT
+> [ INLINE <TT
+CLASS="REPLACEABLE"
+><I
+>inline_handler</I
+></TT
+> ] [ VALIDATOR <TT
+CLASS="REPLACEABLE"
+><I
+>valfunction</I
+></TT
+> ]</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-CREATELANGUAGE-DESCRIPTION"></A><H2>描述</H2><P><TT CLASS="COMMAND">CREATE LANGUAGE</TT>可以在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+数据库里注册一个新的语言。从而可以用这种新语言定义函数和触发器程序。</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>自<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 9.1起，大多数过程语言制作成了<SPAN CLASS="QUOTE">"扩展"</SPAN>，
+并且因此应该使用<A HREF="sql-createextension.html">CREATE EXTENSION</A>安装而不是<TT CLASS="COMMAND">CREATE LANGUAGE</TT>。
+现在直接使用<TT CLASS="COMMAND">CREATE LANGUAGE</TT>应该限制在扩展安装脚本。
+如果在你的数据库中有一个<SPAN CLASS="QUOTE">"空的"</SPAN>语言，或许由于升级，
+你可以使用<TT CLASS="LITERAL">CREATE EXTENSION <TT CLASS="REPLACEABLE"><I>langname</I></TT> FROM unpackaged</TT>
+将其转换为一个扩展。</P></BLOCKQUOTE></DIV><P><TT CLASS="COMMAND">CREATE LANGUAGE</TT>将该语言的名字和一个负责执行该语言所写函数的处理器函数有效的关联起来。
+请参考<A HREF="http://school.yunwei.edu/manual/PostgreSQL/plhandler.html">第 51 &#31456;</A>获取有关语言处理器的更多信息。</P><P>有两种形式的<TT CLASS="COMMAND">CREATE LANGUAGE</TT>命令。第一种形式，
+用户只提供需要的语言的名字，然后<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>服务器参考
+<A HREF="catalog-pg-pltemplate.html"><TT CLASS="STRUCTNAME">pg_pltemplate</TT></A>
+系统表来判断正确的参数。第二种形式，用户把语言参数和语言名字一起提供。
+第二种形式可以用于创建没有在<TT CLASS="STRUCTNAME">pg_pltemplate</TT>里面定义的语言，
+不过这种方法被认为已经过时了。</P><P>如果服务器在<TT CLASS="STRUCTNAME">pg_pltemplate</TT>系统表里面找到给出的语言名字的纪录，
+那么它将使用系统表的数据，即使命令包含语言参数也如此。这个行为简化了加载旧的转储文件的过程，
+因为这些转储文件很可能包含有关语言支持函数的过时信息。</P><P>通常，用户必须拥有<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>超级用户权限才能注册一个新的语言。
+不过，如果语言在<TT CLASS="STRUCTNAME">pg_pltemplate</TT>目录中列出，
+并且标记为允许通过数据库所有者创建（<TT CLASS="STRUCTFIELD">tmpldbacreate</TT>为真），
+那么数据库的所有者也可以在该数据库中注册一个新的语言。缺省是受信任的语言可以通过数据库所有者创建，
+但是这个可以通过超级用户修改<TT CLASS="STRUCTNAME">pg_pltemplate</TT>的内容来调整。
+语言的创建者成为它的所有者，并且稍后可以删除、重命名或将其赋予新的所有者。</P><P><TT CLASS="COMMAND">CREATE OR REPLACE LANGUAGE</TT>将创建一个新的语言或者替换一个现有的定义。
+如果语言早已存在，那么它的参数根据指定的值或<TT CLASS="STRUCTNAME">pg_pltemplate</TT>
+中的值更新，但是语言的所有关系和权限设置并不改变，并且假设任何该语言写的现有函数都是有效的。
+除了创建一个语言所需的普通权限外，用户还必须是超级用户或现有语言的所有者。
+<TT CLASS="LITERAL">REPLACE</TT>的情况主要是为了用于确保该语言存在。如果该语言有一个
+<TT CLASS="STRUCTNAME">pg_pltemplate</TT>条目，那么<TT CLASS="LITERAL">REPLACE</TT>
+实际上并不改变任何现有的定义，除了在<TT CLASS="STRUCTNAME">pg_pltemplate</TT>
+条目由于语言被创建而被修改了的特殊情况下。</P></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-CREATELANGUAGE-PARAMETERS"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL">TRUSTED</TT></DT><DD><P><TT CLASS="LITERAL">TRUSTED</TT>说明该语言并不授权没有权限的用户访问数据。
+如果在注册该语言时忽略这个关键字，只有<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+超级用户权限可以使用这个语言创建新函数。</P></DD><DT><TT CLASS="LITERAL">PROCEDURAL</TT></DT><DD><P>这是个没有用的字。</P></DD><DT><TT CLASS="REPLACEABLE"><I>name</I></TT></DT><DD><P>新过程语言的名称。这个名字应该在数据库的所有语言中唯一。</P><P>出于向下兼容的原因，这个名字可以用单引号包围。</P></DD><DT><TT CLASS="LITERAL">HANDLER</TT> <TT CLASS="REPLACEABLE"><I>call_handler</I></TT></DT><DD><P><TT CLASS="REPLACEABLE"><I>call_handler</I></TT>是一个以前注册过的函数名字，
+该函数将被用来执行该过程语言的函数。过程语言的调用处理器必须用一种编译语言(比如 C)
+书写，调用风格必须是版本1的调用风格，并且注册为不接受参数并且返回
+<TT CLASS="TYPE">language_handler</TT>类型的函数。<TT CLASS="TYPE">language_handler</TT>
+是用于将函数声明为调用处理器的占位符。</P></DD><DT><TT CLASS="LITERAL">INLINE</TT> <TT CLASS="REPLACEABLE"><I>inline_handler</I></TT></DT><DD><P><TT CLASS="REPLACEABLE"><I>inline_handler</I></TT>是以前注册过的函数名字，
+用来在该语言中执行一个匿名代码块(<A HREF="sql-do.html">DO</A> 命令)。
+如果没有指定<TT CLASS="REPLACEABLE"><I>inline_handler</I></TT>函数，
+那么该语言不支持匿名代码块。处理器函数必须接受一个<TT CLASS="TYPE">internal</TT>
+类型的参数，这将是<TT CLASS="COMMAND">DO</TT>命令的内部表示，并且它通常返回<TT CLASS="TYPE">void</TT>。
+忽略该处理器的返回值。</P></DD><DT><TT CLASS="LITERAL">VALIDATOR</TT> <TT CLASS="REPLACEABLE"><I>valfunction</I></TT></DT><DD><P><TT CLASS="REPLACEABLE"><I>valfunction</I></TT>是一个以前注册过的函数名字，
+在用该语言创建新函数的时候将用它来校验新函数。如果没有声明校验函数，
+那么建立新函数的时候就不会检查它。校验函数必须接受一个类型为<TT CLASS="TYPE">oid</TT>的参数，
+它是将要创建的函数的 OID ，并且通常会返回<TT CLASS="TYPE">void</TT>。</P><P>校验函数通常会检查函数体，看看有没有语法错误，但是它也可以查看函数的其它属性，
+比如该语言是否不能处理某种参数类型。校验函数应该用<CODE CLASS="FUNCTION">ereport()</CODE>
+函数报告错误。该函数的返回值将被忽略。</P></DD></DL></DIV><P>如果服务器在<TT CLASS="STRUCTNAME">pg_pltemplate</TT>系统表里有对应名称的语言纪录，
+那么<TT CLASS="LITERAL">TRUSTED</TT>选项和支持函数的名字等参数将被忽略。</P></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-CREATELANGUAGE-NOTES"></A><H2>注意</H2><P><A HREF="app-createlang.html"><SPAN CLASS="APPLICATION">createlang</SPAN></A>程序是对<TT CLASS="COMMAND">CREATE LANGUAGE</TT>命令的一个简单封装。
+降低了在 shell 命令行上安装过程语言的难度。</P><P>使用<A HREF="sql-droplanguage.html">DROP LANGUAGE</A>命令，或者更好是<A HREF="app-droplang.html"><SPAN CLASS="APPLICATION">droplang</SPAN></A>程序来删除一个过程语言。</P><P>系统表<CODE CLASS="CLASSNAME">pg_language</CODE>(参阅<A HREF="catalog-pg-language.html">第 47.28 &#33410;</A>)
+记录了有关当前安装的语言的信息。<TT CLASS="COMMAND">createlang</TT>
+也有一个选项列出已安装的语言。</P><P>要使用一种过程语言创建函数，用户必须对该语言有<TT CLASS="LITERAL">USAGE</TT>权限。
+缺省时，对于可信的语言，<TT CLASS="LITERAL">USAGE</TT>是赋与<TT CLASS="LITERAL">PUBLIC</TT>
+(也就是每个人)的。需要时，这个权限可以撤销。</P><P>过程语言是对每个独立数据库本地创建的。不过，语言可以安装到<TT CLASS="LITERAL">template1</TT>里面，
+这样就会导致它自动在所有随后创建的数据库里可用。</P><P>如果服务器在<TT CLASS="STRUCTNAME">pg_pltemplate</TT>系统表里还没有对应该语言的纪录，
+那么调用处理器函数、内联处理器函数（如果有）和校验函数(如果有)必须已经存在。
+但是如果存在这样的纪录，那么这些函数就不必已经存在；如果没有在数据库里出现，
+它们将会被自动定义。如果实现语言的共享库在安装中不可获得，
+那么可能会导致<TT CLASS="COMMAND">CREATE LANGUAGE</TT>失效。</P><P>在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 7.3之前，必须声明处理器函数返回占位类型
+<TT CLASS="TYPE">opaque</TT>，而不是<TT CLASS="TYPE">language_handler</TT>。为了支持加载旧的转储文件，
+<TT CLASS="COMMAND">CREATE LANGUAGE</TT>还将接受声明为返回<TT CLASS="TYPE">opaque</TT>的函数，
+但是它会发出一条通知并且把函数的返回类型改为<TT CLASS="TYPE">language_handler</TT>。</P></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-CREATELANGUAGE-EXAMPLES"></A><H2>例子</H2><P>创建标准的过程语言的比较好的方法：
+</P><PRE CLASS="PROGRAMLISTING">CREATE LANGUAGE plperl;</PRE><P></P><P>对于<TT CLASS="STRUCTNAME">pg_pltemplate</TT>还不知道的语言，需要下面这样的序列：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION plsample_call_handler() RETURNS language_handler
+    AS '$libdir/plsample'
+    LANGUAGE C;
+CREATE LANGUAGE plsample
+    HANDLER plsample_call_handler;</PRE><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-CREATELANGUAGE-COMPAT"></A><H2>兼容性</H2><P><TT CLASS="COMMAND">CREATE LANGUAGE</TT>是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>扩展。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN71014"></A><H2>又见</H2><A HREF="sql-alterlanguage.html">ALTER LANGUAGE</A>, <A HREF="sql-createfunction.html">CREATE FUNCTION</A>, <A HREF="sql-droplanguage.html">DROP LANGUAGE</A>, <A HREF="sql-grant.html">GRANT</A>, <A HREF="sql-revoke.html">REVOKE</A>, <A HREF="app-createlang.html"><SPAN CLASS="APPLICATION">createlang</SPAN></A>, <A HREF="app-droplang.html"><SPAN CLASS="APPLICATION">droplang</SPAN></A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-createindex.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-creatematerializedview.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">CREATE INDEX</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">CREATE MATERIALIZED VIEW</TD></TR></TABLE></DIV></BODY></HTML>

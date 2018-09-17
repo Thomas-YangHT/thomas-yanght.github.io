@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>表和索引</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="全文检索" HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html"><LINK REL="PREVIOUS" TITLE="介绍" HREF="textsearch-intro.html"><LINK REL="NEXT" TITLE="控制文本搜索" HREF="textsearch-controls.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/textsearch.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="介绍" HREF="textsearch-intro.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 12. 全文检索</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="控制文本搜索" HREF="textsearch-controls.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="TEXTSEARCH-TABLES">12.2. 表和索引</A></H1><P>上一节中的例子说明使用简单常量字符串的全文匹配。本节显示如何搜索表中的数据，选择使用索引。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TEXTSEARCH-TABLES-SEARCH">12.2.1. 搜索表</A></H2><P>
+在不使用索引的情况下也是可以进行全文检索的,一个简单查询,显示出<TT CLASS="STRUCTNAME">title</TT>从所有<TT CLASS="STRUCTFIELD">body</TT>字段中包含<TT CLASS="LITERAL">friend</TT>的每一行：
+</P><PRE CLASS="PROGRAMLISTING">SELECT title
+FROM pgweb
+WHERE to_tsvector('english', body) @@ to_tsquery('english', 'friend');</PRE><P>
+这也将找到相关的词，比如<TT CLASS="LITERAL">friends</TT>和<TT CLASS="LITERAL">friendly</TT>，因为所有的这些都降低到相同规范化的词。
+</P><P>以上查询指定<TT CLASS="LITERAL">english</TT>配置是用来解析和规范化字符串。或者我们可以省略配置参数：
+</P><PRE CLASS="PROGRAMLISTING">SELECT title
+FROM pgweb
+WHERE to_tsvector(body) @@ to_tsquery('friend');</PRE><P>
+这个查询将通过<A HREF="runtime-config-client.html#GUC-DEFAULT-TEXT-SEARCH-CONFIG">default_text_search_config</A>使用配置设置。</P><P>复杂一点的例子:检索出最近的10个文档,在<TT CLASS="STRUCTNAME">title</TT> 或者<TT CLASS="STRUCTNAME">body</TT>字段中包含<TT CLASS="LITERAL">create</TT> 和
+<TT CLASS="LITERAL">table</TT>的：
+</P><PRE CLASS="PROGRAMLISTING">SELECT title
+FROM pgweb
+WHERE to_tsvector(title || ' ' || body) @@ to_tsquery('create &amp; table')
+ORDER BY last_mod_date DESC
+LIMIT 10;</PRE><P>
+为了清楚,我们忽略<CODE CLASS="FUNCTION">coalesce</CODE>函数调用,这需要找到在两个字段之一中包含<TT CLASS="LITERAL">NULL</TT>的行。&#13;</P><P>虽然这些查询在没有索引的情况下工作，大多数应用程序会发现这个方法太慢了，除了偶尔的特定搜索。
+文本搜索的实际使用通常需要创建索引。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TEXTSEARCH-TABLES-INDEX">12.2.2. 创建索引</A></H2><P> 为了加速文本搜索，我们可以创建<ACRONYM CLASS="ACRONYM">GIN</ACRONYM>索引(<A HREF="textsearch-indexes.html">第 12.9 &#33410;</A>)：
+</P><PRE CLASS="PROGRAMLISTING">CREATE INDEX pgweb_idx ON pgweb USING gin(to_tsvector('english', body));</PRE><P>
+注意，使用<CODE CLASS="FUNCTION">to_tsvector</CODE>的2-参数版本。唯一的文本搜索功能指定可用于表达式索引的配置名称（节<A HREF="indexes-expressional.html">第 11.7 &#33410;</A>）。
+这是因为索引的内容必须不受<A HREF="runtime-config-client.html#GUC-DEFAULT-TEXT-SEARCH-CONFIG">default_text_search_config</A>的影响。如果他们受到影响，索引内容可能不一致，
+因为不同的条目可能包含不同的文本搜索配置创建的<TT CLASS="TYPE">tsvector</TT>，并且没有办法猜出是哪个。正确的转储和恢复
+这样的一个索引是不可能的。 &#13;</P><P>因为在上述索引中使用<CODE CLASS="FUNCTION">to_tsvector</CODE>的2-参数版本，只有一个使用带有相同配置名称的<CODE CLASS="FUNCTION">to_tsvector</CODE>的2-参数版本的查询参考，
+它将使用该索引。也就是说，<TT CLASS="LITERAL">WHERE to_tsvector('english', body) @@ 'a &amp; b'</TT> 可以使用索引，但<TT CLASS="LITERAL">WHERE to_tsvector(body) @@ 'a &amp; b'</TT>不能。
+这确保将使用一个索引仅仅伴随着用于创建索引的相同配置。</P><P> 建立更复杂的表达式索引是可能的，配置名称由另一列指定，例如：
+</P><PRE CLASS="PROGRAMLISTING">CREATE INDEX pgweb_idx ON pgweb USING gin(to_tsvector(config_name, body));</PRE><P>
+在<TT CLASS="LITERAL">pgweb</TT>表中<TT CLASS="LITERAL">config_name</TT>是一列。这允许在同一索引中混合配置，当记录的配置被用于每个索引条目。
+这将是有用的，例如，如果文档集合中包含不同的语言文件。再次，意味着使用索引的查询必须措辞匹配，
+例如，<TT CLASS="LITERAL">WHERE to_tsvector(config_name, body) @@ 'a &amp; b'</TT>。 &#13;</P><P> 索引甚至可以连接列：
+</P><PRE CLASS="PROGRAMLISTING">CREATE INDEX pgweb_idx ON pgweb USING gin(to_tsvector('english', title || ' ' || body));</PRE><P>&#13;</P><P> 另一个方法是创建一个单独的<TT CLASS="TYPE">tsvector</TT>列控制<CODE CLASS="FUNCTION">to_tsvector</CODE>的输出。这个例子是<TT CLASS="LITERAL">title</TT>和<TT CLASS="LITERAL">body</TT>的一个级联，
+当其他是<TT CLASS="LITERAL">NULL</TT>的时候，使用<CODE CLASS="FUNCTION">coalesce</CODE>确保一个字段仍然会被索引：
+</P><PRE CLASS="PROGRAMLISTING">ALTER TABLE pgweb ADD COLUMN textsearchable_index_col tsvector;
+UPDATE pgweb SET textsearchable_index_col =
+     to_tsvector('english', coalesce(title,'') || ' ' || coalesce(body,''));</PRE><P>
+然后我们为加速搜索创建一个<ACRONYM CLASS="ACRONYM">GIN</ACRONYM>索引：
+</P><PRE CLASS="PROGRAMLISTING">CREATE INDEX textsearch_idx ON pgweb USING gin(textsearchable_index_col);</PRE><P>
+现在我们准备执行一个快速全文搜索：
+</P><PRE CLASS="PROGRAMLISTING">SELECT title
+FROM pgweb
+WHERE textsearchable_index_col @@ to_tsquery('create &amp; table')
+ORDER BY last_mod_date DESC
+LIMIT 10;</PRE><P>&#13;</P><P> 当使用一个单独的列存储<TT CLASS="TYPE">tsvector</TT>形式时，有必要创建一个触发器以保持<TT CLASS="TYPE">tsvector</TT>列当前任何时候<TT CLASS="LITERAL">title</TT>或者<TT CLASS="LITERAL">body</TT>的变化。
+节<A HREF="textsearch-features.html#TEXTSEARCH-UPDATE-TRIGGERS">第 12.4.3 &#33410;</A>解释了如何做。</P><P> 单独列方法比一个表达式索引的优势是它没有必要明确地声明为充分利用索引查询中的文本搜索配置，
+正如上面例子所示，查询依赖于<TT CLASS="VARNAME">default_text_search_config</TT>。另一个优势是搜索比较快速，
+因为它没有必要重新进行<CODE CLASS="FUNCTION">to_tsvector</CODE>调用来验证索引匹配（当使用GIST索引而不是GIN索引的时候，
+这是非常重要的，参见节<A HREF="textsearch-indexes.html">第 12.9 &#33410;</A>）。表达式索引方法更容易建立，然而，它需要较少的磁盘空间，
+因为<TT CLASS="TYPE">tsvector</TT>形式没有明确存储。</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="textsearch-intro.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="textsearch-controls.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">介绍</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">控制文本搜索</TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>索引访问方法接口定义</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="https://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="内部" HREF="internals.html"><LINK REL="PREVIOUS" TITLE="进一步阅读" HREF="https://school.yunwei.edu/manual/PostgreSQL/geqo-biblio.html"><LINK REL="NEXT" TITLE="索引的系统表记录" HREF="https://school.yunwei.edu/manual/PostgreSQL/index-catalog.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="CHAPTER">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/indexam.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="https://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="进一步阅读" HREF="https://school.yunwei.edu/manual/PostgreSQL/geqo-biblio.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="internals.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="索引的系统表记录" HREF="https://school.yunwei.edu/manual/PostgreSQL/index-catalog.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="CHAPTER"><H1><A NAME="INDEXAM"></A>&#31456; 54. 索引访问方法接口定义</H1><DIV CLASS="TOC"><DL><DT><B>&#30446;&#24405;</B></DT><DT>54.1. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/index-catalog.html">索引的系统表记录</A></DT><DT>54.2. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/index-functions.html">索引访问方法函数</A></DT><DT>54.3. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/index-scanning.html">索引扫描</A></DT><DT>54.4. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/index-locking.html">索引锁的考量</A></DT><DT>54.5. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/index-unique-checks.html">索引唯一性检查</A></DT><DT>54.6. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/index-cost-estimation.html">索引开销估计函数</A></DT></DL></DIV><P>本章定义<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>核心系统和<I CLASS="FIRSTTERM">索引访问方法</I>
+之间的接口，后者管理独立的索引类型。
+除了在这里声明的东西之外，核心系统对索引一无所知，因此可以通过书写累加上来的代码，开发一种完全新的索引类型。
+</P><P><SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>里的所有索引技术上都叫做
+<I CLASS="FIRSTTERM">从属索引</I>，也就是说，索引在物理上是与它描述的表文件分离的。
+每个索引是以其自己的物理<I CLASS="FIRSTTERM">关系</I>的方式存储的，因此它们也在<TT CLASS="STRUCTNAME">pg_class</TT>系统表里面有记录描述。
+一个索引的内容是完全在其索引访问方法的控制之下的。
+实际上，所有索引访问方法都把索引分裂成标准大小的页面，这样他们就可以使用普通的存储管理器和缓冲区管理器来访问索引的内容了。
+(所有现有的索引访问方法更是使用<A HREF="https://school.yunwei.edu/manual/PostgreSQL/storage-page-layout.html">第 58.6 &#33410;</A>
+里面描述的标准的页面布局，并且索引行头都使用同样的格式；但是这些东西都不是强制访问方法执行的。
+也就是说必要的话你可以不用这些标准格式。)
+</P><P>索引实际上是一些数据的键值与索引的父表中的行版本(元组)的<I CLASS="FIRSTTERM">行标识符</I>或<ACRONYM CLASS="ACRONYM">TID</ACRONYM>之间的映射。
+一个 TID 由一个块号和一个该块内的项编号组成(参阅<A HREF="https://school.yunwei.edu/manual/PostgreSQL/storage-page-layout.html">第 58.6 &#33410;</A>)。
+这些就是从该表中抓取某个特定行版本所需的足够的信息。
+索引并不直接知道在 MVCC 下，同一个逻辑行可能有多个现存的版本；对于索引而言，每个元组都是一个独立的对象，都需要自己的索引项。
+因此，对一行的更新总是为该行创建全新的索引项，即使键值没有改变也如此（HOT元组是个例外，但索引并不处理这些）。
+已经废弃的元组的索引项是在废弃元组自己被回收的时候回收(通过vacuum)。
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="https://school.yunwei.edu/manual/PostgreSQL/geqo-biblio.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="https://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="https://school.yunwei.edu/manual/PostgreSQL/index-catalog.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">进一步阅读</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="internals.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">索引的系统表记录</TD></TR></TABLE></DIV></BODY></HTML>

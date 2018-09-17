@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>tcn</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="额外提供的模块" HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html"><LINK REL="PREVIOUS" TITLE="tablefunc" HREF="tablefunc.html"><LINK REL="NEXT" TITLE="test_parser" HREF="test-parser.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/tcn.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="tablefunc" HREF="tablefunc.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; F. 额外提供的模块</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="test_parser" HREF="test-parser.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="TCN">F.37. tcn</A></H1><P><TT CLASS="FILENAME">tcn</TT>模块提供了一个触发器函数，通知监听器它附着的任何表有修改。
+它必须作为一个<TT CLASS="LITERAL">AFTER</TT>触发器<TT CLASS="LITERAL">FOR EACH ROW</TT>使用。</P><P>在一个<TT CLASS="LITERAL">CREATE TRIGGER</TT>语句中只需要提供一个参数到函数，并且是可选的。
+如果提供了，它将用于通知的通道名。如果省略了，<TT CLASS="LITERAL">tcn</TT>将用作通道名。
+</P><P>通知的负载包括表名、一个表明执行了什么操作类型的字母和主键字段的字段名/值对。
+每个部分用一个逗号分隔开。为了分析简单，使用正则表达式，表和字段名总是包含在双引号中，
+数据值总是包含在单引号中。嵌入的引号需要双倍写。
+</P><P>
+使用该扩展的一个简单的例子如下所示。
+</P><PRE CLASS="PROGRAMLISTING">test=# create table tcndata
+test-#   (
+test(#     a int not null,
+test(#     b date not null,
+test(#     c text,
+test(#     primary key (a, b)
+test(#   );
+CREATE TABLE
+test=# create trigger tcndata_tcn_trigger
+test-#   after insert or update or delete on tcndata
+test-#   for each row execute procedure triggered_change_notification();
+CREATE TRIGGER
+test=# listen tcn;
+LISTEN
+test=# insert into tcndata values (1, date '2012-12-22', 'one'),
+test-#                            (1, date '2012-12-23', 'another'),
+test-#                            (2, date '2012-12-23', 'two');
+INSERT 0 3
+Asynchronous notification "tcn" with payload ""tcndata",I,"a"='1',"b"='2012-12-22'" received from server process with PID 22770.
+Asynchronous notification "tcn" with payload ""tcndata",I,"a"='1',"b"='2012-12-23'" received from server process with PID 22770.
+Asynchronous notification "tcn" with payload ""tcndata",I,"a"='2',"b"='2012-12-23'" received from server process with PID 22770.
+test=# update tcndata set c = 'uno' where a = 1;
+UPDATE 2
+Asynchronous notification "tcn" with payload ""tcndata",U,"a"='1',"b"='2012-12-22'" received from server process with PID 22770.
+Asynchronous notification "tcn" with payload ""tcndata",U,"a"='1',"b"='2012-12-23'" received from server process with PID 22770.
+test=# delete from tcndata where a = 1 and b = date '2012-12-22';
+DELETE 1
+Asynchronous notification "tcn" with payload ""tcndata",D,"a"='1',"b"='2012-12-22'" received from server process with PID 22770.</PRE><P>
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="tablefunc.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="test-parser.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">tablefunc</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">test_parser</TD></TR></TABLE></DIV></BODY></HTML>

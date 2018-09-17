@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>发布9.1.8</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="发布9.1.9" HREF="release-9-1-9.html"><LINK REL="NEXT" TITLE="发布9.1.7" HREF="release-9-1-7.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-9.1.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="发布9.1.9" HREF="release-9-1-9.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="发布9.1.7" HREF="release-9-1-7.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-9-1-8">E.11. 发布9.1.8</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>2013-02-07</P></BLOCKQUOTE></DIV><P> 此版本包含了9.1.7各种修复。
+关于9.1主要版本的新功能的信息，
+参阅<A HREF="release-9-1.html">第 E.19 &#33410;</A>。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN117378">E.11.1. 迁移到9.1.8</A></H2><P> 为了运行9.1.X不需要转储/恢复。</P><P> 然而，如果你是从早于9.1.6的版本上更新，参阅9.1.6发布说明。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN117382">E.11.2. 变化</A></H2><P></P><UL><LI><P> 防止来自SQL的<CODE CLASS="FUNCTION">enum_recv</CODE>的执行(Tom Lane)</P><P> 该函数被错误声明，
+允许简单SQL命令导致服务器崩溃。
+原则上攻击者可以使用它检查服务器内存的内容。
+我们该感谢Sumit Soni
+(通过Secunia SVCRP)报告这个问题。(CVE-2013-0255)</P></LI><LI><P> 当检测WAL回放期间达到一致性数据库状态时，修复多个问题。
+(Fujii Masao, Heikki Linnakangas, Simon Riggs, Andres Freund)</P></LI><LI><P> 当截断关系文件时，更新最小恢复点(Heikki Linnakangas)</P><P> 一旦丢弃数据，在时间轴早一点的时候停止恢复不再安全。</P></LI><LI><P> 在改变恢复目标时间轴后修复WAL段再循环(Heikki Linnakangas)</P></LI><LI><P> 在热备模式中修复失去的取消(Noah Misch, Simon Riggs)</P><P> 取消热备份查询冲突的需要有时会被错过，
+允许这些查询来查看不一致数据。</P></LI><LI><P> 防止用户可以连接之前从暂停中恢复暂停功能(Tom Lane)</P></LI><LI><P> 修复SQL语法以允许来自子SELECT结果的下标或者字段选择(Tom Lane)</P></LI><LI><P> 解决繁忙工作负载中自动清理截断的性能问题(Jan Wieck)</P><P> 在表格末尾的空白页截断需要排他锁，
+但自动清理编码失败（并且释放表锁）
+当有冲突的锁请求时，在负载下，
+很可能截断永远都不会发生，导致表的膨胀。
+通过执行局部截断进行修复，释放锁，然后
+试图重新获取锁并且继续。
+该修复在自动清理释放锁之前冲突请求到达之后将大大
+减少平均时间。 </P></LI><LI><P> 当扫描<TT CLASS="STRUCTNAME">pg_tablespace</TT>的时候，
+防止竞争条件(Stephen Frost, Tom Lane)</P><P> 如果有<TT CLASS="STRUCTNAME">pg_tablespace</TT>项的并发更新，
+那么<TT CLASS="COMMAND">CREATE DATABASE</TT>和<TT CLASS="COMMAND">DROP DATABASE</TT>
+可能行为不当。</P></LI><LI><P> 防止<TT CLASS="COMMAND">DROP OWNED</TT>试图删除整个数据库或者表空间(&Aacute;lvaro Herrera)</P><P> 为了安全起见，
+这些对象的所有权必须被重新分配，而不是删除。</P></LI><LI><P> 修复
+<A HREF="runtime-config-client.html#GUC-VACUUM-FREEZE-TABLE-AGE"><TT CLASS="VARNAME">vacuum_freeze_table_age</TT></A>
+实现中的错误(Andres Freund) </P><P> 在安装中不只存在
+<A HREF="runtime-config-client.html#GUC-VACUUM-FREEZE-MIN-AGE"><TT CLASS="VARNAME">vacuum_freeze_min_age</TT></A>事务，
+这个错误防止自动清理使用部分表扫描，
+因此相反可能会发生全表扫描。</P></LI><LI><P> 当<TT CLASS="SYMBOL">RowExpr</TT>或者<TT CLASS="SYMBOL">XmlExpr</TT>被解析两次时，
+避免不当行为(Andres Freund, Tom Lane)</P><P> 这个错误在上下文中是用户可见的，
+比如<TT CLASS="LITERAL">CREATE TABLE LIKE INCLUDING INDEXES</TT>。</P></LI><LI><P> 提高在哈希表大小计算中防御整数溢出(Jeff Davis)</P></LI><LI><P> 在服务器崩溃之后修复忽略剩余临时表错误(Tom Lane)</P></LI><LI><P> 拒绝<CODE CLASS="FUNCTION">to_date()</CODE>中超期范围日期(Hitoshi Harada)</P></LI><LI><P> 修复<CODE CLASS="FUNCTION">pg_extension_config_dump()</CODE>以适当处理扩展更新情况(Tom Lane)</P><P> 这个函数现在将取代目标表的任何已经存在项，
+使它可以用于扩展更新脚本。
+</P></LI><LI><P> 修复函数的PL/Python的处理作为多表上的触发器(Andres Freund)</P></LI><LI><P> 确保非ASCII提示符字符串被翻译成Windows上正确代码页(Alexander Law, Noah Misch)</P><P> 这个错误影响<SPAN CLASS="APPLICATION">psql</SPAN>和一些其他客户端程序。</P></LI><LI><P> 当不连接数据库时，
+修复<SPAN CLASS="APPLICATION">psql</SPAN>'s <TT CLASS="COMMAND">\?</TT>命令中可能的崩溃(Meng Qingzhong)</P></LI><LI><P> 当正在运行<SPAN CLASS="APPLICATION">pg_basebackup</SPAN>时，
+如果删除关系文件，那么修复可能的错误(Heikki Linnakangas)</P></LI><LI><P> 当在热备份服务器上运行时，使得<SPAN CLASS="APPLICATION">pg_dump</SPAN>
+排除未记录表的数据(Magnus Hagander)</P><P> 因为数据在备用服务器上是不可用的，这可能会失败，
+因此它似乎认为最方便的是自动假设<TT CLASS="OPTION">--no-unlogged-table-data</TT>。</P></LI><LI><P> 修复<SPAN CLASS="APPLICATION">pg_upgrade</SPAN>以安全处理无效索引(Bruce Momjian)</P></LI><LI><P> 修复<SPAN CLASS="APPLICATION">libpq</SPAN>的
+<CODE CLASS="FUNCTION">PQprintTuples</CODE>中一个字节缓冲溢出(Xi Wang)</P><P> 这个以往的函数
+不再通过<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>自身被用于任何地方，
+但是它仍然可能通过一些客户端代码被使用。</P></LI><LI><P> 使得<SPAN CLASS="APPLICATION">ecpglib</SPAN>正确使用已翻译信息(Chen Huajun)</P></LI><LI><P> 在MSVC上正确安装<SPAN CLASS="APPLICATION">ecpg_compat</SPAN>和
+<SPAN CLASS="APPLICATION">pgtypes</SPAN>库(Jiang Guiqing)</P></LI><LI><P> 如果它不是通过系统提供的，
+那么在<SPAN CLASS="APPLICATION">libecpg</SPAN>中
+包含<CODE CLASS="FUNCTION">isinf()</CODE>版本(Jiang Guiqing)</P></LI><LI><P> 重新配置已提供函数的配置测试，
+因此它不会被libedit/libreadline假输出蒙骗。</P></LI><LI><P> 确保随时间变化增加的Windows编译数(Magnus Hagander)</P></LI><LI><P> 当为Windows交叉编译时，
+使<SPAN CLASS="APPLICATION">pgxs</SPAN>编译带有正确<TT CLASS="LITERAL">.exe</TT>
+后缀的可执行文件(Zoltan Boszormenyi)</P></LI><LI><P> 添加新的时区缩写<TT CLASS="LITERAL">FET</TT> (Tom Lane)</P><P> 这用于一些东欧时区。</P></LI></UL></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-9-1-9.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-9-1-7.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">发布9.1.9</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">发布9.1.7</TD></TR></TABLE></DIV></BODY></HTML>

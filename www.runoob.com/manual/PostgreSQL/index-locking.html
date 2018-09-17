@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>索引锁的考量</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="索引访问方法接口定义" HREF="http://school.yunwei.edu/manual/PostgreSQL/indexam.html"><LINK REL="PREVIOUS" TITLE="索引扫描" HREF="index-scanning.html"><LINK REL="NEXT" TITLE="索引唯一性检查" HREF="index-unique-checks.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/indexam.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="索引扫描" HREF="index-scanning.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/indexam.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 54. 索引访问方法接口定义</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="索引唯一性检查" HREF="index-unique-checks.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="INDEX-LOCKING">54.4. 索引锁的考量</A></H1><P>索引访问方法必须支持多个进程对索引的并发更新。
+在索引扫描期间，<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>核心系统在索引上抓取
+<TT CLASS="LITERAL">AccessShareLock</TT> ，并且在更新索引期间(包括<TT CLASS="COMMAND">VACUUM</TT>)也会抓取<TT CLASS="LITERAL">RowExclusiveLock</TT>。
+因为这些锁类型不会冲突，所以访问方法有责任处理任何它自己需要的更细致的锁需求。
+把整个索引锁住的排他锁只是在创建和删除索引或者<TT CLASS="COMMAND">REINDEX</TT>的时候使用。
+</P><P>创建一个支持并发更新的索引类型通常要求对所需的行为进行广泛的并且细致的分析。
+对于 b-tree 和 Hash 索引类型，你可以读取在
+<TT CLASS="FILENAME">src/backend/access/nbtree/README</TT>和
+<TT CLASS="FILENAME">src/backend/access/hash/README</TT>里面描述的设计决策。
+</P><P>除了索引自己内部的一致性要求之外，并发更新产生了一些有关父表(<I CLASS="FIRSTTERM">堆</I>)和索引之间的一致性问题。
+因为<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>是把堆的访问和更新与索引的访问和更新分开的。
+用下面的规则处理这样的问题：
+<P></P></P><UL><LI><P>在制作一行的索引记录之前，先做堆记录。
+（因此并发的索引扫描很可能看不到堆记录。
+这么做应该是 OK 的，因为索引读者应该对未提交的行不感兴趣。
+不过需要看看<A HREF="index-unique-checks.html">第 54.5 &#33410;</A>。）
+</P></LI><LI><P>如果一条堆记录要被删除(被 <TT CLASS="COMMAND">VACUUM</TT>)，所有其索引记录都必须首先删除。
+</P></LI><LI><P>对于并发索引类型，一次索引扫描必须在保存有<CODE CLASS="FUNCTION">amgettuple</CODE>
+最后返回记录的索引页面上维护一个销，而<CODE CLASS="FUNCTION">ambulkdelete</CODE>
+不能删除其它后端用销固定的索引页面里面的记录。
+为何需要这条规则在下面解释。
+</P></LI></UL><P>
+如果没有第三条规则，那么一个索引读者是可能在一条索引记录刚要被<TT CLASS="COMMAND">VACUUM</TT>删除之前看到它，
+然后在对应的堆记录已经被<TT CLASS="COMMAND">VACUUM</TT>删除时，去找这条堆记录。
+如果读者到达该项时，该项编号仍然没有使用，那么这种情况不会导致严重的问题，因为空的项槽位会被<CODE CLASS="FUNCTION">heap_fetch()</CODE>忽略。
+但是如果第三个后端已经为其它什么东西复用了这个项槽位又如何?
+如果使用 MVCC 兼容的快照，那么就不会有问题，因为新占据的槽位当然是太新了，因而无法通过快照测试。
+但是，对于非 MVCC 兼容的快照(比如<TT CLASS="LITERAL">SnapshotNow</TT>)，那么就有可能接受并返回一个实际上并不匹配扫描键字的行。
+可以通过要求扫描键字在所有场合下都重新检查的方法来避免这种情况，但是这种方法开销太大了。
+取而代之的是，通过在索引页面上使用一个销，当作一个代理，告诉系统说，读者可能还在对应堆记录的索引记录上空<SPAN CLASS="QUOTE">"飞行"</SPAN>。
+让<CODE CLASS="FUNCTION">ambulkdelete</CODE>在这样的销上阻塞可确保<TT CLASS="COMMAND">VACUUM</TT>无法在读者完成读取之前删除堆记录。
+这种解觉办法只增加了一点点运行时开销，并且只是在非常罕见的实际有冲突的情况下才导致阻塞开销。
+</P><P>这个解决方法要求索引扫描必须是<SPAN CLASS="QUOTE">"同步的"</SPAN>：必须在扫描完对应的索引记录之后马上抓取每个堆记录。
+这样的方案开销比较大，原因有若干个。
+而<SPAN CLASS="QUOTE">"异步的"</SPAN>扫描，可以先从索引里收集很多 TID ，然后在稍后的某个时间访问堆行，这样就会绕开很多索引锁的开销，以及可以允许更有效的堆访问模式。
+但是按照上面的分析，在非 MVCC 兼容快照上必须使用同步方法，而对使用 MVCC 快照的查询，使用异步扫描应该是可行的。
+</P><P>在<CODE CLASS="FUNCTION">amgetbitmap</CODE>索引扫描里，访问方法不需要保证在任何返回的行上保持一个销。
+毕竟，除了给最后一个行加销之外，也没法给其它的加。
+因此，只能在 MVCC 兼容的快照里使用这样的扫描。
+</P><P>如果没有设置<TT CLASS="STRUCTFIELD">ampredlocks</TT>，任何在可串行化事务中使用这个索引访问方法的扫描将会在整个索引上获得一个非阻塞的谓词锁。
+与其并发的另一个可串行化事务向这个索引中插入任何一个元组时都会引发一个读写冲突。
+如果在并发的可串行化事务间检测到某种模式的读写冲突，为了保证数据一致性其中一个事务可能会被取消。
+如果设置了这个标志，表明这种索引访问方法实现了精细的谓词锁，因而趋向于削减这种事务取消的频度。
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="index-scanning.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="index-unique-checks.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">索引扫描</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/indexam.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">索引唯一性检查</TD></TR></TABLE></DIV></BODY></HTML>

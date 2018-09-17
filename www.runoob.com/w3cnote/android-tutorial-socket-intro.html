@@ -1,0 +1,952 @@
+<!Doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta property="qc:admins" content="465267610762567726375" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>7.6.1 Socket学习网络基础准备 | 菜鸟教程</title>
+<link rel='dns-prefetch' href='http://s.w.org/' />
+<link rel="canonical" href="android-tutorial-socket-intro.html" />
+<meta name="keywords" content="7.6.1 Socket学习网络基础准备">
+<meta name="description" content="本节引言：  为了照顾没学过Java Socket的初学者，或者说捋一捋Android开发中涉及到的网络协议相关的概念， 毕竟面试的时候，面试官来了句给我说下网络协议有几层？那么IP协议在哪层？Socket是什么鬼？ 分哪几种？TCP和UDP协议又在哪层？有什么区别...嗯，这...所以学习本节概念性的理论还是很有 必要的！那么话不多说，开始本节内容~    1.OSI七层网络模型浅析  当然，我们不是专业搞网络工程的，只要知道有哪些层..">
+<link rel="shortcut icon" href="http://static.runoob.com/images/favicon.ico" mce_href="//static.runoob.com/images/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="http://school.yunwei.edu/wp-content/themes/runoob/style.css?v=1.147" type="text/css" media="all" />
+<link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />
+<!--[if gte IE 9]><!-->
+  <script src="http://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+  <!--<![endif]-->
+<!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+<link rel="apple-touch-icon" href="http://static.runoob.com/images/icon/mobile-icon.png"/>
+<meta name="apple-mobile-web-app-title" content="菜鸟教程">
+</head>
+<body>
+<div class="container logo-search">
+<div class="col search row-search-mobile">
+<form action="http://school.yunwei.edu/w3cnote/index.php">
+<input class="placeholder" placeholder="搜索……" name="s" autocomplete="off">
+</form>
+</div>
+<div class="row">
+<div class="col logo">
+<h1><a href="http://school.yunwei.edu/">菜鸟教程 -- 学的不仅是技术，更是梦想！</a></h1>
+</div>
+<div class="col right-list">
+<button class="btn btn-responsive-nav btn-inverse" data-toggle="collapse" data-target=".nav-main-collapse" id="pull" style=""> <i class="fa fa-navicon"></i> </button>
+</div>
+<div class="col search search-desktop last">
+<form action="http://school.yunwei.edu/" target="_blank">
+<input class="placeholder" id="s" name="s" placeholder="搜索……" autocomplete="off">
+</form>
+</div>
+</div>
+</div>
+<div class="container navigation">
+<div class="row">
+<div class="col nav">
+<ul class="pc-nav" id="note-nav">
+<li><a href="http://school.yunwei.edu/">首页</a></li>
+<li><a href="index.html">笔记首页</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/android" title="Android 基础入门教程">Android</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/net-2" title="互联网">互联网</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/coderlife" title="程序员人生">程序员人生</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/joke" title="程序员笑话">程序员笑话</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/code" title="编程技术">编程技术</a></li>
+</ul>
+<ul class="mobile-nav">
+<li><a href="index.html">首页</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/android" target="_blank" title="Android 基础入门教程">Android</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/coderlife" target="_blank" title="程序员人生">鸡汤</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/joke" target="_blank" title="程序员笑话">逗乐</a></li>
+<a href="javascript:void(0)" class="search-reveal">Search</a>
+</ul>
+</div>
+</div>
+</div>
+<div class="container main">
+<div class="row">
+<div class="col left-column" style="display:none;">
+<div class="tab">Android 基础入门教程</div>
+<div class="sidebar-box gallery-list">
+<div class="design" id="leftcolumn">
+</div>
+</div>
+</div>
+<div class="col middle-column big-middle-column">
+<div class="article">
+<div class="article-heading">
+<h2>7.6.1 Socket学习网络基础准备</h2> <h3><em>分类</em> <a href="http://school.yunwei.edu/w3cnote_genre/android" title="Android 基础入门教程">Android 基础入门教程</a> </h3>
+</div>
+<div class="article-body note-body">
+<div class="article-intro">
+<h2>本节引言：</h2>
+<blockquote><p>为了照顾没学过Java Socket的初学者，或者说捋一捋Android开发中涉及到的网络协议相关的概念，
+毕竟面试的时候，面试官来了句给我说下网络协议有几层？那么IP协议在哪层？Socket是什么鬼？
+分哪几种？TCP和UDP协议又在哪层？有什么区别...嗯，这...所以学习本节概念性的理论还是很有
+必要的！那么话不多说，开始本节内容~</p></blockquote>
+<hr />
+<h2>1.OSI七层网络模型浅析</h2>
+<blockquote><p>当然，我们不是专业搞网络工程的，只要知道有哪些层，大概是拿来干嘛的就可以了！</p></blockquote>
+<p><strong>OSI七层网络模型(从下往上)</strong>：</p>
+<blockquote><ul>
+<li><strong>物理层(Physical)</strong>：设备之间的数据通信提供传输媒体及互连设备，为数据传输提供可靠的
+环境。可以理解为网络传输的物理媒体部分，比如<strong>网卡，网线，集线器，中继器，调制解调器</strong>等！
+在这一层，数据还没有被组织，仅作为原始的位流或电气电压处理，这一层的单位是:<strong>bit比特</strong></li>
+<li><strong>数据链路层(Datalink)</strong>：可以理解为数据通道，主要功能是如何在不可靠的物理线路上进行
+数据的可靠传递，改层作用包括：物理地址寻址，数据的成帧，流量控制，数据检错以及重发等！
+另外这个<strong>数据链路指的是</strong>：物理层要为终端设备间的数据通信提供传输媒体及其连接。媒体是
+长期的，连接是有生存期的。在连接生存期内，收发两端可以进行不等的一次或多次数据通信。
+每次通信都要经过建立通信联络和拆除通信联络两过程！这种建立起来的<strong>数据收发关系</strong>~
+该层的设备有：<strong>网卡，网桥，网路交换机</strong>，另外该层的单位为：<strong>帧</strong></li>
+<li><strong>网络层(Network)</strong>：主要功能是将网络地址翻译成对应的物理地址，并决定如何将数据从发
+送方路由到接收方，所谓的路由与寻径：一台终端可能需要与多台终端通信，这样就产生的了
+把任意两台终端设备数据链接起来的问题！简单点说就是：建立网络连接和为上层提供服务！
+该层的设备有：<strong>路由</strong>！该层的单位为：<strong>数据包</strong>，另外IP协议就在这一层！</li>
+<li><strong>传输层(Transport)</strong>：向上面的应用层提供通信服务，面向通信部分的最高层，同时也是
+用户功能中的最低层。接收会话层数据，在必要时将数据进行分割，并将这些数据交给网络
+层，并且保证这些数据段有效的到达对端！所以这层的单位是：<strong>数据段</strong>；而这层有两个很重要
+的协议就是：<strong>TCP传输控制协议</strong>与<strong>UDP用户数据报协议</strong>，这也是本章节核心讲解的部分！</li>
+<li><strong>会话层(Session)</strong>：负责在网络中的两节点之间建立、维持和终止通信。建立通信链接，
+保持会话过程通信链接的畅通，同步两个节点之间的对话，决定通信是否被中断以及通信中断时
+决定从何处重新发送，即不同机器上的用户之间会话的建立及管理！</li>
+<li><strong>表示层(Presentation)</strong>：对来自应用层的命令和数据进行解释，对各种语法赋予相应
+的含义，并按照一定的格式传送给会话层。其主要功能是"处理用户信息的表示问题，如编码、
+数据格式转换和加密解密，压缩解压缩"等</li>
+<li><strong>应用层(Application)</strong>：OSI参考模型的最高层，为用户的应用程序提供网络服务。
+它在其他6层工作的基础上，负责完成网络中应用程序与网络操作系统之间的联系，建立与结束使用者之间的联系，并完成网络用户提出的各种网络服务及应用所需的监督、管理和服务等各种协议。此外，该层还负责协调各个应用程序间的工作。应用层为用户提供的服务和协议有：文件服务、目录服务、文件传输服务（FTP）、远程登录服务（Telnet）、电子邮件服务（E-mail）、打印服务、安全服务、网络管理服务、数据库服务等。</li>
+</ul>
+</blockquote>
+<p>好的上面我们浅述了OSI七层网络模型，下面总结下：</p>
+<blockquote><p>OSI是一个理想的模型，一般的网络系统只涉及其中的几层，在七层模型中，每一层都提供一个特殊
+的网络功能，从网络功能角度观察：</p>
+<ul>
+<li>下面4层（物理层、数据链路层、网络层和传输层）主要提供数据传输和交换功能，
+即以节点到节点之间的通信为主</li>
+<li>第4层作为上下两部分的桥梁，是整个网络体系结构中最关键的部分；</li>
+<li>上3层（会话层、表示层和应用层）则以提供用户与应用程序之间的信息和数据处理功能为主。</li>
+</ul>
+<p>简言之，下4层主要完成通信子网的功能，上3层主要完成资源子网的功能。</p></blockquote>
+<p>——以上内容参考自：<a href="http://blog.csdn.net/yaopeng_2005/article/details/7064869">OSI七层模型详解</a></p>
+<hr />
+<h2>2.TCP/IP四层模型</h2>
+<p><img src="../wp-content/uploads/2015/09/13620513.jpg" alt="" /></p>
+<blockquote><p>TCP/IP是一组协议的代名词，它还包括许多协议，组成了TCP/IP协议簇。
+TCP/IP协议簇分为四层，IP位于协议簇的第二层(对应OSI的第三层)，TCP位于协议簇的第三层
+(对应OSI的第四层)。TCP/IP通讯协议采用了4层的层级结构，每一层都呼叫它的下一层所提供
+的网络来完成自己的需求。这4层分别为：</p>
+<ul>
+<li><strong>应用层</strong>：应用程序间沟通的层，如简单电子邮件传输（SMTP）、文件传输协议（FTP）、
+网络远程访问协议（Telnet）等。</li>
+<li><strong>传输层</strong>：在此层中，它提供了节点间的数据传送服务，如传输控制协议（TCP）、
+用户数据报协议（UDP）等，TCP和UDP给数据包加入传输数据并把它传输到下一层中，
+这一层负责传送数据，并且确定数据已被送达并接收。</li>
+<li><strong>网络互连层</strong>：负责提供基本的数据封包传送功能，让每一块数据包都能够到达目
+的主机（但不检查是否被正确接收），如网际协议（IP）。</li>
+<li><strong>主机到网络层</strong>：对实际的网络媒体的管理，定义如何使用实际网络
+（如Ethernet、Serial Line等）来传送数据。</li>
+</ul>
+</blockquote>
+<hr />
+<h2>3.TCP/UDP区别讲解</h2>
+<p>好吧，前两点侃侃而谈，只是给大家普及下OSI七层模型和TCP/IP四层模型的概念，接下来要讲的是
+和我们Socket开发相关的一些概念名词了！</p>
+<h3>1）IP地址</h3>
+<p><img src="../wp-content/uploads/2015/09/80846872.jpg" alt="" /></p>
+<h3>2）端口</h3>
+<blockquote><p><strong>1.</strong> 用于区分不同的应用程序</p><p>
+<strong>2.</strong> 端口号的范围为0-65535，其中0-1023未系统的保留端口，我们的程序尽可能别使用这些端口！</p><p>
+<strong>3.</strong> IP地址和端口号组成了我们的Socket，Socket是网络运行程序间双向通信链路的终结点，
+是TCP和UDP的基础！</p><p>
+<strong>4.</strong> 常用协议使用的端口：HTTP:80，FTP：21，TELNET：23</p></blockquote>
+<p><img src="../wp-content/uploads/2015/09/94940352.jpg" alt="" /></p>
+<h3>3）TCP协议与UDP协议的比较：</h3>
+<p><strong>TCP协议流程详解</strong>:</p>
+<blockquote><p>首先TCP/IP是一个协议簇，里面包括很多协议的。UDP只是其中的一个。之所以命名为TCP/IP协议，
+因为TCP,IP协议是两个很重要的协议，就用他两命名了。</p><p>
+下面我们来讲解TCP协议和UDP协议的区别：</p><p>
+<strong>TCP</strong>（Transmission Control Protocol，传输控制协议）是面向连接的协议，即在收发数据钱
+，都需要与对面建立可靠的链接，这也是面试经常会问到的TCP的<strong>三次握手</strong>以及TCP的<strong>四次挥手</strong>！
+<strong>三次握手</strong>：
+建立一个TCP连接时，需要客户端和服务端总共发送3个包以确认连接的建立，
+在Socket编程中，这一过程由客户端执行connect来触发，具体流程图如下：</p>
+<p><img src="../wp-content/uploads/2015/09/38856241.jpg" alt="" /></p>
+<ul>
+<li><strong>第一次握手</strong>：Client将标志位SYN置为1，随机产生一个值seq=J，并将该数据包发送给Server，
+Client进入SYN_SENT状态，等待Server确认。</li>
+<li><strong>第二次握手</strong>：Server收到数据包后由标志位SYN=1知道Client请求建立连接，Server将标志位
+SYN和ACK都置为1，ack=J+1，随机产生一个值seq=K，并将该数据包发送给Client以确认连接请求
+，Server进入SYN_RCVD状态。</li>
+<li><strong>第三次握手</strong>：Client收到确认后，检查ack是否为J+1，ACK是否为1，如果正确则将标志位ACK
+置为1，ack=K+1，并将该数据包发送给Server，Server检查ack是否为K+1，ACK是否为1，如果正确则
+连接建立成功，Client和Server进入ESTABLISHED状态，完成三次握手，随后Client与Server之间可以
+开始传输数据了。</li>
+</ul>
+<p><strong>四次挥手</strong>：
+终止TCP连接，就是指断开一个TCP连接时，需要客户端和服务端总共发送4个包以确认连接的断开。
+在Socket编程中，这一过程由客户端或服务端任一方执行close来触发，具体流程图如下：</p>
+<p><img src="../wp-content/uploads/2015/09/4410970.jpg" alt="" /></p>
+<ul>
+<li><strong>第一次挥手</strong>：Client发送一个FIN，用来关闭Client到Server的数据传送，Client进入
+FIN_WAIT_1状态</li>
+<li><strong>第二次挥手</strong>：Server收到FIN后，发送一个ACK给Client，确认序号为收到序号+1（与SYN相同，
+一个FIN占用一个序号），Server进入CLOSE_WAIT状态。</li>
+<li><strong>第三次挥手</strong>：Server发送一个FIN，用来关闭Server到Client的数据传送，Server进入LAST_ACK
+状态。</li>
+<li><strong>第四次挥手</strong>：Client收到FIN后，Client进入TIME_WAIT状态，接着发送一个ACK给Server，确认序号为收到序号+1，Server进入CLOSED状态，完成四次挥手。
+另外也可能是同事发起主动关闭的情况：</li>
+</ul>
+<p><img src="../wp-content/uploads/2015/09/29726143.jpg" alt="" /></p>
+<p>另外还可能有一个常见的问题就是：为什么建立连接是三次握手，而关闭连接却是四次挥手呢？
+答：因为服务端在LISTEN状态下，收到建立连接请求的SYN报文后，把ACK和SYN放在一个报文里
+发送给客户端。而关闭连接时，当收到对方的FIN报文时，仅仅表示对方不再发送数据了但是还
+能接收数据，己方也未必全部数据都发送给对方了，所以己方可以立即close，也可以发送一些
+数据给对方后，再发送FIN报文给对方来表示同意现在关闭连接，因此，己方ACK和FIN一般都会
+分开发送。</p></blockquote>
+<hr />
+<p><strong>UDP协议详解</strong>：</p>
+<blockquote><p><strong>UDP</strong>(User Datagram Protocol)用户数据报协议，非连接的协议，传输数据之前源端和终端不
+建立连接，当它想传送时就简单地去抓取来自应用程序的数据，并尽可能快地把它扔到网络上。
+在发送端，UDP传送数据的速度仅仅是受应用程序生成数据的速度、计算机的能力和传输带宽
+的限制；在接收端，UDP把每个消息段放在队列中，应用程序每次从队列中读一个消息段。
+相比TCP就是无需建立链接，结构简单，无法保证正确性，容易丢包</p></blockquote>
+<p>——上述内容部分摘自：</p><p>
+<a href="http://blog.chinaunix.net/uid-7411781-id-3812206.html">TCP/IP三次握手与四次挥手 </a></p><p>
+<a href="http://www.cnblogs.com/bizhu/archive/2012/05/12/2497493.html">TCP和UDP的区别（转）</a></p>
+<hr />
+<h2>4.Java中对于网络提供的几个关键类：</h2>
+<p>针对不同的网络通信层次，Java给我们提供的网络功能有四大类：</p>
+<ul>
+<li><strong>InetAddress</strong>：
+用于标识网络上的硬件资源</li>
+<li><strong>URL</strong>：
+统一资源定位符，通过URL可以直接读取或者写入网络上的数据</li>
+<li><strong>Socket和ServerSocket</strong>：
+使用TCP协议实现网络通信的Socket相关的类</li>
+<li><strong>Datagram</strong>：
+使用UDP协议，将数据保存在数据报中，通过网络进行通信</li>
+</ul>
+<p>本节我们只介绍前两个类，Socket与Datagram到TCP和UDP的章节再讲解！</p>
+<p><strong>~InetAddress的使用例子</strong>：</p>
+<p><strong>示例代码</strong>：</p>
+<pre>
+public class InetAddressTest {
+&nbsp;&nbsp;&nbsp;&nbsp;public static void main(String[] args) throws Exception{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//获取本机InetAddress的实例：
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InetAddress address = InetAddress.getLocalHost();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println("本机名：" + address.getHostName());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println("IP地址：" + address.getHostAddress());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;byte[] bytes = address.getAddress();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println("字节数组形式的IP地址：" + Arrays.toString(bytes));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.out.println("直接输出InetAddress对象：" + address);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+</pre>
+<strong>运行结果图</strong>：</p>
+<p><img src="../wp-content/uploads/2015/09/15963174.jpg" alt="" /></p>
+<p><strong>~URL</strong>：这个就不用说了吧，忘了可以看会前面Http协议讲解那里~</p>
+<hr />
+<h2>本节小结：</h2>
+<blockquote><p>本节全是概念，看起来可能够呛的是把，不过看不懂也没关系，知道七层模型每层叫
+什么，大概拿来干嘛，还有TCP三次握手和四次挥手，就可以了！当然，这只是为了
+应付面试~实际开发我们哪会纠结这个...直接Socket是吧~嗯，下节我们就来开始学习
+Android中的Socket通信~谢谢~</p></blockquote> </div>
+</div>
+<div class="previous-next-links">
+<div class="previous-design-link">← <a href="android-tutorial-webview-error-code.html" rel="prev"> 7.5.6 WebView处理网页返回的错误码信息</a> </div>
+<div class="next-design-link"><a href="android-tutorial-socket1.html" rel="next"> 7.6.2 基于TCP协议的Socket通信(1)</a> →</div>
+</div>
+<div class="article-heading-ad" id="w3cnote-ad728">
+<script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle" style="display:inline-block;min-width:300px;max-width:970px;width:100%;height:90px" data-ad-client="ca-pub-5751451760833794" data-ad-slot="1691338467" data-ad-format="horizontal"></ins>
+<script>
+			(adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
+</div>
+<style>
+@media screen and (max-width: 768px) {
+	#w3cnote-ad728 {
+		display: none;
+	}
+}
+p.note-author {
+    border-bottom: 1px solid #ddd;
+    font-size: 18px;
+    font-weight: bold;
+    color: #78a15a;
+    padding-bottom: 2px;
+    margin-bottom: 4px;
+}
+</style>
+<script>
+var aid = 13760;
+</script>
+</div>
+</div>
+<div class="listcol last right-column">
+<script type="text/javascript">
+jQuery(document).ready(function ($){
+	var total = $(".membership li").length;
+	var left_list = '';
+	href = window.location.href;
+	
+	$(".membership li").each(function(index, value){
+
+		left_list += $(this).html();
+
+		cur_href = $(this).find("a").attr("href");
+		cur_obj = $(this);
+		
+		if(href.match(cur_href) != null) {
+			if(index==0) {
+				$(".previous-design-link").hide();
+			}
+			if(index==(total-1)) {
+				$(".next-design-link").hide();
+			}
+			prev_href = cur_obj.prev("li").find("a").attr("href");
+			prev_title = cur_obj.prev("li").find("a").attr("title");
+
+			next_href = cur_obj.next("li").find("a").attr("href");
+			next_title = cur_obj.next("li").find("a").attr("title");
+			if(prev_title) {
+				$(".previous-design-link a").attr("href", prev_href);
+				$(".previous-design-link a").attr("title", prev_title);
+				$(".previous-design-link a").text(prev_title);
+			} else {
+				$(".previous-design-link").html("");
+			}
+
+			if(next_title) {
+				$(".next-design-link a").attr("href", next_href);
+				$(".next-design-link a").attr("title", next_title);
+				$(".next-design-link a").text(next_title);
+			} else {
+				$(".next-design-link").html("");
+			}
+		}
+	});
+
+	$("#leftcolumn").html(left_list);
+});
+	</script>
+<div class="sidebar-box cate-list">
+<div class="sidebar-box advertise-here list-link"">
+	<a href="javascript:void(0);">Android 基础入门教程(Q群号：153836263)</a>	</div>
+	
+	<ul class="membership">
+		
+	<li><a target="_top" title="1.0 Android基础入门教程" href="http://school.yunwei.edu/w3cnote/android-tutorial-intro.html" >1.0 Android基础入门教程</a></li>
+		
+	<li><a target="_top" title="1.0.1 2015年最新Android基础入门教程目录" href="android-tutorial-contents.html" >1.0.1 2015年最新Android基础入门教程目录</a></li>
+		
+	<li><a target="_top" title="1.1 背景相关与系统架构分析" href="android-tutorial-system-architecture-analysis.html" >1.1 背景相关与系统架构分析</a></li>
+		
+	<li><a target="_top" title="1.2 开发环境搭建" href="android-tutorial-development-environment-build.html" >1.2 开发环境搭建</a></li>
+		
+	<li><a target="_top" title="1.2.1 使用Eclipse + ADT + SDK开发Android APP" href="android-tutorial-eclipse-adt-sdk-app.html" >1.2.1 使用Eclipse + ADT + SDK开发Android APP</a></li>
+		
+	<li><a target="_top" title="1.2.2 使用Android Studio开发Android APP" href="android-tutorial-android-studio.html" >1.2.2 使用Android Studio开发Android APP</a></li>
+		
+	<li><a target="_top" title="1.3 SDK更新不了问题解决" href="android-tutorial-sdk-problem-solve.html" >1.3 SDK更新不了问题解决</a></li>
+		
+	<li><a target="_top" title="1.4 Genymotion模拟器安装" href="android-tutorial-genymotion-install.html" >1.4 Genymotion模拟器安装</a></li>
+		
+	<li><a target="_top" title="1.5.1 Git使用教程之本地仓库的基本操作" href="android-tutorial-git-repo-operate.html" >1.5.1 Git使用教程之本地仓库的基本操作</a></li>
+		
+	<li><a target="_top" title="1.5.2 Git之使用GitHub搭建远程仓库" href="android-tutorial-git-repo-create.html" >1.5.2 Git之使用GitHub搭建远程仓库</a></li>
+		
+	<li><a target="_top" title="1.6 .9(九妹)图片怎么玩" href="android-tutorial-9-image.html" >1.6 .9(九妹)图片怎么玩</a></li>
+		
+	<li><a target="_top" title="1.7 界面原型设计" href="android-tutorial-interface-design.html" >1.7 界面原型设计</a></li>
+		
+	<li><a target="_top" title="1.8 工程相关解析(各种文件，资源访问)" href="android-tutorial-project-src-analysis.html" >1.8 工程相关解析(各种文件，资源访问)</a></li>
+		
+	<li><a target="_top" title="1.9 Android程序签名打包" href="android-tutorial-sign-package.html" >1.9 Android程序签名打包</a></li>
+		
+	<li><a target="_top" title="1.11 反编译APK获取代码&资源" href="android-tutorial-decompile-apk-get-code-resources.html" >1.11 反编译APK获取代码&资源</a></li>
+		
+	<li><a target="_top" title="2.1 View与ViewGroup的概念" href="android-tutorial-view-viewgroup-intro.html" >2.1 View与ViewGroup的概念</a></li>
+		
+	<li><a target="_top" title="2.2.1 LinearLayout(线性布局)" href="android-tutorial-linearlayout.html" >2.2.1 LinearLayout(线性布局)</a></li>
+		
+	<li><a target="_top" title="2.2.2 RelativeLayout(相对布局)" href="android-tutorial-relativelayout.html" >2.2.2 RelativeLayout(相对布局)</a></li>
+		
+	<li><a target="_top" title="2.2.3 TableLayout(表格布局)" href="android-tutorial-tablelayout.html" >2.2.3 TableLayout(表格布局)</a></li>
+		
+	<li><a target="_top" title="2.2.4 FrameLayout(帧布局)" href="android-tutorial-framelayout.html" >2.2.4 FrameLayout(帧布局)</a></li>
+		
+	<li><a target="_top" title="2.2.5 GridLayout(网格布局)" href="android-tutorial-gridlayout.html" >2.2.5 GridLayout(网格布局)</a></li>
+		
+	<li><a target="_top" title="2.2.6 AbsoluteLayout(绝对布局)" href="android-tutorial-absolutelayout.html" >2.2.6 AbsoluteLayout(绝对布局)</a></li>
+		
+	<li><a target="_top" title="2.3.1 TextView(文本框)详解" href="android-tutorial-textview.html" >2.3.1 TextView(文本框)详解</a></li>
+		
+	<li><a target="_top" title="2.3.2 EditText(输入框)详解" href="android-tutorial-edittext.html" >2.3.2 EditText(输入框)详解</a></li>
+		
+	<li><a target="_top" title="2.3.3 Button(按钮)与ImageButton(图像按钮)" href="android-tutorial-button-imagebutton.html" >2.3.3 Button(按钮)与ImageButton(图像按钮)</a></li>
+		
+	<li><a target="_top" title="2.3.4 ImageView(图像视图)" href="android-tutorial-imageview.html" >2.3.4 ImageView(图像视图)</a></li>
+		
+	<li><a target="_top" title="2.3.5.RadioButton(单选按钮)&Checkbox(复选框)" href="android-tutorial-radiobutton-checkbox.html" >2.3.5.RadioButton(单选按钮)&Checkbox(复选框)</a></li>
+		
+	<li><a target="_top" title="2.3.6 开关按钮ToggleButton和开关Switch" href="android-tutorial-togglebutton-switch.html" >2.3.6 开关按钮ToggleButton和开关Switch</a></li>
+		
+	<li><a target="_top" title="2.3.7 ProgressBar(进度条)" href="android-tutorial-progressbar.html" >2.3.7 ProgressBar(进度条)</a></li>
+		
+	<li><a target="_top" title="2.3.8 SeekBar(拖动条)" href="android-tutorial-seekbar.html" >2.3.8 SeekBar(拖动条)</a></li>
+		
+	<li><a target="_top" title="2.3.9 RatingBar(星级评分条)" href="android-tutorial-ratingbar.html" >2.3.9 RatingBar(星级评分条)</a></li>
+		
+	<li><a target="_top" title="2.4.1 ScrollView(滚动条)" href="android-tutorial-scrollview.html" >2.4.1 ScrollView(滚动条)</a></li>
+		
+	<li><a target="_top" title="2.4.2 Date & Time组件(上)" href="android-tutorial-date-time-1.html" >2.4.2 Date & Time组件(上)</a></li>
+		
+	<li><a target="_top" title="2.4.3 Date & Time组件(下)" href="android-tutorial-date-time-2.html" >2.4.3 Date & Time组件(下)</a></li>
+		
+	<li><a target="_top" title="2.4.4 Adapter基础讲解" href="android-tutorial-adapter.html" >2.4.4 Adapter基础讲解</a></li>
+		
+	<li><a target="_top" title="2.4.5 ListView简单实用" href="android-tutorial-listview.html" >2.4.5 ListView简单实用</a></li>
+		
+	<li><a target="_top" title="2.4.6 BaseAdapter优化" href="android-tutorial-baseadapter.html" >2.4.6 BaseAdapter优化</a></li>
+		
+	<li><a target="_top" title="2.4.7ListView的焦点问题" href="android-tutorial-listview-focus.html" >2.4.7ListView的焦点问题</a></li>
+		
+	<li><a target="_top" title="2.4.8 ListView之checkbox错位问题解决" href="android-tutorial-listview-checkbox.html" >2.4.8 ListView之checkbox错位问题解决</a></li>
+		
+	<li><a target="_top" title="2.4.9 ListView的数据更新问题" href="android-tutorial-listview-update.html" >2.4.9 ListView的数据更新问题</a></li>
+		
+	<li><a target="_top" title="2.5.0 构建一个可复用的自定义BaseAdapter" href="android-tutorial-customer-baseadapter.html" >2.5.0 构建一个可复用的自定义BaseAdapter</a></li>
+		
+	<li><a target="_top" title="2.5.1 ListView Item多布局的实现" href="android-tutorial-listview-item.html" >2.5.1 ListView Item多布局的实现</a></li>
+		
+	<li><a target="_top" title="2.5.2 GridView(网格视图)的基本使用" href="android-tutorial-gridview.html" >2.5.2 GridView(网格视图)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.3 Spinner(列表选项框)的基本使用" href="android-tutorial-spinner.html" >2.5.3 Spinner(列表选项框)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.4 AutoCompleteTextView(自动完成文本框)的基本使用" href="android-tutorial-autocompletetextview.html" >2.5.4 AutoCompleteTextView(自动完成文本框)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.5 ExpandableListView(可折叠列表)的基本使用" href="android-tutorial-expandablelistview.html" >2.5.5 ExpandableListView(可折叠列表)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.6 ViewFlipper(翻转视图)的基本使用" href="android-tutorial-viewflipper.html" >2.5.6 ViewFlipper(翻转视图)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.7 Toast(吐司)的基本使用" href="android-tutorial-toast.html" >2.5.7 Toast(吐司)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.8 Notification(状态栏通知)详解" href="android-tutorial-notification.html" >2.5.8 Notification(状态栏通知)详解</a></li>
+		
+	<li><a target="_top" title="2.5.9 AlertDialog(对话框)详解" href="android-tutorial-alertdialog.html" >2.5.9 AlertDialog(对话框)详解</a></li>
+		
+	<li><a target="_top" title="2.6.0 其他几种常用对话框基本使用" href="android-tutorial-dialog.html" >2.6.0 其他几种常用对话框基本使用</a></li>
+		
+	<li><a target="_top" title="2.6.1 PopupWindow(悬浮框)的基本使用" href="android-tutorial-popupwindow.html" >2.6.1 PopupWindow(悬浮框)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.6.2 菜单(Menu)" href="android-tutorial-menu.html" >2.6.2 菜单(Menu)</a></li>
+		
+	<li><a target="_top" title="2.6.3 ViewPager的简单使用" href="android-tutorial-viewpager.html" >2.6.3 ViewPager的简单使用</a></li>
+		
+	<li><a target="_top" title="2.6.4 DrawerLayout(官方侧滑菜单)的简单使用" href="android-tutorial-drawerlayout.html" >2.6.4 DrawerLayout(官方侧滑菜单)的简单使用</a></li>
+		
+	<li><a target="_top" title="3.1.1 基于监听的事件处理机制" href="android-tutorial-listen-event-handle.html" >3.1.1 基于监听的事件处理机制</a></li>
+		
+	<li><a target="_top" title="3.2 基于回调的事件处理机制" href="android-tutorial-callback-event-handle.html" >3.2 基于回调的事件处理机制</a></li>
+		
+	<li><a target="_top" title="3.3 Handler消息传递机制浅析" href="android-tutorial-handler-message.html" >3.3 Handler消息传递机制浅析</a></li>
+		
+	<li><a target="_top" title="3.4 TouchListener PK OnTouchEvent + 多点触碰" href="android-tutorial-touchlistener-ontouchevent.html" >3.4 TouchListener PK OnTouchEvent + 多点触碰</a></li>
+		
+	<li><a target="_top" title="3.5 监听EditText的内容变化" href="android-tutorial-listener-edittext-change.html" >3.5 监听EditText的内容变化</a></li>
+		
+	<li><a target="_top" title="3.6 响应系统设置的事件(Configuration类)" href="android-tutorial-configuration.html" >3.6 响应系统设置的事件(Configuration类)</a></li>
+		
+	<li><a target="_top" title="3.7 AnsyncTask异步任务" href="android-tutorial-ansynctask.html" >3.7 AnsyncTask异步任务</a></li>
+		
+	<li><a target="_top" title="3.8 Gestures(手势)" href="android-tutorial-gestures.html" >3.8 Gestures(手势)</a></li>
+		
+	<li><a target="_top" title="4.1.1 Activity初学乍练" href="android-tutorial-activity.html" >4.1.1 Activity初学乍练</a></li>
+		
+	<li><a target="_top" title="4.1.2 Activity初窥门径" href="android-tutorial-activity-start.html" >4.1.2 Activity初窥门径</a></li>
+		
+	<li><a target="_top" title="4.1.3 Activity登堂入室" href="android-tutorial-activity-intro.html" >4.1.3 Activity登堂入室</a></li>
+		
+	<li><a target="_top" title="4.2.1 Service初涉" href="android-tutorial-service-1.html" >4.2.1 Service初涉</a></li>
+		
+	<li><a target="_top" title="4.2.2 Service进阶" href="android-tutorial-service-2.html" >4.2.2 Service进阶</a></li>
+		
+	<li><a target="_top" title="4.2.3 Service精通" href="android-tutorial-service-3.html" >4.2.3 Service精通</a></li>
+		
+	<li><a target="_top" title="4.3.1 BroadcastReceiver牛刀小试" href="android-tutorial-broadcastreceiver.html" >4.3.1 BroadcastReceiver牛刀小试</a></li>
+		
+	<li><a target="_top" title="4.3.2 BroadcastReceiver庖丁解牛" href="android-tutorial-broadcastreceiver-2.html" >4.3.2 BroadcastReceiver庖丁解牛</a></li>
+		
+	<li><a target="_top" title="4.4.1 ContentProvider初探" href="android-tutorial-contentprovider.html" >4.4.1 ContentProvider初探</a></li>
+		
+	<li><a target="_top" title="4.4.2 ContentProvider再探——Document Provider" href="android-tutorial-contentprovider-2.html" >4.4.2 ContentProvider再探——Document Provider</a></li>
+		
+	<li><a target="_top" title="4.5.1 Intent的基本使用" href="android-tutorial-intent-base.html" >4.5.1 Intent的基本使用</a></li>
+		
+	<li><a target="_top" title="4.5.2 Intent之复杂数据的传递" href="android-tutorial-intent-pass-data.html" >4.5.2 Intent之复杂数据的传递</a></li>
+		
+	<li><a target="_top" title="5.1 Fragment基本概述" href="android-tutorial-fragment-base.html" >5.1 Fragment基本概述</a></li>
+		
+	<li><a target="_top" title="5.2.1 Fragment实例精讲——底部导航栏的实现(方法1)" href="android-tutorial-fragment-demo1.html" >5.2.1 Fragment实例精讲——底部导航栏的实现(方法1)</a></li>
+		
+	<li><a target="_top" title="5.2.2 Fragment实例精讲——底部导航栏的实现(方法2)" href="android-tutorial-fragment-demo2.html" >5.2.2 Fragment实例精讲——底部导航栏的实现(方法2)</a></li>
+		
+	<li><a target="_top" title="5.2.3 Fragment实例精讲——底部导航栏的实现(方法3)" href="android-tutorial-fragment-demo3.html" >5.2.3 Fragment实例精讲——底部导航栏的实现(方法3)</a></li>
+		
+	<li><a target="_top" title="5.2.4 Fragment实例精讲——底部导航栏+ViewPager滑动切换页面" href="android-tutorial-fragment-demo4.html" >5.2.4 Fragment实例精讲——底部导航栏+ViewPager滑动切换页面</a></li>
+		
+	<li><a target="_top" title="5.2.5 Fragment实例精讲——新闻(购物)类App列表Fragment的简单实现" href="android-tutorial-fragment-demo5.html" >5.2.5 Fragment实例精讲——新闻(购物)类App列表Fragment的简单实现</a></li>
+		
+	<li><a target="_top" title="6.1 数据存储与访问之——文件存储读写" href="android-tutorial-file.html" >6.1 数据存储与访问之——文件存储读写</a></li>
+		
+	<li><a target="_top" title="6.2 数据存储与访问之——SharedPreferences保存用户偏好参数" href="android-tutorial-sharedpreferences.html" >6.2 数据存储与访问之——SharedPreferences保存用户偏好参数</a></li>
+		
+	<li><a target="_top" title="6.3.1 数据存储与访问之——初见SQLite数据库" href="android-tutorial-sqlite-intro.html" >6.3.1 数据存储与访问之——初见SQLite数据库</a></li>
+		
+	<li><a target="_top" title="6.3.2 数据存储与访问之——又见SQLite数据库" href="android-tutorial-sqlite-2.html" >6.3.2 数据存储与访问之——又见SQLite数据库</a></li>
+		
+	<li><a target="_top" title="7.1.1 Android网络编程要学的东西与Http协议学习" href="android-tutorial-http.html" >7.1.1 Android网络编程要学的东西与Http协议学习</a></li>
+		
+	<li><a target="_top" title="7.1.2 Android Http请求头与响应头的学习" href="android-tutorial-http-response-header.html" >7.1.2 Android Http请求头与响应头的学习</a></li>
+		
+	<li><a target="_top" title="7.1.3 Android HTTP请求方式:HttpURLConnection" href="android-tutorial-httpurlconnection.html" >7.1.3 Android HTTP请求方式:HttpURLConnection</a></li>
+		
+	<li><a target="_top" title="7.1.4 Android HTTP请求方式:HttpClient" href="android-tutorial-httpclient.html" >7.1.4 Android HTTP请求方式:HttpClient</a></li>
+		
+	<li><a target="_top" title="7.2.1 Android XML数据解析" href="android-tutorial-xml.html" >7.2.1 Android XML数据解析</a></li>
+		
+	<li><a target="_top" title="7.2.2 Android JSON数据解析" href="android-tutorial-json.html" >7.2.2 Android JSON数据解析</a></li>
+		
+	<li><a target="_top" title="7.3.1 Android 文件上传" href="android-tutorial-upload-file.html" >7.3.1 Android 文件上传</a></li>
+		
+	<li><a target="_top" title="7.3.2 Android 文件下载（1）" href="android-tutorial-download1.html" >7.3.2 Android 文件下载（1）</a></li>
+		
+	<li><a target="_top" title="7.3.3 Android 文件下载（2）" href="android-tutorial-download2.html" >7.3.3 Android 文件下载（2）</a></li>
+		
+	<li><a target="_top" title="7.4 Android 调用 WebService" href="android-tutorial-webservice.html" >7.4 Android 调用 WebService</a></li>
+		
+	<li><a target="_top" title="7.5.1 WebView(网页视图)基本用法" href="android-tutorial-webview.html" >7.5.1 WebView(网页视图)基本用法</a></li>
+		
+	<li><a target="_top" title="7.5.2 WebView和JavaScrip交互基础" href="android-tutorial-webview-javascrip.html" >7.5.2 WebView和JavaScrip交互基础</a></li>
+		
+	<li><a target="_top" title="7.5.3 Android 4.4后WebView的一些注意事项" href="android-tutorial-webview-attention.html" >7.5.3 Android 4.4后WebView的一些注意事项</a></li>
+		
+	<li><a target="_top" title="7.5.4 WebView文件下载" href="android-tutorial-webview-download-file.html" >7.5.4 WebView文件下载</a></li>
+		
+	<li><a target="_top" title="7.5.5 WebView缓存问题" href="android-tutorial-webview-cache.html" >7.5.5 WebView缓存问题</a></li>
+		
+	<li><a target="_top" title="7.5.6 WebView处理网页返回的错误码信息" href="android-tutorial-webview-error-code.html" >7.5.6 WebView处理网页返回的错误码信息</a></li>
+		<li>
+	7.6.1 Socket学习网络基础准备	</li>
+	
+		
+	<li><a target="_top" title="7.6.2 基于TCP协议的Socket通信(1)" href="android-tutorial-socket1.html" >7.6.2 基于TCP协议的Socket通信(1)</a></li>
+		
+	<li><a target="_top" title="7.6.3 基于TCP协议的Socket通信(2)" href="android-tutorial-socket2.html" >7.6.3 基于TCP协议的Socket通信(2)</a></li>
+		
+	<li><a target="_top" title="7.6.4 基于UDP协议的Socket通信" href="android-tutorial-udp-socket.html" >7.6.4 基于UDP协议的Socket通信</a></li>
+		
+	<li><a target="_top" title="8.1.1 Android中的13种Drawable小结 Part 1" href="android-tutorial-drawable1.html" >8.1.1 Android中的13种Drawable小结 Part 1</a></li>
+		
+	<li><a target="_top" title="8.1.2 Android中的13种Drawable小结 Part 2" href="android-tutorial-drawable2.html" >8.1.2 Android中的13种Drawable小结 Part 2</a></li>
+		
+	<li><a target="_top" title="8.1.3 Android中的13种Drawable小结 Part 3" href="android-tutorial-drawable3.html" >8.1.3 Android中的13种Drawable小结 Part 3</a></li>
+		
+	<li><a target="_top" title="8.2.1 Bitmap(位图)全解析 Part 1" href="android-tutorial-bitmap1.html" >8.2.1 Bitmap(位图)全解析 Part 1</a></li>
+		
+	<li><a target="_top" title="8.2.2 Bitmap引起的OOM问题" href="android-tutorial-bitmap2.html" >8.2.2 Bitmap引起的OOM问题</a></li>
+		
+	<li><a target="_top" title="8.3.1 三个绘图工具类详解" href="android-tutorial-drawable-tool.html" >8.3.1 三个绘图工具类详解</a></li>
+		
+	<li><a target="_top" title="8.3.2 绘图类实战示例" href="android-tutorial-bitmap-demo.html" >8.3.2 绘图类实战示例</a></li>
+		
+	<li><a target="_top" title="8.3.3 Paint API之—— MaskFilter(面具)" href="android-tutorial-maskfilter.html" >8.3.3 Paint API之—— MaskFilter(面具)</a></li>
+		
+	<li><a target="_top" title="8.3.4 Paint API之—— Xfermode与PorterDuff详解(一)" href="android-tutorial-xfermode-porterduff.html" >8.3.4 Paint API之—— Xfermode与PorterDuff详解(一)</a></li>
+		
+	<li><a target="_top" title="8.3.5 Paint API之—— Xfermode与PorterDuff详解(二)" href="android-tutorial-xfermode-porterduff2.html" >8.3.5 Paint API之—— Xfermode与PorterDuff详解(二)</a></li>
+		
+	<li><a target="_top" title="8.3.6 Paint API之—— Xfermode与PorterDuff详解(三)" href="android-tutorial-xfermode-porterduff3.html" >8.3.6 Paint API之—— Xfermode与PorterDuff详解(三)</a></li>
+		
+	<li><a target="_top" title="8.3.7 Paint API之—— Xfermode与PorterDuff详解(四)" href="android-tutorial-xfermode-porterduff4.html" >8.3.7 Paint API之—— Xfermode与PorterDuff详解(四)</a></li>
+		
+	<li><a target="_top" title="8.3.8 Paint API之—— Xfermode与PorterDuff详解(五)" href="android-tutorial-xfermode-porterduff5.html" >8.3.8 Paint API之—— Xfermode与PorterDuff详解(五)</a></li>
+		
+	<li><a target="_top" title="8.3.9 Paint API之—— ColorFilter(颜色过滤器)(1/3)" href="android-tutorial-colorfilter1.html" >8.3.9 Paint API之—— ColorFilter(颜色过滤器)(1/3)</a></li>
+		
+	<li><a target="_top" title="8.3.10 Paint API之—— ColorFilter(颜色过滤器)(2-3)" href="android-tutorial-colorfilterl2.html" >8.3.10 Paint API之—— ColorFilter(颜色过滤器)(2-3)</a></li>
+		
+	<li><a target="_top" title="8.3.11 Paint API之—— ColorFilter(颜色过滤器)(3-3)" href="android-tutorial-colorfilter3.html" >8.3.11 Paint API之—— ColorFilter(颜色过滤器)(3-3)</a></li>
+		
+	<li><a target="_top" title="8.3.12 Paint API之—— PathEffect(路径效果)" href="android-tutorial-patheffect.html" >8.3.12 Paint API之—— PathEffect(路径效果)</a></li>
+		
+	<li><a target="_top" title="8.3.13 Paint API之—— Shader(图像渲染)" href="android-tutorial-shader.html" >8.3.13 Paint API之—— Shader(图像渲染)</a></li>
+		
+	<li><a target="_top" title="8.3.14 Paint几个枚举/常量值以及ShadowLayer阴影效果" href="android-tutorial-shadowlayer.html" >8.3.14 Paint几个枚举/常量值以及ShadowLayer阴影效果</a></li>
+		
+	<li><a target="_top" title="8.3.15 Paint API之——Typeface(字型)" href="android-tutorial-typeface.html" >8.3.15 Paint API之——Typeface(字型)</a></li>
+		
+	<li><a target="_top" title="8.3.16 Canvas API详解(Part 1)" href="android-tutorial-canvas-api1.html" >8.3.16 Canvas API详解(Part 1)</a></li>
+		
+	<li><a target="_top" title="8.3.17 Canvas API详解(Part 2)剪切方法合集" href="android-tutorial-canvas-api2.html" >8.3.17 Canvas API详解(Part 2)剪切方法合集</a></li>
+		
+	<li><a target="_top" title="8.3.18 Canvas API详解(Part 3)Matrix和drawBitmapMesh" href="android-tutorial-canvas-api3.html" >8.3.18 Canvas API详解(Part 3)Matrix和drawBitmapMesh</a></li>
+		
+	<li><a target="_top" title="8.4.1 Android动画合集之帧动画" href="android-tutorial-animation.html" >8.4.1 Android动画合集之帧动画</a></li>
+		
+	<li><a target="_top" title="8.4.2 Android动画合集之补间动画" href="android-tutorial-alphaanimation.html" >8.4.2 Android动画合集之补间动画</a></li>
+		
+	<li><a target="_top" title="8.4.3 Android动画合集之属性动画-初见" href="android-tutorial-valueanimator.html" >8.4.3 Android动画合集之属性动画-初见</a></li>
+		
+	<li><a target="_top" title="8.4.4 Android动画合集之属性动画-又见" href="android-tutorial-valueanimator2.html" >8.4.4 Android动画合集之属性动画-又见</a></li>
+		
+	<li><a target="_top" title="9.1 使用SoundPool播放音效(Duang~)" href="android-tutorial-soundpool.html" >9.1 使用SoundPool播放音效(Duang~)</a></li>
+		
+	<li><a target="_top" title="9.2 MediaPlayer播放音频与视频" href="android-tutorial-mediaplayer.html" >9.2 MediaPlayer播放音频与视频</a></li>
+		
+	<li><a target="_top" title="9.3 使用Camera拍照" href="android-tutorial-camera.html" >9.3 使用Camera拍照</a></li>
+		
+	<li><a target="_top" title="9.4 使用MediaRecord录音" href="android-tutorial-mediarecord.html" >9.4 使用MediaRecord录音</a></li>
+		
+	<li><a target="_top" title="10.1 TelephonyManager(电话管理器)" href="android-tutorial-telephonymanager.html" >10.1 TelephonyManager(电话管理器)</a></li>
+		
+	<li><a target="_top" title="10.2 SmsManager(短信管理器)" href="android-tutorial-smsmanager.html" >10.2 SmsManager(短信管理器)</a></li>
+		
+	<li><a target="_top" title="10.3 AudioManager(音频管理器)" href="android-tutorial-audiomanager.html" >10.3 AudioManager(音频管理器)</a></li>
+		
+	<li><a target="_top" title="10.4 Vibrator(振动器)" href="android-tutorial-vibrator.html" >10.4 Vibrator(振动器)</a></li>
+		
+	<li><a target="_top" title="10.5 AlarmManager(闹钟服务)" href="android-tutorial-alarmmanager.html" >10.5 AlarmManager(闹钟服务)</a></li>
+		
+	<li><a target="_top" title="10.6 PowerManager(电源服务)" href="android-tutorial-powermanager.html" >10.6 PowerManager(电源服务)</a></li>
+		
+	<li><a target="_top" title="10.7 WindowManager(窗口管理服务)" href="android-tutorial-windowmanager.html" >10.7 WindowManager(窗口管理服务)</a></li>
+		
+	<li><a target="_top" title="10.8 LayoutInflater(布局服务)" href="android-tutorial-layoutinflater.html" >10.8 LayoutInflater(布局服务)</a></li>
+		
+	<li><a target="_top" title="10.9 WallpaperManager(壁纸管理器)" href="android-tutorial-wallpapermanager.html" >10.9 WallpaperManager(壁纸管理器)</a></li>
+		
+	<li><a target="_top" title="10.10 传感器专题(1)——相关介绍" href="android-tutorial-sensor1.html" >10.10 传感器专题(1)——相关介绍</a></li>
+		
+	<li><a target="_top" title="10.11 传感器专题(2)——方向传感器" href="android-tutorial-sensor2.html" >10.11 传感器专题(2)——方向传感器</a></li>
+		
+	<li><a target="_top" title="10.12 传感器专题(3)——加速度/陀螺仪传感器" href="android-tutorial-sensor3.html" >10.12 传感器专题(3)——加速度/陀螺仪传感器</a></li>
+		
+	<li><a target="_top" title="10.12 传感器专题(4)——其他传感器了解" href="android-tutorial-sensor4.html" >10.12 传感器专题(4)——其他传感器了解</a></li>
+		
+	<li><a target="_top" title="10.14 Android GPS初涉" href="android-tutorial-gps.html" >10.14 Android GPS初涉</a></li>
+		
+	<li><a target="_top" title="11.0《2015最新Android基础入门教程》完结散花~" href="android-tutorial-end.html" >11.0《2015最新Android基础入门教程》完结散花~</a></li>
+		
+	<li><a target="_top" title="12.1Android 实战 ：DrySister看妹子应用(第一版) -- 项目搭建与简单实现" href="android-tutorial-exercise-1.html" >12.1Android 实战 ：DrySister看妹子应用(第一版) -- 项目搭建与简单实现</a></li>
+		
+	<li><a target="_top" title="12.2 DrySister看妹子应用(第一版)——2.解析后台数据" href="android-tutorial-exercise-2.html" >12.2 DrySister看妹子应用(第一版)——2.解析后台数据</a></li>
+		
+	<li><a target="_top" title="12.3 DrySister看妹子应用(第一版)——3.图片加载优化(写个图片缓存小框架)" href="android-tutorial-exercise-3.html" >12.3 DrySister看妹子应用(第一版)——3.图片加载优化(写个图片缓存小框架)</a></li>
+		
+	<li><a target="_top" title="12.4 DrySister看妹子应用(第一版)——4.添加数据缓存(加入SQLite)" href="android-tutorial-exercise-4.html" >12.4 DrySister看妹子应用(第一版)——4.添加数据缓存(加入SQLite)</a></li>
+		
+	<li><a target="_top" title="12.5 DrySister看妹子应用(第一版)——5.代码回顾，调整与日志类编写" href="android-tutorial-exercise-5.html" >12.5 DrySister看妹子应用(第一版)——5.代码回顾，调整与日志类编写</a></li>
+		
+	<li><a target="_top" title="12.6 DrySister看妹子应用(第一版)——6.图标制作，混淆，签名打包，APK瘦身，应用发布" href="android-tutorial-exercise-6-html.html" >12.6 DrySister看妹子应用(第一版)——6.图标制作，混淆，签名打包，APK瘦身，应用发布</a></li>
+	</ul></div>	</div>
+</div>
+
+
+<!-- 底部 -->
+
+
+<div id="footer" class="mar-t50">
+   <div class="runoob-block">
+    <div class="runoob cf">
+     <dl>
+      <dt>
+       在线实例
+      </dt>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/html/html-examples.html">HTML 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/css/css-examples.html">CSS 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/js/js-examples.html">JavaScript 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="../ajx/ajax-examples.html">Ajax 实例</a>
+      </dd>
+       <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/jquery/jquery-examples.html">jQuery 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/xml/xml-examples.html">XML 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="../html/java-examples.html">Java 实例</a>
+      </dd>
+     
+     </dl>
+     <dl>
+      <dt>
+      字符集&工具
+      </dt>
+      <dd>
+       &middot; <a target="_blank" href="../charsets.1">HTML 字符集设置</a>
+      </dd>
+      <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/html-ascii.html">HTML ASCII 字符集</a>
+      </dd>
+     <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/ref-entities.html">HTML ISO-8859-1</a>
+      </dd> 
+      <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/html-symbols.html">HTML 实体符号</a>
+      </dd>
+      <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/html-colorpicker.html">HTML 拾色器</a>
+      </dd>
+      <dd>
+       &middot; <a target="_blank" href="http://c.runoob.com/front-end/53">JSON 格式化工具</a>
+      </dd>
+     </dl>
+     <dl>
+      <dt>
+       最新更新
+      </dt>
+                   <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/w3cnote/scala-option-some-none.html" title="Scala 使用 Option、Some、None，避免使用 Null">Scala 使用 Opti...</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/w3cnote/viewport-deep-understanding.html" title="viewport 深入理解">viewport 深入理解</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/w3cnote/cpp-reference-type.html" title="C++ 引用类型">C++ 引用类型</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/w3cnote/php-different-include-and-require.html" title="PHP 中 include 和 require 的区别详解">PHP 中 include ...</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/react/react-lists-and-keys.html" title="React 列表 &#038; Keys">React 列表 &#03...</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/react/react-conditional-rendering.html" title="React 条件渲染">React 条件渲染</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/react/react-event-handle.html" title="React 事件处理">React 事件处理</a>
+      </dd>
+             </dl>
+     <dl>
+      <dt>
+       站点信息
+      </dt>
+      <dd>
+       &middot;
+       <a target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=ssbDyoOAgfLU3crf09venNHd3w" rel="external nofollow">意见反馈</a>
+      <!--<a class="wxpopup" onclick="popFunction()">合作联系
+       <span class="popuptext" id="myPopup">微信：<strong>centos5</strong></span>
+      </a>-->
+      </dd>
+      <dd>
+       &middot;
+      <a target="_blank" href="http://school.yunwei.edu/disclaimer">免责声明</a>
+       </dd>
+       <!--
+       <dd style="display: block;">
+       &middot;
+      <a href="javascript:void(0)" onclick="dashangToggle()" style="font-weight:bold;color:#f00;" title="打赏，支持一下">打赏一下</a>
+       </dd>
+      -->
+      <dd>
+       &middot;
+       <a target="_blank" href="http://school.yunwei.edu/aboutus">关于我们</a>
+       </dd>
+      <dd>
+       &middot;
+      <a target="_blank" href="http://school.yunwei.edu/archives">文章归档</a>
+      </dd>
+      <!--
+      <dd>
+       &middot;
+      <a href="https://www.xiaoyouxi100.com/?from=runoob" onclick="_hmt.push(['_trackEvent', '小游戏', 'click', 'xiaoyouxi100']);" target="_blank" title="小游戏">小游戏</a>
+      </dd>
+      -->
+     </dl>
+    
+     <div class="search-share">
+      <div class="app-download">
+        <div>
+         <strong>关注微信</strong>
+        </div>
+      </div>
+      <div class="share">
+            <img width="128" height="128" src="http://school.yunwei.edu/wp-content/themes/runoob/assets/images/qrcode.png" />
+       </div>
+     </div>
+     
+    </div>
+   </div>
+   <div class="w-1000 copyright">
+     Copyright &copy; 2013-2018    <strong><a href="http://school.yunwei.edu/" target="_blank">菜鸟教程</a></strong>&nbsp;
+    <strong><a href="http://school.yunwei.edu/" target="_blank">runoob.com</a></strong> All Rights Reserved. 备案号：闽ICP备15012807号-1
+   </div>
+  </div>
+  <div class="fixed-btn">
+    <a class="go-top" href="javascript:void(0)" title="返回顶部"> <i class="fa fa-angle-up"></i></a>
+    <a class="qrcode"  href="javascript:void(0)" title="关注我们"><i class="fa fa-qrcode"></i></a>
+    <a class="writer" style="display:none" href="javascript:void(0)"   title="标记/收藏"><i class="fa fa-star" aria-hidden="true"></i></a>
+    <!-- qrcode modal -->
+    <div id="bottom-qrcode" class="modal panel-modal hide fade in">
+      <h4>微信关注</h4>
+      <div class="panel-body"><img alt="微信关注" width="128" height="128" src="http://school.yunwei.edu/wp-content/themes/runoob/assets/images/qrcode.png"></div> 
+    </div>
+  </div>
+
+  <div class="hide_box"></div>
+    <div class="shang_box">
+      <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="http://static.runoob.com/images/dashang/close.jpg" alt="取消" /></a>
+       
+      <div class="shang_tit">
+        <p>感谢您的支持，我会继续努力的!</p>
+      </div>
+      <div class="shang_payimg">
+        <img src="http://static.runoob.com/images/dashang/weipayimg.png" alt="扫码支持" title="扫一扫" />
+      </div>
+        <div class="pay_explain">扫码打赏，你说多少就多少</div>
+      <div class="shang_payselect">
+        <div class="pay_item checked" data-id="weipay">
+          <span class="radiobox"></span>
+          <span class="pay_logo"><img src="http://static.runoob.com/images/dashang/wechat.jpg" alt="微信" /></span>
+        </div>
+        <div class="pay_item" data-id="alipay">
+          <span class="radiobox"></span>
+          <span class="pay_logo"><img src="http://static.runoob.com/images/dashang/alipay.jpg" alt="支付宝" /></span>
+        </div>
+        
+      </div>
+      <div class="shang_info">
+        <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+        <p><a href="http://c.runoob.com/codedemo/5348" target="_blank"><span style=" font-size: 14px;color: #000;font-weight: bold;">点我查看本站打赏源码！</span></a></p>
+      </div>
+    </div>
+  <div id="testClick"></div>
+ <div style="display:none;">
+ 
+ <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3eec0b7da6548cf07db3bc477ea905ee";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-84264393-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-84264393-2');
+</script>
+</div>
+<script>
+window.jsui={
+    www: '//wschool.yunwei.edu',
+    uri: '//school.yunwei.edu/wp-content/themes/runoob'
+};
+</script>
+<style>
+ol,ul{list-style:none}.cd-switcher a{text-decoration:none;outline:0}.cd-switcher a:hover{text-decoration:underline}a:focus{outline:0;-moz-outline:0}.main_nav{width:300px;height:60px;margin:60px auto 10px auto}.main_nav li{float:left;width:60px;margin-right:10px;font-size:16px;padding:.6em 1em;border-radius:3em;background:#2f889a;text-align:center}.main_nav li a{color:#fff}.errtip{background-color:#fceaea;color:#db5353;padding:8px 15px;font-size:14px;border:1px solid #fc9797;border-radius:5px}.cd-user-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(52,54,66,0.9);z-index:3;overflow-y:auto;cursor:pointer;visibility:hidden;opacity:0;-webkit-transition:opacity .3s 0,visibility 0 .3s;-moz-transition:opacity .3s 0,visibility 0 .3s;transition:opacity .3s 0,visibility 0 .3s}.cd-user-modal.is-visible{visibility:visible;opacity:1;-webkit-transition:opacity .3s 0,visibility 0 0;-moz-transition:opacity .3s 0,visibility 0 0;transition:opacity .3s 0,visibility 0 0}.cd-user-modal.is-visible .cd-user-modal-container{-webkit-transform:translateY(0);-moz-transform:translateY(0);-ms-transform:translateY(0);-o-transform:translateY(0);transform:translateY(0)}.cd-user-modal-container{position:relative;width:90%;max-width:500px;background:#FFF;margin:3em auto 4em;cursor:auto;border-radius:.25em;-webkit-transform:translateY(-30px);-moz-transform:translateY(-30px);-ms-transform:translateY(-30px);-o-transform:translateY(-30px);transform:translateY(-30px);-webkit-transition-property:-webkit-transform;-moz-transition-property:-moz-transform;transition-property:transform;-webkit-transition-duration:.3s;-moz-transition-duration:.3s;transition-duration:.3s}.cd-user-modal-container .cd-switcher:after{content:"";display:table;clear:both}.cd-user-modal-container .cd-switcher li{width:50%;float:left;text-align:center}.cd-user-modal-container .cd-switcher li:first-child a{border-radius:.25em 0 0 0}.cd-user-modal-container .cd-switcher li:last-child a{border-radius:0 .25em 0 0}.cd-user-modal-container .cd-switcher a{font-size:1.2em;font-weight:bold;display:block;width:100%;height:50px;line-height:50px;background:#e8f1e2;color:#96b880}.cd-user-modal-container .cd-switcher a.selected{background:#FFF;color:#505260}@media only screen and (min-width:600px){.cd-user-modal-container{margin:4em auto}.cd-user-modal-container .cd-switcher a{height:70px;line-height:70px}}.cd-form{padding:1.4em}.cd-form .fieldset{position:relative;margin:1.4em 0}.cd-form .fieldset:first-child{margin-top:0}.cd-form .fieldset:last-child{margin-bottom:0}.cd-form label{font-size:16px;font-size:.875rem}.cd-form label.image-replace{display:inline-block;position:absolute;left:15px;top:50%;bottom:auto;-webkit-transform:translateY(-50%);-moz-transform:translateY(-50%);-ms-transform:translateY(-50%);-o-transform:translateY(-50%);transform:translateY(-50%);height:20px;width:20px;overflow:hidden;text-indent:100%;white-space:nowrap;color:transparent;text-shadow:none;background-repeat:no-repeat;background-position:50% 0}.cd-form label.cd-username{background-image:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-username.svg")}.cd-form label.cd-email{background-image:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-email.svg")}.cd-form label.cd-password{background-image:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-password.svg")}.cd-form input{margin:0;padding:0;border-radius:.25em}.cd-form input.full-width{width:80%}.cd-form input.full-width2{width:94%}.cd-form input.has-padding{padding:12px 20px 12px 50px}.cd-form input.has-border{border:1px solid #d2d8d8;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none;-o-appearance:none;appearance:none}.cd-form input.has-border:focus{border-color:#98b880;box-shadow:0 0 5px rgba(52,54,66,0.1);outline:0}.cd-form input.has-error{border:1px solid #d76666}.cd-form input[type=password]{padding-right:65px}.cd-form input[type=submit]{padding:16px 0;cursor:pointer;background:#96b97d;color:#FFF;font-weight:bold;border:0;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none;-o-appearance:none;appearance:none;font-size:1.2em;font-weight:bold}.no-touch .cd-form input[type=submit]:hover,.no-touch .cd-form input[type=submit]:focus{background:#3599ae;outline:0}@media only screen and (min-width:600px){.cd-form{padding:2em}.cd-form .fieldset{margin:2em 0}.cd-form .fieldset:first-child{margin-top:0}.cd-form .fieldset:last-child{margin-bottom:0}.cd-form input.has-padding{padding:16px 20px 16px 50px}.cd-form input[type=submit]{padding:16px 0}}.cd-close-form{display:block;position:absolute;width:40px;height:40px;right:0;top:-40px;background:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-close.svg") no-repeat center center;text-indent:100%;white-space:nowrap;overflow:hidden}@media only screen and (min-width:1170px){}#cd-login,#cd-signup,#cd-reset-password{display:none}#cd-login.is-selected,#cd-signup.is-selected,#cd-reset-password.is-selected{display:block}
+</style>
+<div class="cd-user-modal"> 
+	<div class="cd-user-modal-container">
+		<ul class="cd-switcher">
+			<li><a href="javascript:;">用户登录</a></li>
+			<li><a href="javascript:;">注册新用户</a></li>
+		</ul>
+
+		<div id="cd-login"> <!-- 登录表单 -->
+			<div class="cd-form">
+				<p class="fieldset">
+					<label class="image-replace cd-username" for="signin-username">用户名</label>
+					<input class="full-width has-padding has-border" id="signin-username" name=username type="text" placeholder="输入用户名">
+				</p>
+
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="signin-password">密码</label>
+					<input class="full-width has-padding has-border" id="signin-password" name="password" type="password"  placeholder="输入密码">
+				</p>
+				
+				<p class="fieldset">
+					<input type="checkbox" id="remember-me" checked>
+					<label for="remember-me">记住登录状态</label>
+          <a href="http://school.yunwei.edu/reset-password" style="float: right;padding-right: 20px;" target="_blank">忘记密码？</a>
+				</p>
+ 				<input type="hidden" name="action" value="signin">
+				<p class="fieldset">
+					<input class="full-width2" type="submit" value="登 录">
+				</p>
+        <div class="err-msg"></div>
+			</div>
+		</div>
+
+		<div id="cd-signup"> <!-- 注册表单 -->
+			<div class="cd-form">
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="verifycode">邀请码</label>
+					<input class="full-width has-padding has-border" id="signup-verifycode" name="verifycode" type="text"  placeholder="输入邀请码">
+				</p>
+				<p class="fieldset">
+					<label class="image-replace cd-username" for="signup-username">用户名</label>
+					<input class="full-width has-padding has-border" id="signup-username" name="name" type="text" placeholder="输入用户名">
+				</p>
+
+				<p class="fieldset">
+					<label class="image-replace cd-email" for="signup-email">邮箱</label>
+					<input class="full-width has-padding has-border" name="email" id="signup-email" type="email" placeholder="输入mail">
+				</p>
+
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="signup-password">密码</label>
+					<input class="full-width has-padding has-border" id="signup-password" name="password" type="password"  placeholder="输入密码">
+				</p>
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="signup-password2">重复输入密码</label>
+					<input class="full-width has-padding has-border" id="signup-password2" name="password2" type="password"  placeholder="重复输入密码">
+				</p>
+				
+				<!-- 
+				<p class="fieldset">
+					<input type="checkbox" id="accept-terms">
+					<label for="accept-terms">我已阅读并同意 <a href="javascript:;">用户协议</a></label>
+				</p>
+				 -->
+				 
+				 <input type="hidden" name="action" value="signup">
+				<p class="fieldset">
+					<input class="full-width2" type="submit" value="注册新用户">
+				</p>
+				<p class="fieldset">
+				  <a href="http://school.yunwei.edu/w3cnote/runoob-user-test-intro.html#invite" target="_blank">如何获取邀请码？</a>
+				  </p>
+				<div class="err-msg"></div>
+			</div>
+
+		</div>
+
+		<a href="javascript:;" class="cd-close-form">关闭</a>
+	</div>
+</div> 
+<script src="http://school.yunwei.edu/wp-content/themes/runoob/assets/js/main.js?v=1.188"></script>
+<script src="http://static.runoob.com/assets/libs/hl/run_prettify.js"></script>
+</body>
+</html>

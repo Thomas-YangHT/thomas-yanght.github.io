@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>数据库页布局</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="数据库物理存储" HREF="http://school.yunwei.edu/manual/PostgreSQL/storage.html"><LINK REL="PREVIOUS" TITLE="初始化分支" HREF="storage-init.html"><LINK REL="NEXT" TITLE="BKI后端接口" HREF="http://school.yunwei.edu/manual/PostgreSQL/bki.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/storage.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="初始化分支" HREF="storage-init.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/storage.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 58. 数据库物理存储</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="BKI后端接口" HREF="http://school.yunwei.edu/manual/PostgreSQL/bki.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="STORAGE-PAGE-LAYOUT">58.6. 数据库页布局</A></H1><P>本节对<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>中表和索引使用的页格式进行介绍。<A NAME="AEN103053" HREF="storage-page-layout.html#FTN.AEN103053"><SPAN CLASS="footnote">[1]</SPAN></A>
+序列表和<ACRONYM CLASS="ACRONYM">TOAST</ACRONYM>表的格式与普通表类似。</P><P> 下面说明一下，一个<I CLASS="FIRSTTERM">字节</I>假定为包含8个比特位。另外，
+术语<I CLASS="FIRSTTERM">项</I>为存储在页上的一个独立数据值。
+在表中，一项是一行；在索引中，一项为一个索引条目。 </P><P>每个表和索引存储为<I CLASS="FIRSTTERM">页</I>的数组，页的大小固定
+（通常 8 kB，不过当编译服务器的时候，可以选择不同的页大小）。
+在表中，所有的页是逻辑等价的，所以一个特殊项（行）
+可以存储在任意页。在索引中，第一页通常保留为持有控制信息的<I CLASS="FIRSTTERM">元页</I>，
+这里可以有不同类型的索引页，这依赖于索引访问方法。</P><P> <A HREF="storage-page-layout.html#PAGE-TABLE">&#34920; 58-2</A>为一个页的整体布局，每页有5部分。</P><DIV CLASS="TABLE"><A NAME="PAGE-TABLE"></A><P><B>&#34920; 58-2. 页整体布局</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><THEAD><TR><TH>项</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD>PageHeaderData</TD><TD>24字节长整型。包含关于页的一般信息，包括空闲空间指针。</TD></TR><TR><TD>ItemIdData</TD><TD>指向实际项的（偏移量，长度）数组对。每项4字节。</TD></TR><TR><TD>Free space</TD><TD>未分配空间。从这个区域开始分配新项指针，从结尾开始分配新项。</TD></TR><TR><TD>Items</TD><TD>实际项本身</TD></TR><TR><TD>Special space</TD><TD>索引访问方法专用数据。不同方法存储不同的数据。对于普通表该区域为空。</TD></TR></TBODY></TABLE></DIV><P> 每页的前24个字节构成一个页头（PageHeaderData）。
+在<A HREF="storage-page-layout.html#PAGEHEADERDATA-TABLE">&#34920; 58-3</A>有它的详细格式。
+前两个字段跟踪该页最近的WAL条目。
+下边的一个2字节的字段包含标志位。
+随后有3个2字节整数字段（<TT CLASS="STRUCTFIELD">pd_lower</TT>, <TT CLASS="STRUCTFIELD">pd_upper</TT>,
+和<TT CLASS="STRUCTFIELD">pd_special</TT>）。
+这些字段分别表示从页开始位置至未分配空间的开始，未分配空间的结束，
+专用空间的开始处的偏移字节数。页头中随后的2字节，pd_pagesize_version，
+存储页大小和版本指示符。 从<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 8.3开始版本编号是4；
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 8.1和8.2使用版本编号3；
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 8.0使用版本编号2；
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 7.3和7.4使用版本编号1；
+先前发布版本使用版本编号0。（在大多数这些版本中，基本的页布局和头格式没有变化，但是堆的行头有变化.）
+页面的大小基本上只用于交叉检查；在安装的版本中，
+不支持多种页面大小。最后一个字段是个提示，显示是否整理页可能是有利的，它跟踪该页上最旧的未整理的XMAX。</P><DIV CLASS="TABLE"><A NAME="PAGEHEADERDATA-TABLE"></A><P><B>&#34920; 58-3. PageHeaderData布局</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><COL><THEAD><TR><TH>字段</TH><TH>类型</TH><TH>长度</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD>pd_lsn</TD><TD>XLogRecPtr</TD><TD>8字节</TD><TD>LSN: 该页上最后的变化对应的xlog记录的最后字节的下一字节</TD></TR><TR><TD>pd_tli</TD><TD>uint16</TD><TD>2字节</TD><TD>最后变化对应的时间线ID（仅其最低16位）</TD></TR><TR><TD>pd_flags</TD><TD>uint16</TD><TD>2字节</TD><TD>标志位</TD></TR><TR><TD>pd_lower</TD><TD>LocationIndex</TD><TD>2字节</TD><TD>到空闲空间开始处的偏移量</TD></TR><TR><TD>pd_upper</TD><TD>LocationIndex</TD><TD>2字节</TD><TD>到空闲空间结尾处的偏移量</TD></TR><TR><TD>pd_special</TD><TD>LocationIndex</TD><TD>2字节</TD><TD>到专用空间开始处的偏移量</TD></TR><TR><TD>pd_pagesize_version</TD><TD>uint16</TD><TD>2字节</TD><TD>页大小和布局版本号信息</TD></TR><TR><TD>pd_prune_xid</TD><TD>TransactionId</TD><TD>4字节</TD><TD>页上最旧的未修整的XMAX，如果没有则为零。</TD></TR></TBODY></TABLE></DIV><P> 在<TT CLASS="FILENAME">src/include/storage/bufpage.h</TT>可以找到所有的详细信息。</P><P> 紧挨着页头的是项标识符（<TT CLASS="TYPE">ItemIdData</TT>），每个4字节。
+一个项标识符包含一个到项开始的字节偏移，
+其长度以字节计，和一些影响它解释的属性位。
+新项标识符需要从未分配空间的开始处分配。
+可以通过查看<TT CLASS="STRUCTFIELD">pd_lower</TT>来确定项标识符的数量，分配新的项标识符时，
+pd_lower会随之增加。因为一个项标识符从来不移动直到释放了它，即使为了紧凑空闲空间，项本身被移除，引用该项的索引可以长期被使用。实际上，
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>创建的每个指向项的指针（<TT CLASS="TYPE">ItemPointer</TT>，也称之为<TT CLASS="TYPE">CTID</TT>，是由页号和项标识符索引组成的。</P><P> 项本身从未分配空间的结尾处开始反向存储。确切的结构取决于包含什么表。
+表和序列两者都使用一个名为<TT CLASS="TYPE">HeapTupleHeaderData</TT>的结构，下面描述。</P><P>最后的段是<SPAN CLASS="QUOTE">"特殊段"</SPAN>，其可以包含任何想存放访问方法。
+例如，b-tree索引存储指向该页左右兄弟的连接，以及相应索引结构的一些其它数据。
+普通表不使用特殊段
+（通过设置<TT CLASS="STRUCTFIELD">pd_special</TT>等于页大小来表示）。</P><P> 所有表的行结构相同。有个固定大小的头（在大多数机器占用23字节），
+随后一个可选的NULL位图项，对象ID字段和用户数据。
+该头的详细信息见<A HREF="storage-page-layout.html#HEAPTUPLEHEADERDATA-TABLE">&#34920; 58-4</A>。
+实际的用户数据（行中的列）从<TT CLASS="STRUCTFIELD">t_hoff</TT>表示的偏移量开始，
+它必须始终是平台的MAXALIGN的倍数。
+仅在<TT CLASS="STRUCTFIELD">t_infomask</TT>设置了<I CLASS="FIRSTTERM">HEAP_HASNULL</I>位时，NULL位图才存在。
+如果它存在，它就开始于固定头的后面，占用足够的字节，每数据列一位。
+（总共<TT CLASS="STRUCTFIELD">t_natts</TT>位） 在这个位列表中，1位表示非空， 0 表示空。
+仅在<TT CLASS="STRUCTFIELD">t_infomask</TT>设置了<I CLASS="FIRSTTERM">HEAP_HASOID</I>位时，对象ID 才存在。
+如果存在，它将出现在t_hoff边界前。任何使 t_hoff 为MAXALIGN倍数的填充将出现在NULL位图和对象ID之间。（反过来又保证对象ID得到恰当的对齐）</P><DIV CLASS="TABLE"><A NAME="HEAPTUPLEHEADERDATA-TABLE"></A><P><B>&#34920; 58-4. HeapTupleHeaderData布局</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><COL><THEAD><TR><TH>字段</TH><TH>类型</TH><TH>长度</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD>t_xmin</TD><TD>TransactionId</TD><TD>4字节</TD><TD>插入XID戳</TD></TR><TR><TD>t_xmax</TD><TD>TransactionId</TD><TD>4字节</TD><TD>删除XID戳</TD></TR><TR><TD>t_cid</TD><TD>CommandId</TD><TD>4字节</TD><TD>插入和/或删除 CID戳(使用t_xvac覆盖)</TD></TR><TR><TD>t_xvac</TD><TD>TransactionId</TD><TD>4字节</TD><TD>VACUUM操作移动一行版本的XID</TD></TR><TR><TD>t_ctid</TD><TD>ItemPointerData</TD><TD>6字节</TD><TD>这个当前的或新行版本的TID</TD></TR><TR><TD>t_infomask2</TD><TD>uint16</TD><TD>2字节</TD><TD>字段个数，以及各种标志位</TD></TR><TR><TD>t_infomask</TD><TD>uint16</TD><TD>2字节</TD><TD>各种标志位</TD></TR><TR><TD>t_hoff</TD><TD>uint8</TD><TD>1字节</TD><TD>用户数据偏移量</TD></TR></TBODY></TABLE></DIV><P> 在<TT CLASS="FILENAME">src/include/access/htup.h</TT>可以找到所有的详细信息。</P><P> 对实际数据的解析只能通过从其它表获取信息来做，大多来自于<TT CLASS="STRUCTNAME">pg_attribute</TT>，
+表示字段位置的键值是<TT CLASS="STRUCTFIELD">attlen</TT>和<TT CLASS="STRUCTFIELD">attalign</TT>。
+没有直接获取特定字属性的方法，除非只有固定宽度的字段并且没有空值。
+所有这些策略被封装在函数<I CLASS="FIRSTTERM">heap_getattr</I>、<I CLASS="FIRSTTERM">fastgetattr</I>
+和<I CLASS="FIRSTTERM">heap_getsysattr</I>中。</P><P> 要读取数据你需要逐次检查每个属性。首先依据NULL位图检查字段是否为NULL，
+如果是，跳到下一个，然后确定你已经右对齐；如果字段是固定宽度的，
+那么所有的字节被简单地放置，如果它是变长的字段（attlen = -1）
+那么它是一个更复杂的位。所有变长数据类型共享通用的头结构<TT CLASS="TYPE">struct varlena</TT>，
+其包括存储值的总长度和一些标志位。
+依赖这些标志，可以判断数据是行内或在一个<ACRONYM CLASS="ACRONYM">TOAST</ACRONYM>表，也可能是压缩的。
+（参阅<A HREF="storage-toast.html">第 58.2 &#33410;</A>）</P></DIV><H3 CLASS="FOOTNOTES">&#22791;&#27880;</H3><TABLE BORDER="0" CLASS="FOOTNOTES" WIDTH="100%"><TR><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="5%"><A NAME="FTN.AEN103053" HREF="storage-page-layout.html#AEN103053"><SPAN CLASS="footnote">[1]</SPAN></A></TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="95%"><P>
+实际上，索引访问方法不需要使用这个页格式。所有已经存在的索引方法
+需要使用这些基本格式，但保存在索引元页中的数据通常不遵循这些项的布局规则。
+</P></TD></TR></TABLE><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="storage-init.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/bki.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">初始化分支</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/storage.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><ACRONYM CLASS="ACRONYM">BKI</ACRONYM>后端接口</TD></TR></TABLE></DIV></BODY></HTML>

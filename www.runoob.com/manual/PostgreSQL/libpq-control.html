@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>控制函数</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="libpq - C 库" HREF="http://school.yunwei.edu/manual/PostgreSQL/libpq.html"><LINK REL="PREVIOUS" TITLE="与COPY命令相关的函数" HREF="libpq-copy.html"><LINK REL="NEXT" TITLE="各种函数" HREF="libpq-misc.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/libpq.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="与COPY命令相关的函数" HREF="libpq-copy.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/libpq.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 31. <SPAN CLASS="APPLICATION">libpq</SPAN> - C 库</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="各种函数" HREF="libpq-misc.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="LIBPQ-CONTROL">31.10. 控制函数</A></H1><P>这些函数控制许多<SPAN CLASS="APPLICATION">libpq</SPAN>其他行为的细节。</P><P></P><DIV CLASS="VARIABLELIST"><DL><DT><A NAME="LIBPQ-PQCLIENTENCODING"></A><CODE CLASS="FUNCTION">PQclientEncoding</CODE>
+</DT><DD><P>返回客户端编码。
+</P><PRE CLASS="SYNOPSIS">int PQclientEncoding(const PGconn *<TT
+CLASS="REPLACEABLE"
+><I
+>conn</I
+></TT
+>);</PRE><P>
+请注意，它返回编码ID，而不是一个符号串如<TT CLASS="LITERAL">EUC_JP</TT>。
+转换编码的ID为一个编码名称，你可以使用：
+</P><PRE CLASS="SYNOPSIS">char *pg_encoding_to_char(int <TT
+CLASS="REPLACEABLE"
+><I
+>encoding_id</I
+></TT
+>);</PRE><P>
+</P></DD><DT><A NAME="LIBPQ-PQSETCLIENTENCODING"></A><CODE CLASS="FUNCTION">PQsetClientEncoding</CODE>
+</DT><DD><P>设置客户端编码。
+</P><PRE CLASS="SYNOPSIS">int PQsetClientEncoding(PGconn *<TT
+CLASS="REPLACEABLE"
+><I
+>conn</I
+></TT
+>, const char *<TT
+CLASS="REPLACEABLE"
+><I
+>encoding</I
+></TT
+>);</PRE><P>
+<TT CLASS="REPLACEABLE"><I>conn</I></TT>是一个到服务器的连接，<TT CLASS="REPLACEABLE"><I>encoding</I></TT>
+是你想要的编码使用。如果函数成功设置编码，则返回0，否则返回-1。
+这个链接的当前编码可以通过<CODE CLASS="FUNCTION">PQclientEncoding</CODE>确定。
+</P></DD><DT><A NAME="LIBPQ-PQSETERRORVERBOSITY"></A><CODE CLASS="FUNCTION">PQsetErrorVerbosity</CODE>
+</DT><DD><P>决定<CODE CLASS="FUNCTION">PQerrorMessage</CODE>和<CODE CLASS="FUNCTION">PQresultErrorMessage</CODE>返回的信息的冗余程度。
+</P><PRE CLASS="SYNOPSIS">typedef enum
+{
+    PQERRORS_TERSE,
+    PQERRORS_DEFAULT,
+    PQERRORS_VERBOSE
+} PGVerbosity;
+
+PGVerbosity PQsetErrorVerbosity(PGconn *conn, PGVerbosity verbosity);</PRE><P>
+<CODE CLASS="FUNCTION">PQsetErrorVerbosity</CODE>设置冗余模式，返回连接的前一个设置。在<I CLASS="FIRSTTERM">TERSE</I>模式下，
+返回的消息只包括严重性，主信息，以及位置信息；这些东西通常只有一行。
+缺省模式生成的消息包括上面的信息加上任何细节，提示，或者环境字段（这些可能跨越几行）。
+<I CLASS="FIRSTTERM">VERBOSE</I>模式包括所有可以获得的字段。修改冗余模式不会影响我们从已经存在
+<TT CLASS="STRUCTNAME">PGresult</TT>对象中获取的信息，只有随后创建的<TT CLASS="STRUCTNAME">PGresult</TT>对象才受到影响。
+</P></DD><DT><A NAME="LIBPQ-PQTRACE"></A><CODE CLASS="FUNCTION">PQtrace</CODE>
+</DT><DD><P>打开对前端/服务器通讯的跟踪，把调试信息输出到一个文件流里。
+</P><PRE CLASS="SYNOPSIS">void PQtrace(PGconn *conn, FILE *stream);</PRE><P>
+</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>在Windows上，如果<SPAN CLASS="APPLICATION">libpq</SPAN>库和应用使用了不同的标志编译，
+那么这个函数调用会导致应用崩溃，因为<TT CLASS="LITERAL">FILE</TT>指针的内部表现形式是不一样的。
+特别是多线程/单线程，发布/调试，以及静态/动态标志应该是库和所有使用库的应用都一致。</P></BLOCKQUOTE></DIV></DD><DT><A NAME="LIBPQ-PQUNTRACE"></A><CODE CLASS="FUNCTION">PQuntrace</CODE>
+</DT><DD><P>关闭<CODE CLASS="FUNCTION">PQtrace</CODE>打开的跟踪。
+</P><PRE CLASS="SYNOPSIS">void PQuntrace(PGconn *conn);</PRE><P>
+</P></DD></DL></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="libpq-copy.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="libpq-misc.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">与<TT CLASS="COMMAND">COPY</TT>命令相关的函数</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/libpq.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">各种函数</TD></TR></TABLE></DIV></BODY></HTML>

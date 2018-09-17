@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>attributes</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="信息模式" HREF="http://school.yunwei.edu/manual/PostgreSQL/information-schema.html"><LINK REL="PREVIOUS" TITLE="applicable_roles" HREF="infoschema-applicable-roles.html"><LINK REL="NEXT" TITLE="character_sets" HREF="infoschema-character-sets.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/information_schema.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="applicable_roles" HREF="infoschema-applicable-roles.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/information-schema.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 34. 信息模式</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="character_sets" HREF="infoschema-character-sets.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="INFOSCHEMA-ATTRIBUTES">34.6. <TT CLASS="LITERAL">attributes</TT></A></H1><P>视图<TT CLASS="LITERAL">attributes</TT>包含有关在数据库中定义的复合数据类型的属性信息。
+（注意，视图不会提供表字段的信息，在PostgreSQL环境中有时被叫做属性。）
+只有当前用户有权限时才显示这些属性（通过成为它的所有者或者在这个类型上有某些权限）。</P><DIV CLASS="TABLE"><A NAME="AEN47182"></A><P><B>&#34920; 34-4. <TT CLASS="LITERAL">attributes</TT> 字段</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><THEAD><TR><TH>名字</TH><TH>数据类型</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD><TT CLASS="LITERAL">udt_catalog</TT></TD><TD><TT CLASS="TYPE">sql_identifier</TT></TD><TD>包含数据类型的数据库名称（总是在当前数据库中）</TD></TR><TR><TD><TT CLASS="LITERAL">udt_schema</TT></TD><TD><TT CLASS="TYPE">sql_identifier</TT></TD><TD>包含数据类型的模式名称</TD></TR><TR><TD><TT CLASS="LITERAL">udt_name</TT></TD><TD><TT CLASS="TYPE">sql_identifier</TT></TD><TD>数据类型名称</TD></TR><TR><TD><TT CLASS="LITERAL">attribute_name</TT></TD><TD><TT CLASS="TYPE">sql_identifier</TT></TD><TD>属性名</TD></TR><TR><TD><TT CLASS="LITERAL">ordinal_position</TT></TD><TD><TT CLASS="TYPE">cardinal_number</TT></TD><TD>数据类型中的属性的顺序位置（从1开始计数）</TD></TR><TR><TD><TT CLASS="LITERAL">attribute_default</TT></TD><TD><TT CLASS="TYPE">character_data</TT></TD><TD>属性的默认表达式</TD></TR><TR><TD><TT CLASS="LITERAL">is_nullable</TT></TD><TD><TT CLASS="TYPE">yes_or_no</TT></TD><TD>
+如果属性可能为空则为<TT CLASS="LITERAL">YES</TT>，如果不为空则为<TT CLASS="LITERAL">NO</TT>。
+</TD></TR><TR><TD><TT CLASS="LITERAL">data_type</TT></TD><TD><TT CLASS="TYPE">character_data</TT></TD><TD>
+如果它是内建类型，那么是属性的数据类型，或者如果它是一些数组，
+那么是<TT CLASS="LITERAL">ARRAY</TT>（在这种情况下，查看视图<TT CLASS="LITERAL">element_types</TT>），
+其它情况是<TT CLASS="LITERAL">USER-DEFINED</TT>（在这种情况下，
+在<TT CLASS="LITERAL">attribute_udt_name</TT>和相关字段中定义类型）。
+</TD></TR><TR><TD><TT CLASS="LITERAL">character_maximum_length</TT></TD><TD><TT CLASS="TYPE">cardinal_number</TT></TD><TD>
+如果<TT CLASS="LITERAL">data_type</TT>标识一个字符或比特流类型，那么是声明的最大长度；
+对于所有其它的数据类型或如果没有声明最大长度都用null。
+</TD></TR><TR><TD><TT CLASS="LITERAL">character_octet_length</TT></TD><TD><TT CLASS="TYPE">cardinal_number</TT></TD><TD>
+如果<TT CLASS="LITERAL">data_type</TT>识别一个字符类型，
+那么最大可能长度在一个数据的字节（bytes）中；对于所有其它的数据类型为null。
+最大的字节长度取决于声明的字符最大长度（参考上文）和服务器的编码。
+</TD></TR><TR><TD><TT CLASS="LITERAL">character_set_catalog</TT></TD><TD><TT CLASS="TYPE">sql_identifier</TT></TD><TD>在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>中的不适用特性</TD></TR><TR><TD><TT CLASS="LITERAL">character_set_schema</TT></TD><TD><TT CLASS="TYPE">sql_identifier</TT></TD><TD>在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>中的不适用特性</TD></TR><TR><TD><TT CLASS="LITERAL">character_set_name</TT></TD><TD><TT CLASS="TYPE">sql_identifier</TT></TD><TD>在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>中的不适用特性</TD></TR><TR><TD><TT CLASS="LITERAL">collation_catalog</TT></TD><TD><TT CLASS="TYPE">sql_identifier</TT></TD><TD>
+包含属性排序规则的数据库名称（总是当前数据库），
+缺省或属性的数据类型不可排序时为null。
+</TD></TR><TR><TD><TT CLASS="LITERAL">collation_schema</TT></TD><TD><TT CLASS="TYPE">sql_identifier</TT></TD><TD>
+包含属性排序规则的模式名，缺省或属性的数据类型不可排序时为null。
+</TD></TR><TR><TD><TT CLASS="LITERAL">collation_name</TT></TD><TD><TT CLASS="TYPE">sql_identifier</TT></TD><TD>
+属性的排序规则的名称，缺省或属性的数据类型不可排序时为null。
+</TD></TR><TR><TD><TT CLASS="LITERAL">numeric_precision</TT></TD><TD><TT CLASS="TYPE">cardinal_number</TT></TD><TD>
+如果<TT CLASS="LITERAL">data_type</TT>标识一个数字类型，那么该字段
+（隐含地或者公开地）包含属性类型的精度。该精度表明了有效数字的位数。
+它可以用在十进制（base 10）或者二进制（base 2）中，按照说明在字段
+<TT CLASS="LITERAL">numeric_precision_radix</TT>中。对于所有其它的数据类型，该字段为null。
+</TD></TR><TR><TD><TT CLASS="LITERAL">numeric_precision_radix</TT></TD><TD><TT CLASS="TYPE">cardinal_number</TT></TD><TD>
+如果<TT CLASS="LITERAL">data_type</TT>标识一个数字类型，该字段表明基于字段
+<TT CLASS="LITERAL">numeric_precision</TT>和字段<TT CLASS="LITERAL">numeric_scale</TT>中的值。
+值要么是2要么是10. 对于所有其它的数据类型，字段是null。
+</TD></TR><TR><TD><TT CLASS="LITERAL">numeric_scale</TT></TD><TD><TT CLASS="TYPE">cardinal_number</TT></TD><TD>
+如果<TT CLASS="LITERAL">data_type</TT>标识一个精确的数字类型，那么该字段
+（公开地或隐含地）包含属性类型的数值范围。该数值范围表明了小数点右边有效数字位数。
+它可以用在十进制(base 10)或者二进制(base 2)中，详细说明在字段
+<TT CLASS="LITERAL">numeric_precision_radix</TT>中。对于所有其它的数据类型，该字段为null。
+</TD></TR><TR><TD><TT CLASS="LITERAL">datetime_precision</TT></TD><TD><TT CLASS="TYPE">cardinal_number</TT></TD><TD>
+如果<TT CLASS="LITERAL">data_type</TT>标识一个日期，时间，时间戳，或者间隔类型，
+该字段（公开地或隐含地）包含属性类型的精确到小数部分的秒，就是说，
+秒的值小数位数保持到小数点后面。对于所有其它的数据类型，该字段是null。
+</TD></TR><TR><TD><TT CLASS="LITERAL">interval_type</TT></TD><TD><TT CLASS="TYPE">character_data</TT></TD><TD>
+如果<TT CLASS="LITERAL">data_type</TT>标识一个间隔类型，
+该字段包含为这个属性包含的字段的时间间隔说明，例如，
+<TT CLASS="LITERAL">YEAR TO MONTH</TT>, <TT CLASS="LITERAL">DAY TO SECOND</TT>等等。
+如果没有声明字段限制（也就是，间隔接受所有字段），和对所有其他数据类型，该字段都是null。
+</TD></TR><TR><TD><TT CLASS="LITERAL">interval_precision</TT></TD><TD><TT CLASS="TYPE">cardinal_number</TT></TD><TD>
+在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>中的不适用特性
+（参阅<TT CLASS="LITERAL">datetime_precision</TT>获取间隔类型属性的小数秒精度）
+</TD></TR><TR><TD><TT CLASS="LITERAL">attribute_udt_catalog</TT></TD><TD><TT CLASS="TYPE">sql_identifier</TT></TD><TD>
+属性数据类型被指定的数据库名（总是在当前数据库中）
+</TD></TR><TR><TD><TT CLASS="LITERAL">attribute_udt_schema</TT></TD><TD><TT CLASS="TYPE">sql_identifier</TT></TD><TD>
+属性数据类型被指定的模式名称
+</TD></TR><TR><TD><TT CLASS="LITERAL">attribute_udt_name</TT></TD><TD><TT CLASS="TYPE">sql_identifier</TT></TD><TD>
+属性数据类型名称
+</TD></TR><TR><TD><TT CLASS="LITERAL">scope_catalog</TT></TD><TD><TT CLASS="TYPE">sql_identifier</TT></TD><TD>在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>中的不适用特性</TD></TR><TR><TD><TT CLASS="LITERAL">scope_schema</TT></TD><TD><TT CLASS="TYPE">sql_identifier</TT></TD><TD>在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>中的不适用特性</TD></TR><TR><TD><TT CLASS="LITERAL">scope_name</TT></TD><TD><TT CLASS="TYPE">sql_identifier</TT></TD><TD>在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>中的不适用特性</TD></TR><TR><TD><TT CLASS="LITERAL">maximum_cardinality</TT></TD><TD><TT CLASS="TYPE">cardinal_number</TT></TD><TD>总是null，因为在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>中数组的最大基数总是不受限</TD></TR><TR><TD><TT CLASS="LITERAL">dtd_identifier</TT></TD><TD><TT CLASS="TYPE">sql_identifier</TT></TD><TD>
+字段的数据类型描述符的一个标示符，在表格的数据类型描述符中是唯一的。
+这个对于加入其它的这样的标示符的实例是主要有用的。
+（标示符的特定格式没有指定且也不保证在以后的版本中不会改变）
+</TD></TR><TR><TD><TT CLASS="LITERAL">is_derived_reference_attribute</TT></TD><TD><TT CLASS="TYPE">yes_or_no</TT></TD><TD>在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>中的不适用特性</TD></TR></TBODY></TABLE></DIV><P>也可以在<A HREF="infoschema-columns.html">第 34.16 &#33410;</A>中查阅，一个类似的结构视图，一些字段的进一步详细信息。 </P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="infoschema-applicable-roles.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="infoschema-character-sets.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><TT CLASS="LITERAL">applicable_roles</TT></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/information-schema.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><TT CLASS="LITERAL">character_sets</TT></TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>发布9.1.6</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="发布9.1.7" HREF="release-9-1-7.html"><LINK REL="NEXT" TITLE="发布9.1.5" HREF="release-9-1-5.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-9.1.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="发布9.1.7" HREF="release-9-1-7.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="发布9.1.5" HREF="release-9-1-5.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-9-1-6">E.13. 发布9.1.6</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>2012-09-24</P></BLOCKQUOTE></DIV><P> 该发布中包含来自9.1.5的各种修复。
+关于9.1主要版本的新功能的信息，
+参阅<A HREF="release-9-1.html">第 E.19 &#33410;</A>。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN117683">E.13.1. 迁移到版本9.1.6</A></H2><P> 为了运行9.1.X不需要转储/恢复。</P><P> 然而，你可能需要执行<TT CLASS="COMMAND">REINDEX</TT>从下面第一个日志项描述的数据损坏
+错误的影响中恢复。</P><P> 另外，如果你从9.1.4更早版本更新，
+查看9.1.4的发布说明。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN117689">E.13.2. 变化</A></H2><P></P><UL><LI><P> 在WAL回放期间修复共享缓冲区的持久性标记(Jeff Davis)</P><P> 这个错误会导致缓冲区在检查点期间不被写出来，
+如果服务器没有写入缓冲区崩溃后，导致数据损坏。
+在任何服务器崩溃恢复之后发生崩溃，
+但它显著的可能发生在备用子服务器上，
+因为这些执行更多WAL回放。
+有btree和GIN索引损坏的低概率。
+有表<SPAN CLASS="QUOTE">"可见视图"</SPAN>损坏的更高概率。
+幸运的是，可见视图是9.1中非关键数据，
+因此9.1安装中这样的损坏最糟糕的后果是清理短暂无效。
+表正确的数据无法被这个错误损坏。</P><P> 虽然没有索引损坏，由于这个错误已经在该字段发生，
+作为预防措施建议在更新到
+9.1.6之后在方便的时候产品安装<TT CLASS="COMMAND">REINDEX</TT>
+所有btree和GIN索引。</P><P> 同时，如果你打算做适当升级到9.2.X，
+在做这些之前所以建议执行所有表的<TT CLASS="COMMAND">VACUUM</TT>，
+当<A HREF="runtime-config-client.html#GUC-VACUUM-FREEZE-TABLE-AGE"><TT CLASS="VARNAME">vacuum_freeze_table_age</TT></A>
+设置为零时，这将确保在9.2.X可以依赖它之前校正可见视图中的任何残留的错误数据。
+可以调整
+<A HREF="runtime-config-resource.html#GUC-VACUUM-COST-DELAY"><TT CLASS="VARNAME">vacuum_cost_delay</TT></A>以减少
+清理的性能影响，而造成它需要更长时间完成。</P></LI><LI><P> 修复执行器参数的规划器分配，
+并且为CTE规划节点修复执行器的重新扫描逻辑(Tom Lane)</P><P> 这些错误可以导致来自
+扫描同一<TT CLASS="LITERAL">WITH</TT>子查询多次的查询的错误结果。</P></LI><LI><P> 当
+<A HREF="runtime-config-client.html#GUC-DEFAULT-TRANSACTION-ISOLATION"><TT CLASS="VARNAME">default_transaction_isolation</TT></A>
+设置为<TT CLASS="LITERAL">serializable</TT>的时候，
+修复错误操作
+(Kevin Grittner, Tom Lane, Heikki Linnakangas)</P><P> 症状包含Windows启动过程的死机，
+以及热备操作的死机情况。</P></LI><LI><P> 提高涉及前缀的文本搜索查询的选择行估计，
+比如<TT CLASS="REPLACEABLE"><I>word</I></TT><TT CLASS="LITERAL">:*</TT>模式(Tom Lane)</P><P> </P></LI><LI><P> 提高GiST索引中页分裂决定
+(Alexander Korotkov, Robert Haas, Tom Lane)</P><P> 多列GiST索引由于这个错误可能遭受意外膨胀。</P></LI><LI><P> 如果仍然持有特权，那么修复终止的级联权限撤销(Tom Lane)</P><P> 如果我们撤销一些角色<TT CLASS="REPLACEABLE"><I>X</I></TT>的grant选项，但是<TT CLASS="REPLACEABLE"><I>X</I></TT>
+仍然认为该选项通过其他人的grant。
+我们不应该递归地撤销<TT CLASS="REPLACEABLE"><I>X</I></TT>授予的角色<TT CLASS="REPLACEABLE"><I>Y</I></TT>的
+相应特权。</P></LI><LI><P> 不接受包含分配给它们的模式的扩展(Thom Brown)</P><P> 这种情况创建了困惑<SPAN CLASS="APPLICATION">pg_dump</SPAN>和
+其他一些事情的循环依赖。
+它也令人困惑，因此不接受它。</P></LI><LI><P> 提高热备份不当配置错误的错误信息(Gurjeet Singh)</P></LI><LI><P> 尝试<SPAN CLASS="APPLICATION">configure</SPAN>探查<CODE CLASS="FUNCTION">mbstowcs_l</CODE>
+(Tom Lane)</P><P> 修复AIX一些版本上的编译错误。</P></LI><LI><P> 当使用PL/Perl时，修复<TT CLASS="LITERAL">SIGFPE</TT>的处理(Andres Freund)</P><P> Perl重置进程的<TT CLASS="LITERAL">SIGFPE</TT>处理器到<TT CLASS="LITERAL">SIG_IGN</TT>，
+这可能在以后导致崩溃。
+在初始化PL/Perl之后恢复正常Postgres信号处理程序。</P></LI><LI><P> 当被执行时，如果重新定义递归的PL/Perl函数，
+则防止PL/Perl崩溃(Tom Lane)</P></LI><LI><P> 解决PL/Perl中可能的错误优化(Tom Lane)</P><P> 一些Linux发布包含
+导致PL/Perl中不正确编译代码的<TT CLASS="FILENAME">pthread.h</TT>不正确版本，
+如果PL/Perl函数调用抛出错误的另外一个，那么导致崩溃。</P></LI><LI><P> 修复<TT CLASS="FILENAME">contrib/pg_trgm</TT>'s <TT CLASS="LITERAL">LIKE</TT>模式
+分析代码中的错误(Fujii Masao)</P><P> 如果模式包含<TT CLASS="LITERAL">LIKE</TT>转义字符，
+那么使用三线性索引的<TT CLASS="LITERAL">LIKE</TT>查询可以产生错误结果。</P></LI><LI><P> 修复Windows上行尾的<SPAN CLASS="APPLICATION">pg_upgrade</SPAN>的处理(Andrew Dunstan)</P><P> 以前，<SPAN CLASS="APPLICATION">pg_upgrade</SPAN>可能添加或者删除运输返回比如函数体的地方。</P></LI><LI><P> Windows上，使得<SPAN CLASS="APPLICATION">pg_upgrade</SPAN>在它
+发出的脚本中使用反斜杠路径分隔符(Andrew Dunstan)</P></LI><LI><P> 删除来自
+<SPAN CLASS="APPLICATION">pg_upgrade</SPAN>的<SPAN CLASS="APPLICATION">pg_config</SPAN>的不必要依赖(Peter Eisentraut)</P></LI><LI><P> 为了Fiji中的DST变化规律更新时区数据文件到<SPAN CLASS="APPLICATION">tzdata</SPAN>发布2012f。</P></LI></UL></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-9-1-7.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-9-1-5.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">发布9.1.7</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">发布9.1.5</TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>实现</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SP-GiST索引" HREF="http://school.yunwei.edu/manual/PostgreSQL/spgist.html"><LINK REL="PREVIOUS" TITLE="扩展性" HREF="spgist-extensibility.html"><LINK REL="NEXT" TITLE="例" HREF="spgist-examples.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/spgist.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="扩展性" HREF="spgist-extensibility.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/spgist.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 56. SP-GiST索引</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="例" HREF="spgist-examples.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="SPGIST-IMPLEMENTATION">56.3. 实现</A></H1><P>本节讨论实现细节和其他对<ACRONYM CLASS="ACRONYM">SP-GiST</ACRONYM>操作符类的实现者有用的技巧。
+</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="SPGIST-LIMITS">56.3.1. SP-GiST的限制</A></H2><P>单个的叶元组和内部元组必须容纳在一个索引页(默认8KB)里。
+因此,当索引可变长数据类型的值时,长值只能被像基数树这样的方法支持,在树的每一层包含一个前缀,这个前缀足够短,可容纳在一个页面上,并且最后的叶子层级包括的后缀也足够短以容纳在一个页面上。
+操作符类只有准备好了处理这样的事情，才应该设置<TT CLASS="STRUCTFIELD">longValuesOK</TT>为TRUE。
+否则,<ACRONYM CLASS="ACRONYM">SP-GiST</ACRONYM>核心将拒绝一个太大以致不能装入一个页面的数据值的索引请求。
+</P><P>同样,不要让内部元组增长得过大以致不能容纳在一个索引页面,这也是操作符类的责任；这限制了在一个内部元组里可以使用的子节点的数量,以及一个前缀值的最大大小。
+</P><P>另一个限制是,当一个内部元组的节点指向一组叶元组,这些元组必须都在相同的索引页面上。
+(这个设计决定是为了减少寻址以及节省把这些元组联接在一起的链接的空间)。
+如果叶元组的集合增大到超过一个页面,就会执行分裂并插入一个中间的内部元组。
+为了解决这个问题,新内部元组<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">必须</I></SPAN>把叶子中的值的集合划分到多个节点组。
+如果操作符类的<CODE CLASS="FUNCTION">picksplit</CODE>函数未能这样做,<ACRONYM CLASS="ACRONYM">SP-GiST</ACRONYM>
+将会采取<A HREF="spgist-implementation.html#SPGIST-ALL-THE-SAME">第 56.3.3 &#33410;</A>中描述的非常手段。
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="SPGIST-NULL-LABELS">56.3.2. 没有节点标签的SP-GiST</A></H2><P>一些树算法在每个内部元组中使用固定数量的节点;
+例如,在四叉树中总是正好的有4个节点，它们代表围绕内部元组的中心点的四个象限。
+在这种情况下代码典型的通过数值和节点打交道,没有必要有显式的节点标签。
+为了废止节点标签(从而节省一些空间),<CODE CLASS="FUNCTION">picksplit</CODE>函数可以为<TT CLASS="STRUCTFIELD">nodeLabels</TT>数组返回NULL。
+结果这将导致随后调用<CODE CLASS="FUNCTION">choose</CODE>和<CODE CLASS="FUNCTION">inner_consistent</CODE>函数时，<TT CLASS="STRUCTFIELD">nodeLabels</TT>为NULL。
+原则上,节点标签可用于一些内部元组，而在相同索引的其它元组上省略。
+</P><P>当使用一个包含无标签节点的内部元组时,<CODE CLASS="FUNCTION">choose</CODE>函数返回<TT CLASS="LITERAL">spgAddNode</TT>是错误的,
+因为在这种情况下，节点的集合被假定为固定的。
+同样也没有在<TT CLASS="LITERAL">spgSplitTuple</TT>动作中产生无标签节点的条款，因为预计将需要一个<TT CLASS="LITERAL">spgAddNode</TT>动作。
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="SPGIST-ALL-THE-SAME">56.3.3. <SPAN CLASS="QUOTE">"All-the-same"</SPAN>内部元组</A></H2><P>如果操作符类的<CODE CLASS="FUNCTION">picksplit</CODE>函数不能把提供的叶子值划分到至少两个分类中，
+<ACRONYM CLASS="ACRONYM">SP-GiST</ACRONYM>核心可以覆盖<CODE CLASS="FUNCTION">picksplit</CODE>函数的结果。
+如果发生了这种事情,包含多个节点的新的内部元组会被创建。
+每个节点的标签都和<CODE CLASS="FUNCTION">picksplit</CODE>给一个节点使用的标签相同(如果有的话),并且叶值被随机划分到这些等价节点中。
+<TT CLASS="LITERAL">allTheSame</TT>标志会被设置到这个内部元组上，以警告<CODE CLASS="FUNCTION">choose</CODE> 和 <CODE CLASS="FUNCTION">inner_consistent</CODE>函数这个元组可能没有它们期望的节点集合。
+</P><P>当处理一个<TT CLASS="LITERAL">allTheSame</TT>元组,<CODE CLASS="FUNCTION">choose</CODE>的结果<TT CLASS="LITERAL">spgMatchNode</TT>
+被解释为新的值可以被分配到任何等价节点;核心代码将忽略提供的<TT CLASS="STRUCTFIELD">nodeN</TT>值并随机的进入其中一个节点(以保持树的平衡)。
+<CODE CLASS="FUNCTION">choose</CODE>返回<TT CLASS="LITERAL">spgAddNode</TT>是错误的，因为将使这些节点不再是所有都等价。
+如果要插入的值不匹配现有的节点，必须使用<TT CLASS="LITERAL">spgSplitTuple</TT>动作。
+</P><P>当处理一个<TT CLASS="LITERAL">allTheSame</TT>元组,<CODE CLASS="FUNCTION">inner_consistent</CODE>函数应该返回所有或没有一个节点作为继续索引搜索的目标,因为他们都是等价的。
+这可能需要也可能不需要任何特殊的代码,这取决于<CODE CLASS="FUNCTION">inner_consistent</CODE>函数通常假设了多少节点的含义。
+</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="spgist-extensibility.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="spgist-examples.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">扩展性</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/spgist.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">例</TD></TR></TABLE></DIV></BODY></HTML>

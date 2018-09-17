@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>CREATE TEXT SEARCH DICTIONARY</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="CREATE TEXT SEARCH CONFIGURATION" HREF="sql-createtsconfig.html"><LINK REL="NEXT" TITLE="CREATE TEXT SEARCH PARSER" HREF="sql-createtsparser.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/create_tsdictionary.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="CREATE TEXT SEARCH CONFIGURATION" HREF="sql-createtsconfig.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="CREATE TEXT SEARCH PARSER" HREF="sql-createtsparser.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-CREATETSDICTIONARY"></A>CREATE TEXT SEARCH DICTIONARY</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN73400"></A><H2>&#21517;&#31216;</H2>CREATE TEXT SEARCH DICTIONARY&nbsp;--&nbsp;定义一个新的文本搜索字典</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN73405"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">CREATE TEXT SEARCH DICTIONARY <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+> (
+    TEMPLATE = <TT
+CLASS="REPLACEABLE"
+><I
+>template</I
+></TT
+>
+    [, <TT
+CLASS="REPLACEABLE"
+><I
+>option</I
+></TT
+> = <TT
+CLASS="REPLACEABLE"
+><I
+>value</I
+></TT
+> [, ... ]]
+)</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN73411"></A><H2>描述</H2><P><TT CLASS="COMMAND">CREATE TEXT SEARCH DICTIONARY</TT>创建一个新的文本搜索字典。
+一个文本搜索字典指定了一个发现查询中感兴趣或者不感兴趣的词的方式。
+一个基于文本搜索模板的字典，它声明了实际上执行工作的函数。
+通常字典提供了一些选项，这些选项控制模板函数的详细性能。</P><P>若给出模式名称，那么文本搜索字典就会在指定模式中创建。否则会在当前模式中创建。</P><P>创建文本搜索字典的用户将成为其所有者。</P><P>参阅<A HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html">第 12 &#31456;</A>获取更多详细信息。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN73419"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="REPLACEABLE"><I>name</I></TT></DT><DD><P>要创建的文本搜素字典的名称。名称可以有模式修饰。</P></DD><DT><TT CLASS="REPLACEABLE"><I>template</I></TT></DT><DD><P>定义字典基本行为的文本搜索模板的名称。</P></DD><DT><TT CLASS="REPLACEABLE"><I>option</I></TT></DT><DD><P>为该字典设置的特定模板选项的名称。</P></DD><DT><TT CLASS="REPLACEABLE"><I>value</I></TT></DT><DD><P>用于特定模板选项的值。如果该值不是一个简单的标识符或号码，它必须被引用
+（如果您希望，您就可以一直引用它）。</P></DD></DL></DIV><P>这个选项可以以任何顺序出现。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN73443"></A><H2>例子</H2><P>下面的示例命令用停用词的非标准列表创建了一个基于snowball的字典。</P><PRE CLASS="PROGRAMLISTING">CREATE TEXT SEARCH DICTIONARY my_russian (
+    template = snowball,
+    language = russian,
+    stopwords = myrussian
+);</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN73447"></A><H2>兼容性</H2><P>在SQL标准中没有<TT CLASS="COMMAND">CREATE TEXT SEARCH DICTIONARY</TT>语句。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN73451"></A><H2>又见</H2><A HREF="sql-altertsdictionary.html">ALTER TEXT SEARCH DICTIONARY</A>, <A HREF="sql-droptsdictionary.html">DROP TEXT SEARCH DICTIONARY</A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-createtsconfig.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-createtsparser.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">CREATE TEXT SEARCH CONFIGURATION</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">CREATE TEXT SEARCH PARSER</TD></TR></TABLE></DIV></BODY></HTML>

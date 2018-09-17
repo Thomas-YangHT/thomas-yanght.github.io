@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>TRUNCATE</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="START TRANSACTION" HREF="sql-start-transaction.html"><LINK REL="NEXT" TITLE="UNLISTEN" HREF="sql-unlisten.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/truncate.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="START TRANSACTION" HREF="sql-start-transaction.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="UNLISTEN" HREF="sql-unlisten.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-TRUNCATE"></A>TRUNCATE</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN81476"></A><H2>&#21517;&#31216;</H2>TRUNCATE&nbsp;--&nbsp;清空一个或一组表</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN81481"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">TRUNCATE [ TABLE ] [ ONLY ] <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+> [ * ] [, ... ]
+    [ RESTART IDENTITY | CONTINUE IDENTITY ] [ CASCADE | RESTRICT ]</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN81484"></A><H2>描述</H2><P><TT CLASS="COMMAND">TRUNCATE</TT>快速地从一堆表中删除所有行。它和在每个表上进行无条件的
+<TT CLASS="COMMAND">DELETE</TT>有同样的效果，不过因为它不做表扫描，因而快得多。另外，
+它快速回收磁盘空间，而不是请求一个随后的<TT CLASS="COMMAND">VACUUM</TT>操作。
+在大表上最有用。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN81490"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="REPLACEABLE"><I>name</I></TT></DT><DD><P>要清空的表名字(可以有模式修饰)。如果在表名前声明了<TT CLASS="LITERAL">ONLY</TT>，
+那么只有那个表会被清空。如果没有声明<TT CLASS="LITERAL">ONLY</TT>，这个表以及其所有子表
+（若有）会被清空。可选地,可以在表名后声明<TT CLASS="LITERAL">*</TT>以明确指定包括子表。</P></DD><DT><TT CLASS="LITERAL">RESTART IDENTITY</TT></DT><DD><P>截断表中的序列字段的序列值将被重置。</P></DD><DT><TT CLASS="LITERAL">CONTINUE IDENTITY</TT></DT><DD><P>不要改变序列的值。此为缺省。</P></DD><DT><TT CLASS="LITERAL">CASCADE</TT></DT><DD><P>级联清空所有在该表上有外键引用的表，或者由于<TT CLASS="LITERAL">CASCADE</TT>而被添加到组中的表。</P></DD><DT><TT CLASS="LITERAL">RESTRICT</TT></DT><DD><P>如果有外键引用数据并且引用表没有在命令行中列出，则拒绝清空。这是缺省。</P></DD></DL></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="AEN81522"></A><H2>注意</H2><P>你必须对表有<TT CLASS="LITERAL">TRUNCATE</TT>权限以清空它。</P><P><TT CLASS="COMMAND">TRUNCATE</TT>在在操作的每个表上请求一个<TT CLASS="LITERAL">ACCESS EXCLUSIVE</TT>锁，
+这种锁会阻塞表上的所有其他并发操作。当声明了<TT CLASS="LITERAL">RESTART IDENTITY</TT>时，
+任何被重启的序列也会被排他锁锁住。如果需要对一个表并发访问，
+那么应该使用<TT CLASS="COMMAND">DELETE</TT>命令。</P><P>如果从其它表有到某个表的外键引用，那么就不能对该表使用<TT CLASS="COMMAND">TRUNCATE</TT>，
+除非这些表在同一个命令中也被清空。在这种情况下检查有效性要求进行表扫描，
+而<TT CLASS="COMMAND">TRUNCATE</TT>并不做这样的事情。<TT CLASS="LITERAL">CASCADE</TT>
+选项可以用于级联包含所有依赖表，但是使用此选项必须十分小心，否则可能丢失原本不想丢失的数据。</P><P><TT CLASS="COMMAND">TRUNCATE</TT>不会触发任何在该表上的<TT CLASS="LITERAL">ON DELETE</TT>触发器。
+但它会触发<TT CLASS="LITERAL">ON TRUNCATE</TT>触发器。如果任何表上定义有<TT CLASS="LITERAL">ON TRUNCATE</TT>
+触发器，则所有的<TT CLASS="LITERAL">BEFORE TRUNCATE</TT>
+触发器会在任何截断发生之前触发，而所有<TT CLASS="LITERAL">AFTER TRUNCATE</TT>
+触发器会在最后一个截断执行后和任何序列重设后被触发。该触发器会以表执行的顺序触发
+（首先是命令中列出的，然后是任何基于级联添加的）。</P><DIV CLASS="WARNING"><P></P><TABLE CLASS="WARNING" BORDER="1" WIDTH="100%"><TR><TD ALIGN="CENTER"><B>&#35686;&#21578;</B></TD></TR><TR><TD ALIGN="LEFT"><P><TT CLASS="COMMAND">TRUNCATE</TT>不是mvcc 安全的操作（参考mvcc的文档）。在截断之后，所有并发的事务看到的该表都是空的，即使他们在截断发生前使用快照。
+这将是一个针对截断发生之前没有访问截断表的事务的问题，在事务中对截断表的任何访问至少产生一个
+<TT CLASS="LITERAL">ACCESS SHARE</TT>锁，这将阻塞<TT CLASS="COMMAND">TRUNCATE</TT>直到事务完成。
+所以截断不会导致在相同表上连续查询时表内容上的明显不一致，
+但会导致截断表和数据库中其他表在内容上可见的不一致性。</P></TD></TR></TABLE></DIV><P><TT CLASS="COMMAND">TRUNCATE</TT>在事务中断表数据是安全可的：只要开启的事物不提交，则事物会安全回滚。</P><P>当声明了<TT CLASS="LITERAL">RESTART IDENTITY</TT>时，隐含的<TT CLASS="COMMAND">ALTER SEQUENCE RESTART</TT>
+操作也会事务性的完成；也就是，如果包围的事务没有提交，它们将回滚。
+这不同于<TT CLASS="COMMAND">ALTER SEQUENCE RESTART</TT>的正常行为。要知道，
+如果在序列重启之后与事务回滚之前执行了额外的序列操作，
+那么这些操作的影响也会回滚，但是它们在<CODE CLASS="FUNCTION">currval()</CODE>上的影响不会回滚；
+也就是，在事务之后，<CODE CLASS="FUNCTION">currval()</CODE>将继续反映在失败事务中获得的最后序列值，
+即使序列本身可能与其不再一致。这类似于<CODE CLASS="FUNCTION">currval()</CODE>在一个失败事务后的普通行为。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN81556"></A><H2>例子</H2><P>清空<TT CLASS="LITERAL">bigtable</TT>和<TT CLASS="LITERAL">fattable</TT>表：
+</P><PRE CLASS="PROGRAMLISTING">TRUNCATE bigtable, fattable;</PRE><P></P><P>同样地，也重置任何相关的序列生成器:
+</P><PRE CLASS="PROGRAMLISTING">TRUNCATE bigtable, fattable RESTART IDENTITY;</PRE><P></P><P>清空<TT CLASS="LITERAL">othertable</TT>表，并且级联清空所有通过外键约束引用
+<TT CLASS="LITERAL">othertable</TT>的表：
+</P><PRE CLASS="PROGRAMLISTING">TRUNCATE othertable CASCADE;</PRE><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN81568"></A><H2>兼容性</H2><P>SQL:2008标准包括一个有语法<TT CLASS="LITERAL">TRUNCATE TABLE <TT CLASS="REPLACEABLE"><I>tablename</I></TT></TT>
+的<TT CLASS="COMMAND">TRUNCATE</TT>命令。<TT CLASS="LITERAL">CONTINUE IDENTITY</TT>/<TT CLASS="LITERAL">RESTART IDENTITY</TT>
+也出现在那个标准中，但是有轻微的不同和相关的含义。该命令的一些并发行为通过标准定义实现的，
+所以，如果必要，应该考虑上面的说明并与其他实现比较。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-start-transaction.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-unlisten.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">START TRANSACTION</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">UNLISTEN</TD></TR></TABLE></DIV></BODY></HTML>

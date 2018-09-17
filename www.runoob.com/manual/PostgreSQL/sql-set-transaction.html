@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>SET TRANSACTION</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="SET SESSION AUTHORIZATION" HREF="sql-set-session-authorization.html"><LINK REL="NEXT" TITLE="SHOW" HREF="sql-show.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/set_transaction.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="SET SESSION AUTHORIZATION" HREF="sql-set-session-authorization.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="SHOW" HREF="sql-show.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-SET-TRANSACTION"></A>SET TRANSACTION</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN81186"></A><H2>&#21517;&#31216;</H2>SET TRANSACTION&nbsp;--&nbsp;设置当前事务的特性</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN81200"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">SET TRANSACTION <TT
+CLASS="REPLACEABLE"
+><I
+>transaction_mode</I
+></TT
+> [, ...]
+SET TRANSACTION SNAPSHOT <TT
+CLASS="REPLACEABLE"
+><I
+>snapshot_id</I
+></TT
+>
+SET SESSION CHARACTERISTICS AS TRANSACTION <TT
+CLASS="REPLACEABLE"
+><I
+>transaction_mode</I
+></TT
+> [, ...]
+
+ <SPAN
+CLASS="phrase"
+><SPAN
+CLASS="PHRASE"
+>这里的 <TT
+CLASS="REPLACEABLE"
+><I
+>transaction_mode</I
+></TT
+>是下列之一:</SPAN
+></SPAN
+>
+
+    ISOLATION LEVEL { SERIALIZABLE | REPEATABLE READ | READ COMMITTED | READ UNCOMMITTED }
+    READ WRITE | READ ONLY
+    [ NOT ] DEFERRABLE</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN81207"></A><H2>描述</H2><P><TT CLASS="COMMAND">SET TRANSACTION</TT>命令为当前事务设置特性。它对后面的事务没有影响。
+<TT CLASS="COMMAND">SET SESSION CHARACTERISTICS</TT>为一个会话中随后的每个事务设置缺省的事务特性。
+在单独的事务中，可以用<TT CLASS="COMMAND">SET TRANSACTION</TT>覆盖这些默认事务特性。</P><P>可用的事务特性是事务隔离级别、事务访问模式(读/写或者只读)和可推迟的模式。
+另外，可以选择一个快照，只为当前事务而不是作为会话缺省。</P><P>事务的隔离级别决定一个事务在有其它事务并发运行时它能够看到什么数据
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL">READ COMMITTED</TT></DT><DD><P>一条语句只能看到在它开始之前的数据。这是缺省。</P></DD><DT><TT CLASS="LITERAL">REPEATABLE READ</TT></DT><DD><P>当前事务中的所有语句只能看到在这次事务第一条查询或者修改数据的语句执行之前已经提交的数据。</P></DD><DT><TT CLASS="LITERAL">SERIALIZABLE</TT></DT><DD><P>当前事务中的所有语句只能看到在这次事务第一条查询或者修改数据的语句执行之前已经提交的数据。
+如果当前并发的可串行化事务的读或写模式中任意一个事务（一次一个）执行创建不可能发生的情况，
+那么其中的一个事务将会带有<TT CLASS="LITERAL">serialization_failure</TT>错误退出。</P></DD></DL></DIV><P>
+SQL 标准还定义了另外一个级别，<TT CLASS="LITERAL">READ UNCOMMITTED</TT>。
+在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>里<TT CLASS="LITERAL">READ UNCOMMITTED</TT>
+被当作<TT CLASS="LITERAL">READ COMMITTED</TT>。
+</P><P>事务隔离级别在事务中第一个查询或数据修改语句(<TT CLASS="COMMAND">SELECT</TT>,
+<TT CLASS="COMMAND">INSERT</TT>, <TT CLASS="COMMAND">DELETE</TT>,
+<TT CLASS="COMMAND">UPDATE</TT>, <TT CLASS="COMMAND">FETCH</TT>, 或
+<TT CLASS="COMMAND">COPY</TT>)执行之后就不能再次设置。
+参阅<A HREF="http://school.yunwei.edu/manual/PostgreSQL/mvcc.html">第 13 &#31456;</A> 获取有关事务隔离级别和并发性控制的更多信息。</P><P>事务访问模式决定事务是读/写还是只读。读/写是缺省。如果一个事务是只读，
+而且写入的表不是临时表，那么下面的 SQL 命令是不允许的：<TT CLASS="LITERAL">INSERT</TT>,
+<TT CLASS="LITERAL">UPDATE</TT>, <TT CLASS="LITERAL">DELETE</TT>, <TT CLASS="LITERAL">COPY FROM</TT>；
+而所有的<TT CLASS="LITERAL">CREATE</TT>, <TT CLASS="LITERAL">ALTER</TT>,
+<TT CLASS="LITERAL">DROP</TT> ; <TT CLASS="LITERAL">COMMENT</TT>,
+<TT CLASS="LITERAL">GRANT</TT>, <TT CLASS="LITERAL">REVOKE</TT>,
+<TT CLASS="LITERAL">TRUNCATE</TT>; <TT CLASS="LITERAL">EXPLAIN ANALYZE</TT>,
+<TT CLASS="LITERAL">EXECUTE</TT>都不允许。这是一个高层次的只读概念，
+它并不阻止所有对磁盘的写入。</P><P><TT CLASS="LITERAL">DEFERRABLE</TT>事务属性没什么影响，除非事务也是<TT CLASS="LITERAL">SERIALIZABLE</TT>
+和<TT CLASS="LITERAL">READ ONLY</TT>。当为一个事务选择所有这三个属性时，
+事务可能会在第一次请求它的快照时堵塞，之后运行时可以不需要正常的<TT CLASS="LITERAL">SERIALIZABLE</TT>
+事务的开销并且不会有任何导致序列化失败或被取消的风险。
+这个模式很适合于长时间运行的报告或备份。</P><P><TT CLASS="LITERAL">SET TRANSACTION SNAPSHOT</TT>命令允许一个新的事务运行的<I CLASS="FIRSTTERM">快照</I>
+与一个现存事务的相同。该已有的事务必须已经用<TT CLASS="LITERAL">pg_export_snapshot</TT>函数
+（参阅<A HREF="functions-admin.html#FUNCTIONS-SNAPSHOT-SYNCHRONIZATION">第 9.26.5 &#33410;</A>）输出了它的快照。
+这个函数返回一个快照标识符，这个标识符必须给<TT CLASS="LITERAL">SET TRANSACTION SNAPSHOT</TT>
+以指出要输出哪个快照。该标识符在这个命令中必须写作字符串，例如<TT CLASS="LITERAL">'000003A1-1'</TT>。
+<TT CLASS="LITERAL">SET TRANSACTION SNAPSHOT</TT>只能在该事务第一次查询或数据修改语句执行之前设置，
+(<TT CLASS="COMMAND">SELECT</TT>, <TT CLASS="COMMAND">INSERT</TT>,
+<TT CLASS="COMMAND">DELETE</TT>, <TT CLASS="COMMAND">UPDATE</TT>, <TT CLASS="COMMAND">FETCH</TT>,
+<TT CLASS="COMMAND">COPY</TT>)。另外，事务必须已经设置为<TT CLASS="LITERAL">SERIALIZABLE</TT>
+或<TT CLASS="LITERAL">REPEATABLE READ</TT>隔离级别（否则，快照会被立即丢弃，因为
+<TT CLASS="LITERAL">READ COMMITTED</TT>模式为每个命令接受一个新的快照）。如果导入事务使用
+<TT CLASS="LITERAL">SERIALIZABLE</TT>隔离级别，那么输出快照的事务必须也使用该隔离级别。
+还有，非只读的序列化事务不能从一个只读的事务中导入一个快照。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN81281"></A><H2>注意</H2><P>如果执行<TT CLASS="COMMAND">SET TRANSACTION</TT>之前没有执行<TT CLASS="COMMAND">START TRANSACTION</TT>
+或<TT CLASS="COMMAND">BEGIN</TT>，那么它会显得没有效果一样，因为事务将立即结束。</P><P>可以用在<TT CLASS="COMMAND">BEGIN</TT>或<TT CLASS="COMMAND">START TRANSACTION</TT>
+里面声明所需要的<TT CLASS="REPLACEABLE"><I>transaction_modes</I></TT>
+的方法来避免使用<TT CLASS="COMMAND">SET TRANSACTION</TT>。但是这个选项不适用于
+<TT CLASS="COMMAND">SET TRANSACTION SNAPSHOT</TT>。</P><P>会话的缺省事务模式也可以通过设置配置参数
+<A HREF="runtime-config-client.html#GUC-DEFAULT-TRANSACTION-ISOLATION">default_transaction_isolation</A>,
+<A HREF="runtime-config-client.html#GUC-DEFAULT-TRANSACTION-READ-ONLY">default_transaction_read_only</A>, 和
+<A HREF="runtime-config-client.html#GUC-DEFAULT-TRANSACTION-DEFERRABLE">default_transaction_deferrable</A>的方法来设置。
+(实际上<TT CLASS="COMMAND">SET SESSION CHARACTERISTICS</TT>只是一个用<TT CLASS="COMMAND">SET</TT>
+来设置这些参数的另一种等效的方法)。这就意味着缺省值可以通过<TT CLASS="COMMAND">ALTER DATABASE</TT>
+或在配置文件里等方法设置。参考<A HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime-config.html">第 18 &#31456;</A>获取更多信息。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN81301"></A><H2>例子</H2><P>开启一个与已经存在的事务具有相同快照的新事务，首先从现存事务中输出快照。
+这将返回快照的标识符，例如：
+</P><PRE CLASS="PROGRAMLISTING">BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+SELECT pg_export_snapshot();
+ pg_export_snapshot
+--------------------
+ 000003A1-1
+(1 row)</PRE><P>
+然后在新打开的事务的开始的<TT CLASS="COMMAND">SET TRANSACTION SNAPSHOT</TT>命令中给出快照标识符：
+</P><PRE CLASS="PROGRAMLISTING">BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+SET TRANSACTION SNAPSHOT '000003A1-1';</PRE><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="R1-SQL-SET-TRANSACTION-3"></A><H2>兼容性</H2><P>这些命令在<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>标准中定义了，除了<TT CLASS="LITERAL">DEFERRABLE</TT>
+事务模式和<TT CLASS="COMMAND">SET TRANSACTION SNAPSHOT</TT>格式是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+的扩展。</P><P>标准里的缺省事务隔离级别是<TT CLASS="LITERAL">SERIALIZABLE</TT>；
+但在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>里，缺省隔离级别是 <TT CLASS="LITERAL">READ COMMITTED</TT>，
+但是你可以用上面描述的方法修改它。</P><P>在 SQL 标准里还有另外一种事务特性可以用这些命令设置：诊断范围的大小。
+这个概念只用于嵌入式 SQL ，因此没有在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>服务器里实现。</P><P>SQL 标准要求在相连的<TT CLASS="REPLACEABLE"><I>transaction_modes</I></TT>
+之间使用逗号，但是因为历史原因，<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>允许省略这个逗号。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-set-session-authorization.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-show.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">SET SESSION AUTHORIZATION</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">SHOW</TD></TR></TABLE></DIV></BODY></HTML>

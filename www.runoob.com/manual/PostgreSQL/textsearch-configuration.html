@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>配置实例</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="全文检索" HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html"><LINK REL="PREVIOUS" TITLE="词典" HREF="textsearch-dictionaries.html"><LINK REL="NEXT" TITLE="测试和调试文本搜索" HREF="textsearch-debugging.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/textsearch.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="词典" HREF="textsearch-dictionaries.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 12. 全文检索</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="测试和调试文本搜索" HREF="textsearch-debugging.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="TEXTSEARCH-CONFIGURATION">12.7. 配置实例</A></H1><P> 文本搜索配置指定所有选项将文档转换成一个<TT CLASS="TYPE">tsvector</TT>：使用解析器将文本分解为标记，
+并且使用词典将每个标记转换为词。<CODE CLASS="FUNCTION">to_tsvector</CODE>或者<CODE CLASS="FUNCTION">to_tsquery</CODE>的每一次调用需要一个文本搜索配置来执行处理。
+如果一个明确的配置参数被省略，则配置参数<A HREF="runtime-config-client.html#GUC-DEFAULT-TEXT-SEARCH-CONFIG">default_text_search_config</A>指定默认配置的名称，
+它是通过一个文本搜索函数使用的。它可以在<TT CLASS="FILENAME">postgresql.conf</TT>中设置，或使用<TT CLASS="COMMAND">SET</TT>命令设置一个独立会话。</P><P> 有几个预定义的文本搜索配置是可用的，并且您可以很容易的创建自定义的配置。
+为了方便文本搜索对象的管理，一组<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>命令是可用的，
+有几个<SPAN CLASS="APPLICATION">psql</SPAN>命令可以显示有关文本搜索对象的信息（节<A HREF="textsearch-psql.html">第 12.10 &#33410;</A>）。</P><P> 作为一个例子，我们将创建一个配置<TT CLASS="LITERAL">pg</TT>，通过复制内置<TT CLASS="LITERAL">english</TT>配置启动：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TEXT SEARCH CONFIGURATION public.pg ( COPY = pg_catalog.english );</PRE><P>&#13;</P><P>
+我们将使用PostgreSQL特定的同义词列表并将其存储在<TT CLASS="FILENAME">$SHAREDIR/tsearch_data/pg_dict.syn</TT>中。
+文件内容看起来像：
+</P><PRE CLASS="PROGRAMLISTING">postgres    pg
+pgsql       pg
+postgresql  pg</PRE><P>
+我们定义这样的同义词词典：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TEXT SEARCH DICTIONARY pg_dict (
+    TEMPLATE = synonym,
+    SYNONYMS = pg_dict
+);</PRE><P>
+接下来我们注册<SPAN CLASS="PRODUCTNAME">Ispell</SPAN>词典<TT CLASS="LITERAL">english_ispell</TT>，它有自己的配置文件：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TEXT SEARCH DICTIONARY english_ispell (
+    TEMPLATE = ispell,
+    DictFile = english,
+    AffFile = english,
+    StopWords = english
+);</PRE><P>
+现在我们可以在配置<TT CLASS="LITERAL">pg</TT>中建立词汇映射：
+</P><PRE CLASS="PROGRAMLISTING">ALTER TEXT SEARCH CONFIGURATION pg
+    ALTER MAPPING FOR asciiword, asciihword, hword_asciipart,
+                      word, hword, hword_part
+    WITH pg_dict, english_ispell, english_stem;</PRE><P>
+我们没有选择索引或搜索一些内置配置处理的标记类型：
+</P><PRE CLASS="PROGRAMLISTING">ALTER TEXT SEARCH CONFIGURATION pg
+    DROP MAPPING FOR email, url, url_path, sfloat, float;</PRE><P>&#13;</P><P> 现在我们测试我们的配置：
+</P><PRE CLASS="PROGRAMLISTING">SELECT * FROM ts_debug('public.pg', '
+PostgreSQL, the highly scalable, SQL compliant, open source object-relational
+database management system, is now undergoing beta testing of the next
+version of our software.
+');</PRE><P>&#13;</P><P>
+下一步是使用新的配置设置会话，这是在<TT CLASS="LITERAL">public</TT>模式中建立的：
+</P><PRE CLASS="SCREEN">=&gt; \dF
+   List of text search configurations
+ Schema  | Name | Description
+---------+------+-------------
+ public  | pg   |
+
+SET default_text_search_config = 'public.pg';
+SET
+
+SHOW default_text_search_config;
+ default_text_search_config
+----------------------------
+ public.pg</PRE><P>
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="textsearch-dictionaries.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="textsearch-debugging.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">词典</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">测试和调试文本搜索</TD></TR></TABLE></DIV></BODY></HTML>

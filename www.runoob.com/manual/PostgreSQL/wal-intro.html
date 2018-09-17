@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>预写式日志(WAL)</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="可靠性和预写式日志" HREF="http://school.yunwei.edu/manual/PostgreSQL/wal.html"><LINK REL="PREVIOUS" TITLE="可靠性" HREF="wal-reliability.html"><LINK REL="NEXT" TITLE="异步提交" HREF="wal-async-commit.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/wal.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="可靠性" HREF="wal-reliability.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/wal.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 29. 可靠性和预写式日志</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="异步提交" HREF="wal-async-commit.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="WAL-INTRO">29.2. 预写式日志(<ACRONYM CLASS="ACRONYM">WAL</ACRONYM>)</A></H1><P><I CLASS="FIRSTTERM">预写式日志</I>(<ACRONYM CLASS="ACRONYM">WAL</ACRONYM>)是一种确保数据完整性的标准方法。
+有关它的详细描述可以在大多数(如果不是全部的话)有关事务处理的书中找到。简而言之，
+<ACRONYM CLASS="ACRONYM">WAL</ACRONYM>的中心思想是对数据文件的修改(它们是表和索引的载体)
+必须是只能发生在这些修改已经记录到日志之后，也就是说，
+在描述这些变化的日志记录刷新到永久存储器之后。如果我们遵循这个过程，
+那么就不需要在每次事务提交的时候都把数据页刷新到磁盘，
+因为在出现崩溃的情况下可以用日志来恢复数据库：
+任何尚未附加到数据页的记录都将先从日志记录中重做(这叫向前滚动恢复，也叫 REDO)。</P><DIV CLASS="TIP"><BLOCKQUOTE CLASS="TIP"><P><B>&#25552;&#31034;: </B>因为<ACRONYM CLASS="ACRONYM">WAL</ACRONYM>在崩溃之后恢复数据文件内容，
+所以日志文件系统对于数据文件或WAL文件的可靠存储是完全没有必要的。实际上，
+日志记录开销会降低性能，尤其是日志记录导致文件系统<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">data</I></SPAN>
+刷新到磁盘。幸运地，在记录日期期间的数据刷新可以经常用一个文件系统挂载选项禁用，
+例如，在Linux ext3文件系统上的<TT CLASS="LITERAL">data=writeback</TT>。在崩溃后日志文件系统确实提高了启动速度。</P></BLOCKQUOTE></DIV><P>使用<ACRONYM CLASS="ACRONYM">WAL</ACRONYM>显著地减少了磁盘写的次数，因为只有日志文件需要刷新到磁盘以保证事务提交了，
+而不是事务修改的所有数据文件。日志文件是顺序写的，所以同步日志的开销要远比同步数据页的开销小。
+对于许多小事务修改数据存储的许多不同位置更是如此。另外，当服务器正在处理许多小的并发事务时，
+日志文件的一个<CODE CLASS="FUNCTION">fsync</CODE>足以提交许多事务。</P><P><ACRONYM CLASS="ACRONYM">WAL</ACRONYM>还提供了数据库在线备份和时间点恢复的可能，就像<A HREF="continuous-archiving.html">第 24.3 &#33410;</A>
+里描述的那样。通过归档的 WAL 文件，可以将数据库恢复到 WAL 文件包含的任意时刻：
+只需要简单地安装以前的数据库物理备份，然后重放 WAL 到希望的时间点。另外，
+物理备份还不必是数据库状态的一个即时快照(如果其制作花了较长时间的话)，
+因为 WAL 日志的重放将修复任何内部的不一致。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="wal-reliability.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="wal-async-commit.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">可靠性</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/wal.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">异步提交</TD></TR></TABLE></DIV></BODY></HTML>

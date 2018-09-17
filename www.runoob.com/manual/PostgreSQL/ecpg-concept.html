@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>概念</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="ECPG - 在C中嵌入SQL" HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html"><LINK REL="PREVIOUS" TITLE="ECPG - 在C中嵌入SQL" HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html"><LINK REL="NEXT" TITLE="管理数据库连接" HREF="ecpg-connect.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ecpg.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="ECPG - 在C中嵌入SQL" HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 33. <SPAN CLASS="APPLICATION">ECPG</SPAN> - 在C中嵌入<ACRONYM CLASS="ACRONYM">SQL</ACRONYM></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="管理数据库连接" HREF="ecpg-connect.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="ECPG-CONCEPT">33.1. 概念</A></H1><P> 嵌入SQL程序主要由一种普通的编程语言代码组成，
+在我们这个场合中是C，并且在其中与一些特殊标记的段混合。
+要制作这样的程序，源代码(<TT CLASS="FILENAME">*.pgc</TT>)
+首先经过嵌入的SQL预处理器处理，
+它把源代码转换成普通的C程序(<TT CLASS="FILENAME">*.c</TT>)，
+然后这个程序可以用C编译器进行处理。
+关于编译和链接的细节参阅<A HREF="ecpg-process.html">第 33.10 &#33410;</A>。
+转变的ECPG应用在libpq库中通过嵌入的SQL库（ecpglib）调用函数。
+并且使用正常的前后端协议与PostgreSQL服务器通信。
+</P><P> 嵌入的<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>相比于其它的从
+C代码中处理<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>命令的优点有几条。
+首先，它照看那些从你的<ACRONYM CLASS="ACRONYM">C</ACRONYM>
+程序中的变量中传来传去数值的事情。
+第二，在编译时检查程序中SQL代码句法正确性。
+第三，在C代码里嵌入<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>是定义
+在<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>标准里的，
+并且被许多其它的<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>数据库支持。
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的实现被设计成尽可能匹配这个标准，
+并且通常可以把为其它SQL数据库书写的<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>移植到
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>中来，反之亦然。 </P><P> 如上所述，为嵌入<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>
+接口写的程序通常是带着插入进来的特殊代码的C程序，
+这些特殊代码用于执行与数据库相关的动作。
+这些特殊代码通常的形式是下面这样：
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL ...;</PRE><P>
+这些语句语法上占据C语句的位置。根据具体语句的不同，
+它们可以出现在全局环境中或者出现在一个函数里。
+嵌入的<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>语句遵循普通<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>
+代码的大小写敏感规则，而不是遵循C代码的。
+</P><P> 下面的小节都是用来解释所有的嵌入SQL语句的。 </P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="ecpg-connect.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><SPAN CLASS="APPLICATION">ECPG</SPAN> - 在C中嵌入<ACRONYM CLASS="ACRONYM">SQL</ACRONYM></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">管理数据库连接</TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>索引访问方法函数</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="索引访问方法接口定义" HREF="http://school.yunwei.edu/manual/PostgreSQL/indexam.html"><LINK REL="PREVIOUS" TITLE="索引的系统表记录" HREF="index-catalog.html"><LINK REL="NEXT" TITLE="索引扫描" HREF="index-scanning.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/indexam.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="索引的系统表记录" HREF="index-catalog.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/indexam.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 54. 索引访问方法接口定义</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="索引扫描" HREF="index-scanning.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="INDEX-FUNCTIONS">54.2. 索引访问方法函数</A></H1><P>索引访问方法必须提供的索引构造和维护函数有：
+</P><P></P><PRE CLASS="PROGRAMLISTING">IndexBuildResult *
+ambuild (Relation heapRelation,
+         Relation indexRelation,
+         IndexInfo *indexInfo);</PRE><P>
+创建一个新索引。索引关系已经物理上创建好了，但是是空的。
+必须用索引访问方法要求的固定数据和代表所有已经在表里的行的数据项填充它。
+通常，<CODE CLASS="FUNCTION">ambuild</CODE>函数会调用<CODE CLASS="FUNCTION">IndexBuildHeapScan()</CODE>扫描该表以获取现有行并计算需要插入索引的键字。
+</P><P></P><PRE CLASS="PROGRAMLISTING">void
+ambuildempty (Relation indexRelation);</PRE><P>
+创建一个空的索引，并写到给定关系的初始fork(INIT_FORKNUM)中。
+这个方法只会为unlogged表调用;在服务器重启动时写入到初始fork的空索引会被复制到主关系。
+</P><P></P><PRE CLASS="PROGRAMLISTING">bool
+aminsert (Relation indexRelation,
+          Datum *values,
+          bool *isnull,
+          ItemPointer heap_tid,
+          Relation heapRelation,
+          IndexUniqueCheck checkUnique);</PRE><P>
+向现有索引插入一个新行。
+<TT CLASS="LITERAL">values</TT>和<TT CLASS="LITERAL">isnull</TT>数组给出需要制作索引的键字值，而<TT CLASS="LITERAL">heap_tid</TT>是要被索引的 TID 。
+如果该访问方法支持唯一索引(它的<TT CLASS="STRUCTNAME">pg_am</TT>.<TT CLASS="STRUCTFIELD">amcanunique</TT>标志是真)，
+那么<TT CLASS="LITERAL">checkUnique</TT>指示需要执行这种唯一性检查。
+具体情况依赖于该唯一制约是否是可延期的（deferrable）而不同; 详细请参阅 <A HREF="index-unique-checks.html">第 54.5 &#33410;</A>。
+通常访问方法只有在执行唯一性检查时才需要<TT CLASS="LITERAL">heapRelation</TT>参数(它将深入到heap中确认行是否是活的)。
+</P><P>只有当<TT CLASS="LITERAL">checkUnique</TT>是<TT CLASS="LITERAL">UNIQUE_CHECK_PARTIAL</TT>时，该函数的返回值才有意义。
+TRUE的返回值意味着新的索引项是唯一的，FALSE意味着不唯一（并且延期的唯一性检查必须被调度）。
+其它情况下推荐返回常量FALSE。
+</P><P>一些索引可能并不索引所有的行。如果行不被索引，<CODE CLASS="FUNCTION">aminsert</CODE>应该不做任何事情就直接返回。
+</P><P></P><PRE CLASS="PROGRAMLISTING">IndexBulkDeleteResult *
+ambulkdelete (IndexVacuumInfo *info,
+              IndexBulkDeleteResult *stats,
+              IndexBulkDeleteCallback callback,
+              void *callback_state);</PRE><P>
+从索引中删除行。
+这是一个<SPAN CLASS="QUOTE">"批量删除"</SPAN>的操作，通常都是通过扫描整个索引，检查每条记录，看看它是否需要被删除来实现的。
+可以调用传递进来的<TT CLASS="LITERAL">callback</TT>函数，调用风格是：
+<TT CLASS="LITERAL">callback(<TT CLASS="REPLACEABLE"><I>TID</I></TT>, callback_state) returns bool</TT>，
+其作用是判断某个用其引用的 TID 标识的索引项是否需要删除。
+必须返回 NULL 或者是一个 palloc 出来的，包含删除操作执行影响的统计信息的结构。
+如果不需要向<CODE CLASS="FUNCTION">amvacuumcleanup</CODE>传递信息，返回 NULL 也是 OK 的。
+</P><P>由于<TT CLASS="VARNAME">maintenance_work_mem</TT>的限制，在删除多行的时候
+<CODE CLASS="FUNCTION">ambulkdelete</CODE>可能需要被调用多次，<TT CLASS="LITERAL">stats</TT>
+参数是先前在这个索引上的调用结果(在一个<TT CLASS="COMMAND">VACUUM</TT>操作内部第一次调用的话则是 NULL)。
+这将允许 AM 在整个操作过程中积累统计信息。
+典型的，如果传递的<TT CLASS="LITERAL">stats</TT>不是 null 的话，<CODE CLASS="FUNCTION">ambulkdelete</CODE>将会修改并返回相同的结构。
+</P><P></P><PRE CLASS="PROGRAMLISTING">IndexBulkDeleteResult *
+amvacuumcleanup (IndexVacuumInfo *info,
+                 IndexBulkDeleteResult *stats);</PRE><P>
+在一个<TT CLASS="COMMAND">VACUUM</TT>操作(一个或多个<CODE CLASS="FUNCTION">ambulkdelete</CODE>调用)之后清理。
+虽然不必做任何返回索引状态之外的任何其他事情，但是它通常用于批量清理，比如说回收空的索引页面。
+<TT CLASS="LITERAL">stats</TT>是最后的<CODE CLASS="FUNCTION">ambulkdelete</CODE>调用返回的东西或者 NULL(如果因为没有行需要删除而未调用<CODE CLASS="FUNCTION">ambulkdelete</CODE>的话)。
+如果结果不是 NULL ，那么它必须是一个 palloc 出来的结构。
+它包含的统计信息将用于更新<TT CLASS="STRUCTNAME">pg_class</TT>并且由<TT CLASS="COMMAND">VACUUM</TT>报告(如果给出了<TT CLASS="LITERAL">VERBOSE</TT>)。
+如果索引在<TT CLASS="COMMAND">VACUUM</TT>操作的过程中根本没有改变，那么返回 NULL 也是 OK 的，否则必须返回当前状态。
+</P><P>在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>8.4中，<CODE CLASS="FUNCTION">amvacuumcleanup</CODE>也会在<TT CLASS="COMMAND">ANALYZE</TT>完成时被调用。
+这时，<TT CLASS="LITERAL">stats</TT>总是为NULL，并且返回值会被忽略。
+通过检查<TT CLASS="LITERAL">info-&gt;analyze_only</TT>可以区分出这种情况。
+建议访问方法在这样的调用里除了插入后的清理不要做其他事情，并且这只在autovacuum工作进程中。
+</P><P></P><PRE CLASS="PROGRAMLISTING">bool
+amcanreturn (Relation indexRelation);</PRE><P>
+检查索引是否支持<I CLASS="FIRSTTERM">index-only扫描</I>，通过为一个索引项以IndexTuple的形式返回被索引的列值。
+如果支持返回TRUE，否则返回FALSE。
+如果索引AM永远不支持index-only扫描（比如hash，它只存储哈希值而不是原始数据），
+可以有充分的理由把<TT CLASS="STRUCTNAME">pg_am</TT>中的<TT CLASS="STRUCTFIELD">amcanreturn</TT>字段设置为零。
+</P><P></P><PRE CLASS="PROGRAMLISTING">void
+amcostestimate (PlannerInfo *root,
+                IndexPath *path,
+                double loop_count,
+                Cost *indexStartupCost,
+                Cost *indexTotalCost,
+                Selectivity *indexSelectivity,
+                double *indexCorrelation);</PRE><P>
+估算一个索引扫描的开销。该函数在下面的<A HREF="index-cost-estimation.html">第 54.6 &#33410;</A>中有详细的讨论。
+</P><P></P><PRE CLASS="PROGRAMLISTING">bytea *
+amoptions (ArrayType *reloptions,
+           bool validate);</PRE><P>
+为一个索引分析和验证 reloptions 数组，仅当一个索引存在非空 reloptions 数组时才会被调用。
+<TT CLASS="PARAMETER">reloptions</TT>是一个<TT CLASS="TYPE">text</TT>数组，包含<TT CLASS="REPLACEABLE"><I>name</I></TT><TT CLASS="LITERAL">=</TT><TT CLASS="REPLACEABLE"><I>value</I></TT>格式的项。
+该函数应当创建一个<TT CLASS="TYPE">bytea</TT>值，该值将被拷贝进索引的 relcache 项的<TT CLASS="STRUCTFIELD">rd_options</TT>字段。
+<TT CLASS="TYPE">bytea</TT>值的数据内容可以由访问方法定义，不过目前所有的标准访问方法都使用<TT CLASS="STRUCTNAME">StdRdOptions</TT>结构。
+当<TT CLASS="PARAMETER">validate</TT>为真时，如果任何一个选项不可识别或者含有非法值，该函数都应当报告一个适当的错误信息；当<TT CLASS="PARAMETER">validate</TT>为假时，非法项应该被悄悄的忽略。
+（当载入已经存储在<TT CLASS="STRUCTNAME">pg_catalog</TT>中的选项时，<TT CLASS="PARAMETER">validate</TT>为假，仅在访问方法已经改变了选项规则的时候才可能找到非法项，在此情况下可以忽略废弃的项。）
+如果默认行为正是想要的，那么返回 NULL 也 OK 。
+</P><P>索引的目的当然是支持那些包含一个可以索引的<TT CLASS="LITERAL">WHERE</TT>条件的行的扫描，这个条件通常叫<I CLASS="FIRSTTERM">修饰词</I>或<I CLASS="FIRSTTERM">扫描键字</I>。
+索引扫描的语义在下面的<A HREF="index-scanning.html">第 54.3 &#33410;</A>里面有更完整的描述。
+一个索引访问方法可以支持<SPAN CLASS="QUOTE">"plain"</SPAN>索引扫描，<SPAN CLASS="QUOTE">"bitmap"</SPAN>索引扫描，或者两者都支持。
+必须或可以提供的与扫描有关的函数有：
+</P><P></P><PRE CLASS="PROGRAMLISTING">IndexScanDesc
+ambeginscan (Relation indexRelation,
+             int nkeys,
+             int norderbys);</PRE><P>
+准备一个索引扫描。
+<TT CLASS="LITERAL">nkeys</TT>和<TT CLASS="LITERAL">norderbys</TT>参素指示扫描中使用的修饰词和排序操作符的个数；它们可能对空间分配有用。
+注意实际的扫描键还没有提供。
+结果必须是一个 palloc 出来的结构。
+由于实现的原因，索引访问方法<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">必须</I></SPAN>通过调用<CODE CLASS="FUNCTION">RelationGetIndexScan()</CODE>来创建这个结构。
+在大多数情况下，<CODE CLASS="FUNCTION">ambeginscan</CODE>本身除了调用上面这个函数和可能获取一些锁之外几乎不干别的事情；索引扫描启动时的有趣部分在<CODE CLASS="FUNCTION">amrescan</CODE>里。
+</P><P></P><PRE CLASS="PROGRAMLISTING">void
+amrescan (IndexScanDesc scan,
+          ScanKey keys,
+          int nkeys,
+          ScanKey orderbys,
+          int norderbys);</PRE><P>
+启动或重新启动一个索引扫描，可能会使用新的扫描键字。
+（要使用先前提供的键重启动，给<TT CLASS="LITERAL">keys</TT> 和/或者<TT CLASS="LITERAL">orderbys</TT>传入NULL）
+记住扫描键字或排序操作符的个数不予许大于传给 <CODE CLASS="FUNCTION">ambeginscan</CODE>的数值。
+实际上，重新启动特性用于这样的场景：当一个新的外元组被嵌套循环(nested-loop)连接选中时，需要一个新的键比较值，但是扫描键结构仍然是相同的。
+</P><P></P><PRE CLASS="PROGRAMLISTING">boolean
+amgettuple (IndexScanDesc scan,
+            ScanDirection direction);</PRE><P>
+在给出的扫描里抓取下一个行，向给出的方向移动(在索引里向前或者向后)。
+如果抓取到了行，则返回 TRUE ，如果没有抓到匹配的行，返回 FALSE 。
+在为 TRUE 的时候，该行的 TID 存储在<TT CLASS="LITERAL">scan</TT>结构里。
+请注意<SPAN CLASS="QUOTE">"成功"</SPAN>只是意味着索引包含一个匹配扫描键字的条目，并不是说该行仍然在堆中存在，或者是能够通过调用者的快照检查(译注：MVCC 快照，用于判断事务边界内的行可视性)。
+如果成功，<CODE CLASS="FUNCTION">amgettuple</CODE>必须设置<TT CLASS="LITERAL">scan-&gt;xs_recheck</TT>为TRUE或FALSE。
+FALSE意味着已经可以确定索引项匹配扫描键字。
+TRUE意味着尚不确定，在取到堆元组后必须对堆元组再次检查代表这个扫描键值的条件。
+</P><P>如果索引支持index-only扫描（比如，<CODE CLASS="FUNCTION">amcanreturn</CODE>为它返回TRUE），
+那么成功执行后，这个AM也必须检查<TT CLASS="LITERAL">scan-&gt;xs_want_itup</TT>，如果为TRUE,
+它必须通过存储在<TT CLASS="LITERAL">scan-&gt;xs_itup</TT>中的<TT CLASS="STRUCTNAME">IndexTuple</TT>指针以及元组描述符<TT CLASS="LITERAL">scan-&gt;xs_itupdesc</TT>为这个索引项返回原始的被索引数据。
+（访问方法需要负责维护被这个指针引用的数据。至少在该扫描下一次调用<CODE CLASS="FUNCTION">amgettuple</CODE>，<CODE CLASS="FUNCTION">amrescan</CODE>或<CODE CLASS="FUNCTION">amendscan</CODE>前，这个数据必须保持完好）
+</P><P>如果访问方法支持<SPAN CLASS="QUOTE">"plain"</SPAN>索引扫描，只需要提供<CODE CLASS="FUNCTION">amgettuple</CODE>函数。
+如果不是，在它的<TT CLASS="STRUCTNAME">pg_am</TT>行中的<TT CLASS="STRUCTFIELD">amgettuple</TT>字段必须被设置成零。
+</P><P></P><PRE CLASS="PROGRAMLISTING">int64
+amgetbitmap (IndexScanDesc scan,
+             TIDBitmap *tbm);</PRE><P>
+在指定的扫描中抓取所有元组并把它们加入到调用者提供的<TT CLASS="TYPE">TIDBitmap</TT>中（换句话说，元组的ID集合加入到某个已存在的bitmap）。
+函数返回抓取到的元组数（这可能只是一个近似计数，某些AM实例并不检测重复）。
+当插入元组的TID到bitmap,<CODE CLASS="FUNCTION">amgetbitmap</CODE>可以指示对特定的元组TID需要对扫描条件做再检查。
+这和<CODE CLASS="FUNCTION">amgettuple</CODE>函数的输出参数<TT CLASS="LITERAL">xs_recheck</TT>类似。
+注意：在当前实现中，支持这个特性涉及到支持bitmap自身的有损存储，因此调用者为可再检查的元组再次检查扫描条件和部分索引谓词（如果有的话）。
+然而，这可能不会总是正确的。
+<CODE CLASS="FUNCTION">amgetbitmap</CODE>和<CODE CLASS="FUNCTION">amgettuple</CODE>不能在同一个索引扫描中使用；在使用
+<CODE CLASS="FUNCTION">amgetbitmap</CODE>的时候还有其它限制，在<A HREF="index-scanning.html">第 54.3 &#33410;</A>里给出解释。
+</P><P>只有访问方法支持<SPAN CLASS="QUOTE">"bitmap"</SPAN>索引扫描时才需要提供<CODE CLASS="FUNCTION">amgetbitmap</CODE>函数。
+如果访问方法不支持的话，必须在它的<TT CLASS="STRUCTNAME">pg_am</TT>行里设置<TT CLASS="STRUCTFIELD">amgetbitmap</TT>字段为零。
+</P><P></P><PRE CLASS="PROGRAMLISTING">void
+amendscan (IndexScanDesc scan);</PRE><P>
+结束扫描并释放资源。不应该释放<TT CLASS="LITERAL">scan</TT>本身，但访问方法内部使用的任何锁或者销(pin)都应该释放。
+</P><P></P><PRE CLASS="PROGRAMLISTING">void
+ammarkpos (IndexScanDesc scan);</PRE><P>
+标记当前扫描位置。访问方法只需要支持每次扫描里面有一个被记住的扫描位置。
+</P><P></P><PRE CLASS="PROGRAMLISTING">void
+amrestrpos (IndexScanDesc scan);</PRE><P>
+把扫描恢复到最近标记的位置。
+</P><P>通常，任何索引访问方法函数的<TT CLASS="LITERAL">pg_proc</TT>记录都应该显示正确数目的参数，
+只是把类型都声明为类型<TT CLASS="TYPE">internal</TT>(因为大多数参数的类型都是 SQL 不识别的类型，并且不希望用户直接调用该函数)。
+返回类型根据具体情况声明为<TT CLASS="TYPE">void</TT>, <TT CLASS="TYPE">internal</TT>, or <TT CLASS="TYPE">boolean</TT>。
+唯一的例外是 <CODE CLASS="FUNCTION">amoptions</CODE>，它应当被声明为接受<TT CLASS="TYPE">text[]</TT>和<TT CLASS="TYPE">bool</TT>并返回<TT CLASS="TYPE">bytea</TT>。
+这样就允许客户端代码执行<CODE CLASS="FUNCTION">amoptions</CODE>以确认选项设置的有效性。
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="index-catalog.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="index-scanning.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">索引的系统表记录</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/indexam.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">索引扫描</TD></TR></TABLE></DIV></BODY></HTML>

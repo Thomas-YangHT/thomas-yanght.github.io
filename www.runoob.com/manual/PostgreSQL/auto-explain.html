@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>auto_explain</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="额外提供的模块" HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html"><LINK REL="PREVIOUS" TITLE="auth_delay" HREF="auth-delay.html"><LINK REL="NEXT" TITLE="btree_gin" HREF="btree-gin.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/auto-explain.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="auth_delay" HREF="auth-delay.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; F. 额外提供的模块</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="btree_gin" HREF="btree-gin.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="AUTO-EXPLAIN">F.3. auto_explain</A></H1><P> <TT CLASS="FILENAME">auto_explain</TT>模块自动提供一种慢语句记录执行计划的方法
+没有手动运行<A HREF="sql-explain.html">EXPLAIN</A>。
+这对于在大型应用程序中跟踪未优化查询尤其有用。</P><P>
+该模块没有提供SQL访问函数。为了使用它，简单加载它到服务器中。
+你可以加载它到独立会话中：
+</P><PRE CLASS="PROGRAMLISTING">LOAD 'auto_explain';</PRE><P>
+（你一定是超级用户才能这样做。）
+更典型的用法是预先加载它到
+在<TT CLASS="FILENAME">postgresql.conf</TT>中<A HREF="runtime-config-resource.html#GUC-SHARED-PRELOAD-LIBRARIES">shared_preload_libraries</A>
+包含<TT CLASS="LITERAL">auto_explain</TT>的所有会话。然后，
+你可以出乎意料地跟踪无论什么时候会发生的慢查询。
+当然有价值开销。
+</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN144225">F.3.1. 配置参数</A></H2><P> 有几个配置参数控制<TT CLASS="FILENAME">auto_explain</TT>的操作。注意，
+缺省操作是什么也不做，如果你想要任何结果，
+那么你必须至少设置<TT CLASS="VARNAME">auto_explain.log_min_duration</TT>。</P><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="VARNAME">auto_explain.log_min_duration</TT> (<TT CLASS="TYPE">integer</TT>)</DT><DD><P> <TT CLASS="VARNAME">auto_explain.log_min_duration</TT>是最小声明执行时间，
+以毫秒为单位，将导致语句的计划被记录。设置它为零记录所有计划。
+减一（缺省）禁止计划的记录。比如，如果你设置它为<TT CLASS="LITERAL">250ms</TT>，
+那么运行250ms或者更长时间的所有语句将被记录。只有超级用户可以改变这个设置。</P></DD><DT><TT CLASS="VARNAME">auto_explain.log_analyze</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> <TT CLASS="VARNAME">auto_explain.log_analyze</TT>导致<TT CLASS="COMMAND">EXPLAIN ANALYZE</TT>
+输出，而不是<TT CLASS="COMMAND">EXPLAIN</TT>输出，当记录一个执行计划时，被打印。
+该参数缺省是关闭的。只有超级用户可以改变这个设置。</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B> 当该参数打开时，为所有执行语句产生每个计划节点时间，
+无论他们是否运行足够长的时间来获得记录。
+这会对性能产生极其不利的影响。</P></BLOCKQUOTE></DIV></DD><DT><TT CLASS="VARNAME">auto_explain.log_verbose</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> <TT CLASS="VARNAME">auto_explain.log_verbose</TT>导致<TT CLASS="COMMAND">EXPLAIN VERBOSE</TT>
+输出，而不是<TT CLASS="COMMAND">EXPLAIN</TT>输出，当记录一个执行计划时，被打印。
+该参数缺省是关闭的。只有超级用户可以改变这个设置。</P></DD><DT><TT CLASS="VARNAME">auto_explain.log_buffers</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> <TT CLASS="VARNAME">auto_explain.log_buffers</TT>导致
+<TT CLASS="COMMAND">EXPLAIN(ANALYZE, BUFFERS)</TT>
+输出，而不是<TT CLASS="COMMAND">EXPLAIN</TT>输出，当记录一个执行计划时，被打印。
+该参数缺省是关闭的。只有超级用户可以改变这个设置。
+该参数不起作用除非设置<TT CLASS="VARNAME">auto_explain.log_analyze</TT>参数。</P></DD><DT><TT CLASS="VARNAME">auto_explain.log_format</TT> (<TT CLASS="TYPE">enum</TT>)</DT><DD><P> <TT CLASS="VARNAME">auto_explain.log_format</TT>选择使用
+<TT CLASS="COMMAND">EXPLAIN</TT>输出格式。
+允许值是<TT CLASS="LITERAL">text</TT>,<TT CLASS="LITERAL">xml</TT>,
+<TT CLASS="LITERAL">json</TT>和<TT CLASS="LITERAL">yaml</TT>。
+缺省是text。只有超级用户可以改变这个设置。</P></DD><DT><TT CLASS="VARNAME">auto_explain.log_timing</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> <TT CLASS="VARNAME">auto_explain.log_timing</TT>导致<TT CLASS="COMMAND">EXPLAIN
+(ANALYZE, TIMING off)</TT>输出, 而不是<TT CLASS="COMMAND">EXPLAIN (ANALYZE)</TT>输出。
+反复读取系统时钟的开销可以显著减缓一些系统上的查询，因此当计算实际行时，设置该
+参数为关闭是非常有用的，不需要确切时间。
+当启动<TT CLASS="VARNAME">auto_explain.log_analyze</TT>时，该参数是有效的。
+缺省该参数是打开的。只有超级用户可以改变该设置。</P></DD><DT><TT CLASS="VARNAME">auto_explain.log_nested_statements</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> <TT CLASS="VARNAME">auto_explain.log_nested_statements</TT>为了记录导致嵌套语句（语句在函数内执行）。
+当它是关闭时，只记录顶级查询计划。
+该参数缺省是关闭的。
+只有超级用户可以改变这个设置。</P></DD></DL></DIV><P> 必须在<TT CLASS="FILENAME">postgresql.conf</TT>中设置该参数，典型的用户是：</P><PRE CLASS="PROGRAMLISTING"># postgresql.conf
+shared_preload_libraries = 'auto_explain'
+
+auto_explain.log_min_duration = '3s'</PRE></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN144322">F.3.2. 例子</A></H2><PRE CLASS="PROGRAMLISTING">postgres=# LOAD 'auto_explain';
+postgres=# SET auto_explain.log_min_duration = 0;
+postgres=# SELECT count(*)
+           FROM pg_class, pg_index
+           WHERE oid = indrelid AND indisunique;</PRE><P> 这可能产生日志输出比如：</P><PRE CLASS="SCREEN">LOG:  duration: 3.651 ms  plan:
+  Query Text: SELECT count(*)
+              FROM pg_class, pg_index
+              WHERE oid = indrelid AND indisunique;
+  Aggregate  (cost=16.79..16.80 rows=1 width=0) (actual time=3.626..3.627 rows=1 loops=1)
+    -&#62;  Hash Join  (cost=4.17..16.55 rows=92 width=0) (actual time=3.349..3.594 rows=92 loops=1)
+          Hash Cond: (pg_class.oid = pg_index.indrelid)
+          -&#62;  Seq Scan on pg_class  (cost=0.00..9.55 rows=255 width=4) (actual time=0.016..0.140 rows=255 loops=1)
+          -&#62;  Hash  (cost=3.02..3.02 rows=92 width=4) (actual time=3.238..3.238 rows=92 loops=1)
+                Buckets: 1024  Batches: 1  Memory Usage: 4kB
+                -&#62;  Seq Scan on pg_index  (cost=0.00..3.02 rows=92 width=4) (actual time=0.008..3.187 rows=92 loops=1)
+                      Filter: indisunique</PRE></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN144327">F.3.3. 作者</A></H2><P> Takahiro Itagaki <CODE CLASS="EMAIL">&#60;<A HREF="mailto:itagaki.takahiro@oss.ntt.co.jp">itagaki.takahiro@oss.ntt.co.jp</A>&#62;</CODE>
+</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="auth-delay.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="btree-gin.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">auth_delay</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">btree_gin</TD></TR></TABLE></DIV></BODY></HTML>

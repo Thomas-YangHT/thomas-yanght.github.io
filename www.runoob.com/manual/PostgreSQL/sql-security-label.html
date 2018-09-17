@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>SECURITY LABEL</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="SAVEPOINT" HREF="sql-savepoint.html"><LINK REL="NEXT" TITLE="SELECT" HREF="sql-select.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/security_label.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="SAVEPOINT" HREF="sql-savepoint.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="SELECT" HREF="sql-select.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-SECURITY-LABEL"></A>SECURITY LABEL</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN79509"></A><H2>&#21517;&#31216;</H2>SECURITY LABEL&nbsp;--&nbsp;定义或改变一个应用于对象的安全标签</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN79514"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">SECURITY LABEL [ FOR <TT
+CLASS="REPLACEABLE"
+><I
+>provider</I
+></TT
+> ] ON
+{
+  TABLE <TT
+CLASS="REPLACEABLE"
+><I
+>object_name</I
+></TT
+> |
+  COLUMN <TT
+CLASS="REPLACEABLE"
+><I
+>table_name</I
+></TT
+>.<TT
+CLASS="REPLACEABLE"
+><I
+>column_name</I
+></TT
+> |
+  AGGREGATE <TT
+CLASS="REPLACEABLE"
+><I
+>agg_name</I
+></TT
+> (<TT
+CLASS="REPLACEABLE"
+><I
+>agg_type</I
+></TT
+> [, ...] ) |
+  DATABASE <TT
+CLASS="REPLACEABLE"
+><I
+>object_name</I
+></TT
+> |
+  DOMAIN <TT
+CLASS="REPLACEABLE"
+><I
+>object_name</I
+></TT
+> |
+  EVENT TRIGGER <TT
+CLASS="REPLACEABLE"
+><I
+>object_name</I
+></TT
+> |
+  FOREIGN TABLE <TT
+CLASS="REPLACEABLE"
+><I
+>object_name</I
+></TT
+>
+  FUNCTION <TT
+CLASS="REPLACEABLE"
+><I
+>function_name</I
+></TT
+> ( [ [ <TT
+CLASS="REPLACEABLE"
+><I
+>argmode</I
+></TT
+> ] [ <TT
+CLASS="REPLACEABLE"
+><I
+>argname</I
+></TT
+> ] <TT
+CLASS="REPLACEABLE"
+><I
+>argtype</I
+></TT
+> [, ...] ] ) |
+  LARGE OBJECT <TT
+CLASS="REPLACEABLE"
+><I
+>large_object_oid</I
+></TT
+> |
+  MATERIALIZED VIEW <TT
+CLASS="REPLACEABLE"
+><I
+>object_name</I
+></TT
+> |
+  [ PROCEDURAL ] LANGUAGE <TT
+CLASS="REPLACEABLE"
+><I
+>object_name</I
+></TT
+> |
+  ROLE <TT
+CLASS="REPLACEABLE"
+><I
+>object_name</I
+></TT
+> |
+  SCHEMA <TT
+CLASS="REPLACEABLE"
+><I
+>object_name</I
+></TT
+> |
+  SEQUENCE <TT
+CLASS="REPLACEABLE"
+><I
+>object_name</I
+></TT
+> |
+  TABLESPACE <TT
+CLASS="REPLACEABLE"
+><I
+>object_name</I
+></TT
+> |
+  TYPE <TT
+CLASS="REPLACEABLE"
+><I
+>object_name</I
+></TT
+> |
+  VIEW <TT
+CLASS="REPLACEABLE"
+><I
+>object_name</I
+></TT
+>
+} IS '<TT
+CLASS="REPLACEABLE"
+><I
+>label</I
+></TT
+>'</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN79540"></A><H2>描述</H2><P><TT CLASS="COMMAND">SECURITY LABEL</TT>为一个数据库对象申请一个安全标签。
+每一个标签提供程序的任意数量的安全标签都可以与一个给定的数据库对象关联。
+标签提供者是可加载模块，通过使用函数<CODE CLASS="FUNCTION">register_label_provider</CODE>记录他们自己。</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B><CODE CLASS="FUNCTION">register_label_provider</CODE>不是SQL函数；只能从C代码存入后端调用。</P></BLOCKQUOTE></DIV><P>标签提供者决定一个给定的标签是否有效，并且是否允许将那个标签分配给一个给定的对象。
+给定标签的含义和标签提供者的描述相同。<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+不限制标签提供者是否或如何解释安全标签；只是提供过一个存储它们的机制。实际上，
+这个便利是为了允许集成基于标签的强制访问控制（MAC）系统，如<SPAN CLASS="PRODUCTNAME">SE-Linux</SPAN>。
+这样的系统使得访问控制决策基于对象标签，而不是传统的自主访问控制（DAC）概念，如用户和组。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN79551"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="REPLACEABLE"><I>object_name</I></TT><BR><TT CLASS="REPLACEABLE"><I>table_name.column_name</I></TT><BR><TT CLASS="REPLACEABLE"><I>agg_name</I></TT><BR><TT CLASS="REPLACEABLE"><I>function_name</I></TT></DT><DD><P>有标签的对象的名字。可模式修饰的表、集群、域、外部表、函数、序列、类型和视图的名字。</P></DD><DT><TT CLASS="REPLACEABLE"><I>provider</I></TT></DT><DD><P>与这个标签相关的提供者的名字。被指名的提供者必须被加载并且必须同意提出的标签操作。
+如果只加载了一个提供者，那么为了简洁会省略提供者的名字。</P></DD><DT><TT CLASS="REPLACEABLE"><I>arg_type</I></TT></DT><DD><P>聚集函数操作的输入数据类型。要引用一个零参数的聚集函数，在输入数据类型的列表位置写<TT CLASS="LITERAL">*</TT>。</P></DD><DT><TT CLASS="REPLACEABLE"><I>argmode</I></TT></DT><DD><P>函数参数的模式：<TT CLASS="LITERAL">IN</TT>, <TT CLASS="LITERAL">OUT</TT>, <TT CLASS="LITERAL">INOUT</TT>, 或 <TT CLASS="LITERAL">VARIADIC</TT>。
+如果省略，缺省是<TT CLASS="LITERAL">IN</TT>。请注意，<TT CLASS="COMMAND">SECURITY LABEL ON FUNCTION</TT>
+并不实际注意<TT CLASS="LITERAL">OUT</TT>参数，因为只需要输入参数判断函数的安全。
+所以列出<TT CLASS="LITERAL">IN</TT>, <TT CLASS="LITERAL">INOUT</TT>, 和 <TT CLASS="LITERAL">VARIADIC</TT>就足够了。</P></DD><DT><TT CLASS="REPLACEABLE"><I>argname</I></TT></DT><DD><P>函数参数的名字。请注意，<TT CLASS="COMMAND">SECURITY LABEL ON FUNCTION</TT>
+并不实际注意参数名字，因为只需要参数数据类型判断函数的身份。</P></DD><DT><TT CLASS="REPLACEABLE"><I>argtype</I></TT></DT><DD><P>如果有，是函数参数的数据类型（可以有模式修饰）。</P></DD><DT><TT CLASS="REPLACEABLE"><I>large_object_oid</I></TT></DT><DD><P>大对象的OID。</P></DD><DT><TT CLASS="LITERAL">PROCEDURAL</TT></DT><DD><P>这是一个噪声字。</P></DD><DT><TT CLASS="REPLACEABLE"><I>label</I></TT></DT><DD><P>新的安全标签，写作一个字符串；或<TT CLASS="LITERAL">NULL</TT>以删除安全标签。</P></DD></DL></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="AEN79618"></A><H2>例子</H2><P>下列例子显示了如何改变一个表的安全标签。
+</P><PRE CLASS="PROGRAMLISTING">SECURITY LABEL FOR selinux ON TABLE mytable IS 'system_u:object_r:sepgsql_table_t:s0';</PRE><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN79622"></A><H2>兼容性</H2><P>SQL标准中没有<TT CLASS="COMMAND">SECURITY LABEL</TT>命令。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN79626"></A><H2>又见</H2><A HREF="sepgsql.html">sepgsql</A>, <A HREF="dummy-seclabel.html">dummy_seclabel</A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-savepoint.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-select.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">SAVEPOINT</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">SELECT</TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>库函数</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="ECPG - 在C中嵌入SQL" HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html"><LINK REL="PREVIOUS" TITLE="处理嵌入的SQL程序" HREF="ecpg-process.html"><LINK REL="NEXT" TITLE="大对象" HREF="ecpg-lo.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ecpg.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="处理嵌入的SQL程序" HREF="ecpg-process.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 33. <SPAN CLASS="APPLICATION">ECPG</SPAN> - 在C中嵌入<ACRONYM CLASS="ACRONYM">SQL</ACRONYM></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="大对象" HREF="ecpg-lo.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="ECPG-LIBRARY">33.11. 库函数</A></H1><P> <TT CLASS="FILENAME">libecpg</TT>库主要包含<SPAN CLASS="QUOTE">"隐藏的"</SPAN>函数，
+它用于实现嵌入SQL命令表达的功能。但是有一些可以直接调用的函数。
+注意这使得您的代码可移植。</P><P></P><UL><LI><P> 如果调用第一个非零参数，<CODE CLASS="FUNCTION">ECPGdebug(int <TT CLASS="REPLACEABLE"><I>on</I></TT>, FILE
+*<TT CLASS="REPLACEABLE"><I>stream</I></TT>)</CODE>打开调试日志。
+调试日志在<TT CLASS="REPLACEABLE"><I>stream</I></TT>上执行。
+日志包含带有插入的所有输入变量的<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>语句，以及
+来自<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>服务器的结果。
+当搜索<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>语句中的错误时，这是非常有用的。
+</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B> 在Windows上，如果<SPAN CLASS="APPLICATION">ecpg</SPAN>库和应用程序是以不同标识被编译，那么
+该函数调用将崩溃，因为<TT CLASS="LITERAL">FILE</TT>指针内部表示形式不同。
+特别是，多线程/单线程，释放/调试，以及静态/动态信号
+对于该库以及使用该库的所有应用程序是一样的。</P></BLOCKQUOTE></DIV></LI><LI><P> <CODE CLASS="FUNCTION">ECPGget_PGconn(const char *<TT CLASS="REPLACEABLE"><I>connection_name</I></TT>)</CODE>返回由给定名称标识的数据库连接句柄。
+如果<TT CLASS="REPLACEABLE"><I>connection_name</I></TT>设置为<TT CLASS="LITERAL">NULL</TT>，
+则返回当前连接句柄。如果没有连接句柄可以被识别，
+则该函数返回<TT CLASS="LITERAL">NULL</TT>。如果必要的话，返回的连接句柄可以用于
+从<SPAN CLASS="APPLICATION">libpq</SPAN>调用任何其他函数。 </P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B> 操作随着<SPAN CLASS="APPLICATION">libpq</SPAN>例程由<SPAN CLASS="APPLICATION">ecpg</SPAN>直接组成的数据库连接句柄是个坏主意。</P></BLOCKQUOTE></DIV></LI><LI><P> <CODE CLASS="FUNCTION">ECPGtransactionStatus(const char *<TT CLASS="REPLACEABLE"><I>connection_name</I></TT>)</CODE>
+返回通过<TT CLASS="REPLACEABLE"><I>connection_name</I></TT>标识的给定连接的当前事务状态。
+参阅<A HREF="libpq-status.html">第 31.2 &#33410;</A>和libpq的<CODE CLASS="FUNCTION">PQtransactionStatus()</CODE>获取关于返回状态码的详细信息。</P></LI><LI><P> 如果你连接到一个数据库，则<CODE CLASS="FUNCTION">ECPGstatus(int <TT CLASS="REPLACEABLE"><I>lineno</I></TT>,
+const char* <TT CLASS="REPLACEABLE"><I>connection_name</I></TT>)</CODE>返回真，否则返回假。
+如果正在使用一个连接，则<TT CLASS="REPLACEABLE"><I>connection_name</I></TT>是<TT CLASS="LITERAL">NULL</TT>。</P></LI></UL></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="ecpg-process.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="ecpg-lo.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">处理嵌入的SQL程序</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">大对象</TD></TR></TABLE></DIV></BODY></HTML>

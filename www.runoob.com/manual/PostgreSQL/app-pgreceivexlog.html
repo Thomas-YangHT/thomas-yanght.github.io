@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>pg_receivexlog</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="PostgreSQL 客户端应用程序" HREF="http://school.yunwei.edu/manual/PostgreSQL/reference-client.html"><LINK REL="PREVIOUS" TITLE="pg_isready" HREF="app-pg-isready.html"><LINK REL="NEXT" TITLE="pg_restore" HREF="app-pgrestore.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/pg_receivexlog.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="pg_isready" HREF="app-pg-isready.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/reference-client.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="pg_restore" HREF="app-pgrestore.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="APP-PGRECEIVEXLOG"></A>pg_receivexlog</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN85573"></A><H2>&#21517;&#31216;</H2>pg_receivexlog&nbsp;--&nbsp;<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>集群中的流事务日志</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN85579"></A><H2>&#22823;&#32434;</H2><P><TT CLASS="COMMAND">pg_receivexlog</TT> [<TT CLASS="REPLACEABLE"><I>option</I></TT>...]</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN85584"></A><H2> 描述
+</H2><P><SPAN CLASS="APPLICATION">pg_receivexlog</SPAN>用于从一个运行的<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+集群中流事务日志。该事务日志流使用流复制协议，并写入到文件的本地目录中。
+这个目录可以被用作使用时间点恢复的归档目录（参阅<A HREF="continuous-archiving.html">第 24.3 &#33410;</A>）。</P><P><SPAN CLASS="APPLICATION">pg_receivexlog</SPAN>在服务器上产生事务日志时实时流事务日志，
+并且不像<A HREF="runtime-config-wal.html#GUC-ARCHIVE-COMMAND">archive_command</A>那样等待段的完成。因为这个原因，
+当使用<SPAN CLASS="APPLICATION">pg_receivexlog</SPAN>时不需要设置<A HREF="runtime-config-wal.html#GUC-ARCHIVE-TIMEOUT">archive_timeout</A>。</P><P>事务日志在普通的<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>连接上流出，并且使用复制控制。
+必须由超级用户或有<TT CLASS="LITERAL">REPLICATION</TT>权限的用户（参阅
+<A HREF="role-attributes.html">第 20.2 &#33410;</A>）连接，并且<TT CLASS="FILENAME">pg_hba.conf</TT>
+必须明确的允许复制连接。服务器也必须配置的<A HREF="runtime-config-replication.html#GUC-MAX-WAL-SENDERS">max_wal_senders</A>足够高，
+使流至少有一个会话可用。</P><P>如果失去连接，或者不能初步建立，带有一个非致命错误，<SPAN CLASS="APPLICATION">pg_receivexlog</SPAN>
+将无限的重试连接，并尽快重建流。要避免这种行为，使用<TT CLASS="LITERAL">-n</TT>参数。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN85604"></A><H2>选项</H2><P>下列的命令行选项控制输出的位置和格式。
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="OPTION">-D <TT CLASS="REPLACEABLE"><I>directory</I></TT></TT><BR><TT CLASS="OPTION">--directory=<TT CLASS="REPLACEABLE"><I>directory</I></TT></TT></DT><DD><P>写输出的目录。&#13;</P><P>这个参数是必需的。</P></DD></DL></DIV><P>
+</P><P> 下列的命令行选项控制程序的运行。
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="OPTION">-n</TT><BR><TT CLASS="OPTION">--no-loop</TT></DT><DD><P>不要循环连接错误。相反，立即带有错误退出。</P></DD><DT><TT CLASS="OPTION">-v</TT><BR><TT CLASS="OPTION">--verbose</TT></DT><DD><P>启用冗余模式。</P></DD></DL></DIV><P>
+</P><P>下列的命令行选项控制数据库连接参数。
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="OPTION">-d <TT CLASS="REPLACEABLE"><I>connstr</I></TT></TT><BR><TT CLASS="OPTION">--dbname=<TT CLASS="REPLACEABLE"><I>connstr</I></TT></TT></DT><DD><P>声明用来连接到服务器的参数，作为一个连接字符串。参阅<A HREF="libpq-connect.html#LIBPQ-CONNSTRING">第 31.1.1 &#33410;</A>获取更多信息。</P><P>该选项被称为<TT CLASS="LITERAL">--dbname</TT>是为了与其他客户端应用的一致性，但是因为
+<SPAN CLASS="APPLICATION">pg_receivexlog</SPAN>不连接到集群中的任何特别的数据库，
+所以将忽略连接字符串中的数据库名字。</P></DD><DT><TT CLASS="OPTION">-h <TT CLASS="REPLACEABLE"><I>host</I></TT></TT><BR><TT CLASS="OPTION">--host=<TT CLASS="REPLACEABLE"><I>host</I></TT></TT></DT><DD><P>声明服务器正在运行的机器的主机名。如果这个值以一个斜线开始，则被用作Unix域套接字的目录。
+默认从<TT CLASS="ENVAR">PGHOST</TT>环境变量中获取（如果设置了），否则尝试一个Unix域套接字连接。</P></DD><DT><TT CLASS="OPTION">-p <TT CLASS="REPLACEABLE"><I>port</I></TT></TT><BR><TT CLASS="OPTION">--port=<TT CLASS="REPLACEABLE"><I>port</I></TT></TT></DT><DD><P>声明服务器正在监听的TCP端口或本地Unix域套接字文件扩展。缺省是<TT CLASS="ENVAR">PGPORT</TT>
+环境变量（如果设置了），否则是内编译的缺省。</P></DD><DT><TT CLASS="OPTION">-s <TT CLASS="REPLACEABLE"><I>interval</I></TT></TT><BR><TT CLASS="OPTION">--status-interval=<TT CLASS="REPLACEABLE"><I>interval</I></TT></TT></DT><DD><P>声明状态数据包发送回服务器的秒数。这允许对服务器进程的更简单的监视。为了避免连接超时，
+零值完全禁用定期状态更新，尽管服务器需要时仍然发送一个更新。缺省值是10秒。</P></DD><DT><TT CLASS="OPTION">-U <TT CLASS="REPLACEABLE"><I>username</I></TT></TT><BR><TT CLASS="OPTION">--username=<TT CLASS="REPLACEABLE"><I>username</I></TT></TT></DT><DD><P>连接的用户名。</P></DD><DT><TT CLASS="OPTION">-w</TT><BR><TT CLASS="OPTION">--no-password</TT></DT><DD><P>从不发出密码提示问题。如果服务器要求密码认证并且密码不可用于其他意思如
+<TT CLASS="FILENAME">.pgpass</TT>文件，则连接尝试将会失败。
+该选项在批量工作和不存在用户输入密码的脚本中很有帮助。</P></DD><DT><TT CLASS="OPTION">-W</TT><BR><TT CLASS="OPTION">--password</TT></DT><DD><P>强制<SPAN CLASS="APPLICATION">pg_receivexlog</SPAN>在连接到数据库之前提示一个密码。</P><P>这个选项从来不是至关重要的，因为如果服务器需求密码认证，则<SPAN CLASS="APPLICATION">pg_receivexlog</SPAN>
+自动提示一个密码。不过，<SPAN CLASS="APPLICATION">pg_receivexlog</SPAN>
+将在找出服务器想要一个密码上浪费一个连接尝试。在某些情况下，值得输入<TT CLASS="OPTION">-W</TT>
+以避免额外的连接尝试。</P></DD></DL></DIV><P>
+</P><P>其他选项也可用：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="OPTION">-V</TT><BR><TT CLASS="OPTION">--version</TT></DT><DD><P>打印<SPAN CLASS="APPLICATION">pg_receivexlog</SPAN>版本然后退出。</P></DD><DT><TT CLASS="OPTION">-?</TT><BR><TT CLASS="OPTION">--help</TT></DT><DD><P>显示关于<SPAN CLASS="APPLICATION">pg_receivexlog</SPAN>命令行参数的帮助然后退出。</P></DD></DL></DIV><P>
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN85725"></A><H2>环境变量</H2><P>这个工具，类似大多数其他<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>实用工具，
+也使用由<SPAN CLASS="APPLICATION">libpq</SPAN>支持的环境变量（参阅<A HREF="libpq-envars.html">第 31.14 &#33410;</A>）。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN85731"></A><H2>注意</H2><P>当使用<SPAN CLASS="APPLICATION">pg_receivexlog</SPAN>而不是<A HREF="runtime-config-wal.html#GUC-ARCHIVE-COMMAND">archive_command</A>时，
+服务器将持续回收事务日志文件，即使备份没有适当的归档，因为这里没有失败的命令。
+可以通过在文件还未适当的归档时有一个<A HREF="runtime-config-wal.html#GUC-ARCHIVE-COMMAND">archive_command</A>失败来绕开：
+</P><PRE CLASS="PROGRAMLISTING">archive_command = 'sleep 5 &amp;&amp; test -f /mnt/server/archivedir/%f'</PRE><P>
+最初的时限是必须的，因为<SPAN CLASS="APPLICATION">pg_receivexlog</SPAN>使用异步复制工作，
+并且因此稍微落后于主机。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN85739"></A><H2>例子</H2><P>要从服务器<TT CLASS="LITERAL">mydbserver</TT>流事务日志，并将其存储到本地目录
+<TT CLASS="FILENAME">/usr/local/pgsql/archive</TT>中：
+</P><PRE CLASS="SCREEN"><SAMP
+CLASS="PROMPT"
+>$</SAMP
+> <KBD
+CLASS="USERINPUT"
+>pg_receivexlog -h mydbserver -D /usr/local/pgsql/archive</KBD
+></PRE><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN85747"></A><H2>又见</H2><A HREF="app-pgbasebackup.html">pg_basebackup</A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="app-pg-isready.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="app-pgrestore.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><SPAN CLASS="APPLICATION">pg_isready</SPAN></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/reference-client.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">pg_restore</TD></TR></TABLE></DIV></BODY></HTML>

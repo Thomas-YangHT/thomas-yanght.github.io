@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>版本 7.3.10</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="版本 7.3.11" HREF="release-7-3-11.html"><LINK REL="NEXT" TITLE="版本 7.3.9" HREF="release-7-3-9.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-old.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="版本 7.3.11" HREF="release-7-3-11.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="版本 7.3.9" HREF="release-7-3-9.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-7-3-10">E.195. 版本 7.3.10</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>2005-05-09</P></BLOCKQUOTE></DIV><P>这个版本包含各种自7.3.9以来的补丁，包括几个安全相关的问题。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN141134">E.195.1. 迁移到版本 7.3.10</A></H2><P>运行7.3.X的不需要转储/恢复。不过，
+转储/恢复是处理在7.3.X系统目录中的初始化内容中发现的重大安全问题的一种方式。
+使用7.3.10的initdb的dump/initdb/reload序列将自动改正这个问题。</P><P>安全问题是非特权用户可以通过SQL命令引用内建字符设置编码转换函数，
+但是该函数不是这样使用的，并且对于恶意的参数选择是不安全的。
+修复包括改变这些函数声明的参数列表，这样它们可以不再被SQL命令调用。
+（这样并不影响它们通过编码转换机制的正常使用。）
+强烈推荐所有安装修复这个错误，通过initdb或通过下面给出的手动修复过程。
+该错误至少允许非特权数据库用户毁坏他们的服务器进程，
+甚至可能允许非特权用户获得数据库超级用户的权限。</P><P>如果你希望不做initdb，那么执行下列的过程。作为数据库超级用户，执行：
+</P><PRE CLASS="PROGRAMLISTING">BEGIN;
+UPDATE pg_proc SET proargtypes[3] = 'internal'::regtype
+WHERE pronamespace = 11 AND pronargs = 5
+     AND proargtypes[2] = 'cstring'::regtype;
+-- 该命令应该报告已经更新了90行;
+-- 如果不是，那么回滚并调查而不是提交!
+COMMIT;</PRE><P>
+</P><P>上面的程序必须在<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">每个</I></SPAN>安装的数据库中执行，包括<TT CLASS="LITERAL">template1</TT>，
+并且理论上也包括<TT CLASS="LITERAL">template0</TT>。如果你不修复模板数据库，
+那么任何随后创建的数据库将包含相同的错误。<TT CLASS="LITERAL">template1</TT>
+可以用与任意其他数据库相同的方式修复，但是修复<TT CLASS="LITERAL">template0</TT>
+需要额外的步骤。首先，从任意数据库发出：
+</P><PRE CLASS="PROGRAMLISTING">UPDATE pg_database SET datallowconn = true WHERE datname = 'template0';</PRE><P>
+然后连接到<TT CLASS="LITERAL">template0</TT>并执行以上所述的修复程序。最后，执行：
+</P><PRE CLASS="PROGRAMLISTING">-- 重新冻结template0:
+VACUUM FREEZE;
+-- 保护它免受未来的变化:
+UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';</PRE><P>
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN141149">E.195.2. 修改列表</A></H2><P></P><UL><LI><P>改变编码函数签名以阻止滥用</P></LI><LI><P>修复古老竞态条件，该条件允许一个事务因为某些目的(如 SELECT FOR UPDATE)被视作已提交</P><P>这是一个极其严重的bug，因为它会导致表面数据的不一致性被应用短暂的看到。</P></LI><LI><P>修复相关扩展和VACUUM之间的竞态条件</P><P>这理论上可能导致丢失新近插入的数据的一个页面，尽管情况看起来概率很低。
+没有导致多于一个维护失败的已知情况。</P></LI><LI><P>修复了<TT CLASS="TYPE">TIME WITH TIME ZONE</TT>值的比较</P><P>当使用<TT CLASS="LITERAL">--enable-integer-datetimes</TT>配置开关时，该比较代码是错误的。
+注意：如果你在<TT CLASS="TYPE">TIME WITH TIME ZONE</TT>字段上有索引，
+它将需要在安装这个更新后<TT CLASS="COMMAND">REINDEX</TT>，因为这个修复纠正了字段值的顺序。</P></LI><LI><P>为<TT CLASS="TYPE">TIME WITH TIME ZONE</TT>值修复了<CODE CLASS="FUNCTION">EXTRACT(EPOCH)</CODE></P></LI><LI><P>修复了<TT CLASS="TYPE">INTERVAL</TT>值中负分数秒的错误显示</P><P>这个错误只有在使用了<TT CLASS="LITERAL">--enable-integer-datetimes</TT>配置开关的时候发生。</P></LI><LI><P>在plpgsql中额外的缓冲区溢出检查(Neil)</P></LI><LI><P>修复pg_dump转储触发器名字正确的包含<TT CLASS="LITERAL">%</TT>(Neil)</P></LI><LI><P>阻止<CODE CLASS="FUNCTION">to_char(interval)</CODE>为月份相关的格式转储内核</P></LI><LI><P>为更新的OpenSSL构建修复<TT CLASS="FILENAME">contrib/pgcrypto</TT>(Marko Kreen)</P></LI><LI><P>为<TT CLASS="FILENAME">contrib/intagg</TT>修复更多的64位问题</P></LI><LI><P>阻止返回<TT CLASS="TYPE">RECORD</TT>的函数的不正确的最优化</P></LI></UL></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-7-3-11.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-7-3-9.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">版本 7.3.11</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">版本 7.3.9</TD></TR></TABLE></DIV></BODY></HTML>

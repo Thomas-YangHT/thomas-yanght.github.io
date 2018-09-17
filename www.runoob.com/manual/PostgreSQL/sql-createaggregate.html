@@ -1,0 +1,150 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>CREATE AGGREGATE</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="COPY" HREF="sql-copy.html"><LINK REL="NEXT" TITLE="CREATE CAST" HREF="sql-createcast.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/create_aggregate.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="COPY" HREF="sql-copy.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="CREATE CAST" HREF="sql-createcast.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-CREATEAGGREGATE"></A>CREATE AGGREGATE</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN69021"></A><H2>&#21517;&#31216;</H2>CREATE AGGREGATE&nbsp;--&nbsp;定义一个新的聚集函数</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN69026"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">CREATE AGGREGATE <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+> ( <TT
+CLASS="REPLACEABLE"
+><I
+>input_data_type</I
+></TT
+> [ , ... ] ) (
+    SFUNC = <TT
+CLASS="REPLACEABLE"
+><I
+>sfunc</I
+></TT
+>,
+    STYPE = <TT
+CLASS="REPLACEABLE"
+><I
+>state_data_type</I
+></TT
+>
+    [ , FINALFUNC = <TT
+CLASS="REPLACEABLE"
+><I
+>ffunc</I
+></TT
+> ]
+    [ , INITCOND = <TT
+CLASS="REPLACEABLE"
+><I
+>initial_condition</I
+></TT
+> ]
+    [ , SORTOP = <TT
+CLASS="REPLACEABLE"
+><I
+>sort_operator</I
+></TT
+> ]
+)
+
+<SPAN
+CLASS="phrase"
+><SPAN
+CLASS="PHRASE"
+>or the old syntax</SPAN
+></SPAN
+>
+
+CREATE AGGREGATE <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+> (
+    BASETYPE = <TT
+CLASS="REPLACEABLE"
+><I
+>base_type</I
+></TT
+>,
+    SFUNC = <TT
+CLASS="REPLACEABLE"
+><I
+>sfunc</I
+></TT
+>,
+    STYPE = <TT
+CLASS="REPLACEABLE"
+><I
+>state_data_type</I
+></TT
+>
+    [ , FINALFUNC = <TT
+CLASS="REPLACEABLE"
+><I
+>ffunc</I
+></TT
+> ]
+    [ , INITCOND = <TT
+CLASS="REPLACEABLE"
+><I
+>initial_condition</I
+></TT
+> ]
+    [ , SORTOP = <TT
+CLASS="REPLACEABLE"
+><I
+>sort_operator</I
+></TT
+> ]
+)</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN69043"></A><H2>描述</H2><P><TT CLASS="COMMAND">CREATE AGGREGATE</TT>定义一个新的聚集函数。
+一些常用的聚集函数已经包含在基础软件包里了；在<A HREF="functions-aggregate.html">第 9.20 &#33410;</A>里有文档说明。
+如果你需要定义一个新类型或需要一个还没有提供的聚集函数，这时<TT CLASS="COMMAND">CREATE AGGREGATE</TT>便可派上用场。 </P><P>如果给出了一个模式的名字(比如<TT CLASS="LITERAL">CREATE AGGREGATE myschema.myagg ...</TT>)，那么该聚集函数是在指定模式中创建的。
+否则它是在当前模式中创建的。 </P><P>一个聚集函数是用它的名字和输入数据类型来标识的。
+同一模式中如果两个聚集处理的输入数据不同，它们可以有相同的名字。
+一个聚集函数的输入数据类型必须和所有同一模式中的普通函数的名字和输入 类型不同。 </P><P>一个聚集函数是用一个或两个普通函数组成的：一个状态转换函数<TT CLASS="REPLACEABLE"><I>sfunc</I></TT>和一个可选的最终计算函数<TT CLASS="REPLACEABLE"><I>ffunc</I></TT>。
+它们是这样使用的：
+</P><PRE CLASS="PROGRAMLISTING"><TT
+CLASS="REPLACEABLE"
+><I
+>sfunc</I
+></TT
+>( internal-state, next-data-values ) ---&#62; next-internal-state
+<TT
+CLASS="REPLACEABLE"
+><I
+>ffunc</I
+></TT
+>( internal-state ) ---&#62; aggregate-value</PRE><P></P><P><SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>创建一个类型为<TT CLASS="REPLACEABLE"><I>stype</I></TT>的临时变量。
+它保存这个聚集的当前内部状态。对于每个输入数据条目，都调用状态转换函数计算内部状态值的新数值。
+在处理完所有数据后，调用一次最终处理函数以计算聚集的返回值。如果没有最终处理函数， 则将最后的状态值当做返回值。 </P><P>一个聚集函数还可能提供一个初始条件，也就是内部状态值的初始值。
+这个值是作为一个类型为<TT CLASS="TYPE">text</TT>的字段存储在数据库里的，不过它们必须是状态值数据类型的合法的外部 表现形式的常量。
+如果没有提供状态，那么状态值初始化为 NULL 。 </P><P>如果该状态转换函数被定义为<SPAN CLASS="QUOTE">"strict"</SPAN>，那么就不能用 NULL 输入调用它。
+此时， 聚集的执行如下所述。带有任何 NULL 输入值的行将被忽略(不调用此函数并且保留前一个状态值)。
+如果初始状态值是 NULL ，那么在第一个含有非 NULL 值的行上，使用第一个参数值替换状态值， 然后状态转换函数在随后所有的含有非 NULL 值的行上调用。
+这样做让比较容易实现像<CODE CLASS="FUNCTION">max</CODE>这样的聚集。
+请注意这种行为只是当<TT CLASS="REPLACEABLE"><I>state_data_type</I></TT>与<TT CLASS="REPLACEABLE"><I>input_data_type</I></TT>相同的时候才表现出来。
+如果这些类型不同，你必须提供一个非 NULL 的初始条件或者使用一个非"strict"的状态转换函数。 </P><P>如果状态转换函数不是严格(strict)的，那么它将无条件地在每个输入行上调用，并且必须自行处理 NULL 输入和NULL 转换值，这样就允许聚集的作者对聚集中的 NULL 有完全的控制。 </P><P>如果最终转换函数定义为<SPAN CLASS="QUOTE">"strict"</SPAN>，那么如果最终状态值是NULL 时就不会调用它；
+而是自动输出一个 NULL 结果。(这才是 strict 函数的正常特征。)
+不管是那种情况，最终处理函数 可以自由选择是否返回 NULL 。
+比如，<CODE CLASS="FUNCTION">avg</CODE>的最终处理函数在零输入记录时 就会返回 NULL 。 </P><P>行为类似<CODE CLASS="FUNCTION">MIN</CODE>或<CODE CLASS="FUNCTION">MAX</CODE>的聚集有时候可以优化为使用索引，而不用扫描 每个输入行。
+如果这个聚集可以如此优化，则用一个<I CLASS="FIRSTTERM">排序操作符</I>标识它。
+这里基本的要求是聚集 必须以操作符归纳出来的排序顺序生成第一个元素；换句话说：
+</P><PRE CLASS="PROGRAMLISTING">SELECT agg(col) FROM tab;</PRE><P>
+必须等于：
+</P><PRE CLASS="PROGRAMLISTING">SELECT col FROM tab ORDER BY col USING sortop LIMIT 1;</PRE><P>
+更多的假设是聚集忽略 NULL 输入，并且只有在输入没有非空数值的时候，它才生成NULL结果。
+通常，数据类型的 <TT CLASS="LITERAL">&lt;</TT> 操作符是<CODE CLASS="FUNCTION">MIN</CODE>的适用排序操作符，而 <TT CLASS="LITERAL">&gt;</TT> 是<CODE CLASS="FUNCTION">MAX</CODE> 的适用操作符。
+请注意，除非声明的操作符是 B-tree 索引操作符类的<SPAN CLASS="QUOTE">"小于"</SPAN>或者<SPAN CLASS="QUOTE">"大于"</SPAN>策略号， 否则这种优化将不会生效。 </P><P>要创建聚集函数，你必须具有相关参数类型、状态类型和返回类型的<TT CLASS="LITERAL">使用</TT>权限，也必须具有转换函数和最终函数的<TT CLASS="LITERAL">执行</TT>权限。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN69087"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="REPLACEABLE"><I>name</I></TT></DT><DD><P>要创建的聚集函数名(可以有模式修饰) 。</P></DD><DT><TT CLASS="REPLACEABLE"><I>input_data_type</I></TT></DT><DD><P>该聚集函数要处理的输入数据类型。要创建一个零参数聚集函数，可以使用<TT CLASS="LITERAL">*</TT>代替输入数据类型列表。
+（<CODE CLASS="FUNCTION">count(*)</CODE>就是这种聚集函数的一个实例。 ）</P></DD><DT><TT CLASS="REPLACEABLE"><I>base_type</I></TT></DT><DD><P>在以前的<TT CLASS="COMMAND">CREATE AGGREGATE</TT>语法中，输入数据类型是通过<TT CLASS="LITERAL">basetype</TT>参数指定的，而不是写在聚集的名称之后。
+需要注意的是这种以前语法仅允许一个输入参数。 要创建一个零参数聚集函数，可以将<TT CLASS="LITERAL">basetype</TT>指定为<TT CLASS="LITERAL">"ANY"</TT>(而不是<TT CLASS="LITERAL">*</TT>)。 </P></DD><DT><TT CLASS="REPLACEABLE"><I>sfunc</I></TT></DT><DD><P>将在每一个输入行上调用的状态转换函数的名称。
+对于有<TT CLASS="REPLACEABLE"><I>N</I></TT>个参数的聚集函数，<TT CLASS="REPLACEABLE"><I>sfunc</I></TT>必须有 <TT CLASS="REPLACEABLE"><I>+1 </I></TT>个参数，其中的第一个参数类型为<TT CLASS="REPLACEABLE"><I>state_data_type</I></TT>，其余的匹配已声明的输入数据类型。
+函数必须返回一个<TT CLASS="REPLACEABLE"><I>state_data_type</I></TT>类型的值。
+这个函数接受当前状态值和当前输入数据，并返回下个状态值。 </P></DD><DT><TT CLASS="REPLACEABLE"><I>state_data_type</I></TT></DT><DD><P>聚集的状态值的数据类型。</P></DD><DT><TT CLASS="REPLACEABLE"><I>ffunc</I></TT></DT><DD><P>在转换完所有输入行后调用的最终处理函数，它计算聚集的结果。
+此函数必须接受一个类型为<TT CLASS="REPLACEABLE"><I>state_data_type</I></TT>的参数。
+聚集的输出数据 类型被定义为此函数的返回类型。
+如果没有声明<TT CLASS="REPLACEABLE"><I>ffunc</I></TT>则使用聚集结果的状态值作为聚集的结果，且输出类型为<TT CLASS="REPLACEABLE"><I>state_data_type</I></TT>。 </P></DD><DT><TT CLASS="REPLACEABLE"><I>initial_condition</I></TT></DT><DD><P>状态值的初始设置(值)。
+它必须是一个<TT CLASS="REPLACEABLE"><I>state_data_type</I></TT>类型可以接受的文本常量值。
+如果没有声明，状态值初始为 NULL 。 </P></DD><DT><TT CLASS="REPLACEABLE"><I>sort_operator</I></TT></DT><DD><P>用于<CODE CLASS="FUNCTION">MIN</CODE>或<CODE CLASS="FUNCTION">MAX</CODE>类型聚集的排序操作符。
+这个只是一个操作符名 (可以有模式修饰)。这个操作符假设接受和聚集一样的输入数据类型。 </P></DD></DL></DIV><P><TT CLASS="COMMAND">CREATE AGGREGATE</TT>的参数可以以任何顺序书写，而不只是上面显示的顺序。 </P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN69150"></A><H2>例子</H2><P>参见<A HREF="xaggr.html">第 35.10 &#33410;</A>。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN69154"></A><H2>兼容性</H2><P><TT CLASS="COMMAND">CREATE AGGREGATE</TT>是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>语言的扩展。
+SQL标准没有提供用户自定义聚集函数的功能。 </P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN69159"></A><H2>参见</H2><A HREF="sql-alteraggregate.html">ALTER AGGREGATE</A>, <A HREF="sql-dropaggregate.html">DROP AGGREGATE</A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-copy.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-createcast.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">COPY</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">CREATE CAST</TD></TR></TABLE></DIV></BODY></HTML>

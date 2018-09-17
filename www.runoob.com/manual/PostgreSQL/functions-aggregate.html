@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>聚集函数</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="函数和操作符" HREF="http://school.yunwei.edu/manual/PostgreSQL/functions.html"><LINK REL="PREVIOUS" TITLE="范围函数和操作符" HREF="functions-range.html"><LINK REL="NEXT" TITLE="窗口函数" HREF="functions-window.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/func.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="范围函数和操作符" HREF="functions-range.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/functions.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 9. 函数和操作符</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="窗口函数" HREF="functions-window.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="FUNCTIONS-AGGREGATE">9.20. 聚集函数</A></H1><P><I CLASS="FIRSTTERM">聚集函数</I>从一组输入值里计算一个结果。
+<A HREF="functions-aggregate.html#FUNCTIONS-AGGREGATE-TABLE">&#34920; 9-46</A>和<A HREF="functions-aggregate.html#FUNCTIONS-AGGREGATE-STATISTICS-TABLE">&#34920; 9-47</A>
+显示了内建的聚集函数。聚集函数的特殊语法在<A HREF="sql-expressions.html#SYNTAX-AGGREGATES">第 4.2.7 &#33410;</A>里解释。
+请参考<A HREF="tutorial-agg.html">第 2.7 &#33410;</A>获取额外的介绍性信息。</P><DIV CLASS="TABLE"><A NAME="FUNCTIONS-AGGREGATE-TABLE"></A><P><B>&#34920; 9-46. 通用聚集函数</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><COL><THEAD><TR><TH>函数</TH><TH>参数类型</TH><TH>返回类型</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD>
+<CODE CLASS="FUNCTION">array_agg(<TT CLASS="REPLACEABLE"><I>expression</I></TT>)</CODE>
+</TD><TD> 任意
+</TD><TD> 参数类型的数组
+</TD><TD>输入值，包括空，连接到一个数组</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">avg(<TT CLASS="REPLACEABLE"><I>expression</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">smallint</TT>, <TT CLASS="TYPE">int</TT>,
+<TT CLASS="TYPE">bigint</TT>, <TT CLASS="TYPE">real</TT>, <TT CLASS="TYPE">double
+precision</TT>, <TT CLASS="TYPE">numeric</TT>, or <TT CLASS="TYPE">interval</TT>
+</TD><TD> 对于任何整数类型输入，结果都是<TT CLASS="TYPE">numeric</TT>类型。
+对于任何浮点输入，结果都是<TT CLASS="TYPE">double precision</TT>类型。
+否则和输入数据类型相同。
+</TD><TD>所有输入值的均值(算术平均)</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">bit_and(<TT CLASS="REPLACEABLE"><I>expression</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">smallint</TT>, <TT CLASS="TYPE">int</TT>, <TT CLASS="TYPE">bigint</TT>, or
+<TT CLASS="TYPE">bit</TT>
+</TD><TD> 和参数数据类型相同
+</TD><TD>所有非 NULL 输入值的按位与(AND)，如果全部输入值皆为 NULL ，那么结果也为 NULL 。</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">bit_or(<TT CLASS="REPLACEABLE"><I>expression</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">smallint</TT>, <TT CLASS="TYPE">int</TT>, <TT CLASS="TYPE">bigint</TT>, or
+<TT CLASS="TYPE">bit</TT>
+</TD><TD> 和参数数据类型相同
+</TD><TD>所有非 NULL 输入值的按位或(OR)，如果全部输入值皆为 NULL ，那么结果也为 NULL 。</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">bool_and(<TT CLASS="REPLACEABLE"><I>expression</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">bool</TT>
+</TD><TD> <TT CLASS="TYPE">bool</TT>
+</TD><TD>如果所有输入值都是真，则为真，否则为假。</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">bool_or(<TT CLASS="REPLACEABLE"><I>expression</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">bool</TT>
+</TD><TD> <TT CLASS="TYPE">bool</TT>
+</TD><TD>如果至少有一个输入值为真，则为真，否则为假。</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">count(*)</CODE>
+</TD><TD>&nbsp;</TD><TD><TT CLASS="TYPE">bigint</TT></TD><TD>输入行数</TD></TR><TR><TD><CODE CLASS="FUNCTION">count(<TT CLASS="REPLACEABLE"><I>expression</I></TT>)</CODE></TD><TD>任意</TD><TD><TT CLASS="TYPE">bigint</TT></TD><TD> 计算所有输入行中满足<TT CLASS="REPLACEABLE"><I>expression</I></TT>不为 NULL 的行数。
+</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">every(<TT CLASS="REPLACEABLE"><I>expression</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">bool</TT>
+</TD><TD> <TT CLASS="TYPE">bool</TT>
+</TD><TD>等效于<CODE CLASS="FUNCTION">bool_and</CODE></TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">json_agg(<TT CLASS="REPLACEABLE"><I>record</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">record</TT>
+</TD><TD> <TT CLASS="TYPE">json</TT>
+</TD><TD>聚集记录作为JSON对象数组</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">max(<TT CLASS="REPLACEABLE"><I>expression</I></TT>)</CODE>
+</TD><TD>任意数组、数值、字符串、日期/时间类型</TD><TD>和参数数据类型相同</TD><TD> 有输入行中<TT CLASS="REPLACEABLE"><I>expression</I></TT>的最大值
+</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">min(<TT CLASS="REPLACEABLE"><I>expression</I></TT>)</CODE>
+</TD><TD>任意数组、数值、字符串、日期/时间类型</TD><TD>和参数数据类型相同</TD><TD> 所有输入行中<TT CLASS="REPLACEABLE"><I>expression</I></TT>的最小值
+</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION"> string_agg(<TT CLASS="REPLACEABLE"><I>expression</I></TT>,
+<TT CLASS="REPLACEABLE"><I>delimiter</I></TT>)
+</CODE>
+</TD><TD> (<TT CLASS="TYPE">text</TT>, <TT CLASS="TYPE">text</TT>) or (<TT CLASS="TYPE">bytea</TT>, <TT CLASS="TYPE">bytea</TT>)
+</TD><TD> 和参数数据类型相同
+</TD><TD>输入值连接成为一个字符串，用分隔符分开</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">sum(<TT CLASS="REPLACEABLE"><I>expression</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">smallint</TT>, <TT CLASS="TYPE">int</TT>,
+<TT CLASS="TYPE">bigint</TT>, <TT CLASS="TYPE">real</TT>, <TT CLASS="TYPE">double
+precision</TT>, <TT CLASS="TYPE">numeric</TT>, or
+<TT CLASS="TYPE">interval</TT>
+</TD><TD> 对于<TT CLASS="TYPE">smallint</TT>或<TT CLASS="TYPE">int</TT>输入，输出类型为<TT CLASS="TYPE">bigint</TT>。
+对于<TT CLASS="TYPE">bigint</TT>输入，输出类型为<TT CLASS="TYPE">numeric</TT>，对于浮点数输入，
+输出类型为<TT CLASS="TYPE">double precision</TT>。否则和输入数据类型相同。
+</TD><TD>所有输入行的<TT CLASS="REPLACEABLE"><I>expression</I></TT>总和。</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">xmlagg(<TT CLASS="REPLACEABLE"><I>expression</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">xml</TT>
+</TD><TD> <TT CLASS="TYPE">xml</TT>
+</TD><TD>连接 XML 值 (也可以参阅 <A HREF="functions-xml.html#FUNCTIONS-XML-XMLAGG">第 9.14.1.7 &#33410;</A>)</TD></TR></TBODY></TABLE></DIV><P>请注意，除了<CODE CLASS="FUNCTION">count</CODE>以外，这些函数在没有输入行时返回 NULL 。
+尤其要指出的是<CODE CLASS="FUNCTION">sum</CODE>函数在没有输入行时返回 NULL ，而不是零。
+<CODE CLASS="FUNCTION">array_agg</CODE>函数在没有输入行时返回null而不是空数组。
+必要时可以用<CODE CLASS="FUNCTION">coalesce</CODE>把 NULL 替换成零或空数组。</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B><CODE CLASS="FUNCTION">bool_and</CODE>和<CODE CLASS="FUNCTION">bool_or</CODE>布尔聚集对应标准的 SQL
+聚集<CODE CLASS="FUNCTION">every</CODE>和<CODE CLASS="FUNCTION">any</CODE>或<CODE CLASS="FUNCTION">some</CODE>。
+对于<CODE CLASS="FUNCTION">any</CODE>和<CODE CLASS="FUNCTION">some</CODE>，标准语法里面似乎有些内置的歧义：
+</P><PRE CLASS="PROGRAMLISTING">SELECT b1 = ANY((SELECT b2 FROM t2 ...)) FROM t1 ...;</PRE><P>
+这里的<CODE CLASS="FUNCTION">ANY</CODE>既可以被认为是引出一个子查询，
+也可以被认为是一个聚集(如果子查询返回布尔值的1行的话)。因此标准的名字无法用于这些聚集。
+</P></BLOCKQUOTE></DIV><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>习惯了其它 SQL 数据库管理系统的用户可能被用于全表计算的<CODE CLASS="FUNCTION">count</CODE>
+的性能(之慢)惊住了。一个类似下面这样的查询：
+</P><PRE CLASS="PROGRAMLISTING">SELECT count(*) FROM sometable;</PRE><P>
+将需要努力与表的大小成正比：<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+将需要扫面整个表或包含表中所有行的完整的索引。
+</P></BLOCKQUOTE></DIV><P>聚集函数<CODE CLASS="FUNCTION">array_agg</CODE>，<CODE CLASS="FUNCTION">json_agg</CODE>，<CODE CLASS="FUNCTION">string_agg</CODE>
+和<CODE CLASS="FUNCTION">xmlagg</CODE>，以及类似用户定义的聚集函数，根据输入值的顺序产生意义不同的结果值。
+这个顺序默认没有指定，但是可以通过在聚集函数调用时，写一个<TT CLASS="LITERAL">ORDER BY</TT>子句来控制，
+就像<A HREF="sql-expressions.html#SYNTAX-AGGREGATES">第 4.2.7 &#33410;</A>描述的那样。另外，
+通常可以从一个已排序的子查询中提供输入值。例如：
+</P><PRE CLASS="SCREEN">SELECT xmlagg(x) FROM (SELECT x FROM test ORDER BY y DESC) AS tab;</PRE><P>
+但此语法在SQL标准里不允许，不能移植到其它数据库系统。
+</P><P><A HREF="functions-aggregate.html#FUNCTIONS-AGGREGATE-STATISTICS-TABLE">&#34920; 9-47</A>展示了用于统计分析的聚集函数。
+单独列出这些函数仅仅是为了避免和那些经常使用的聚集函数混在一起而已。
+"描述"列中的<TT CLASS="REPLACEABLE"><I>N</I></TT>
+表示所有输入行中使得输入表达式不为 NULL 的行数。总的来说，如果计算本身变得没有意义，
+那么返回值将是 NULL 。例如当<TT CLASS="REPLACEABLE"><I>N</I></TT>为零的时候。</P><DIV CLASS="TABLE"><A NAME="FUNCTIONS-AGGREGATE-STATISTICS-TABLE"></A><P><B>&#34920; 9-47. 统计聚集函数</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><COL><THEAD><TR><TH>函数</TH><TH>参数类型</TH><TH>返回类型</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD>
+<CODE CLASS="FUNCTION">corr(<TT CLASS="REPLACEABLE"><I>Y</I></TT>, <TT CLASS="REPLACEABLE"><I>X</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD>相关系数</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">covar_pop(<TT CLASS="REPLACEABLE"><I>Y</I></TT>, <TT CLASS="REPLACEABLE"><I>X</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD>总体协方差</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">covar_samp(<TT CLASS="REPLACEABLE"><I>Y</I></TT>, <TT CLASS="REPLACEABLE"><I>X</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD>样本协方差</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">regr_avgx(<TT CLASS="REPLACEABLE"><I>Y</I></TT>, <TT CLASS="REPLACEABLE"><I>X</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD>自变量的平均值
+(<TT CLASS="LITERAL">sum(<TT CLASS="REPLACEABLE"><I>X</I></TT>)/<TT CLASS="REPLACEABLE"><I>N</I></TT></TT>)</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">regr_avgy(<TT CLASS="REPLACEABLE"><I>Y</I></TT>, <TT CLASS="REPLACEABLE"><I>X</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD>因变量的平均值
+(<TT CLASS="LITERAL">sum(<TT CLASS="REPLACEABLE"><I>Y</I></TT>)/<TT CLASS="REPLACEABLE"><I>N</I></TT></TT>)</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">regr_count(<TT CLASS="REPLACEABLE"><I>Y</I></TT>, <TT CLASS="REPLACEABLE"><I>X</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD> <TT CLASS="TYPE">bigint</TT>
+</TD><TD>两个表达式都不为 NULL 的输入行数</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">regr_intercept(<TT CLASS="REPLACEABLE"><I>Y</I></TT>, <TT CLASS="REPLACEABLE"><I>X</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD> 根据所有输入的点(<TT CLASS="REPLACEABLE"><I>X</I></TT>, <TT CLASS="REPLACEABLE"><I>Y</I></TT>)按照最小二乘法拟合成一个线性方程，然后返回该直线的 Y 轴截距</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">regr_r2(<TT CLASS="REPLACEABLE"><I>Y</I></TT>, <TT CLASS="REPLACEABLE"><I>X</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD>相关系数的平方</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">regr_slope(<TT CLASS="REPLACEABLE"><I>Y</I></TT>, <TT CLASS="REPLACEABLE"><I>X</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD> 根据所有输入的点(<TT CLASS="REPLACEABLE"><I>X</I></TT>,
+<TT CLASS="REPLACEABLE"><I>Y</I></TT>)按照最小二乘法拟合成一个线性方程，
+然后返回该直线的斜率。</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">regr_sxx(<TT CLASS="REPLACEABLE"><I>Y</I></TT>, <TT CLASS="REPLACEABLE"><I>X</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD><TT CLASS="LITERAL">sum(<TT CLASS="REPLACEABLE"><I>X</I></TT>^2) - sum(<TT CLASS="REPLACEABLE"><I>X</I></TT>)^2/<TT CLASS="REPLACEABLE"><I>N</I></TT></TT> (自变量的<SPAN CLASS="QUOTE">"平方和"</SPAN>)</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">regr_sxy(<TT CLASS="REPLACEABLE"><I>Y</I></TT>, <TT CLASS="REPLACEABLE"><I>X</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD><TT CLASS="LITERAL">sum(<TT CLASS="REPLACEABLE"><I>X</I></TT>*<TT CLASS="REPLACEABLE"><I>Y</I></TT>) - sum(<TT CLASS="REPLACEABLE"><I>X</I></TT>) * sum(<TT CLASS="REPLACEABLE"><I>Y</I></TT>)/<TT CLASS="REPLACEABLE"><I>N</I></TT></TT> (自变量和因变量的<SPAN CLASS="QUOTE">"乘方积"</SPAN>)</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">regr_syy(<TT CLASS="REPLACEABLE"><I>Y</I></TT>, <TT CLASS="REPLACEABLE"><I>X</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD><TT CLASS="LITERAL">sum(<TT CLASS="REPLACEABLE"><I>Y</I></TT>^2) - sum(<TT CLASS="REPLACEABLE"><I>Y</I></TT>)^2/<TT CLASS="REPLACEABLE"><I>N</I></TT></TT> (因变量的<SPAN CLASS="QUOTE">"平方和"</SPAN>)</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">stddev(<TT CLASS="REPLACEABLE"><I>expression</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">smallint</TT>, <TT CLASS="TYPE">int</TT>,
+<TT CLASS="TYPE">bigint</TT>, <TT CLASS="TYPE">real</TT>, <TT CLASS="TYPE">double
+precision</TT>, 或 <TT CLASS="TYPE">numeric</TT>
+</TD><TD> 对于浮点类型的输入返回<TT CLASS="TYPE">double precision</TT>，其他输入返回<TT CLASS="TYPE">numeric</TT>
+</TD><TD><CODE CLASS="FUNCTION">stddev_samp</CODE>的别名(历史原因)</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">stddev_pop(<TT CLASS="REPLACEABLE"><I>expression</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">smallint</TT>, <TT CLASS="TYPE">int</TT>,
+<TT CLASS="TYPE">bigint</TT>, <TT CLASS="TYPE">real</TT>, <TT CLASS="TYPE">double
+precision</TT>, 或 <TT CLASS="TYPE">numeric</TT>
+</TD><TD> 对于浮点类型的输入返回<TT CLASS="TYPE">double precision</TT>，其他输入返回<TT CLASS="TYPE">numeric</TT>
+</TD><TD>总体标准差</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">stddev_samp(<TT CLASS="REPLACEABLE"><I>expression</I></TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">smallint</TT>, <TT CLASS="TYPE">int</TT>,
+<TT CLASS="TYPE">bigint</TT>, <TT CLASS="TYPE">real</TT>, <TT CLASS="TYPE">double
+precision</TT>, 或 <TT CLASS="TYPE">numeric</TT>
+</TD><TD> 对于浮点类型的输入返回<TT CLASS="TYPE">double precision</TT>，其他输入返回<TT CLASS="TYPE">numeric</TT>
+</TD><TD>样本标准差</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">variance</CODE>(<TT CLASS="REPLACEABLE"><I>expression</I></TT>)
+</TD><TD> <TT CLASS="TYPE">smallint</TT>, <TT CLASS="TYPE">int</TT>,
+<TT CLASS="TYPE">bigint</TT>, <TT CLASS="TYPE">real</TT>, <TT CLASS="TYPE">double
+precision</TT>, 或 <TT CLASS="TYPE">numeric</TT>
+</TD><TD> 对于浮点类型的输入返回<TT CLASS="TYPE">double precision</TT>，其他输入返回<TT CLASS="TYPE">numeric</TT>
+</TD><TD><CODE CLASS="FUNCTION">var_samp</CODE>的别名(历史原因)</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">var_pop</CODE>(<TT CLASS="REPLACEABLE"><I>expression</I></TT>)
+</TD><TD> <TT CLASS="TYPE">smallint</TT>, <TT CLASS="TYPE">int</TT>,
+<TT CLASS="TYPE">bigint</TT>, <TT CLASS="TYPE">real</TT>, <TT CLASS="TYPE">double
+precision</TT>, 或 <TT CLASS="TYPE">numeric</TT>
+</TD><TD> 对于浮点类型的输入返回<TT CLASS="TYPE">double precision</TT>，其他输入返回<TT CLASS="TYPE">numeric</TT>
+</TD><TD>总体方差(总体标准差的平方)</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">var_samp</CODE>(<TT CLASS="REPLACEABLE"><I>expression</I></TT>)
+</TD><TD> <TT CLASS="TYPE">smallint</TT>, <TT CLASS="TYPE">int</TT>,
+<TT CLASS="TYPE">bigint</TT>, <TT CLASS="TYPE">real</TT>, <TT CLASS="TYPE">double
+precision</TT>, 或 <TT CLASS="TYPE">numeric</TT>
+</TD><TD> 对于浮点类型的输入返回<TT CLASS="TYPE">double precision</TT>，其他输入返回<TT CLASS="TYPE">numeric</TT>
+</TD><TD>样本方差(样本标准差的平方)</TD></TR></TBODY></TABLE></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="functions-range.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="functions-window.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">范围函数和操作符</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/functions.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">窗口函数</TD></TR></TABLE></DIV></BODY></HTML>

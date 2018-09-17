@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>部分索引</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="索引" HREF="http://school.yunwei.edu/manual/PostgreSQL/indexes.html"><LINK REL="PREVIOUS" TITLE="表达式上的索引" HREF="indexes-expressional.html"><LINK REL="NEXT" TITLE="操作符类和操作符族" HREF="indexes-opclass.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/indices.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="表达式上的索引" HREF="indexes-expressional.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/indexes.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 11. 索引</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="操作符类和操作符族" HREF="indexes-opclass.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="INDEXES-PARTIAL">11.8. 部分索引</A></H1><P><I CLASS="FIRSTTERM">部分索引</I>是建立在一个表的子集上的索引；
+该子集是由一个条件表达式定义的(叫做部分索引的<I CLASS="FIRSTTERM">谓词</I>)。
+该索引只包含表中那些满足这个谓词的行。部分索引是一个特殊的特性，但是在某些场合很有用。</P><P>部分索引的主要动机是为了避免对普通数值(大量重复的数值)建立索引。
+因为在普通数值上的查询就算使用索引也没什么好处，那么还不如从索引中剔除这些大量重复的行。
+这样可以减小索引尺寸，提高那些真正使用索引的查询的速度。同时它也能提高更新操作的速度，
+因为不是所有情况都需要更新索引。<A HREF="indexes-partial.html#INDEXES-PARTIAL-EX1">&#20363; 11-1</A>
+显示了一个潜在的这方面应用的例子。</P><DIV CLASS="EXAMPLE"><A NAME="INDEXES-PARTIAL-EX1"></A><P><B>&#20363; 11-1. 设置一个部分索引以排除普通数值</B></P><P>假设你在数据库中存储 web 服务器的访问日志。大多数访问是从你的组织内部的 IP 地址范围发起的，
+但也有一小部分来自其它地方(比如那些通过拨号进行连接的雇员)。如果你主要搜索来自外部访问的 IP ，
+那么你就不需要对组织子网的 IP 范围进行索引。</P><P>假设表像下面这样：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TABLE access_log (
+    url varchar,
+    client_ip inet,
+    ...
+);</PRE><P>
+</P><P>要创建符合例子的索引，使用像下面这样的命令：
+</P><PRE CLASS="PROGRAMLISTING">CREATE INDEX access_log_client_ip_ix ON access_log (client_ip)
+WHERE NOT (client_ip &gt; inet '192.168.100.0' AND
+           client_ip &lt; inet '192.168.100.255');</PRE><P>
+</P><P>一个可以使用这个索引的典型的查询像这样：
+</P><PRE CLASS="PROGRAMLISTING">SELECT *
+FROM access_log
+WHERE url = '/index.html' AND client_ip = inet '212.78.10.32';</PRE><P>
+一个不能使用这个索引的查询是：
+</P><PRE CLASS="PROGRAMLISTING">SELECT *
+FROM access_log
+WHERE client_ip = inet '192.168.100.23';</PRE><P>
+</P><P>我们通过观察可以看出，这种类型的部分索引要求普通数值是可以预计的。
+所以这种部分索引最好用于没有改变的数据分布。索引可以不定期的重建来适应新数据的分布，
+但是这增加了维护工作。</P></DIV><P>另外一个用途在<A HREF="indexes-partial.html#INDEXES-PARTIAL-EX2">&#20363; 11-2</A>里显示，它把不感兴趣的数值排除在索引之外。
+这个结果有与上面列出的同样的优点，但是它完全拒绝了通过索引访问<SPAN CLASS="QUOTE">"不感兴趣"</SPAN>的数值，
+即使索引扫描可能对那些数据也有利。显然，为这种情况设置部分索引需要非常仔细并且需要大量试验。</P><DIV CLASS="EXAMPLE"><A NAME="INDEXES-PARTIAL-EX2"></A><P><B>&#20363; 11-2. 设置一个部分索引以排除不感兴趣的数值</B></P><P>如果你有一个表，包含已付款和未付款的定单，而未付款的定单只占总表的一小部分并且是经常使用的部分，
+那么你可以通过只在未付款定单上创建一个索引来改善性能。创建索引的命令看起来会像这样：
+</P><PRE CLASS="PROGRAMLISTING">CREATE INDEX orders_unbilled_index ON orders (order_nr)
+    WHERE billed is not true;</PRE><P>
+</P><P>可能用到这个索引的查询看起来像：
+</P><PRE CLASS="PROGRAMLISTING">SELECT * FROM orders WHERE billed is not true AND order_nr &lt; 10000;</PRE><P>
+不过，该索引也可以用于那些完全不涉及<TT CLASS="STRUCTFIELD">order_nr</TT>查询，比如：
+</P><PRE CLASS="PROGRAMLISTING">SELECT * FROM orders WHERE billed is not true AND amount &gt; 5000.00;</PRE><P>
+这个查询不像在<TT CLASS="STRUCTFIELD">amount</TT>字段上的部分索引那么有效，
+因为系统必须扫描整个索引。但是，如果未付款的定单相对较少，
+那么用这个部分索引找出未付款的定单将会更快些。
+</P><P>请注意下面这个查询无法使用这个索引：
+</P><PRE CLASS="PROGRAMLISTING">SELECT * FROM orders WHERE order_nr = 3501;</PRE><P>
+定单 3501 可能是已付款也可能是未付款。
+</P></DIV><P><A HREF="indexes-partial.html#INDEXES-PARTIAL-EX2">&#20363; 11-2</A>还说明了建了索引的字段和谓词中的字段不必相配。
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>支持带任意谓词的部分索引，只要只涉及被索引表的字段就行。
+不过，我们要记住的是谓词必须和那些希望从该索引中获益的查询条件相匹配。准确说，
+只有在系统能够识别出该查询的<TT CLASS="LITERAL">WHERE</TT>条件在数学上蕴涵了该索引的谓词时，
+这个部分索引才能用于该查询。
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>还没有智能到可以完全识别那些形式不同但数学上相等的谓词。
+做到这样不仅非常困难，而且在实际使用中也可能非常慢。系统可以识别简单的不相等蕴涵，
+比如<SPAN CLASS="QUOTE">"x &lt; 1"</SPAN>蕴涵<SPAN CLASS="QUOTE">"x &lt; 2"</SPAN>；否则，谓词条件必须准确匹配查询的
+<TT CLASS="LITERAL">WHERE</TT>条件，不然系统将无法识别该索引是可用的。匹配发生在查询规划期间，
+而不是运行期间。因此，参数化的查询子句必定不会使用部分索引。例如，
+一个预先写好的、带有参数的查询可能指定了<SPAN CLASS="QUOTE">"x &lt; ?"</SPAN>，
+它不可能对所有可能的参数值都蕴涵<SPAN CLASS="QUOTE">"x &lt; 2"</SPAN>。
+</P><P>部分索引的第三种用途是禁止在查询中使用索引。如<A HREF="indexes-partial.html#INDEXES-PARTIAL-EX3">&#20363; 11-3</A>所示，
+这里的概念是在表的子集里创建唯一索引。这样就强制在满足谓词的行中保持唯一性，
+而并不约束那些不需要唯一的行。</P><DIV CLASS="EXAMPLE"><A NAME="INDEXES-PARTIAL-EX3"></A><P><B>&#20363; 11-3. 设置一个部分唯一索引</B></P><P>假设我们有一个记录测试输出的表。我们希望确保在每个目标和课题的组合中只有一个
+<SPAN CLASS="QUOTE">"成功"</SPAN>记录，但是可以有任意数量的<SPAN CLASS="QUOTE">"不成功"</SPAN>记录。下面是实现方法：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TABLE tests (
+    subject text,
+    target text,
+    success boolean,
+    ...
+);
+
+CREATE UNIQUE INDEX tests_success_constraint ON tests (subject, target)
+    WHERE success;</PRE><P>
+如果只有少数成功测试而有很多不成功测试，那么这是一种非常有效的实现方法。
+</P></DIV><P>最后，部分索引也可以用于取代系统选择的查询规划。同样，如果数据集的分布是比较特定的形状，
+那么会导致系统在不该使用索引的时候使用它。在这种情况下，
+我们可以把索引设置为在违反规律的查询中不可用。通常<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+对索引的使用会做出合理的选择(比如，它在检索普通数值的时候避免使用它，
+因此前面的例子实际上只是节约了索引的尺寸，它并不要求避免索引的使用)，
+但是如果出现了错误的规划选择那么请提交一个Bug报告。</P><P>请记住一件事：设置一个部分索引表示你至少和查询规划器知道的一样多，
+特别是你知道什么场合下索引是有效的。要形成这些知识要求你经验丰富并且理解
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的索引是如何运作的。在大多数情况下，
+部分索引对普通索引的优势并不太明显。</P><P>更多有关部分索引的信息可以在<A HREF="http://school.yunwei.edu/manual/PostgreSQL/biblio.html#STON89B"><I><A HREF="http://db.cs.berkeley.edu/papers/ERL-M89-17.pdf" TARGET="_top"> 部分索引实例
+</A></I></A>, <A HREF="http://school.yunwei.edu/manual/PostgreSQL/biblio.html#OLSON93"><I>POSTGRES中部分索引:研究计划</I></A>,
+和 <A HREF="http://school.yunwei.edu/manual/PostgreSQL/biblio.html#SESHADRI95"><I>Generalized Partial Indexes
+<A HREF="http://citeseer.ist.psu.edu/seshadri95generalized.html" TARGET="_top">(cached version)
+</A></I></A>获得。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="indexes-expressional.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="indexes-opclass.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">表达式上的索引</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/indexes.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">操作符类和操作符族</TD></TR></TABLE></DIV></BODY></HTML>

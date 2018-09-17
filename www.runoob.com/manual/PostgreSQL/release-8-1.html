@@ -1,0 +1,225 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>版本 8.1</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="版本 8.1.1" HREF="release-8-1-1.html"><LINK REL="NEXT" TITLE="版本 8.0.26" HREF="release-8-0-26.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-8.1.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="版本 8.1.1" HREF="release-8-1-1.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="版本 8.0.26" HREF="release-8-0-26.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-8-1">E.125. 版本 8.1</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>2005-11-08</P></BLOCKQUOTE></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN134821">E.125.1. 概要</A></H2><P>这个版本中的主要修改：</P><P></P><DIV CLASS="VARIABLELIST"><DL><DT>改善到共享缓冲区缓存的并发访问 (Tom)</DT><DD><P>访问共享缓冲区缓存被认定为是一个重要的可扩展性问题，尤其是在多个CPU的系统上。
+在这个版本中，锁定的方式是以缓冲区管理器已经被检查以减少锁征用和提高可扩展性来完成的。
+缓冲区管理器也已经被修改为使用一个<SPAN CLASS="QUOTE">"时钟扫描"</SPAN>替换机制。</P></DD><DT>允许索引扫描使用一个中间内存位图 (Tom)</DT><DD><P>在以前的版本中，只有单个索引可以用来在表上查找。有了这个特性，如果一个查询有
+<TT CLASS="COMMAND">WHERE tab.col1 = 4 and tab.col2 = 9</TT>，并且在<TT CLASS="LITERAL">col1</TT>
+和<TT CLASS="LITERAL">col2</TT>上没有多字段索引，但是在<TT CLASS="LITERAL">col1</TT>上有一个索引，
+并且在<TT CLASS="LITERAL">col2</TT>上有另一个索引，那么有可能搜索两个索引并在内存中组合结果，
+然后为同时匹配<TT CLASS="LITERAL">col1</TT>和<TT CLASS="LITERAL">col2</TT>限制条件的行执行堆栈获取。
+这在有许多非结构化的查询，可能创建匹配所有访问条件的索引的环境中是非常有用的。
+即使是单个索引，位图扫描也是有用的，因为他们减少了所需要的随机访问的数量；
+位图索引扫描对于检索完整表的相当大的分数是高效的，而普通索引扫描则不行。</P></DD><DT>添加了两阶段提交 (Heikki Linnakangas, Alvaro, Tom)</DT><DD><P>两阶段提交允许事务在几个计算机上"准备"，并且一旦所有计算机都成功的准备了它们的事务
+（没有失败），那么所有事务都可以提交。即使一个机器在准备之后崩溃了，
+准备的事务也可以在该机器重启之后提交。新的语法包括<TT CLASS="COMMAND">PREPARE TRANSACTION</TT>
+和<TT CLASS="COMMAND">COMMIT/ROLLBACK PREPARED</TT>。还添加了一个新的系统视图
+<TT CLASS="LITERAL">pg_prepared_xacts</TT>。</P></DD><DT>创建一个新的替换用户和组的角色系统</DT><DD><P>角色是用户和组的一个组合。像用户，它们可以有登陆功能，像组，
+一个角色可以拥有其他角色作为成员。角色基本上删除了用户和组之间的不同。
+例如，一个角色可以：</P><P></P><UL><LI><P>有登陆功能 (可选)</P></LI><LI><P>拥有对象</P></LI><LI><P>持有数据库对象的访问权限</P></LI><LI><P>从它作为成员的其他角色上继承权限</P></LI></UL><P>一旦用户登陆到一个角色，她获得了登陆角色加上任何继承的角色的能力，
+并且可以使用<TT CLASS="COMMAND">SET ROLE</TT>来切换到其他角色（她在其中是一个成员）。
+这个特性是SQL标准角色的概念的一个概括。这个修改还用新的角色能力目录
+<TT CLASS="STRUCTNAME">pg_authid</TT>和<TT CLASS="STRUCTNAME">pg_auth_members</TT>替换了
+<TT CLASS="STRUCTNAME">pg_shadow</TT>和<TT CLASS="STRUCTNAME">pg_group</TT>。
+老的表被重新定义为新角色表上的只读视图。</P></DD><DT>为<CODE CLASS="FUNCTION">MIN()</CODE>和<CODE CLASS="FUNCTION">MAX()</CODE>自动使用索引 (Tom)</DT><DD><P>在以前的版本中，为<CODE CLASS="FUNCTION">MIN()</CODE>或<CODE CLASS="FUNCTION">MAX()</CODE>
+使用索引的唯一方式是重写查询<TT CLASS="COMMAND">SELECT col FROM tab ORDER BY col LIMIT 1</TT>。
+索引使用现在是自动发生的。</P></DD><DT>移动<TT CLASS="FILENAME">/contrib/pg_autovacuum</TT>到主服务器 (Alvaro)</DT><DD><P>整合自动清理到服务器，允许它在数据库服务器的同步中自动启动和停止，
+并允许自动清理在<TT CLASS="FILENAME">postgresql.conf</TT>中配置。</P></DD><DT>使用<TT CLASS="COMMAND">SELECT ... FOR SHARE</TT>添加共享的行级别锁 (Alvaro)</DT><DD><P>然而<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的MVCC锁允许<TT CLASS="COMMAND">SELECT</TT>
+永不被写入锁定，并且因此不需要为典型的操作共享行锁，
+共享的锁对于请求共享的行锁的应用是有用的。
+特别是它减少了由于参照完整性检查增加的锁请求。</P></DD><DT>在共享的对象上添加依赖性，尤其是角色 (Alvaro)</DT><DD><P>依赖性机制的扩展阻止了角色仍然拥有数据库对象时被删除。
+以前有可能意外的<SPAN CLASS="QUOTE">"孤儿"</SPAN>对象被删除它们的所有者。
+虽然这可以被恢复，但是它是杂乱的并且会使人不愉快。</P></DD><DT>为分区表提升性能 (Simon)</DT><DD><P>新的<TT CLASS="VARNAME">constraint_exclusion</TT>
+配置参数避免了在约束表示没有匹配行存在的子表上查找。</P><P>这允许表分区的基本类型。如果子表存储独立的键范围，并且强制使用适当的<TT CLASS="COMMAND">CHECK</TT>
+约束，那么优化器将在约束保证在子表中没有匹配的行存在时跳过子表访问。</P></DD></DL></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN134901">E.125.2. 迁移到版本 8.1</A></H2><P>对于那些想要从任何以前的版本中迁移数据的用户来说，
+使用<SPAN CLASS="APPLICATION">pg_dump</SPAN>的一个转储/恢复是必需的。</P><P>8.0版本宣布间隔的<CODE CLASS="FUNCTION">to_char()</CODE>函数将在8.1中删除。不过，
+因为没有更好的API被推荐，<CODE CLASS="FUNCTION">to_char(interval)</CODE>已经在8.1中被加强，
+并且将保留在服务器中。</P><P>观察下列的不兼容性：</P><P></P><UL><LI><P><TT CLASS="VARNAME">add_missing_from</TT>现在缺省是假 (Neil)</P><P>缺省的，如果表用在一个没有<TT CLASS="LITERAL">FROM</TT>引用的查询中，我们现在产生一个错误。
+老的行为仍然可用，但是参数必须设置为'true'。</P><P>为了加载一个现有的转储文件，如果转储包含任何使用隐式<TT CLASS="LITERAL">FROM</TT>
+语法创建的视图或规则，那么将<TT CLASS="VARNAME">add_missing_from</TT>设置为true是必须的。
+这应该是一个一次性的烦恼，因为<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 8.1
+将转换这样的视图和规则到标准的显式<TT CLASS="LITERAL">FROM</TT>语法。
+随后的转储将因此不会有这个问题。</P></LI><LI><P>让<TT CLASS="TYPE">float4</TT>/<TT CLASS="TYPE">float8</TT>/<TT CLASS="TYPE">oid</TT>
+零长度字符串(<TT CLASS="LITERAL">''</TT>)的输入抛出一个错误，
+而不是将它看做零 (Neil)</P><P>这个修改与当前整数的零长度字符串的处理是一致的。
+这个修改计划在8.0中宣布。</P></LI><LI><P><TT CLASS="VARNAME">default_with_oids</TT>现在缺省为假 (Neil)</P><P>这个选项设置为假，用户创建的表不再有一个OID字段，除非在<TT CLASS="COMMAND">CREATE TABLE</TT>
+中指定了<TT CLASS="COMMAND">WITH OIDS</TT>。尽管OID已经存在于<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+的所有版本中，但是因为它们只有四字节长度并且计数器是基于所有安装的数据库共享的，
+所以它们的使用是受限制的。唯一标识行的首选方式是通过序列和<TT CLASS="TYPE">SERIAL</TT>类型，
+这个自从<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 6.4开始就已经支持了。</P></LI><LI><P>添加<TT CLASS="LITERAL">E''</TT>语法，这样最后普通字符串可以正确的对待反斜杠 (Bruce)</P><P>目前<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>作为引入一个特殊的转义序列来处理字符串文本中的反斜杠，
+比如<TT CLASS="LITERAL">\n</TT>或<TT CLASS="LITERAL">\010</TT>。虽然这允许特殊值的简单入口，
+但是它是不标准的并且使得从其他数据库中移植应用更加困难。因为这个原因，
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>工程计划删除反斜杠在字符串中的特殊含义。
+为了向后兼容和想要特殊处理反斜杠的用户，创建了一个新的字符串语法。
+这个新的字符串语法的格式是在开始字符串的单引号之前写一个<TT CLASS="LITERAL">E</TT>，
+例如<TT CLASS="LITERAL">E'hi\n'</TT>。虽然这个版本没有改变反斜杠在字符串中的处理，
+但是它确实添加了新的配置参数来帮助用户迁移应用到未来的版本：</P><P></P><UL><LI><P><TT CLASS="VARNAME">standard_conforming_strings</TT> &mdash;这个版本正确的对待反斜杠为普通字符串？</P></LI><LI><P><TT CLASS="VARNAME">escape_string_warning</TT> &mdash;在普通的字符串（非E）中警告反斜杠</P></LI></UL><P><TT CLASS="VARNAME">standard_conforming_strings</TT>值是只读的。应用可以检索该值来知道反斜杠是如何处理的。
+（参数的存在也可以作为一个支持<TT CLASS="LITERAL">E''</TT>字符串语法的指示。）在未来的版本中，
+<TT CLASS="VARNAME">standard_conforming_strings</TT>将为真，意味着反斜杠在非E字符串中将按照字面值对待。
+为了准备这个修改，在需要特殊处理反斜杠的地方使用<TT CLASS="LITERAL">E''</TT>字符串，
+并且打开<TT CLASS="VARNAME">escape_string_warning</TT>来找到需要使用<TT CLASS="LITERAL">E''</TT>
+转换的额外的字符串。另外，使用两个单引号(<TT CLASS="LITERAL">''</TT>)在一个字符串中嵌入一个字面的单引号，
+而不是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>支持的反斜杠单引号(<TT CLASS="LITERAL">\'</TT>)语法。
+前者是符合标准的，并且不需要使用<TT CLASS="LITERAL">E''</TT>字符串语法。你也可以使用<TT CLASS="LITERAL">$$</TT>
+字符串语法，它不特殊对待反斜杠。</P></LI><LI><P>让<TT CLASS="COMMAND">REINDEX DATABASE</TT>重新索引数据库中的所有索引 (Tom)</P><P>以前，<TT CLASS="COMMAND">REINDEX DATABASE</TT>只重建系统表的索引。
+这个新的行为看起来更加直观。一个新的命令<TT CLASS="COMMAND">REINDEX SYSTEM</TT>
+提供只重建系统表的老的功能。</P></LI><LI><P>只读大对象描述符现在服从MVCC快照语义</P><P>当一个大对象是用<TT CLASS="LITERAL">INV_READ</TT>（不是<TT CLASS="LITERAL">INV_WRITE</TT>）打开的时，
+来自描述符的数据读取现在将反应调用<CODE CLASS="FUNCTION">lo_open()</CODE>
+的查询使用了事务快照时大对象的状态的<SPAN CLASS="QUOTE">"快照"</SPAN>。
+要获取总是返回最后提交的数据的老的行为，在<CODE CLASS="FUNCTION">lo_open()</CODE>
+的模式标志中包含<TT CLASS="LITERAL">INV_WRITE</TT>。</P></LI><LI><P>为序列函数的参数添加适当的依赖 (Tom)</P><P>在以前的版本中，传递到<CODE CLASS="FUNCTION">nextval()</CODE>、<CODE CLASS="FUNCTION">currval()</CODE>
+和<CODE CLASS="FUNCTION">setval()</CODE>的序列名是作为简单文本字符串存储的，
+意味着重命名或删除一个在<TT CLASS="LITERAL">DEFAULT</TT>子句中使用的序列会使子句无效。
+这个版本将所有新建的序列函数参数作为内部OID存储，允许它们追踪序列重命名，
+并且添加阻止不正确的序列删除的依赖关系信息。这也使得<TT CLASS="LITERAL">DEFAULT</TT>
+子句免疫模式重命名和搜索路径改变。</P><P>一些应用可能依赖于运行时查找序列名的老的行为。这通过明确的转换参数为
+<TT CLASS="TYPE">text</TT>仍然可以实现，例如<TT CLASS="LITERAL">nextval('myseq'::text)</TT>。</P><P>8.1之前的数据库转储加载到8.1将使用老的基于文本的表示，
+并且因此没有OID存储参数的特性。不过，更新包含基于文本的<TT CLASS="LITERAL">DEFAULT</TT>
+子句的数据库是可能的。首先，保存这个查询到一个文件中，比如<TT CLASS="FILENAME">fixseq.sql</TT>：
+</P><PRE CLASS="PROGRAMLISTING">SELECT  'ALTER TABLE ' ||
+   pg_catalog.quote_ident(n.nspname) || '.' ||
+   pg_catalog.quote_ident(c.relname) ||
+   ' ALTER COLUMN ' || pg_catalog.quote_ident(a.attname) ||
+   ' SET DEFAULT ' ||
+   regexp_replace(d.adsrc,
+                  $$val\(\(('[^']*')::text\)::regclass$$,
+                  $$val(\1$$,
+                  'g') ||
+   ';'
+FROM    pg_namespace n, pg_class c, pg_attribute a, pg_attrdef d
+WHERE   n.oid = c.relnamespace AND
+   c.oid = a.attrelid AND
+   a.attrelid = d.adrelid AND
+   a.attnum = d.adnum AND
+   d.adsrc ~ $$val\(\('[^']*'::text\)::regclass$$;</PRE><P>
+然后，在一个数据库中运行该查询，找到需要哪个调整，例如对于数据库<TT CLASS="LITERAL">db1</TT>:
+</P><PRE CLASS="PROGRAMLISTING">psql -t -f fixseq.sql db1</PRE><P>
+这将显示<TT CLASS="COMMAND">ALTER TABLE</TT>命令需要转换数据库到新的基于OID的表示。
+如果命令看起来合理，运行这个来更新该数据库：
+</P><PRE CLASS="PROGRAMLISTING">psql -t -f fixseq.sql db1 | psql -e db1</PRE><P>
+这个过程必须在每个要更新的数据库中重复进行。
+</P></LI><LI><P>在<SPAN CLASS="APPLICATION">psql</SPAN>中，将未加引号的<TT CLASS="LITERAL">\{digit}+</TT>
+序列看做是八进制的 (Bruce)</P><P>在以前的版本中，<TT CLASS="LITERAL">\{digit}+</TT>序列被看做是小数点，并且只有<TT CLASS="LITERAL">\0{digit}+</TT>
+被看做是八进制的。这个修改是为了一致性。</P></LI><LI><P>为前缀和后缀<TT CLASS="LITERAL">%</TT>和<TT CLASS="LITERAL">^</TT>操作符删除语法生产</P><P>这些从未记录和复杂的负数的模数操作符(<TT CLASS="LITERAL">%</TT>)的使用。</P></LI><LI><P>让多边形的<TT CLASS="LITERAL">&amp;&lt;</TT>和<TT CLASS="LITERAL">&amp;&gt;</TT>
+与盒子的"over"操作符一致 (Tom)</P></LI><LI><P><TT CLASS="COMMAND">CREATE LANGUAGE</TT>可以忽略提供的参数，为了支持来自
+<TT CLASS="STRUCTNAME">pg_pltemplate</TT>的信息</P><P>定义了一个新的系统目录<TT CLASS="STRUCTNAME">pg_pltemplate</TT>，
+携带关于过程语言首选定义的信息（比如它们是否有验证器函数）。
+当一个条目存在于创建语言的目录中时，<TT CLASS="COMMAND">CREATE LANGUAGE</TT>
+将忽略所有它的参数除了语言名并使用目录信息。
+采取这个措施是因为废弃的语言定义被老的转储文件加载而增加问题。
+截止到8.1，<SPAN CLASS="APPLICATION">pg_dump</SPAN>将只是作为
+<TT CLASS="COMMAND">CREATE LANGUAGE <TT CLASS="REPLACEABLE"><I>name</I></TT></TT>
+转储过程语言定义，依赖于加载时模板条目的存在。
+我们期待这将成为一个更加不会过时的表示。</P></LI><LI><P>让<CODE CLASS="FUNCTION">pg_cancel_backend(int)</CODE>返回一个<TT CLASS="TYPE">boolean</TT>
+而不是一个<TT CLASS="TYPE">integer</TT> (Neil)</P></LI><LI><P>一些用户在加载UTF-8数据到8.1.X时遇到问题。这是因为以前的版本允许无效的UTF-8
+字节序列输入到数据库中，而这个版本只接受有效的UTF-8序列。
+纠正转储文件的一个方式是运行命令<TT CLASS="COMMAND">iconv -c -f UTF-8 -t
+UTF-8 -o cleanfile.sql dumpfile.sql</TT>。<TT CLASS="LITERAL">-c</TT>选项删除无效的字符序列。
+两个文件的差异将显示无效的序列。<TT CLASS="COMMAND">iconv</TT>读取整个输入文件到内存中，
+这样它可能为了处理需要使用<SPAN CLASS="APPLICATION">split</SPAN>将转储分成多个较小的文件。</P></LI></UL></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN135037">E.125.3. 额外的修改</A></H2><P>下面你将发现<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 8.1和以前的主版本间详细的额外的修改。</P><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN135041">E.125.3.1. 性能改善</A></H3><P></P><UL><LI><P>提高GiST和R-tree索引性能(Neil)</P></LI><LI><P>改善优化器，包括自动调整哈希连接的大小 (Tom)</P></LI><LI><P>彻底检查几个方面的内部API</P></LI><LI><P>修改WAL记录CRC从64位到32位 (Tom)</P><P>我们觉得计算64位CRC的额外开销非常大，并且获得的可靠性并不足以为它辩解。</P></LI><LI><P>阻止在WAL页面中写入大的空间隙 (Tom)</P></LI><LI><P>改善SMP机器上的自旋锁行为，尤其是Opterons (Tom)</P></LI><LI><P>允许非连续的索引字段在多字段索引上使用 (Tom)</P><P>例如，这允许一个在字段a、b、c上的索引在一个带有 <TT CLASS="COMMAND">WHERE a = 4 and c = 10</TT>
+的查询中使用。</P></LI><LI><P>为<TT CLASS="COMMAND">CREATE TABLE AS</TT> / <TT CLASS="COMMAND">SELECT INTO</TT>
+跳过WAL日志 (Simon)</P><P>因为<TT CLASS="COMMAND">CREATE TABLE AS</TT>期间的崩溃会导致表在恢复期间被删除，
+没有理由WAL记录该表被加载了。（不过，如果启用了WAL归档，记录仍然会发生。）</P></LI><LI><P>允许并发的GiST索引访问 (Teodor, Oleg)</P></LI><LI><P>添加配置参数<TT CLASS="VARNAME">full_page_writes</TT>控制写入全部页面到WAL (Bruce)</P><P>为了阻止部分磁盘写入损坏数据库，<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+写了每个数据库磁盘页面的完整拷贝来WAL它在一个检查点之后被修改的第一个时间。
+这个选项为了更快的速度关闭了该功能。这对于使用电池后备的磁盘缓存来说是安全的，
+这种情况下部分页面写入不会发生。</P></LI><LI><P>当为<TT CLASS="VARNAME">wal_sync_method</TT>使用<TT CLASS="LITERAL">O_SYNC</TT>时，
+如果可用则使用<TT CLASS="LITERAL">O_DIRECT</TT> (Itagaki Takahiro)</P><P><TT CLASS="LITERAL">O_DIRECT</TT>导致磁盘写入绕过内核缓存，对于WAL写入来说，这提高了性能。</P></LI><LI><P>提高<TT CLASS="COMMAND">COPY FROM</TT>性能 (Alon Goldshuv)</P><P>这是通过在更大的语块中读取<TT CLASS="COMMAND">COPY</TT>输入完成的，而不是挨个读取字符。</P></LI><LI><P>提高了<CODE CLASS="FUNCTION">COUNT()</CODE>、<CODE CLASS="FUNCTION">SUM</CODE>、
+<CODE CLASS="FUNCTION">AVG()</CODE>、<CODE CLASS="FUNCTION">STDDEV()</CODE>和
+<CODE CLASS="FUNCTION">VARIANCE()</CODE>的性能 (Neil, Tom)</P></LI></UL></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN135093">E.125.3.2. 服务器的变化</A></H3><P></P><UL><LI><P>阻止由于事务ID (XID)环绕式处理引起的问题 (Tom)</P><P>当事务计数器达到环绕的点时，服务器现在将发出警告。如果计数器即将达到环绕的点时，
+服务器将停止接受查询。这保证了数据在需要的清理执行之前不会丢失。</P></LI><LI><P>修复OID计数器已经环绕式处理之后，对象IDs (OIDs)与现有系统对象冲突的问题 (Tom)</P></LI><LI><P>添加<TT CLASS="COMMAND">VACUUM</TT>期间需要增加<TT CLASS="VARNAME">max_fsm_relations</TT>和
+<TT CLASS="VARNAME">max_fsm_pages</TT>的警告 (Ron Mayer)</P></LI><LI><P>添加<TT CLASS="VARNAME">temp_buffers</TT>配置参数，
+允许用户为临时表访问确定本地缓存区域的大小 (Tom)</P></LI><LI><P>添加会话启动时间和客户端IP地址到<TT CLASS="LITERAL">pg_stat_activity</TT> (Magnus)</P></LI><LI><P>为位图扫描调整<TT CLASS="LITERAL">pg_stat</TT>视图 (Tom)</P><P>一些字段的含义发生了微妙的变化。</P></LI><LI><P>加强了<TT CLASS="LITERAL">pg_locks</TT>视图 (Tom)</P></LI><LI><P>客户端侧<TT CLASS="COMMAND">PREPARE</TT>和<TT CLASS="COMMAND">EXECUTE</TT>的日志查询 (Simon)</P></LI><LI><P>允许Kerberos名字和用户名在<TT CLASS="FILENAME">postgresql.conf</TT>的规定中大小写敏感 (Magnus)</P></LI><LI><P>添加配置参数<TT CLASS="VARNAME">krb_server_hostname</TT>，
+这样服务器主机名可以作为服务主体的一部分指定 (Todd Kover)</P><P>如果没有设置，任何服务主体匹配keytab中的任意条目都有可能被使用。
+这是这个版本中的新的Kerberos匹配行为。</P></LI><LI><P>为毫秒时间戳(<TT CLASS="LITERAL">%m</TT>)和远程主机(<TT CLASS="LITERAL">%h</TT>)添加
+<TT CLASS="VARNAME">log_line_prefix</TT>选项 (Ed L.)</P></LI><LI><P>为GiST索引添加WAL日志 (Teodor, Oleg)</P><P>GiST索引现在对于崩溃和时间点恢复来说是安全的。</P></LI><LI><P>当我们执行<CODE CLASS="FUNCTION">pg_stop_backup()</CODE>时，删除老的<TT CLASS="FILENAME">*.backup</TT>文件 (Bruce)</P><P>这阻止了大量的<TT CLASS="FILENAME">*.backup</TT>文件存在于<TT CLASS="FILENAME">pg_xlog/</TT>中。</P></LI><LI><P>添加配置参数为闲置、间隔和计数控制TCP/IP保持活动的时间 (Oliver Jowett)</P><P>这些值可以修改来允许对丢失的客户端连接更快速的检测。</P></LI><LI><P>添加每用户和每数据库连接限制 (Petr Jelinek)</P><P>使用<TT CLASS="COMMAND">ALTER USER</TT>和<TT CLASS="COMMAND">ALTER DATABASE</TT>，
+现在可以强制限制作为一个特殊用户或作为一个特殊数据库并发连接的最大会话数量。
+设置限制为0禁用用户或数据库连接。</P></LI><LI><P>在64位的机器上允许超过两千兆字节的共享内存和每后端的工作内存 (Koichi Suzuki)</P></LI><LI><P>新增系统目录<TT CLASS="STRUCTNAME">pg_pltemplate</TT>，允许在转储文件中重写废弃的过程语言定义 (Tom)</P></LI></UL></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN135158">E.125.3.3. 查询修改</A></H3><P></P><UL><LI><P>添加临时视图 (Koju Iijima, Neil)</P></LI><LI><P>修复<TT CLASS="COMMAND">HAVING</TT>没有任何聚集函数或<TT CLASS="COMMAND">GROUP BY</TT>，
+这样查询返回一个组 (Tom)</P><P>以前，这样的情况会将<TT CLASS="COMMAND">HAVING</TT>子句看做和<TT CLASS="COMMAND">WHERE</TT>子句相同。
+这是不规范的。</P></LI><LI><P>添加<TT CLASS="COMMAND">USING</TT>子句允许额外的表指定为<TT CLASS="COMMAND">DELETE</TT> (Euler Taveira de Oliveira, Neil)</P><P>在以前的版本中，没有明确的方法指定用于<TT CLASS="COMMAND">DELETE</TT>语句中的连接的额外的表。
+对于这个目的，<TT CLASS="COMMAND">UPDATE</TT>早已有了一个<TT CLASS="LITERAL">FROM</TT>子句。</P></LI><LI><P>在后端和ecpg字符串中添加对<TT CLASS="LITERAL">\x</TT>十六进制转义的支持 (Bruce)</P><P>这正像标准C <TT CLASS="LITERAL">\x</TT>转义语法。八进制转义早就支持了。</P></LI><LI><P>添加<TT CLASS="COMMAND">BETWEEN SYMMETRIC</TT>查询语法 (Pavel Stehule)</P><P>这个特征允许<TT CLASS="COMMAND">BETWEEN</TT>比较不请求第一个值小于第二个值。
+例如，<TT CLASS="COMMAND">2 BETWEEN [ASYMMETRIC] 3 AND 1</TT>返回假，
+而<TT CLASS="COMMAND">2 BETWEEN SYMMETRIC 3 AND 1</TT>返回真。
+<TT CLASS="COMMAND">BETWEEN ASYMMETRIC</TT>早就支持了。</P></LI><LI><P>添加<TT CLASS="COMMAND">NOWAIT</TT>选项到<TT CLASS="COMMAND">SELECT ... FOR UPDATE/SHARE</TT> (Hans-Juergen Schoenig)</P><P>当<TT CLASS="VARNAME">statement_timeout</TT>配置参数允许一个查询接受超过一定数量的时间被取消，
+<TT CLASS="COMMAND">NOWAIT</TT>选项允许查询在<TT CLASS="COMMAND">SELECT ... FOR UPDATE/SHARE</TT>
+命令不能立即获得一个行锁时尽快被取消。</P></LI></UL></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN135199">E.125.3.4. 对象操作的改变</A></H3><P></P><UL><LI><P>追踪共享对象的依赖性 (Alvaro)</P><P><SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>允许全局表（用户、数据库、表空间）
+引用多个数据库中的信息。这为全局表额外的添加了依赖关系信息，这样，例如，
+用户所有权可以跨数据库追踪，一个在任意数据库中拥有某些东西的用户不再被删除。
+依赖关系追踪早已为数据库本地对象存在了。</P></LI><LI><P>允许受限制的<TT CLASS="COMMAND">ALTER OWNER</TT>命令被对象所有者执行 (Stephen Frost)</P><P>以前的版本只允许超级用户修改对象所有者。现在，如果执行该命令的用户拥有该对象，
+并且可以作为新的所有者创建它，那么所有权就可以转移（也就是说，
+该用户是新的拥有角色的一员，并且该角色拥有重新创建该对象所需要的CREATE权限）。</P></LI><LI><P>为某些对象类型（表、函数、类型）添加<TT CLASS="COMMAND">ALTER</TT>对象
+<TT CLASS="COMMAND">SET SCHEMA</TT>能力 (Bernd Helmle)</P><P>这允许对象迁移到不同的模式中。</P></LI><LI><P>添加<TT CLASS="COMMAND">ALTER TABLE ENABLE/DISABLE TRIGGER</TT>禁用触发器 (Satoshi Nagayasu)</P></LI></UL></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN135218">E.125.3.5. 工具命令的变化</A></H3><P></P><UL><LI><P>允许<TT CLASS="COMMAND">TRUNCATE</TT>在一个命令中截断多个表 (Alvaro)</P><P>由于参照完整性检查，不允许截断是参照完整性约束的一部分的表。
+使用这个新功能，<TT CLASS="COMMAND">TRUNCATE</TT>可以用来截断这个样的表，
+如果两个表都包含在一个参照完整性约束中，那么会在一个
+<TT CLASS="COMMAND">TRUNCATE</TT>命令中都被截断。</P></LI><LI><P>在<TT CLASS="COMMAND">COPY CSV</TT>模式中正确的处理回车和换行 (Andrew)</P><P>在版本8.0中，<TT CLASS="COMMAND">CSV COPY TO</TT>中的回车和换行是以一种不一致的方式处理的。
+（这在TODO列表中记录了。）</P></LI><LI><P>添加<TT CLASS="COMMAND">COPY WITH CSV HEADER</TT>，允许标题作为<TT CLASS="COMMAND">COPY</TT>
+中的第一行 (Andrew)</P><P>这允许处理公共<TT CLASS="COMMAND">CSV</TT>在数据文件的第一行放置字段名的用法。
+对于<TT CLASS="COMMAND">COPY TO</TT>，第一行包含该字段名，对于<TT CLASS="COMMAND">COPY FROM</TT>，
+忽略第一行。</P></LI><LI><P>在Windows上，在<TT CLASS="COMMAND">EXPLAIN ANALYZE</TT>中显示更好的次秒级精度 (Magnus)</P></LI><LI><P>添加触发时间显示到<TT CLASS="COMMAND">EXPLAIN ANALYZE</TT></P><P>以前的版本包含触发器的执行时间作为总的执行时间的一部分，
+但是没有单独显示它。现在有可能看到在每个触发器中花费了多少时间。</P></LI><LI><P>在<TT CLASS="COMMAND">COPY</TT>中添加对<TT CLASS="LITERAL">\x</TT>十六进制转义的支持 (Sergey Ten)</P><P>以前的版本只支持八进制转义。</P></LI><LI><P>让<TT CLASS="COMMAND">SHOW ALL</TT>包括变量描述 (Matthias Schmidt)</P><P><TT CLASS="COMMAND">SHOW</TT>变量名仍然只显示变量的值，不包括变量描述。</P></LI><LI><P>让<SPAN CLASS="APPLICATION">initdb</SPAN>创建一个新的称为<TT CLASS="LITERAL">postgres</TT>的标准数据库，
+并转变工具为标准查询使用<TT CLASS="LITERAL">postgres</TT>而不是<TT CLASS="LITERAL">template1</TT> (Dave)</P><P>在以前的版本中，<TT CLASS="LITERAL">template1</TT>作为工具（像<SPAN CLASS="APPLICATION">createuser</SPAN>）
+的缺省连接使用，也作为新数据库的模板。这导致<TT CLASS="COMMAND">CREATE DATABASE</TT>
+有时会失败，因为如果任何人连接了模板数据库，那么新的数据库就不能创建。
+有了这个改变，缺省连接数据库现在是<TT CLASS="LITERAL">postgres</TT>，
+意味着在<TT CLASS="COMMAND">CREATE DATABASE</TT>期间，极少可能有人正在使用<TT CLASS="LITERAL">template1</TT>。</P></LI><LI><P>通过移动<TT CLASS="FILENAME">/contrib/reindexdb</TT>到服务器，
+创建新的<SPAN CLASS="APPLICATION">reindexdb</SPAN>命令行工具 (Euler Taveira de Oliveira)</P></LI></UL></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN135274">E.125.3.6. 数据类型和函数的变化</A></H3><P></P><UL><LI><P>为数组类型添加<CODE CLASS="FUNCTION">MAX()</CODE>和<CODE CLASS="FUNCTION">MIN()</CODE>聚集 (Koju Iijima)</P></LI><LI><P>修复<TT CLASS="LITERAL">CC</TT>和<TT CLASS="LITERAL">YY</TT>字段都被使用了时，<CODE CLASS="FUNCTION">to_date()</CODE>
+和<CODE CLASS="FUNCTION">to_timestamp()</CODE>合理的行为 (Karel Zak)</P><P>如果格式声明包含<TT CLASS="LITERAL">CC</TT>并且年的声明是<TT CLASS="LITERAL">YYY</TT>或更长，
+那么忽略<TT CLASS="LITERAL">CC</TT>。如果年的声明是<TT CLASS="LITERAL">YY</TT>或更短，
+那么解释<TT CLASS="LITERAL">CC</TT>为上个世纪。</P></LI><LI><P>添加<CODE CLASS="FUNCTION">md5(bytea)</CODE> (Abhijit Menon-Sen)</P><P><CODE CLASS="FUNCTION">md5(text)</CODE>早已存在了。</P></LI><LI><P>添加对基于<CODE CLASS="FUNCTION">power(numeric, numeric)</CODE>的
+<TT CLASS="COMMAND">numeric ^ numeric</TT>的支持</P><P>该函数早就存在了，但是没有分配操作符给他。</P></LI><LI><P>通过正确的在计算时截断商，修复<TT CLASS="TYPE">NUMERIC</TT>的模数 (Bruce)</P><P>在以前的版本中，大值的模数有时会因为商的圆整返回负的结果。</P></LI><LI><P>添加了一个函数<CODE CLASS="FUNCTION">lastval()</CODE> (Dennis Bj&ouml;rklund)</P><P><CODE CLASS="FUNCTION">lastval()</CODE>是<CODE CLASS="FUNCTION">currval()</CODE>的一个简化版本。
+它根据当前会话执行的最后一个<CODE CLASS="FUNCTION">nextval()</CODE>或<CODE CLASS="FUNCTION">setval()</CODE>
+调用，自动的确定正确的序列名。</P></LI><LI><P>添加了<CODE CLASS="FUNCTION">to_timestamp(DOUBLE PRECISION)</CODE> (Michael Glaesemann)</P><P>转换自1970年以来的Unix秒到一个<TT CLASS="TYPE">TIMESTAMP WITH TIMEZONE</TT>。</P></LI><LI><P>添加了<CODE CLASS="FUNCTION">pg_postmaster_start_time()</CODE>函数 (Euler
+Taveira de Oliveira, Matthias Schmidt)</P></LI><LI><P>允许在<TT CLASS="COMMAND">AT TIME ZONE</TT>中充分使用时区名字，
+不只是以前可用的短列表 (Magnus)</P><P>以前，<TT CLASS="COMMAND">AT TIME ZONE</TT>只支持时区名的一个预定义的列表。
+现在任何支持的时区名都可以使用，例如：
+</P><PRE CLASS="PROGRAMLISTING">SELECT CURRENT_TIMESTAMP AT TIME ZONE 'Europe/London';</PRE><P>
+在上面的查询中，使用的时区基于实际上影响提供的日期的夏令时规则调整。</P></LI><LI><P>添加<CODE CLASS="FUNCTION">GREATEST()</CODE>和<CODE CLASS="FUNCTION">LEAST()</CODE> variadic函数 (Pavel Stehule)</P><P>这些函数接受可变数量的参数并返回这些参数的最大或最小值。</P></LI><LI><P>添加了<CODE CLASS="FUNCTION">pg_column_size()</CODE> (Mark Kirkwood)</P><P>这返回一个字段的存储尺寸，可能是被压缩的。</P></LI><LI><P>添加了<CODE CLASS="FUNCTION">regexp_replace()</CODE> (Atsushi Ogawa)</P><P>这允许正则表达式替换，像sed。一个可选的标识参数允许全局选择（替换所有）
+和大小写敏感模式。</P></LI><LI><P>修复间隔除法和乘法 (Bruce)</P><P>以前的版本有时返回不正当的结果，像<TT CLASS="COMMAND">'4 months'::interval / 5</TT>
+返回<TT CLASS="COMMAND">'1 mon -6 days'</TT>。</P></LI><LI><P>修复时间戳、时间和间隔输出中的舍入行为 (Tom)</P><P>这修复了秒字段显示为<TT CLASS="LITERAL">60</TT>而不是增长高阶字段的一些情况。</P></LI><LI><P>添加一个单独的天字段到类型<TT CLASS="TYPE">interval</TT>，
+这样一天的间隔可以不同于24小时的间隔 (Michael Glaesemann)</P><P>包含夏令时调整的天不是24小时长，通常是23或25小时。这个修改创建了一个
+<SPAN CLASS="QUOTE">"这么多天"</SPAN>的间隔和<SPAN CLASS="QUOTE">"这么多小时"</SPAN>的间隔之间概念上的不同。
+添加<TT CLASS="LITERAL">1 day</TT>到一个时间戳现在给出和下一天相同的本地时间，
+即使两天之间有一个夏令时调整，而添加<TT CLASS="LITERAL">24 hours</TT>
+将给出一个不同的本地时间。例如，在US DST规则下：
+</P><PRE CLASS="PROGRAMLISTING">'2005-04-03 00:00:00-05' + '1 day' = '2005-04-04 00:00:00-04'
+'2005-04-03 00:00:00-05' + '24 hours' = '2005-04-04 01:00:00-04'</PRE><P></P></LI><LI><P>添加了<CODE CLASS="FUNCTION">justify_days()</CODE>和<CODE CLASS="FUNCTION">justify_hours()</CODE> (Michael Glaesemann)</P><P>这些函数，分别的，调整天到一个合适数量的全月和日，
+调整小时到一个合适数量的全天和小时。</P></LI><LI><P>移动<TT CLASS="FILENAME">/contrib/dbsize</TT>到后端，并重命名一些函数 (Dave Page, Andreas Pflug)</P><P> <P></P></P><UL><LI><P> <CODE CLASS="FUNCTION">pg_tablespace_size()</CODE>
+</P></LI><LI><P> <CODE CLASS="FUNCTION">pg_database_size()</CODE>
+</P></LI><LI><P> <CODE CLASS="FUNCTION">pg_relation_size()</CODE>
+</P></LI><LI><P> <CODE CLASS="FUNCTION">pg_total_relation_size()</CODE>
+</P></LI><LI><P> <CODE CLASS="FUNCTION">pg_size_pretty()</CODE>
+</P></LI></UL><P>
+</P><P><CODE CLASS="FUNCTION">pg_total_relation_size()</CODE>包括索引和TOAST表。</P></LI><LI><P>为访问集群目录的只读文件添加函数 (Dave Page, Andreas Pflug)</P><P> <P></P></P><UL><LI><P> <CODE CLASS="FUNCTION">pg_stat_file()</CODE>
+</P></LI><LI><P> <CODE CLASS="FUNCTION">pg_read_file()</CODE>
+</P></LI><LI><P> <CODE CLASS="FUNCTION">pg_ls_dir()</CODE>
+</P></LI></UL><P>
+</P></LI><LI><P>添加<CODE CLASS="FUNCTION">pg_reload_conf()</CODE>强制配置文件的重载 (Dave Page, Andreas Pflug)</P></LI><LI><P>添加<CODE CLASS="FUNCTION">pg_rotate_logfile()</CODE>强制服务器日志文件的循环 (Dave Page, Andreas Pflug)</P></LI><LI><P>修改<TT CLASS="LITERAL">pg_stat_*</TT>视图包含TOAST表 (Tom)</P></LI></UL></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN135409">E.125.3.7. 编码和环境的变化</A></H3><P></P><UL><LI><P>重命名一些编码使其更加一致和遵守国际标准 (Bruce)</P><P> <P></P></P><UL><LI><P><TT CLASS="LITERAL">UNICODE</TT>现在是<TT CLASS="LITERAL">UTF8</TT></P></LI><LI><P><TT CLASS="LITERAL">ALT</TT>现在是<TT CLASS="LITERAL">WIN866</TT></P></LI><LI><P><TT CLASS="LITERAL">WIN</TT>现在是<TT CLASS="LITERAL">WIN1251</TT></P></LI><LI><P><TT CLASS="LITERAL">TCVN</TT>现在是<TT CLASS="LITERAL">WIN1258</TT></P></LI></UL><P>
+</P><P>原先的名字仍然工作。</P></LI><LI><P>添加对<TT CLASS="LITERAL">WIN1252</TT>编码的支持 (Roland Volkmann)</P></LI><LI><P>添加对四字节<TT CLASS="LITERAL">UTF8</TT>字符的支持 (John Hansen)</P><P>以前只支持一、二、三字节<TT CLASS="LITERAL">UTF8</TT>字符。这对于支持一些汉字字符设置尤其重要。</P></LI><LI><P>允许<TT CLASS="LITERAL">EUC_JP</TT>和<TT CLASS="LITERAL">SJIS</TT>之间的直接转换，以提高性能 (Atsushi Ogawa)</P></LI><LI><P>允许UTF8编码在Windows上工作 (Magnus)</P><P>这是通过映射UTF8到Windows本地的UTF16实现做到的。</P></LI></UL></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN135448">E.125.3.8. 一般服务器端语言的变化</A></H3><P></P><UL><LI><P>修复<TT CLASS="COMMAND">ALTER LANGUAGE RENAME</TT> (Sergey Yatskevich)</P></LI><LI><P>允许函数特征，像严格和活泼，通过<TT CLASS="COMMAND">ALTER FUNCTION</TT>来修改 (Neil)</P></LI><LI><P>增加函数参数的最大数量到100 (Tom)</P></LI><LI><P>允许SQL和PL/pgSQL函数使用<TT CLASS="COMMAND">OUT</TT>和<TT CLASS="COMMAND">INOUT</TT>参数 (Tom)</P><P><TT CLASS="COMMAND">OUT</TT>是函数返回值的一个可替换的方式。取代使用<TT CLASS="COMMAND">RETURN</TT>，
+可以通过分配参数声明为<TT CLASS="COMMAND">OUT</TT>或<TT CLASS="COMMAND">INOUT</TT>来返回值。
+这在一些情况下通常更简单，尤其是需要返回多个值时。
+从一个函数中返回多个值在以前的版本中是可能的，这大大的简化了该过程。
+（该特性在未来的版本中将扩展为其他服务器端语言。）</P></LI><LI><P>移动语言处理器函数到<TT CLASS="LITERAL">pg_catalog</TT>模式</P><P>如果要求，这使得它更容易删除公共模式。</P></LI><LI><P>添加<CODE CLASS="FUNCTION">SPI_getnspname()</CODE>到SPI (Neil)</P></LI></UL></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN135475">E.125.3.9. PL/pgSQL服务器端语言的变化</A></H3><P></P><UL><LI><P>彻底检查PL/pgSQL函数的内存管理 (Neil)</P><P>每个函数的分析树现在存储在一个单独的内存空间中。
+当不再需要它时，这允许这个内存很容易的回收利用。</P></LI><LI><P>在<TT CLASS="COMMAND">CREATE FUNCTION</TT>时检查函数语法，而不是在运行时 (Neil)</P><P>以前，大多数语法错误只在该函数被执行时报告。</P></LI><LI><P>允许<TT CLASS="COMMAND">OPEN</TT>打开非<TT CLASS="COMMAND">SELECT</TT>查询，像<TT CLASS="COMMAND">EXPLAIN</TT>
+和<TT CLASS="COMMAND">SHOW</TT> (Tom)</P></LI><LI><P>不再要求函数发出<TT CLASS="COMMAND">RETURN</TT>语句 (Tom)</P><P>这是新添加的<TT CLASS="COMMAND">OUT</TT>和<TT CLASS="COMMAND">INOUT</TT>功能的副产品。
+当不需要提供函数的返回值时，可以省略<TT CLASS="COMMAND">RETURN</TT>。</P></LI><LI><P>添加对可选<TT CLASS="COMMAND">INTO</TT>子句到PL/pgSQL的<TT CLASS="COMMAND">EXECUTE</TT>
+语句的支持 (Pavel Stehule, Neil)</P></LI><LI><P>让<TT CLASS="COMMAND">CREATE TABLE AS</TT>设置<TT CLASS="COMMAND">ROW_COUNT</TT> (Tom)</P></LI><LI><P>定义<TT CLASS="LITERAL">SQLSTATE</TT>和<TT CLASS="LITERAL">SQLERRM</TT>返回当前异常的
+<TT CLASS="LITERAL">SQLSTATE</TT>和错误消息 (Pavel Stehule, Neil)</P><P>这些变量只在异常块中定义。</P></LI><LI><P>允许到<TT CLASS="COMMAND">RAISE</TT>语句的参数为表达式 (Pavel Stehule, Neil)</P></LI><LI><P>添加一个循环的<TT CLASS="COMMAND">CONTINUE</TT>语句 (Pavel Stehule, Neil)</P></LI><LI><P>允许块和循环标签 (Pavel Stehule)</P></LI></UL></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN135520">E.125.3.10. PL/Perl服务器端语言的变化</A></H3><P></P><UL><LI><P>允许大的结果集有效的返回 (Abhijit Menon-Sen)</P><P>这允许函数使用<CODE CLASS="FUNCTION">return_next()</CODE>来避免在内存中建立整个结果集。</P></LI><LI><P>允许一次一行检索查询结果 (Abhijit Menon-Sen)</P><P>这允许函数使用<CODE CLASS="FUNCTION">spi_query()</CODE>和<CODE CLASS="FUNCTION">spi_fetchrow()</CODE>
+避免在内存中累加整个结果集。</P></LI><LI><P>如果服务器编码是<TT CLASS="LITERAL">UTF8</TT>，那么强制PL/Perl将字符串作为<TT CLASS="LITERAL">UTF8</TT>处理 (David Kamholz)</P></LI><LI><P>为PL/Perl添加一个验证器函数 (Andrew)</P><P>这允许语法错误在定义时被报告，而不是在执行时报告。</P></LI><LI><P>当函数返回一个数组类型时，允许PL/Perl返回一个Perl数组 (Andrew)</P><P>这主要是映射<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>数组到Perl数组。</P></LI><LI><P>允许Perl非致命的警告产生<TT CLASS="COMMAND">NOTICE</TT>消息 (Andrew)</P></LI><LI><P>允许启用Perl的<TT CLASS="LITERAL">strict</TT>模式 (Andrew)</P></LI></UL></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN135549">E.125.3.11. <SPAN CLASS="APPLICATION">psql</SPAN>的变化</A></H3><P></P><UL><LI><P>添加<TT CLASS="COMMAND">\set ON_ERROR_ROLLBACK</TT>以允许事务中的语句发生错误而不影响剩余的事务
+(Greg Sabino Mullane)</P><P>这基本上是通过包裹每个语句在一个子事务中实现的。</P></LI><LI><P>在<SPAN CLASS="APPLICATION">psql</SPAN>变量中添加对<TT CLASS="LITERAL">\x</TT>十六进制字符串的支持 (Bruce)</P><P>八进制转义早就支持了。</P></LI><LI><P>添加对<TT CLASS="COMMAND">troff -ms</TT>输出格式的支持 (Roger Leigh)</P></LI><LI><P>允许历史文件位置通过<TT CLASS="ENVAR">HISTFILE</TT>控制 (Andreas Seltenreich)</P><P>这允许存储每个数据库历史的配置。</P></LI><LI><P>阻止<TT CLASS="COMMAND">\x</TT>（扩展模式）影响<TT CLASS="COMMAND">\d tablename</TT>的输出 (Neil)</P></LI><LI><P>添加<TT CLASS="OPTION">-L</TT>选项到<SPAN CLASS="APPLICATION">psql</SPAN>以记录会话 (Lorne Sunley)</P><P>添加这个选项是因为一些操作系统没有简单的命令行活动记录功能。</P></LI><LI><P>让<TT CLASS="COMMAND">\d</TT>显示索引的表空间 (Qingqing Zhou)</P></LI><LI><P>允许<SPAN CLASS="APPLICATION">psql</SPAN>帮助(<TT CLASS="COMMAND">\h</TT>)
+基于正确的帮助信息做一个更好的猜测 (Greg Sabino Mullane)</P><P>这允许用户仅仅添加<TT CLASS="COMMAND">\h</TT>到语法错误查询的前面，获得支持的语法的帮助。
+以前任何超出命令名的额外的查询文本都必须使用<TT CLASS="COMMAND">\h</TT>删除。</P></LI><LI><P>添加<TT CLASS="COMMAND">\pset numericlocale</TT>以允许数字在识别环境的格式中输出 (Eugen Nedelcu)</P><P>例如，使用<TT CLASS="LITERAL">C</TT>环境<TT CLASS="LITERAL">100000</TT>将被输出为<TT CLASS="LITERAL">100,000.0</TT>，
+而欧洲环境可能输出这个值为<TT CLASS="LITERAL">100.000,0</TT>。</P></LI><LI><P>当服务器版本号和<SPAN CLASS="APPLICATION">psql</SPAN>的版本号不同时，让启动标语显示两者 (Bruce)</P><P>还有，如果服务器和<SPAN CLASS="APPLICATION">psql</SPAN>来自不同的主版本，那么将会显示一个警告。</P></LI></UL></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN135601">E.125.3.12. <SPAN CLASS="APPLICATION">pg_dump</SPAN>的变化</A></H3><P></P><UL><LI><P>添加<TT CLASS="OPTION">-n</TT> / <TT CLASS="OPTION">--schema</TT>开关到<SPAN CLASS="APPLICATION">pg_restore</SPAN> (Richard van den Berg)</P><P>这允许只恢复指定模式中的对象。</P></LI><LI><P>允许<SPAN CLASS="APPLICATION">pg_dump</SPAN>转储大对象，即使是在文本模式中 (Tom)</P><P>有了这个变化，大对象现在总是被转储了；前者<TT CLASS="OPTION">-b</TT>开关是一个空操作。</P></LI><LI><P>允许<SPAN CLASS="APPLICATION">pg_dump</SPAN>转储大对象的一个一致的快照 (Tom)</P></LI><LI><P>为大对象转储的评论 (Tom)</P></LI><LI><P>添加<TT CLASS="OPTION">--encoding</TT>到<SPAN CLASS="APPLICATION">pg_dump</SPAN> (Magnus Hagander)</P><P>这允许数据库以一个不同于服务器编码的编码转储。
+这在传递转储到一个有不同编码的机器时是有价值的。</P></LI><LI><P>依赖<TT CLASS="STRUCTNAME">pg_pltemplate</TT>过程语言 (Tom)</P><P>如果过程语言的调用处理器在<TT CLASS="LITERAL">pg_catalog</TT>模式中，那么<SPAN CLASS="APPLICATION">pg_dump</SPAN>
+不转储该处理器。相反的，它使用 <TT CLASS="COMMAND">CREATE LANGUAGE <TT CLASS="REPLACEABLE"><I>name</I></TT></TT>
+转储该语言，依赖于<TT CLASS="STRUCTNAME">pg_pltemplate</TT>目录提供语言的创建参数和加载时间。</P></LI></UL></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN135635">E.125.3.13. <SPAN CLASS="APPLICATION">libpq</SPAN>的变化</A></H3><P></P><UL><LI><P>添加一个<TT CLASS="ENVAR">PGPASSFILE</TT>环境变量指定口令文件的文件名 (Andrew)</P></LI><LI><P>添加<CODE CLASS="FUNCTION">lo_create()</CODE>，类似于<CODE CLASS="FUNCTION">lo_creat()</CODE>，
+但是允许指定大对象的OID (Tom)</P></LI><LI><P>让<SPAN CLASS="APPLICATION">libpq</SPAN>在<CODE CLASS="FUNCTION">malloc()</CODE>失败时，
+一致的返回一个错误到客户端应用 (Neil)</P></LI></UL></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN135650">E.125.3.14. 源代码的变化</A></H3><P></P><UL><LI><P>修复<SPAN CLASS="APPLICATION">pgxs</SPAN>，以支持重定位安装的建立</P></LI><LI><P>为使用Intel编译器的Itanium处理器添加自旋锁支持 (Vikram Kalsi)</P></LI><LI><P>为Windows添加Kerberos 5支持 (Magnus)</P></LI><LI><P>添加了Chinese FAQ (laser@pgsqldb.com)</P></LI><LI><P>重命名Rendezvous为Bonjour以匹配OS/X特性重命名 (Bruce)</P></LI><LI><P>在Darwin上添加对<TT CLASS="LITERAL">fsync_writethrough</TT>的支持 (Chris Campbell)</P></LI><LI><P>流线化信息在服务器、优化器和锁系统中的路径 (Tom)</P></LI><LI><P>允许<SPAN CLASS="APPLICATION">pg_config</SPAN>使用MSVC编译 (Andrew)</P><P>这在使用<SPAN CLASS="APPLICATION">MSVC</SPAN>编译DBD::Pg时是需要的。</P></LI><LI><P>删除对Kerberos V4的支持 (Magnus)</P><P>Kerberos 4有安全缺陷并且不再维护了。</P></LI><LI><P>代码清理（EnterpriseDB执行Coverity静态分析）</P></LI><LI><P>修改<TT CLASS="FILENAME">postgresql.conf</TT>使用文档缺省<TT CLASS="LITERAL">on</TT>/<TT CLASS="LITERAL">off</TT>，
+而不是<TT CLASS="LITERAL">true</TT>/<TT CLASS="LITERAL">false</TT> (Bruce)</P></LI><LI><P>增强<SPAN CLASS="APPLICATION">pg_config</SPAN>，能够报告更多的构建时的值 (Tom)</P></LI><LI><P>允许<SPAN CLASS="APPLICATION">libpq</SPAN>在Windows上的建立是线程安全的 (Dave Page)</P></LI><LI><P>允许IPv6连接在Windows上使用 (Andrew)</P></LI><LI><P>添加关于I/O子系统可靠性的服务器管理文档 (Bruce)</P></LI><LI><P>从<TT CLASS="FILENAME">gist.h</TT>中移动私有的声明到<TT CLASS="FILENAME">gist_private.h</TT> (Neil)</P><P>在以前的版本中，<TT CLASS="FILENAME">gist.h</TT>包含公共的GiST API
+（用来被GiST索引实现的作者使用）和一些被GiST本身的实现使用的私有声明。
+后者已经被移动到一个独立的文件，<TT CLASS="FILENAME">gist_private.h</TT>。
+大多数GiST索引实现应该是不受影响的。</P></LI><LI><P>彻底检查GiST内存管理 (Neil)</P><P>GiST方法现在总是在一个短期存活的内存空间中调用。因此，通过<CODE CLASS="FUNCTION">palloc()</CODE>
+的内存分配将被自动回收利用，所以GiST索引实现不需要通过<CODE CLASS="FUNCTION">pfree()</CODE>
+手动释放分配的内存。</P></LI></UL></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN135708">E.125.3.15. 贡献版的变化</A></H3><P></P><UL><LI><P>添加了<TT CLASS="FILENAME">/contrib/pg_buffercache</TT>贡献版模板 (Mark Kirkwood)</P><P>这显示了缓冲区缓存的内容，为了调试和性能调优的目的。</P></LI><LI><P>删除了<TT CLASS="FILENAME">/contrib/array</TT>，因为它是废弃的 (Tom)</P></LI><LI><P>清理<TT CLASS="FILENAME">/contrib/lo</TT>模块 (Tom)</P></LI><LI><P>移动<TT CLASS="FILENAME">/contrib/findoidjoins</TT>到<TT CLASS="FILENAME">/src/tools</TT> (Tom)</P></LI><LI><P>从<TT CLASS="FILENAME">/contrib/cube</TT>中删除了<TT CLASS="LITERAL">&lt;&lt;</TT>、<TT CLASS="LITERAL">&gt;&gt;</TT>、
+<TT CLASS="LITERAL">&amp;&lt;</TT>和<TT CLASS="LITERAL">&amp;&gt;</TT>操作符</P><P>这些操作没什么用处。</P></LI><LI><P>改善<TT CLASS="FILENAME">/contrib/btree_gist</TT> (Janko Richter)</P></LI><LI><P>改善<TT CLASS="FILENAME">/contrib/pgbench</TT> (Tomoaki Sato, Tatsuo)</P><P>现在有一个设施测试用户给出的SQL命令脚本，而不是只有一个硬线连接的命令序列。</P></LI><LI><P>改善<TT CLASS="FILENAME">/contrib/pgcrypto</TT> (Marko Kreen)</P><P></P><UL><LI><P>OpenPGP对称秘钥和公共秘钥加密的实现</P><P>RSA和Elgamal公共秘钥算法都支持。</P></LI><LI><P>独立构建：包括SHA256/384/512 hashes, Fortuna PRNG</P></LI><LI><P>OpenSSL构建:支持3DES，使用内部的AES带有OpenSSL &lt; 0.9.7</P></LI><LI><P>从<TT CLASS="FILENAME">configure</TT>的结果中获取构建参数(OpenSSL, zlib)</P><P>不再需要编辑<TT CLASS="FILENAME">Makefile</TT>。</P></LI><LI><P>删除对<TT CLASS="FILENAME">libmhash</TT>和<TT CLASS="FILENAME">libmcrypt</TT>的支持</P></LI></UL></LI></UL></DIV></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-8-1-1.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-8-0-26.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">版本 8.1.1</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">版本 8.0.26</TD></TR></TABLE></DIV></BODY></HTML>

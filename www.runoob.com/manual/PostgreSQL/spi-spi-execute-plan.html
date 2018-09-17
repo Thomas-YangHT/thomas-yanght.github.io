@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>SPI_execute_plan</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="接口函数" HREF="spi-interface.html"><LINK REL="PREVIOUS" TITLE="SPI_is_cursor_plan" HREF="spi-spi-is-cursor-plan.html"><LINK REL="NEXT" TITLE="SPI_execute_plan_with_paramlist" HREF="spi-spi-execute-plan-with-paramlist.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/spi.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="SPI_is_cursor_plan" HREF="spi-spi-is-cursor-plan.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="spi-interface.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="SPI_execute_plan_with_paramlist" HREF="spi-spi-execute-plan-with-paramlist.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SPI-SPI-EXECUTE-PLAN"></A>SPI_execute_plan</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN62069"></A><H2>&#21517;&#31216;</H2>SPI_execute_plan&nbsp;--&nbsp;执行一个<CODE CLASS="FUNCTION">SPI_prepare</CODE>准备的语句</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN62075"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">int SPI_execute_plan(SPIPlanPtr <TT
+CLASS="PARAMETER"
+>plan</TT
+>, Datum * <TT
+CLASS="PARAMETER"
+>values</TT
+>, const char * <TT
+CLASS="PARAMETER"
+>nulls</TT
+>,
+                     bool <TT
+CLASS="PARAMETER"
+>read_only</TT
+>, long <TT
+CLASS="PARAMETER"
+>count</TT
+>)</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN62082"></A><H2>描述</H2><P><CODE CLASS="FUNCTION">SPI_execute_plan</CODE>执行一个<CODE CLASS="FUNCTION">SPI_prepare</CODE>
+或它的兄弟节点之一准备的语句。<TT CLASS="PARAMETER">read_only</TT>和
+<TT CLASS="PARAMETER">count</TT>的含义和<CODE CLASS="FUNCTION">SPI_execute</CODE>里面的相同。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN62090"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL">SPIPlanPtr <TT CLASS="PARAMETER">plan</TT></TT></DT><DD><P>预备语句（<CODE CLASS="FUNCTION">SPI_prepare</CODE>返回的）</P></DD><DT><TT CLASS="LITERAL">Datum * <TT CLASS="PARAMETER">values</TT></TT></DT><DD><P>一个实际的参数值的数组。必须和语句的参数个数相同。</P></DD><DT><TT CLASS="LITERAL">const char * <TT CLASS="PARAMETER">nulls</TT></TT></DT><DD><P>一个描述哪个参数是空的数组。必须和语句的参数个数相同。</P><P>如果<TT CLASS="PARAMETER">nulls</TT>是<TT CLASS="SYMBOL">NULL</TT>，那么<CODE CLASS="FUNCTION">SPI_execute_plan</CODE>
+假设没有参数为空。否则，如果对应的参数值是非空的，那么<TT CLASS="PARAMETER">nulls</TT>
+数组的每一项都应该是<TT CLASS="LITERAL">'&nbsp;'</TT>，或者如果对应的参数值为空，那么
+<TT CLASS="PARAMETER">nulls</TT>数组的每一项都是<TT CLASS="LITERAL">'n'</TT>。
+（在后面这种情况下，对应的<TT CLASS="PARAMETER">values</TT>项中的实际值无关紧要。）
+请注意，<TT CLASS="PARAMETER">nulls</TT>不是文本字符串，只是一个数组：
+它不需要<TT CLASS="LITERAL">'\0'</TT>终止符。</P></DD><DT><TT CLASS="LITERAL">bool <TT CLASS="PARAMETER">read_only</TT></TT></DT><DD><P><TT CLASS="LITERAL">true</TT>用于只读的执行</P></DD><DT><TT CLASS="LITERAL">long <TT CLASS="PARAMETER">count</TT></TT></DT><DD><P>返回的最大行数，或者没有限制时为<TT CLASS="LITERAL">0</TT></P></DD></DL></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="AEN62137"></A><H2>返回值</H2><P>返回值和<CODE CLASS="FUNCTION">SPI_execute</CODE>的一样，另外还有下面几个可能的错误(负值)结果：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="SYMBOL">SPI_ERROR_ARGUMENT</TT></DT><DD><P>如果<TT CLASS="PARAMETER">plan</TT>是<TT CLASS="SYMBOL">NULL</TT>或者无效，
+或者<TT CLASS="PARAMETER">count</TT>小于 0</P></DD><DT><TT CLASS="SYMBOL">SPI_ERROR_PARAM</TT></DT><DD><P>如果<TT CLASS="PARAMETER">values</TT>是<TT CLASS="SYMBOL">NULL</TT>并且
+<TT CLASS="PARAMETER">plan</TT>准备了一些参数</P></DD></DL></DIV><P>
+</P><P>成功时，<TT CLASS="VARNAME">SPI_processed</TT>和<TT CLASS="VARNAME">SPI_tuptable</TT>
+的设置和<CODE CLASS="FUNCTION">SPI_execute</CODE>里一样。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="spi-spi-is-cursor-plan.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="spi-spi-execute-plan-with-paramlist.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">SPI_is_cursor_plan</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="spi-interface.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">SPI_execute_plan_with_paramlist</TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>归档恢复设置</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="恢复配置" HREF="http://school.yunwei.edu/manual/PostgreSQL/recovery-config.html"><LINK REL="PREVIOUS" TITLE="恢复配置" HREF="http://school.yunwei.edu/manual/PostgreSQL/recovery-config.html"><LINK REL="NEXT" TITLE="恢复目标设置" HREF="recovery-target-settings.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/recovery-config.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="恢复配置" HREF="http://school.yunwei.edu/manual/PostgreSQL/recovery-config.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/recovery-config.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 26. 恢复配置</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="恢复目标设置" HREF="recovery-target-settings.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="ARCHIVE-RECOVERY-SETTINGS">26.1. 归档恢复设置</A></H1><P></P><DIV CLASS="VARIABLELIST"><DL><DT><A NAME="RESTORE-COMMAND"></A><TT CLASS="VARNAME">restore_command</TT> (<TT CLASS="TYPE">string</TT>)</DT><DD><P> 这个SHELL命令是获取WAL文件系列中已归档的WAL文件。对归档恢复来说这个参数是必须的，
+但对流复制来说是可选的。 字符串中的任何一个<TT CLASS="LITERAL">%f</TT>是用归档检索中的文件名替换，
+并且<TT CLASS="LITERAL">%p</TT>是用服务器上的复制目的地的路径名替换。
+（路径名是相对于当前工作路径的，如客户端的data路径）
+任意一个<TT CLASS="LITERAL">%r</TT>是用包含最新可用重启点的文件名替换。这是最早的文件，
+必须保留以便重新开始恢复，因此这个信息可以用于截断归档至实现从当前恢复点开始恢复的最低要求。
+<TT CLASS="LITERAL">%r</TT>典型的只用于热备配置(参阅<A HREF="warm-standby.html">第 25.2 &#33410;</A>)。
+<TT CLASS="LITERAL">%%</TT>可以嵌入一个实际的<TT CLASS="LITERAL">%</TT>字符。</P><P>
+对命令来说，只有当成功时返回一个零退出状态是很重要的。
+命令<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">将</I></SPAN>被要求归档命令中没有出现的文件名；
+当为要求是，必须返回非零。如：
+</P><PRE CLASS="PROGRAMLISTING">restore_command = 'cp /mnt/server/archivedir/%f "%p"'
+restore_command = 'copy "C:\\server\\archivedir\\%f" "%p"'  # Windows</PRE><P>
+</P></DD><DT><A NAME="ARCHIVE-CLEANUP-COMMAND"></A><TT CLASS="VARNAME">archive_cleanup_command</TT> (<TT CLASS="TYPE">string</TT>)</DT><DD><P> 这个选项参数声明一个shell命令。在每次重启时会执行这个shell命令。
+<TT CLASS="VARNAME">archive_cleanup_command</TT>为清理备库不需要的归档WAL文件提供一个机制。
+任何一个<TT CLASS="LITERAL">%r</TT>由包含最新可用重启点的文件名代替。这是最早的文件，
+因此必须<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">保留</I></SPAN>以允许恢复能够重新启动，因此所有早于<TT CLASS="LITERAL">%r</TT>的文件可以安全的移除。
+这个信息可以用于删除归档至能满足从当前恢复重启的最低要求。
+对典型单备配置中的<TT CLASS="VARNAME">archive_cleanup_command</TT>而言，
+经常使用<A HREF="pgarchivecleanup.html"><SPAN CLASS="APPLICATION">pg_archivecleanup</SPAN></A>模块，比如：
+</P><PRE CLASS="PROGRAMLISTING">archive_cleanup_command = 'pg_archivecleanup /mnt/server/archivedir %r'</PRE><P>
+然而需要注意的是，如果多个备服务器从相同的归档路径恢复时，
+需要确保在任何一个备服务器在需要之前，不能删除WAL文件。
+在热备配置中，会明显的用到<TT CLASS="VARNAME">archive_cleanup_command</TT>
+(参阅<A HREF="warm-standby.html">第 25.2 &#33410;</A>)。
+通过<TT CLASS="LITERAL">%%</TT>，在命令中嵌入一个实际的<TT CLASS="LITERAL">%</TT>字符。&#13;</P><P> 如果命令返回一个非0的退出状态，那么将写一个警告日志信息。</P></DD><DT><A NAME="RECOVERY-END-COMMAND"></A><TT CLASS="VARNAME">recovery_end_command</TT> (<TT CLASS="TYPE">string</TT>)</DT><DD><P> 这个参数是可选的，用于声明一个只在恢复完成时执行的SHELL命令。
+<TT CLASS="VARNAME">recovery_end_command</TT>是为以后的复制或恢复提供一个清理机制。
+<TT CLASS="LITERAL">%r</TT>由包含最新可用重启点的文件名代替，
+如在<A HREF="archive-recovery-settings.html#ARCHIVE-CLEANUP-COMMAND">archive_cleanup_command</A>中的那样。</P><P> 如果命令返回一个非0的退出状态，那么将写一个警告日志信息，
+并且数据库将会继续启动。如果命令被一个信号终止，数据库不会继续启动。</P></DD></DL></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/recovery-config.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="recovery-target-settings.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">恢复配置</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/recovery-config.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">恢复目标设置</TD></TR></TABLE></DIV></BODY></HTML>

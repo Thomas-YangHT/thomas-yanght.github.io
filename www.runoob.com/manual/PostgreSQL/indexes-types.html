@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>索引类型</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="索引" HREF="http://school.yunwei.edu/manual/PostgreSQL/indexes.html"><LINK REL="PREVIOUS" TITLE="介绍" HREF="indexes-intro.html"><LINK REL="NEXT" TITLE="多字段索引" HREF="indexes-multicolumn.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/indices.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="介绍" HREF="indexes-intro.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/indexes.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 11. 索引</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="多字段索引" HREF="indexes-multicolumn.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="INDEXES-TYPES">11.2. 索引类型</A></H1><P><SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>提供了好几种索引类型：B-tree, Hash, GiST, SP-GiST和GIN 。
+每种索引类型都比较适合某些特定的查询类型，因为它们用了不同的算法。缺省时，
+<TT CLASS="COMMAND">CREATE INDEX</TT>命令将创建 B-tree 索引，它适合大多数情况。</P><P>
+B-tree 适合处理那些能够按顺序存储的数据之上的等于和范围查询。
+特别是在一个建立了索引的字段涉及到使用
+<P></P><TABLE BORDER="0"><TBODY><TR><TD><TT CLASS="LITERAL">&lt;</TT></TD></TR><TR><TD><TT CLASS="LITERAL">&lt;=</TT></TD></TR><TR><TD><TT CLASS="LITERAL">=</TT></TD></TR><TR><TD><TT CLASS="LITERAL">&gt;=</TT></TD></TR><TR><TD><TT CLASS="LITERAL">&gt;</TT></TD></TR></TBODY></TABLE><P></P>
+操作符之一进行比较的时候，<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+的查询规划器都会考虑使用 B-tree 索引。等效于这些操作符组合的构造，
+比如<TT CLASS="LITERAL">BETWEEN</TT>和<TT CLASS="LITERAL">IN</TT>，也可以用搜索 B-tree 索引实现。
+同样，索引列中的<TT CLASS="LITERAL">IS NULL</TT>或<TT CLASS="LITERAL">IS NOT NULL</TT>条件可以和B-tree索引一起使用。
+</P><P><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">仅当</I></SPAN>模式是一个常量，并且锚定在字符串开头的时候，
+优化器才会把 B-tree 索引用于模式匹配操作符<TT CLASS="LITERAL">LIKE</TT>和<TT CLASS="LITERAL">~</TT>，
+比如：<TT CLASS="LITERAL">col LIKE 'foo%'</TT>或<TT CLASS="LITERAL">col ~ '^foo'</TT>，
+但是<TT CLASS="LITERAL">col LIKE '%bar'</TT>就不行。同时，如果你的数据库未使用 C 区域设置，
+那么你需要用一个特殊的操作符类创建索引来支持模式匹配查询上的索引。
+参阅<A HREF="indexes-opclass.html">第 11.9 &#33410;</A>。还有可能将 B-tree 索引用于<TT CLASS="LITERAL">ILIKE</TT>
+和<TT CLASS="LITERAL">~*</TT>，但是仅当模式以非字母字符(不受大小写影响的字符)开头才可以。</P><P>B-tree索引也可以用来按照排序顺序检索数据。这并不总是比一个简单的扫描和排序快，
+但通常是有帮助的。</P><P>&#13;
+Hash 索引只能处理简单的等于比较。当一个索引了的列涉及到使用<TT CLASS="LITERAL">=</TT>
+操作符进行比较的时候，查询规划器会考虑使用 Hash 索引。下面的命令用于创建 Hash 索引：
+</P><PRE CLASS="SYNOPSIS">CREATE INDEX <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+> ON <TT
+CLASS="REPLACEABLE"
+><I
+>table</I
+></TT
+> USING hash (<TT
+CLASS="REPLACEABLE"
+><I
+>column</I
+></TT
+>);</PRE><P>
+</P><DIV CLASS="CAUTION"><P></P><TABLE CLASS="CAUTION" BORDER="1" WIDTH="100%"><TR><TD ALIGN="CENTER"><B>&#23567;&#24515;</B></TD></TR><TR><TD ALIGN="LEFT"><P>Hash 索引操作目前没有记录 WAL 日志，因此如果数据库崩溃有未写入的改变，
+我们可能需要用<TT CLASS="COMMAND">REINDEX</TT>重建 Hash 索引。另外，
+对hash索引的改变在初始的基础备份后不是基于流复制或者基于文件复制的，
+所以对于随后使用它们的查询会给出错误的回复。因为这些原因，
+我们并不鼓励使用 Hash 索引。</P></TD></TR></TABLE></DIV><P>&#13;
+GiST 索引不是单独一种索引类型，而是一种架构，可以在这种架构上实现很多不同的索引策略。
+因此，可以使用 GiST 索引的特定操作符类型高度依赖于索引策略(<I CLASS="FIRSTTERM">操作符类</I>)。
+作为示例，<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的标准发布中包含用于二维几何数据类型的
+GiST 操作符类，它支持
+<P></P><TABLE BORDER="0"><TBODY><TR><TD><TT CLASS="LITERAL">&lt;&lt;</TT></TD></TR><TR><TD><TT CLASS="LITERAL">&amp;&lt;</TT></TD></TR><TR><TD><TT CLASS="LITERAL">&amp;&gt;</TT></TD></TR><TR><TD><TT CLASS="LITERAL">&gt;&gt;</TT></TD></TR><TR><TD><TT CLASS="LITERAL">&lt;&lt;|</TT></TD></TR><TR><TD><TT CLASS="LITERAL">&amp;&lt;|</TT></TD></TR><TR><TD><TT CLASS="LITERAL">|&amp;&gt;</TT></TD></TR><TR><TD><TT CLASS="LITERAL">|&gt;&gt;</TT></TD></TR><TR><TD><TT CLASS="LITERAL">@&gt;</TT></TD></TR><TR><TD><TT CLASS="LITERAL">&lt;@</TT></TD></TR><TR><TD><TT CLASS="LITERAL">~=</TT></TD></TR><TR><TD><TT CLASS="LITERAL">&amp;&amp;</TT></TD></TR></TBODY></TABLE><P></P>
+操作符的索引查询。这些操作符的含义参见<A HREF="functions-geometry.html">第 9.11 &#33410;</A>。
+许多其它 GiST 操作符类可用于<TT CLASS="LITERAL">contrib</TT>中，或者是单独的项目，
+更多信息参见<A HREF="http://school.yunwei.edu/manual/PostgreSQL/gist.html">第 55 &#31456;</A>。
+</P><P>GiST索引也可最优化<SPAN CLASS="QUOTE">"nearest-neighbor"</SPAN>检索，例如
+</P><PRE CLASS="PROGRAMLISTING">SELECT * FROM places ORDER BY location &#60;-&#62; point '(101,456)' LIMIT 10;</PRE><P>
+找出距离给出目标点最近的十个地点。能这样做也是依赖于使用特定的操作符类。
+</P><P>
+SP-GiST索引类似于GiST索引，提供一个支持不同类型检索的架构。
+SP-GiST允许广泛不同的非平衡基于磁盘的数据结构的实施，例如四叉树，k-d树和根树(尝试)。
+作为示例，<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的标准发布中包含用于二维点的SP-GiST操作符类，
+它支持
+<P></P><TABLE BORDER="0"><TBODY><TR><TD><TT CLASS="LITERAL">&lt;&lt;</TT></TD></TR><TR><TD><TT CLASS="LITERAL">&gt;&gt;</TT></TD></TR><TR><TD><TT CLASS="LITERAL">~=</TT></TD></TR><TR><TD><TT CLASS="LITERAL">&lt;@</TT></TD></TR><TR><TD><TT CLASS="LITERAL">&lt;^</TT></TD></TR><TR><TD><TT CLASS="LITERAL">&gt;^</TT></TD></TR></TBODY></TABLE><P></P>
+操作符的索引查询。（这些操作符的含义参见<A HREF="functions-geometry.html">第 9.11 &#33410;</A>。）
+更多信息参见<A HREF="http://school.yunwei.edu/manual/PostgreSQL/spgist.html">第 56 &#31456;</A>。
+</P><P>
+GIN 索引是反转索引，它可以处理包含多个键的值(比如数组)。与 GiST和SP-GiST 类似，
+GIN 支持用户定义的索引策略，可以使用 GIN 索引的特定操作符类型根据索引策略的不同而不同。
+作为示例，<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的标准发布中包含用于一维数组的
+GIN 操作符类，它支持
+<P></P><TABLE BORDER="0"><TBODY><TR><TD><TT CLASS="LITERAL">&lt;@</TT></TD></TR><TR><TD><TT CLASS="LITERAL">@&gt;</TT></TD></TR><TR><TD><TT CLASS="LITERAL">=</TT></TD></TR><TR><TD><TT CLASS="LITERAL">&amp;&amp;</TT></TD></TR></TBODY></TABLE><P></P>
+操作符的索引查询。这些操作符的含义参见<A HREF="functions-array.html">第 9.18 &#33410;</A>。
+许多其它 GIN 操作符类可用于<TT CLASS="LITERAL">contrib</TT>集合或作为单独的项目。
+更多信息参见<A HREF="http://school.yunwei.edu/manual/PostgreSQL/gin.html">第 57 &#31456;</A>。
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="indexes-intro.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="indexes-multicolumn.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">介绍</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/indexes.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">多字段索引</TD></TR></TABLE></DIV></BODY></HTML>

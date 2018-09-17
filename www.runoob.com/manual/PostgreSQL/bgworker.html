@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>后台工作进程</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="https://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="服务器端编程" HREF="server-programming.html"><LINK REL="PREVIOUS" TITLE="例子" HREF="https://school.yunwei.edu/manual/PostgreSQL/spi-examples.html"><LINK REL="NEXT" TITLE="参考手册" HREF="reference.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="CHAPTER">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/bgworker.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="https://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="例子" HREF="https://school.yunwei.edu/manual/PostgreSQL/spi-examples.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="server-programming.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="参考手册" HREF="reference.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="CHAPTER"><H1><A NAME="BGWORKER"></A>&#31456; 45. 后台工作进程</H1><P> PostgreSQL可以扩展在分立的进程中运行用户提供的代码。 命令<TT CLASS="COMMAND">postgres</TT>启动，
+停止和监控这些进程，允许它们的生命周期与服务器状态紧密关联。这些进程可以选择连接
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的共享内存并与数据库内部连接；它们也可以串行地运行多个事务，就像
+常规的客户端连接的服务器进程。另外，通过链接到<SPAN CLASS="APPLICATION">libpq</SPAN>，它们可以连接到服务器并
+且和常规的客户端应用表现一样。
+</P><DIV CLASS="WARNING"><P></P><TABLE CLASS="WARNING" BORDER="1" WIDTH="100%"><TR><TD ALIGN="CENTER"><B>&#35686;&#21578;</B></TD></TR><TR><TD ALIGN="LEFT"><P> 使用后台工作进程有着相当大的牢固和安全风险。这是因为它们是用C语言写的，有着不受限制的数据
+访问方式。乐于使用包含后台工作进程的模块的管理员们应当极度地当心。只有仔细审计过的模块才
+应该被允许运行后台工作进程。
+</P></TD></TR></TABLE></DIV><P> 只有<TT CLASS="VARNAME">shared_preload_libraries</TT>里列出的模块能够运行后台工作进程。想要运行后台工作
+程序的模块需要通过从它的<CODE CLASS="FUNCTION">_PG_init()</CODE>调用
+<CODE CLASS="FUNCTION">RegisterBackgroundWorker(<TT CLASS="TYPE">BackgroundWorker *worker</TT>)</CODE>来注册
+这个程序。<TT CLASS="STRUCTNAME">BackgroundWorker</TT>结构是这样定义的：
+</P><PRE CLASS="PROGRAMLISTING">typedef void (*bgworker_main_type)(void *main_arg);
+typedef struct BackgroundWorker
+{
+    char        bgw_name[BGW_MAXLEN];
+    int         bgw_flags;
+    BgWorkerStartTime bgw_start_time;
+    int         bgw_restart_time;       /* in seconds, or BGW_NEVER_RESTART */
+    bgworker_main_type bgw_main;
+    Datum       bgw_main_arg;
+} BackgroundWorker;</PRE><P>
+</P><P> <TT CLASS="STRUCTFIELD">bgw_name</TT>是用于日志消息，进程列表和类似环境的一个字符串。
+</P><P> <TT CLASS="STRUCTFIELD">bgw_flags</TT>是一个按位与的比特掩码，显示模块想要的容量。 可能的值有
+<TT CLASS="LITERAL">BGWORKER_SHMEM_ACCESS</TT> （要求访问共享内存）和
+<TT CLASS="LITERAL">BGWORKER_BACKEND_DATABASE_CONNECTION</TT>（要求能够建立一个数据库连接，通
+过这个连接伺候可以运行事务和查询）。一个使用
+<TT CLASS="LITERAL">BGWORKER_BACKEND_DATABASE_CONNECTION</TT>连接数据库的后台工作程序还必须用
+<TT CLASS="LITERAL">BGWORKER_SHMEM_ACCESS</TT>联接共享内存，否则程序的启动会失败。
+</P><P> <TT CLASS="STRUCTFIELD">bgw_start_time</TT>是某种服务器状态，在此期间应当由
+<TT CLASS="COMMAND">postgres</TT>启动进程；它可以是下面几个值之一：
+<TT CLASS="LITERAL">BgWorkerStart_PostmasterStart</TT>（<TT CLASS="COMMAND">postgres</TT>完成自身初始化后就立即启动；
+请求此种启动方式的进程不能进行数据库连接），<TT CLASS="LITERAL">BgWorkerStart_ConsistentState</TT>（只
+要在一个热备份系统中达到了一致状态就启动，允许进程连接到数据库并运行只读查询），以及
+<TT CLASS="LITERAL">BgWorkerStart_RecoveryFinished</TT>（只要系统进入普通读写状态就启动）。注意在非热备
+份系统的服务器中后两个值是作用相当的。注意此设置只在进程将启动时显示；进入不同状态时进程不
+停。
+</P><P> <TT CLASS="STRUCTFIELD">bgw_restart_time</TT>是以秒记的时间间隔。一旦进程崩溃，
+<TT CLASS="COMMAND">postgres</TT>应当在重启进程前等待这一段时间。它可以是任何的正值，或者
+是<TT CLASS="LITERAL">BGW_NEVER_RESTART</TT>以表明在进程崩溃时不重启进程。
+</P><P> <TT CLASS="STRUCTFIELD">bgw_main</TT>是当进程被启动时指向所运行函数的一个指针。该函数必须使
+用<TT CLASS="TYPE">void *</TT>类型的单一参数并返回<TT CLASS="TYPE">void</TT>类型的值。
+<TT CLASS="STRUCTFIELD">bgw_main_arg</TT>将作为唯一参数被传递给此函数。注意全局变量
+<TT CLASS="LITERAL">MyBgworkerEntry</TT>指向进程注册时传递的
+<TT CLASS="STRUCTNAME">BackgroundWorker</TT>结构的一份拷贝。
+</P><P>进程一旦运行，就可以通过调用
+<CODE CLASS="FUNCTION">BackgroundWorkerInitializeConnection(<TT CLASS="PARAMETER">char *dbname</TT>, <TT CLASS="PARAMETER">char *username</TT>)</CODE>
+连接到一个数据库。这样进程可以使用<TT CLASS="LITERAL">SPI</TT>接口运行事务和查询。如果
+<TT CLASS="VARNAME">dbname</TT>值为NULL，会话不被连接到任何特定数据库，但是可以获取共享的目录。如果
+<TT CLASS="VARNAME">username</TT>值为NULL，进程会以<TT CLASS="COMMAND">initdb</TT>运行时创建的超级用户身份来运行。
+每个后台进程只能调用一次BackgroundWorkerInitializeConnection，它不能切换数据库。
+</P><P> Signals are initially blocked when control reaches the
+控制<TT CLASS="STRUCTFIELD">bgw_main</TT>函数开始锁定信号，并且必须由此函数解锁；这样在必要时可以允许
+进程定制它的信号处理程序。通过调用<CODE CLASS="FUNCTION">BackgroundWorkerUnblockSignals</CODE>可以在新进程
+中为信号解锁，通过调用<CODE CLASS="FUNCTION">BackgroundWorkerBlockSignals</CODE>可以加锁。
+</P><P> 后台工作程序是被预期连续运行的；如果它们干净的退出了，<TT CLASS="COMMAND">postgres</TT>会立即重启它们。
+当它们无事可做时，考虑进入可中断的睡眠；通过调用<CODE CLASS="FUNCTION">WaitLatch()</CODE>可以实现这
+一点。调用该函数时确定<TT CLASS="LITERAL">WL_POSTMASTER_DEATH</TT>标志被设置，并且在<TT CLASS="COMMAND">postgres</TT>
+自身终止的紧急情况下为提示的退出验证返回码。
+</P><P> <TT CLASS="FILENAME">worker_spi</TT> contrib模块包含一个展示一些有用技术的范例。
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="https://school.yunwei.edu/manual/PostgreSQL/spi-examples.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="https://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="reference.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">例子</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="server-programming.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">参考手册</TD></TR></TABLE></DIV></BODY></HTML>

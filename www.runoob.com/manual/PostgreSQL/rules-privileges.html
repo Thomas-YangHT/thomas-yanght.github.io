@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>规则和权限</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="规则系统" HREF="http://school.yunwei.edu/manual/PostgreSQL/rules.html"><LINK REL="PREVIOUS" TITLE="在 INSERT, UPDATE, 和 DELETE上的规则" HREF="rules-update.html"><LINK REL="NEXT" TITLE="规则和命令状态" HREF="rules-status.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/rules.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="在 INSERT, UPDATE, 和 DELETE上的规则" HREF="rules-update.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/rules.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 38. 规则系统</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="规则和命令状态" HREF="rules-status.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RULES-PRIVILEGES">38.5. 规则和权限</A></H1><P>由于<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>规则系统对查询的重写，
+非初始查询指定的其它表/视图被访问。使用更新规则的时候，这可能包括对表的写权限。</P><P>重写规则并不拥有一个独立的所有者。关系(表或视图)的所有者自动成为重写规则的缺省所有者。
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>规则系统改变缺省的访问控制系统的特性。
+因规则而使用的关系要对定义规则所有者进行权限检查，而不是激活规则的用户，
+这意味着一个用户只需要对他的查询里明确指定的表/视图拥有所需的权限就可进行操作。</P><P>例如：某用户有一个电话号码列表，其中一些是私人的，另外的一些是办公室秘书需要的。
+他可以用下面方法构建查询：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TABLE phone_data (person text, phone text, private boolean);
+CREATE VIEW phone_number AS
+    SELECT person, CASE WHEN NOT private THEN phone END AS phone
+    FROM phone_data;
+GRANT SELECT ON phone_number TO secretary;</PRE><P>
+除了他以外(还有数据库超级用户)没有人可以访问<TT CLASS="LITERAL">phone_data</TT>表。
+但因为<TT CLASS="COMMAND">GRANT</TT>的原因，秘书可以从<TT CLASS="LITERAL">phone_number</TT>
+视图上运行<TT CLASS="COMMAND">SELECT</TT>。规则系统将把从<TT CLASS="LITERAL">phone_number</TT>
+里的<TT CLASS="COMMAND">SELECT</TT>重写为从<TT CLASS="LITERAL">phone_data</TT>里的
+<TT CLASS="COMMAND">SELECT</TT>。因为用户是<TT CLASS="LITERAL">phone_number</TT>的所有者，
+因此也是规则的所有者，所以现在要检查他对<TT CLASS="LITERAL">phone_data</TT>的读访问的权限，
+而这个查询是被允许的。同时也要检查访问<TT CLASS="LITERAL">phone_number</TT>的权限，
+但这是对一个被撤消权限的用户进行检查的，所以除了用户自己和秘书外没有人可以使用它。</P><P>权限检查是按规则逐条进行的。所以此时的秘书是唯一的一个可以看到公共电话号码的人。
+但秘书可以设立另一个视图并且赋予该视图公共权限。这样，
+任何人都可以通过秘书的视图看到<TT CLASS="LITERAL">phone_number</TT>数据。
+秘书不能做的事情是创建一个直接访问<TT CLASS="LITERAL">phone_data</TT>的视图(实际上他是可以的，
+但没有任何作用，因为每个访问都会因通不过权限检查而被踢出事务)。而且用户很快会认识到，
+秘书开放了他的<TT CLASS="LITERAL">phone_number</TT>视图后，他还可以撤消他的访问权限。这样，
+所有对秘书视图的访问马上就失效了。</P><P>有些人会认为这种逐条规则的检查是一个安全漏洞，但事实上不是。如果这样做不能奏效，
+秘书将必须建立一个与<TT CLASS="LITERAL">phone_number</TT>有相同字段的表并且每天拷贝一次数据进去。
+那么这是他自己的数据因而可以赋予其它人访问的权力。一个<TT CLASS="COMMAND">GRANT</TT>
+意味着<SPAN CLASS="QUOTE">"我信任你"</SPAN>。如果某个你信任的人做了上面的事情，
+那你就该想想是否该<TT CLASS="COMMAND">REVOKE</TT>了。</P><P>请注意，当视图可以用来隐藏使用了上面的技术的特定的内容时，
+它们不能用来可靠地隐藏在不可视的行的数据，除非已经设置了<TT CLASS="LITERAL">security_barrier</TT>
+标志。例如，下面的视图是不安全的：
+</P><PRE CLASS="PROGRAMLISTING">CREATE VIEW phone_number AS
+    SELECT person, phone FROM phone_data WHERE phone NOT LIKE '412%';</PRE><P>
+这个视图可能看起来是安全的，因为规则系统将重写<TT CLASS="LITERAL">phone_number</TT>里面的任意
+<TT CLASS="COMMAND">SELECT</TT>到<TT CLASS="LITERAL">phone_data</TT>里面的<TT CLASS="COMMAND">SELECT</TT>，
+并且添加只有不是以412开头的<TT CLASS="LITERAL">phone</TT>才是所需要的条目的条件。
+但是如果用户可以创建他或她自己的函数，那么使规划器在<CODE CLASS="FUNCTION">NOT LIKE</CODE>
+表达式之前执行用户定义的函数也不困难。例如：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION tricky(text, text) RETURNS bool AS $$
+BEGIN
+    RAISE NOTICE '% =&#62; %', $1, $2;
+    RETURN true;
+END
+$$ LANGUAGE plpgsql COST 0.0000000000000000000001;
+
+SELECT * FROM phone_number WHERE tricky(person, phone);</PRE><P>
+<TT CLASS="LITERAL">phone_data</TT>表里的每个人和电话号码将作为一个<TT CLASS="LITERAL">NOTICE</TT>打印，
+因为规划器将在更多的昂贵的<CODE CLASS="FUNCTION">NOT LIKE</CODE>之前执行
+廉价的<CODE CLASS="FUNCTION">tricky</CODE>函数。即使阻止了用户定义新的函数，
+内建的函数可以用在类似的安全系统里。（例如，
+大多数转换函数在他们产生的错误信息中包含他们的输入值。）</P><P>类似的注意事项应用于更新规则。在上一章的例子里，例子数据库里的表的所有者可以把
+<TT CLASS="LITERAL">shoelace</TT>视图的<TT CLASS="LITERAL">SELECT</TT>, <TT CLASS="LITERAL">INSERT</TT>, <TT CLASS="LITERAL">UPDATE</TT>,
+<TT CLASS="LITERAL">DELETE</TT>权限赋予其他人。但对<TT CLASS="LITERAL">shoelace_log</TT>只有<TT CLASS="LITERAL">SELECT</TT>权限。
+写日志记录的规则动作仍然可以成功的执行。并且其它用户可以看到日志记录。
+但他不能创建伪记录，而且他也不能对现有记录进行修改或删除。
+在这种情况下，不能通过使规划器改变操作的顺序来推翻规则，
+因为唯一引用<TT CLASS="LITERAL">shoelace_log</TT>的规则是一个未修饰的<TT CLASS="LITERAL">INSERT</TT>。
+在更复杂的情形中这可能不是真的。</P><P>当必须为视图提供行级别的安全性时，<TT CLASS="LITERAL">security_barrier</TT>
+属性应该应用于视图。这样就阻止了在行上调用恶意的选择函数和操作，直到视图完成了它的工作。
+例如，如果上面显示的视图像这样创建，它将是安全的：
+</P><PRE CLASS="PROGRAMLISTING">CREATE VIEW phone_number WITH (security_barrier) AS
+    SELECT person, phone FROM phone_data WHERE phone NOT LIKE '412%';</PRE><P>
+带有<TT CLASS="LITERAL">security_barrier</TT>创建视图可能执行起来更糟糕。
+通常，这是没有办法避免的：如果可能危及安全，那么最快可能的计划必须拒绝。
+因为这个原因，缺省不启用这个选项。</P><P>当处理的函数没有副作用时，查询计划器有更大的灵活性。这样的函数被称为<TT CLASS="LITERAL">LEAKPROOF</TT>，
+包括许多简单、常用的操作符，例如许多相等操作符。查询计划器可以安全的允许这样的函数在查询执行过程的任何时候评估。
+因为在行上不可见的调用它们不会给用户泄露任何关于不可见行的信息。相反的，
+一个函数可能会抛出一个错误，取决于作为参数（例如在溢出或除以零的情况下抛出一个错误）
+接收到的值是非防止泄露的，并且如果在安全视图的行过滤器之前应用可能提供重要的关于不可见行的信息。</P><P>理解这个是重要的，即使视图创建时带有了<TT CLASS="LITERAL">security_barrier</TT>选项，
+狭义来讲，为了安全，只有不可见元组的内容不会被传送到可能不安全的函数。
+用户很可能对于推断不可见的数据有其他的意思；例如，他们使用<TT CLASS="COMMAND">EXPLAIN</TT>
+看到查询计划，或测量查询在视图上的运行时间。恶意攻击者也许能够推断不可见数据的数量，
+或者甚至获得一些关于数据分布或常见值的信息（因为这些事情可能影响计划的运行时间；
+甚至，因为他们也反映在优化器的统计数据中，计划的选择）。如果关心了这些"covert channel"
+类型的攻击，那么给这些数据授予任何权限可能是不明智的。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="rules-update.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="rules-status.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">在 <TT CLASS="COMMAND">INSERT</TT>, <TT CLASS="COMMAND">UPDATE</TT>, 和 <TT CLASS="COMMAND">DELETE</TT>上的规则</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/rules.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">规则和命令状态</TD></TR></TABLE></DIV></BODY></HTML>

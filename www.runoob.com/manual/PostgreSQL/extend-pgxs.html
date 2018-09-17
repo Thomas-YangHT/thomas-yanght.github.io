@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>扩展基础设施建设</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="扩展SQL" HREF="http://school.yunwei.edu/manual/PostgreSQL/extend.html"><LINK REL="PREVIOUS" TITLE="包装相关对象到一个扩展" HREF="extend-extensions.html"><LINK REL="NEXT" TITLE="触发器" HREF="http://school.yunwei.edu/manual/PostgreSQL/triggers.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/extend.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="包装相关对象到一个扩展" HREF="extend-extensions.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/extend.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 35. 扩展<ACRONYM CLASS="ACRONYM">SQL</ACRONYM></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="触发器" HREF="http://school.yunwei.edu/manual/PostgreSQL/triggers.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="EXTEND-PGXS">35.16. 扩展基础设施建设</A></H1><P> 如果你正在考虑分配你的<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的扩展模块，
+为它们设置便携式编译系统相当困难。
+因此<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>安装提供了一个构建
+基础设施的扩展，称为<ACRONYM CLASS="ACRONYM">PGXS</ACRONYM>，所以
+这个简单的扩展模块可以在已安装的服务器上简单编译。
+<ACRONYM CLASS="ACRONYM">PGXS</ACRONYM>的主要目的是为了包含C代码的扩展，
+虽然它也可以用于纯SQL扩展。
+注意：<ACRONYM CLASS="ACRONYM">PGXS</ACRONYM>不打算
+作为一个通用编译系统框架，可用于构建
+任何软件接口到<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>；
+它只是为了简单的服务器扩展模块自动化公共建立规则。
+对于更复杂的软件包，您可能需要写入自己的构建系统。</P><P>
+为了您的扩展使用<ACRONYM CLASS="ACRONYM">PGXS</ACRONYM>设施，
+你必须写一个简单的makefile。
+在makefile中，你需要设置一些变量并且
+最后包括全局<ACRONYM CLASS="ACRONYM">PGXS</ACRONYM> makefile。
+下面是一个例子，建立一个<TT CLASS="LITERAL">isbn_issn</TT>命名的扩展模块，
+由包含一些C代码，扩展的控制文件，SQL脚本，和文本文件的共享库组成：
+</P><PRE CLASS="PROGRAMLISTING">MODULES = isbn_issn
+EXTENSION = isbn_issn
+DATA = isbn_issn--1.0.sql
+DOCS = README.isbn_issn
+
+PG_CONFIG = pg_config
+PGXS := $(shell $(PG_CONFIG) --pgxs)
+include $(PGXS)</PRE><P>
+最后三行总是相同的。早在文件中，你可以指定变量或者添加自定义<SPAN CLASS="APPLICATION">make</SPAN>
+规则。
+</P><P>
+设置这三个变量之一指定建立什么：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="VARNAME">MODULES</TT></DT><DD><P>
+从源文件同一地方编译共享库对象列表（不包括列表中的库后缀）
+</P></DD><DT><TT CLASS="VARNAME">MODULE_big</TT></DT><DD><P> 从多个源文件构建共享库（在<TT CLASS="VARNAME">OBJS</TT>中列出对象文件）</P></DD><DT><TT CLASS="VARNAME">PROGRAM</TT></DT><DD><P> 建立可执行程序（在<TT CLASS="VARNAME">OBJS</TT>中列出对象文件）</P></DD></DL></DIV><P>
+下面的变量也可以设置：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="VARNAME">EXTENSION</TT></DT><DD><P> 扩展名：对于每一个名字你必须提供一个<TT CLASS="LITERAL"><TT CLASS="REPLACEABLE"><I>extension</I></TT>.control</TT>
+文件，它将被安装到<TT CLASS="LITERAL"><TT CLASS="REPLACEABLE"><I>prefix</I></TT>/share/extension</TT>中。</P></DD><DT><TT CLASS="VARNAME">MODULEDIR</TT></DT><DD><P> DATA和DOCS文件应该被安装到<TT CLASS="LITERAL"><TT CLASS="REPLACEABLE"><I>prefix</I></TT>/share</TT>
+子目录中（如果没有设置，如果设置<TT CLASS="VARNAME">EXTENSION</TT>，
+缺省是<TT CLASS="LITERAL">extension</TT>。如果没有则为<TT CLASS="LITERAL">contrib</TT>）。</P></DD><DT><TT CLASS="VARNAME">DATA</TT></DT><DD><P> 随机文件安装到<TT CLASS="LITERAL"><TT CLASS="REPLACEABLE"><I>prefix</I></TT>/share/$MODULEDIR</TT>。</P></DD><DT><TT CLASS="VARNAME">DATA_built</TT></DT><DD><P> 随机文件安装到<TT CLASS="LITERAL"><TT CLASS="REPLACEABLE"><I>prefix</I></TT>/share/$MODULEDIR</TT>，
+这首先需要编译。</P></DD><DT><TT CLASS="VARNAME">DATA_TSEARCH</TT></DT><DD><P> 随机文件安装到<TT CLASS="LITERAL"><TT CLASS="REPLACEABLE"><I>prefix</I></TT>/share/tsearch_data</TT>中。</P></DD><DT><TT CLASS="VARNAME">DOCS</TT></DT><DD><P> 随机文件安装到<TT CLASS="LITERAL"><TT CLASS="REPLACEABLE"><I>prefix</I></TT>/doc/$MODULEDIR</TT></P></DD><DT><TT CLASS="VARNAME">SCRIPTS</TT></DT><DD><P> 脚本文件（非二进制数）安装到<TT CLASS="LITERAL"><TT CLASS="REPLACEABLE"><I>prefix</I></TT>/bin</TT>中</P></DD><DT><TT CLASS="VARNAME">SCRIPTS_built</TT></DT><DD><P> 脚本文件（非二进制数）安装到<TT CLASS="LITERAL"><TT CLASS="REPLACEABLE"><I>prefix</I></TT>/bin</TT>，
+这需要首先编译。</P></DD><DT><TT CLASS="VARNAME">REGRESS</TT></DT><DD><P> 回归测试用例列表（没有后缀），参见下文。</P></DD><DT><TT CLASS="VARNAME">REGRESS_OPTS</TT></DT><DD><P> 另外切换到<SPAN CLASS="APPLICATION">pg_regress</SPAN></P></DD><DT><TT CLASS="VARNAME">EXTRA_CLEAN</TT></DT><DD><P> <TT CLASS="LITERAL">make clean</TT>中删除额外文件</P></DD><DT><TT CLASS="VARNAME">PG_CPPFLAGS</TT></DT><DD><P> 被添加到<TT CLASS="VARNAME">CPPFLAGS</TT></P></DD><DT><TT CLASS="VARNAME">PG_LIBS</TT></DT><DD><P> 被添加到<TT CLASS="VARNAME">PROGRAM</TT>连接线</P></DD><DT><TT CLASS="VARNAME">SHLIB_LINK</TT></DT><DD><P> 被添加到<TT CLASS="VARNAME">MODULE_big</TT>连接线</P></DD><DT><TT CLASS="VARNAME">PG_CONFIG</TT></DT><DD><P> 为了<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>安装编译其路径指向<SPAN CLASS="APPLICATION">pg_config</SPAN>
+应用程序（通常<TT CLASS="LITERAL">pg_config</TT>使用你的<TT CLASS="VARNAME">PATH</TT>中的第一个）。</P></DD></DL></DIV><P>
+</P><P> 把这个makefile作为<TT CLASS="LITERAL">Makefile</TT>放在持有你的扩展的目录中。
+然后你可以执行<TT CLASS="LITERAL">make</TT>编译，
+然后<TT CLASS="LITERAL">make install</TT>安装模块。默认情况下，为<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>对应于
+你的<TT CLASS="VARNAME">PATH</TT>中找到的第一个<TT CLASS="COMMAND">pg_config</TT>程序扩展被
+编译安装。你可以通过设置<TT CLASS="VARNAME">PG_CONFIG</TT>指向
+<TT CLASS="COMMAND">pg_config</TT>程序来使用一个不同的安装，
+或者在makefile中或在<TT CLASS="LITERAL">make</TT>命令行上。</P><DIV CLASS="CAUTION"><P></P><TABLE CLASS="CAUTION" BORDER="1" WIDTH="100%"><TR><TD ALIGN="CENTER"><B>&#23567;&#24515;</B></TD></TR><TR><TD ALIGN="LEFT"><P> 当编译<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 8.3或更高版本时，
+改变<TT CLASS="VARNAME">PG_CONFIG</TT>。老版本不工作设置它除了<TT CLASS="LITERAL">pg_config</TT>；
+你必须改变你的<TT CLASS="VARNAME">PATH</TT>来选择编译安装。</P></TD></TR></TABLE></DIV><P> 在<TT CLASS="VARNAME">REGRESS</TT>变量中列出的脚本用于
+你的模块的回归测试，这可以在执行<TT CLASS="LITERAL">make install</TT>之后通过
+<TT CLASS="LITERAL">make installcheck</TT>调用。
+为了可以运行你必须有一个运行的<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>服务器。
+在<TT CLASS="VARNAME">REGRESS</TT>中的脚本文件必须出现在您的扩展目录中的<TT CLASS="LITERAL">sql/</TT>
+命名的子目录中。这些文件必须有扩展<TT CLASS="LITERAL">.sql</TT>，
+这没有包含在makefile列出的<TT CLASS="VARNAME">REGRESS</TT>中。
+每个测试还应在<TT CLASS="LITERAL">expected/</TT>命名的子目录中包含一个预期的输出文件，
+以及相同的词干和扩展<TT CLASS="LITERAL">.out</TT>。
+<TT CLASS="LITERAL">make installcheck</TT>执行每个<SPAN CLASS="APPLICATION">psql</SPAN>的测试脚本，
+并且比较结果输出到匹配期望的文件。
+任何差异会写入<TT CLASS="COMMAND">diff -c</TT>格式的文件<TT CLASS="LITERAL">regression.diffs</TT>中。
+请注意，试图运行一个测试，缺少预期的文件将被作为<SPAN CLASS="QUOTE">"问题"</SPAN>报告，
+所以确保你有所有预期的文件。</P><DIV CLASS="TIP"><BLOCKQUOTE CLASS="TIP"><P><B>&#25552;&#31034;: </B> 创造期望文件的最简单的方法是创建空文件，
+然后做一个测试运行（这当然会报告差异）。检查
+在<TT CLASS="LITERAL">results/</TT>目录中发现的实际结果文件，如果匹配从这个试验中你期望的，
+那么将它们复制到<TT CLASS="LITERAL">expected/</TT>。</P></BLOCKQUOTE></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="extend-extensions.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/triggers.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">包装相关对象到一个扩展</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/extend.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">触发器</TD></TR></TABLE></DIV></BODY></HTML>

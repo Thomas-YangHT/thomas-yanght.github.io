@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>LISTEN</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="INSERT" HREF="sql-insert.html"><LINK REL="NEXT" TITLE="LOAD" HREF="sql-load.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/listen.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="INSERT" HREF="sql-insert.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="LOAD" HREF="sql-load.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-LISTEN"></A>LISTEN</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN78216"></A><H2>&#21517;&#31216;</H2>LISTEN&nbsp;--&nbsp;监听一个通知</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN78221"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">LISTEN <TT
+CLASS="REPLACEABLE"
+><I
+>channel</I
+></TT
+></PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN78224"></A><H2>描述</H2><P><TT CLASS="COMMAND">LISTEN</TT>将当前会话注册为通知通道<TT CLASS="REPLACEABLE"><I>channel</I></TT>的监听器。
+如果当前会话已经被注册为该通知通道的监听器，那么什么也不做。</P><P>当执行了命令<TT CLASS="COMMAND">NOTIFY <TT CLASS="REPLACEABLE"><I>channel</I></TT></TT>
+后，不管是此会话还是其它连接到同一数据库的会话，所有正在监听此通知通道的会话都将收到通知，
+并且接下来每个会话将通知与其相连的前端应用。</P><P>使用<TT CLASS="COMMAND">UNLISTEN</TT>命令可以将一个会话内已注册的通知通道删除。同样，
+会话退出时自动删除该会话正在监听的已注册通知通道。</P><P>前端应用检测通知事件的方法取决于<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>应用使用的编程接口。
+如果使用基本的<SPAN CLASS="APPLICATION">libpq</SPAN>库，那么应用将<TT CLASS="COMMAND">LISTEN</TT>当作普通 SQL 命令使用，
+而且必须周期地调用<CODE CLASS="FUNCTION">PQnotifies</CODE>过程来检测是否有通知到达。
+其它像<SPAN CLASS="APPLICATION">libpgtcl</SPAN>接口提供了更高级的控制通知事件的方法；实际上，
+使用<SPAN CLASS="APPLICATION">libpgtcl</SPAN>的应用程序员不应该直接使用<TT CLASS="COMMAND">LISTEN</TT>或<TT CLASS="COMMAND">UNLISTEN</TT>。
+请参考你使用的接口的文档获取更多细节。</P><P><A HREF="sql-notify.html">NOTIFY</A>的手册页包含更广泛的关于<TT CLASS="COMMAND">LISTEN</TT>
+和<TT CLASS="COMMAND">NOTIFY</TT>的使用的讨论。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN78247"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="REPLACEABLE"><I>channel</I></TT></DT><DD><P>通知通道的名字，可以是任意标识符。</P></DD></DL></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="AEN78255"></A><H2>注意</H2><P><TT CLASS="COMMAND">LISTEN</TT>在事务提交时生效。如果<TT CLASS="COMMAND">LISTEN</TT>或
+<TT CLASS="COMMAND">UNLISTEN</TT>在一个稍后回滚的事务中执行，那么被监听的通知通道的设置不会改变。</P><P>一个已经执行了<TT CLASS="COMMAND">LISTEN</TT>的事务不能准备两阶段提交。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN78263"></A><H2>例子</H2><P>在<SPAN CLASS="APPLICATION">psql</SPAN>里配制和执行一个监听/通知序列：
+</P><PRE CLASS="PROGRAMLISTING">LISTEN virtual;
+NOTIFY virtual;
+Asynchronous notification "virtual" received from server process with PID 8448.</PRE><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN78268"></A><H2>兼容性</H2><P>SQL 标准里没有<TT CLASS="COMMAND">LISTEN</TT>语句。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN78272"></A><H2>又见</H2><A HREF="sql-notify.html">NOTIFY</A>, <A HREF="sql-unlisten.html">UNLISTEN</A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-insert.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-load.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">INSERT</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">LOAD</TD></TR></TABLE></DIV></BODY></HTML>

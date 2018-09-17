@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>CREATE OPERATOR</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="CREATE MATERIALIZED VIEW" HREF="sql-creatematerializedview.html"><LINK REL="NEXT" TITLE="CREATE OPERATOR CLASS" HREF="sql-createopclass.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/create_operator.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="CREATE MATERIALIZED VIEW" HREF="sql-creatematerializedview.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="CREATE OPERATOR CLASS" HREF="sql-createopclass.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-CREATEOPERATOR"></A>CREATE OPERATOR</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN71128"></A><H2>&#21517;&#31216;</H2>CREATE OPERATOR&nbsp;--&nbsp;定义一个新操作符</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN71133"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">CREATE OPERATOR <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+> (
+    PROCEDURE = <TT
+CLASS="REPLACEABLE"
+><I
+>function_name</I
+></TT
+>
+    [, LEFTARG = <TT
+CLASS="REPLACEABLE"
+><I
+>left_type</I
+></TT
+> ] [, RIGHTARG = <TT
+CLASS="REPLACEABLE"
+><I
+>right_type</I
+></TT
+> ]
+    [, COMMUTATOR = <TT
+CLASS="REPLACEABLE"
+><I
+>com_op</I
+></TT
+> ] [, NEGATOR = <TT
+CLASS="REPLACEABLE"
+><I
+>neg_op</I
+></TT
+> ]
+    [, RESTRICT = <TT
+CLASS="REPLACEABLE"
+><I
+>res_proc</I
+></TT
+> ] [, JOIN = <TT
+CLASS="REPLACEABLE"
+><I
+>join_proc</I
+></TT
+> ]
+    [, HASHES ] [, MERGES ]
+)</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN71143"></A><H2>描述</H2><P><TT CLASS="COMMAND">CREATE OPERATOR</TT>定义一个新的
+<TT CLASS="REPLACEABLE"><I>name</I></TT>操作符。
+定义该操作符的用户将成为其所有者。如果给出了一个模式名，
+那么该操作符将在指定的模式中创建。否则它会在当前模式中创建。</P><P>操作符 name 是一个最多<TT CLASS="SYMBOL">NAMEDATALEN</TT>-1长的(缺省为 63 个)
+下列字符组成的字符串：
+<P CLASS="LITERALLAYOUT">+&nbsp;-&nbsp;*&nbsp;/&nbsp;&lt;&nbsp;&gt;&nbsp;=&nbsp;~&nbsp;!&nbsp;@&nbsp;#&nbsp;%&nbsp;^&nbsp;&amp;&nbsp;|&nbsp;`&nbsp;?</P>
+你选择名字的时候有几个限制：
+<P></P></P><UL><LI><P><TT CLASS="LITERAL">--</TT>和<TT CLASS="LITERAL">/*</TT>不能在操作符名的任何地方出现，
+因为它们会被认为是一个注释的开始。</P></LI><LI><P>一个多字符的操作符不能以<TT CLASS="LITERAL">+</TT>或<TT CLASS="LITERAL">-</TT>结尾，
+除非该名字还包含至少下面字符之一：
+<P CLASS="LITERALLAYOUT">~&nbsp;!&nbsp;@&nbsp;#&nbsp;%&nbsp;^&nbsp;&amp;&nbsp;|&nbsp;`&nbsp;?</P>
+例如，<TT CLASS="LITERAL">@-</TT>是一个允许的操作符名，但<TT CLASS="LITERAL">*-</TT>不是。
+这个限制允许<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+分析 SQL 兼容的查询而不要求在符号之间有空白。</P></LI><LI><P><TT CLASS="LITERAL">=&gt;</TT>作为一个操作符名的使用已经废弃了。可能在未来的版本中完全禁用。</P></LI></UL><P>
+</P><P>操作符<TT CLASS="LITERAL">!=</TT>在输入时映射成<TT CLASS="LITERAL">&lt;&gt;</TT>，
+因此这两个名称总是等价的。</P><P>至少需要定义一个<TT CLASS="LITERAL">LEFTARG</TT>和<TT CLASS="LITERAL">RIGHTARG</TT>。对于双目操作符来说，
+两者都需要定义。对右目操作符来说，只需要定义<TT CLASS="LITERAL">LEFTARG</TT>，
+而对于左目操作符来说，只需要定义<TT CLASS="LITERAL">RIGHTARG</TT>。</P><P>同样，<TT CLASS="REPLACEABLE"><I>function_name</I></TT>
+过程必须已经用<TT CLASS="COMMAND">CREATE FUNCTION</TT>定义过，
+而且必须定义为接受正确数量的指定类型参数(一个或是两个)。</P><P>其它子句声明可选的操作符优化子句。他们的含义在<A HREF="xoper-optimization.html">第 35.13 &#33410;</A>里定义。</P><P>要想能够创建一个操作符，你必须在参数类型和返回类型上有<TT CLASS="LITERAL">USAGE</TT>权限，
+还要在底层函数上有<TT CLASS="LITERAL">EXECUTE</TT>权限。如果指定了交换或者负操作符，
+你必须拥有这些操作符。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN71183"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="REPLACEABLE"><I>name</I></TT></DT><DD><P>要定义的操作符。可用的字符见上文。其名字可以用模式修饰，
+比如<TT CLASS="LITERAL">CREATE OPERATOR myschema.+ (...)</TT>。如果没有模式，
+则在当前模式中创建操作符。同一个模式中的两个操作符可以有一样的名字，
+只要他们操作不同的数据类型。这叫做<I CLASS="FIRSTTERM">重载</I>。</P></DD><DT><TT CLASS="REPLACEABLE"><I>function_name</I></TT></DT><DD><P>用于实现该操作符的函数。</P></DD><DT><TT CLASS="REPLACEABLE"><I>left_type</I></TT></DT><DD><P>操作符左边的参数数据类型，如果存在的话。如果是左目操作符，这个参数可以省略。</P></DD><DT><TT CLASS="REPLACEABLE"><I>right_type</I></TT></DT><DD><P>操作符右边的参数数据类型，如果存在的话。如果是右目操作符，这个参数可以省略。</P></DD><DT><TT CLASS="REPLACEABLE"><I>com_op</I></TT></DT><DD><P>该操作符对应的交换操作符。</P></DD><DT><TT CLASS="REPLACEABLE"><I>neg_op</I></TT></DT><DD><P>该操作符对应的负操作符。</P></DD><DT><TT CLASS="REPLACEABLE"><I>res_proc</I></TT></DT><DD><P>此操作符约束选择性评估函数。</P></DD><DT><TT CLASS="REPLACEABLE"><I>join_proc</I></TT></DT><DD><P>此操作符连接选择性评估函数。</P></DD><DT><TT CLASS="LITERAL">HASHES</TT></DT><DD><P>表明此操作符支持 Hash 连接。</P></DD><DT><TT CLASS="LITERAL">MERGES</TT></DT><DD><P>表明此操作符可以支持一个融合连接。</P></DD></DL></DIV><P>使用<TT CLASS="LITERAL">OPERATOR()</TT>语法在<TT CLASS="REPLACEABLE"><I>com_op</I></TT>
+或者其它可选参数里给出一个模式修饰的操作符名，比如：
+</P><PRE CLASS="PROGRAMLISTING">COMMUTATOR = OPERATOR(myschema.===) ,</PRE><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN71242"></A><H2>注意</H2><P>参阅<A HREF="xoper.html">第 35.12 &#33410;</A>中的操作符章节获取更多信息。</P><P>在<TT CLASS="COMMAND">CREATE OPERATOR</TT>中指定操作符的词法优先级是不可能的，
+因为分析器的优先级行为是硬链接的。参阅<A HREF="sql-syntax-lexical.html#SQL-PRECEDENCE">第 4.1.6 &#33410;</A>
+获取优先级的详细信息。</P><P>废弃的选项<TT CLASS="LITERAL">SORT1</TT>、<TT CLASS="LITERAL">SORT2</TT>、<TT CLASS="LITERAL">LTCMP</TT>和
+<TT CLASS="LITERAL">GTCMP</TT>以前用于指定与可合并连接的操作符相关的排序操作符的名字。
+现在不再需要了，因为相关操作符的信息通过查询B-tree操作符类来找到。
+如果给出了这些中的一个选项，那么会忽略该选项，除非暗中设置<TT CLASS="LITERAL">MERGES</TT>为真。</P><P>使用<A HREF="sql-dropoperator.html">DROP OPERATOR</A>从数据库中删除用户定义操作符。
+使用<A HREF="sql-alteroperator.html">ALTER OPERATOR</A>修改一个数据库里的操作符。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN71258"></A><H2>例子</H2><P>下面命令定义一个新操作符：面积相等，用于<TT CLASS="TYPE">box</TT>数据类型。
+</P><PRE CLASS="PROGRAMLISTING">CREATE OPERATOR === (
+    LEFTARG = box,
+    RIGHTARG = box,
+    PROCEDURE = area_equal_procedure,
+    COMMUTATOR = ===,
+    NEGATOR = !==,
+    RESTRICT = area_restriction_procedure,
+    JOIN = area_join_procedure,
+    HASHES, MERGES
+);</PRE><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN71263"></A><H2>兼容性</H2><P><TT CLASS="COMMAND">CREATE OPERATOR</TT>是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>扩展。
+SQL 标准中没有该语句。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN71268"></A><H2>又见</H2><A HREF="sql-alteroperator.html">ALTER OPERATOR</A>, <A HREF="sql-createopclass.html">CREATE OPERATOR CLASS</A>, <A HREF="sql-dropoperator.html">DROP OPERATOR</A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-creatematerializedview.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-createopclass.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">CREATE MATERIALIZED VIEW</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">CREATE OPERATOR CLASS</TD></TR></TABLE></DIV></BODY></HTML>

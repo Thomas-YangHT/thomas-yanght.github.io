@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>日期/时间输入解析</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="日期/时间支持" HREF="http://school.yunwei.edu/manual/PostgreSQL/datetime-appendix.html"><LINK REL="PREVIOUS" TITLE="日期/时间支持" HREF="http://school.yunwei.edu/manual/PostgreSQL/datetime-appendix.html"><LINK REL="NEXT" TITLE="日期/时间关键字" HREF="datetime-keywords.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/datetime.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="日期/时间支持" HREF="http://school.yunwei.edu/manual/PostgreSQL/datetime-appendix.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/datetime-appendix.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; B. 日期/时间支持</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="日期/时间关键字" HREF="datetime-keywords.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="DATETIME-INPUT-RULES">B.1. 日期/时间输入解析</A></H1><P> 日期/时间类型输入都是使用下列过程进行解码的。</P><DIV CLASS="PROCEDURE"><OL TYPE="1"><LI CLASS="STEP"><P> 把输入的字符串分解为一个个记号，然后把每个记号分成字符串、
+时间、时区、数字几类：</P><OL CLASS="SUBSTEPS" TYPE="a"><LI CLASS="STEP"><P> 如果一个数字记号包含一个冒号(<TT CLASS="LITERAL">:</TT>)，
+那么这是一个时间字符串。包括随后所有的数据位和冒号。</P></LI><LI CLASS="STEP"><P> 如果这个数字记号包含一个划线(<TT CLASS="LITERAL">-</TT>)、斜杠(<TT CLASS="LITERAL">/</TT>)、
+多个点(<TT CLASS="LITERAL">.</TT>)，
+那么它就是一个日期字符串，可能有一个文本月份。
+如果一个日期记号已经看过，那么将被解析为时区名(比如<TT CLASS="LITERAL">America/New_York</TT>)。</P></LI><LI CLASS="STEP"><P>如果这个记号只是数字，那么它要么是一个单独的字段，
+要么是一个ISO8601连接的日期(比如<TT CLASS="LITERAL">19990113</TT>是1999年1月13日)
+或者是连接的时间(比如<TT CLASS="LITERAL">141516</TT>是14:15:16)。</P></LI><LI CLASS="STEP"><P>如果记号以一个加号(<TT CLASS="LITERAL">+</TT>)或减号(<TT CLASS="LITERAL">-</TT>)开头，
+那么它要么是一个时区，要么就是一个特殊的字段。</P></LI></OL></LI><LI CLASS="STEP"><P>如果记号是一个文本字符串，那么和可能的字符串进行匹配：</P><OL CLASS="SUBSTEPS" TYPE="a"><LI CLASS="STEP"><P> 把这个记号当作时区缩写进行二分表查找。</P></LI><LI CLASS="STEP"><P> 如果没有找到，再做一次二分表查找，看看这个记号是特殊字符串
+(比如<TT CLASS="LITERAL">today</TT>)、日期(比如<TT CLASS="LITERAL">Thursday</TT>)、
+月份(比如<TT CLASS="LITERAL">January</TT>)，
+还是一个无关痛痒的字 (比如<TT CLASS="LITERAL">at</TT>, <TT CLASS="LITERAL">on</TT>)。</P></LI><LI CLASS="STEP"><P> 如果还没有找到，抛出一个错误。</P></LI></OL></LI><LI CLASS="STEP"><P> 如果记号是一个数字或者数字字段：</P><OL CLASS="SUBSTEPS" TYPE="a"><LI CLASS="STEP"><P> 如果有八位或者六位数字，而且前面也没有读到其它日期字段，
+那么就解释成一个<SPAN CLASS="QUOTE">"concatenated date(连接的日期)"</SPAN>
+(比如<TT CLASS="LITERAL">19990118</TT>或者<TT CLASS="LITERAL">990118</TT>)。
+这里的解析是<TT CLASS="LITERAL">YYYYMMDD</TT>或者<TT CLASS="LITERAL">YYMMDD</TT>。</P></LI><LI CLASS="STEP"><P> 如果记号是三位数字，并且已经解码了一个年份，那么解释成一年中的日。</P></LI><LI CLASS="STEP"><P> 如果已经读取了四位或六位数字，
+并且已经读取了一个年份，
+那么就解析成时间(<TT CLASS="LITERAL">HHMM</TT>或者<TT CLASS="LITERAL">HHMMSS</TT>).</P></LI><LI CLASS="STEP"><P> 如果是三位或更多位并且还没有找到日期字段，则解析成一个年份
+(这个解析强制剩余的日期字段的顺序为yy-mm-dd)。</P></LI><LI CLASS="STEP"><P> 否则，日期字段的顺序被认为是遵循<TT CLASS="VARNAME">DateStyle</TT>设置：
+mm-dd-yy,dd-mm-yy,yy-mm-dd 之一。如果发现月份或者日期字段超出范围，
+则抛出一个错误。</P></LI></OL></LI><LI CLASS="STEP"><P> 如果声明了BC，则对年份取其负数并加一，用于内部保存。
+因为在格里高利历法里没有零年，所以数字上的1BC是公元零年。</P></LI><LI CLASS="STEP"><P>
+如果没有声明BC并且年份字段有两个数据位的长度，那么把年份调整为4位。
+如果该字段小于70，那么加2000，否则加1900。
+<DIV CLASS="TIP"><BLOCKQUOTE CLASS="TIP"><P><B>&#25552;&#31034;: </B>
+格里高利年份AD 1-99可以用前导零的方式使用4位数字 (也就是说<TT CLASS="LITERAL">0099</TT>
+是AD 99)。
+</P></BLOCKQUOTE></DIV>
+</P></LI></OL></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/datetime-appendix.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="datetime-keywords.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">日期/时间支持</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/datetime-appendix.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">日期/时间关键字</TD></TR></TABLE></DIV></BODY></HTML>

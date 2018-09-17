@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>取消正在处理的查询</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="libpq - C 库" HREF="http://school.yunwei.edu/manual/PostgreSQL/libpq.html"><LINK REL="PREVIOUS" TITLE="逐行检索查询结果" HREF="libpq-single-row-mode.html"><LINK REL="NEXT" TITLE="捷径接口" HREF="libpq-fastpath.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/libpq.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="逐行检索查询结果" HREF="libpq-single-row-mode.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/libpq.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 31. <SPAN CLASS="APPLICATION">libpq</SPAN> - C 库</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="捷径接口" HREF="libpq-fastpath.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="LIBPQ-CANCEL">31.6. 取消正在处理的查询</A></H1><P>一个客户端应用可以使用本节描述的函数，要求取消一个仍在被服务器处理的命令。
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><A NAME="LIBPQ-PQGETCANCEL"></A><CODE CLASS="FUNCTION">PQgetCancel</CODE>
+</DT><DD><P>创建一个数据结构，这个数据结构包含通过特定数据库连接取消一个命令所需要的信息。
+</P><PRE CLASS="SYNOPSIS">PGcancel *PQgetCancel(PGconn *conn);</PRE><P>
+</P><P>给出一个<TT CLASS="STRUCTNAME">PGconn</TT>连接对象，<CODE CLASS="FUNCTION">PQgetCancel</CODE>创建一个
+<TT CLASS="STRUCTNAME">PGcancel</TT>对象。如果给出的<TT CLASS="PARAMETER">conn</TT>
+是<TT CLASS="SYMBOL">NULL</TT>或者是一个无效的连接，那么它将返回<TT CLASS="SYMBOL">NULL</TT>。
+<TT CLASS="STRUCTNAME">PGcancel</TT>对象是一个不透明的结构，不应该为应用所直接访问；
+我们只能把它传递给<CODE CLASS="FUNCTION">PQcancel</CODE>或者<CODE CLASS="FUNCTION">PQfreeCancel</CODE>。</P></DD><DT><A NAME="LIBPQ-PQFREECANCEL"></A><CODE CLASS="FUNCTION">PQfreeCancel</CODE>
+</DT><DD><P>释放<CODE CLASS="FUNCTION">PQgetCancel</CODE>创建的数据结构。
+</P><PRE CLASS="SYNOPSIS">void PQfreeCancel(PGcancel *cancel);</PRE><P>
+</P><P><CODE CLASS="FUNCTION">PQfreeCancel</CODE>释放一个由前面的<CODE CLASS="FUNCTION">PQgetCancel</CODE>创建的数据对象。</P></DD><DT><A NAME="LIBPQ-PQCANCEL"></A><CODE CLASS="FUNCTION">PQcancel</CODE>
+</DT><DD><P>要求服务器放弃处理当前命令。
+</P><PRE CLASS="SYNOPSIS">int PQcancel(PGcancel *cancel, char *errbuf, int errbufsize);</PRE><P>
+</P><P>如果取消请求成功发送，则返回值为 1，否则为 0。如果不成功，则<TT CLASS="PARAMETER">errbuf</TT>
+里面会填充解释的错误信息。<TT CLASS="PARAMETER">errbuf</TT>必须是一个大小为<TT CLASS="PARAMETER">errbufsize</TT>
+的 char 数组（建议大小为 256 字节）。</P><P>不过，成功发送取消请求并不保证请求会有任何效果。如果取消生效，
+那么当前的命令将提前结束并且返回一个错误的结果。如果取消失败（也就是说，
+因为服务器已经完成命令的处理），那么就根本不会有可见的结果。</P><P>如果<TT CLASS="PARAMETER">errbuf</TT>是信号句柄里的一个局部变量，那么<CODE CLASS="FUNCTION">PQcancel</CODE>
+可以在一个信号句柄里安全地调用。在<CODE CLASS="FUNCTION">PQcancel</CODE>涉及的范围里，
+<TT CLASS="STRUCTNAME">PGcancel</TT>对象都是只读的， 因此我们也可以从一个与处理<TT CLASS="STRUCTNAME">PGconn</TT>
+对象的线程分离的线程里处理它。</P></DD></DL></DIV><P>
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><A NAME="LIBPQ-PQREQUESTCANCEL"></A><CODE CLASS="FUNCTION">PQrequestCancel</CODE>
+</DT><DD><P><CODE CLASS="FUNCTION">PQrequestCancel</CODE>是<CODE CLASS="FUNCTION">PQcancel</CODE>的一个废弃的变种。
+</P><PRE CLASS="SYNOPSIS">int PQrequestCancel(PGconn *conn);</PRE><P>
+</P><P>要求服务器放弃对当前命令的处理。它直接在<TT CLASS="STRUCTNAME">PGconn</TT>对象上进行操作，
+并且如果失败，就会在<TT CLASS="STRUCTNAME">PGconn</TT>对象里存储错误信息（因此可以用
+<CODE CLASS="FUNCTION">PQerrorMessage</CODE>检索出来。）尽管功能一样，
+但是这个方法在多线程程序里和信号句柄里会有危险，因为它可能覆盖<TT CLASS="STRUCTNAME">PGconn</TT>
+的错误信息，因此将可能把当前连接正在处理的操作打乱。</P></DD></DL></DIV><P>
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="libpq-single-row-mode.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="libpq-fastpath.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">逐行检索查询结果</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/libpq.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">捷径接口</TD></TR></TABLE></DIV></BODY></HTML>

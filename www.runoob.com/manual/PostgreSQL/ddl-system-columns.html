@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>系统字段</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="数据定义" HREF="http://school.yunwei.edu/manual/PostgreSQL/ddl.html"><LINK REL="PREVIOUS" TITLE="约束" HREF="ddl-constraints.html"><LINK REL="NEXT" TITLE="修改表" HREF="ddl-alter.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ddl.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="约束" HREF="ddl-constraints.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/ddl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 5. 数据定义</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="修改表" HREF="ddl-alter.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="DDL-SYSTEM-COLUMNS">5.4. 系统字段</A></H1><P>每个表都有几个<I CLASS="FIRSTTERM">系统字段</I>，这些字段是由系统隐含定义的。因此，
+这些名字不能用于用户定义的字段名。请注意这些限制与这个名字是否关键字无关，
+把名字用引号括起来并不能让你逃离这些限制。你实际上不需要注意这些字段；
+只要知道它们存在就可以了。 </P><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="STRUCTFIELD">oid</TT></DT><DD><P>
+行对象标识符(对象ID)。这个字段只有在创建表的时候使用了<TT CLASS="LITERAL">WITH OIDS</TT>
+或者是配置参数<A HREF="runtime-config-compatible.html#GUC-DEFAULT-WITH-OIDS">default_with_oids</A>的值为真时出现。
+这个字段的类型是<TT CLASS="TYPE">oid</TT>(和字段同名)；参阅<A HREF="datatype-oid.html">第 8.18 &#33410;</A>获取有关这种类型的更多信息。 </P></DD><DT><TT CLASS="STRUCTFIELD">tableoid</TT></DT><DD><P>包含本行的表的OID。这个字段对那些从继承层次中选取的查询特别有用(参阅<A HREF="ddl-inherit.html">第 5.8 &#33410;</A>)，
+因为如果没有它的话，我们就很难说明一行来自哪个独立的表。<TT CLASS="STRUCTFIELD">tableoid</TT>
+可以和<TT CLASS="STRUCTNAME">pg_class</TT>的<TT CLASS="STRUCTFIELD">oid</TT>字段连接起来获取表名字。</P></DD><DT><TT CLASS="STRUCTFIELD">xmin</TT></DT><DD><P>插入该行版本的事务标识(事务ID)。注意：在这个环境里，一个行版本是一行的一个状态；
+一行的每次更新都为同一个逻辑行创建一个新的行版本。 </P></DD><DT><TT CLASS="STRUCTFIELD">cmin</TT></DT><DD><P>在插入事务内部的命令标识(从零开始)。 </P></DD><DT><TT CLASS="STRUCTFIELD">xmax</TT></DT><DD><P>删除事务的标识(事务ID)，如果不是被删除的行版本，那么是零。在一个可见行版本里，
+这个字段有可能是非零。这通常意味着删除事务还没有提交，或者是一个删除的企图被回滚掉了。 </P></DD><DT><TT CLASS="STRUCTFIELD">cmax</TT></DT><DD><P>删除事务内部的命令标识符，或者是零。</P></DD><DT><TT CLASS="STRUCTFIELD">ctid</TT></DT><DD><P>一个行版本在它所处的表内的物理位置。请注意，尽管<TT CLASS="STRUCTFIELD">ctid</TT>
+可以用于非常快速地定位行版本，但每次<TT CLASS="COMMAND">VACUUM FULL</TT>之后，
+一个行的<TT CLASS="STRUCTFIELD">ctid</TT>都会被更新或者移动。因此<TT CLASS="STRUCTFIELD">ctid</TT>
+是不能作为长期的行标识符的。应该使用 OID ，或者更好是用户定义的序列号，来标识一个逻辑行。</P></DD></DL></DIV><P>OID是32位的量，是在同一个集群内通用的计数器上赋值的。
+对于一个大型或者长时间使用的数据库，这个计数器是有可能重叠的。因此，
+假定OID唯一是非常错误的，除非你自己采取了措施来保证它们是唯一的。
+如果你需要标识表中的行，我们强烈建议使用序列号生成器。不过，也可以使用OID，
+只要采取几个注意事项即可：
+<P></P></P><UL><LI><P>在使用OID标识行的每个表的OID字段创建一个唯一约束。在唯一约束(或者唯一索引)存在的时候，
+系统会注意不去生成一个和现有行相同的OID。当然，只有在表中的数据行少于2<SUP>32</SUP>
+(40亿)行的时候才是可能的，而实际上表中的行最好远比这个小，要不性能就会受影响了。 </P></LI><LI><P>绝对不要假设OIDs是跨表唯一的；如果你需要全数据库范围内的标识，
+请使用<TT CLASS="STRUCTFIELD">tableoid</TT>和行的OID的组合。 </P></LI><LI><P>需要OID的表应该带着<TT CLASS="LITERAL">WITH OIDS</TT>创建。从<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+8.1开始，<TT CLASS="LITERAL">WITHOUT OIDS</TT>是缺省的。 </P></LI></UL><P>
+</P><P>事务标识符也是32位的量。在长时间运转的数据库里，它也可能会重叠。
+只要我们采取一些合适的维护步骤，这并不是很要命的问题；参阅<A HREF="http://school.yunwei.edu/manual/PostgreSQL/maintenance.html">第 23 &#31456;</A>
+获取细节。不过，在长时间运行的环境里(超过十亿次事务)依赖事务ID的唯一性并非明智的做法。 </P><P>命令标识符也是32位的量。这样就在一个事务里有2<SUP>32</SUP>(四十亿)条SQL命令的硬限制。
+在现实里这个限制应该不是什么问题，需要注意的是这个限制是<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>命令的条数，
+而不是处理的行版本的条数。而且，自<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 8.3起，
+只有真正修改数据库内容的命令才会消耗一个命令标识符。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="ddl-constraints.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="ddl-alter.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">约束</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/ddl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">修改表</TD></TR></TABLE></DIV></BODY></HTML>

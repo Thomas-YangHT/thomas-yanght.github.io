@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>发布8.3.17</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="发布8.3.18" HREF="release-8-3-18.html"><LINK REL="NEXT" TITLE="发布8.3.16" HREF="release-8-3-16.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-8.3.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="发布8.3.18" HREF="release-8-3-18.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="发布8.3.16" HREF="release-8-3-16.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-8-3-17">E.60. 发布8.3.17</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>2011-12-05</P></BLOCKQUOTE></DIV><P> 该发布包含来自8.3.16中各种修复。关于8.3主要发布中新特性信息，
+参阅<A HREF="release-8-3.html">第 E.77 &#33410;</A>。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN127450">E.60.1. 迁移到版本8.3.17</A></H2><P> 运行8.3.X不需要备份/恢复。</P><P> 然而，在<TT CLASS="LITERAL">information_schema.referential_constraints</TT>视图中发现长期的错误。
+如果你依赖于该视图中正确的结果，那么你应该像下面第一个更新日志项解释的来代替它的定义。</P><P> 另外，如果你从8.3.8更早版本更新，参阅8.3.8发布说明。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN127456">E.60.2. 变化</A></H2><P></P><UL><LI><P> 修复<TT CLASS="LITERAL">information_schema.referential_constraints</TT>视图中错误(Tom Lane) </P><P> 该视图关于外键约束匹配依赖主或者唯一键约束是不够谨慎的，
+这可能导致无法显示外键约束，或显示它多次，或声称它
+取决于比起真正的一个不同的约束。</P><P> 由于视图定义是由<SPAN CLASS="APPLICATION">initdb</SPAN>安装，
+只是升级不会解决问题。如果您需要解决现有的安装中这个问题，
+您可以（作为超级用户）删除<TT CLASS="LITERAL">information_schema</TT>模式，然后通过
+<TT CLASS="FILENAME"><TT CLASS="REPLACEABLE"><I>SHAREDIR</I></TT>/information_schema.sql</TT>重新创建它。
+（如果你不确定<TT CLASS="REPLACEABLE"><I>SHAREDIR</I></TT>在哪里，
+运行<TT CLASS="LITERAL">pg_config --sharedir</TT>）。在每个数据库中肯定重复被修复。</P></LI><LI><P> 修复<TT CLASS="LITERAL">CREATE TABLE dest AS SELECT * FROM src</TT>或者<TT CLASS="LITERAL">INSERT INTO dest SELECT * FROM src</TT>中
+TOAST相关数据损坏(Tom Lane)</P><P> 如果一个表已由<TT CLASS="COMMAND">ALTER TABLE ADD COLUMN</TT>修改，
+尝试逐字拷贝其数据到另一个表可能在某些极端情况中产生损坏结果。
+这个问题只能体现在8.4及更高版本中的精确形式中，
+但是我们修补早期版本以及其他的代码路径中可能会引发同样的错误。
+&#13;</P></LI><LI><P> 修复toast表访问旧的syscache项中的竞争条件(Tom Lane)</P><P> 典型的症状是类似<SPAN CLASS="QUOTE">"在pg_toast_2619中toast值NNNNN缺少块号0"</SPAN>的短暂错误，
+其中所引用的toast表将永远属于一个系统目录。</P></LI><LI><P> 让<CODE CLASS="FUNCTION">DatumGetInetP()</CODE>解压具有1字节头的inet数据，
+并添加一个新的宏，<CODE CLASS="FUNCTION">DatumGetInetPP()</CODE>不这样做(Heikki Linnakangas)</P><P> 这种变化不会影响到核心代码，
+但可能会阻止附加代码预期<CODE CLASS="FUNCTION">DatumGetInetP()</CODE>按通常惯例产生解压缩数据而崩溃。 </P></LI><LI><P> 提高<TT CLASS="TYPE">money</TT>类型输入和输出中的区域支持(Tom Lane)</P><P> 除了不支持所有标准<A HREF="runtime-config-client.html#GUC-LC-MONETARY"><TT CLASS="VARNAME">lc_monetary</TT></A>格式选项外，
+输入和输出函数是不一致的，
+意味着有个区域中备份的<TT CLASS="TYPE">money</TT>值不能被重新读取。</P></LI><LI><P> 不要让<A HREF="runtime-config-compatible.html#GUC-TRANSFORM-NULL-EQUALS"><TT CLASS="VARNAME">transform_null_equals</TT></A>
+影响<TT CLASS="LITERAL">CASE foo WHEN NULL ...</TT>结构(Heikki Linnakangas)</P><P> <TT CLASS="VARNAME">transform_null_equals</TT>应该影响由用户直接写入的
+<TT CLASS="LITERAL">foo = NULL</TT>表达式，而不是通过<TT CLASS="LITERAL">CASE</TT>形式内部产生的平等检查。</P></LI><LI><P> 改变外键触发器创建顺序更好地支持自参考外键(Tom Lane)</P><P> 对于级联外键引用自己的表，
+行更新将触发<TT CLASS="LITERAL">ON UPDATE</TT>触发器和<TT CLASS="LITERAL">CHECK</TT>触发器作为一个事件。
+<TT CLASS="LITERAL">ON UPDATE</TT>触发器必须先执行，
+否则<TT CLASS="LITERAL">CHECK</TT>将检查该行的非最终状态而且可能引发不当的错误。
+然而，这些触发器的触发顺序由其名字确定，
+通常按照创建顺序进行排序，
+因为触发器有按照约定<SPAN CLASS="QUOTE">"RI_ConstraintTrigger_NNNN"</SPAN>自动生成的名字。
+一个适当的修复要求修改该约定，
+我们将在9.2中执行，但在现有版本中改变它似乎有风险。
+所以这个补丁只是改变了触发器的创建顺序。用户遇到此类型的错误
+要删除并重新创建外键约束使得触发器到正确的顺序。 &#13;</P></LI><LI><P> 当跟踪缓冲区分配率时，避免浮点下溢(Greg Matthews)</P><P> 虽然本身无害，在某些平台上这可能导致恼人的内核日志信息。</P></LI><LI><P> 保留<SPAN CLASS="APPLICATION">psql</SPAN>命令历史中空白行(Robert Haas)</P><P> 比如，如果空行从一个字符串中被删除，前者操作可能会导致问题。</P></LI><LI><P> 修复<SPAN CLASS="APPLICATION">pg_dump</SPAN>以备份自动生成类型之间用户定义的映射，
+比如表行类型(Tom Lane)</P></LI><LI><P> 使用<SPAN CLASS="APPLICATION">xsubpp</SPAN>的首选版本构建PL/Perl，
+不一定是操作系统主拷贝(David Wheeler和Alex Hunsaker)</P></LI><LI><P> 修复<TT CLASS="FILENAME">contrib/dict_int</TT>和<TT CLASS="FILENAME">contrib/dict_xsyn</TT>中不正确编码(Tom Lane)</P><P> 一些函数错误假定通过<CODE CLASS="FUNCTION">palloc()</CODE>返回的内存是零。</P></LI><LI><P> 实现<CODE CLASS="FUNCTION">pgstatindex()</CODE>中查询取消及时中断(Robert Haas)</P></LI><LI><P> 确保VPATH构造正确安装所有服务器头文件(Peter Eisentraut)</P></LI><LI><P>
+缩短详细错误信息中报告的文件名(Peter Eisentraut) </P><P> 常规构造一直报道包含错误信息调用的C文件名字，但VPATH构造之前报道绝对路径名。</P></LI><LI><P> 修复中美洲地区Windows时区名称解释(Tom Lane)</P><P> 映射<SPAN CLASS="QUOTE">"Central America Standard Time"</SPAN>到<TT CLASS="LITERAL">CST6</TT>，而不是
+<TT CLASS="LITERAL">CST6CDT</TT>，因为在中美洲任何地方通常不会观察到DST。</P></LI><LI><P> 为Brazil, Cuba, Fiji, Palestine, Russia和Samoa更新时区数据文件到<SPAN CLASS="APPLICATION">tzdata</SPAN>发布2011n；
+同时为Alaska和British East Africa历史修正。&#13;</P></LI></UL></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-8-3-18.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-8-3-16.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">发布8.3.18</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">发布8.3.16</TD></TR></TABLE></DIV></BODY></HTML>

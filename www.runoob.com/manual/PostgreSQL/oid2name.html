@@ -1,0 +1,148 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>oid2name</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="客户端应用程序" HREF="contrib-prog-client.html"><LINK REL="PREVIOUS" TITLE="客户端应用程序" HREF="contrib-prog-client.html"><LINK REL="NEXT" TITLE="pgbench" HREF="pgbench.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/oid2name.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="客户端应用程序" HREF="contrib-prog-client.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="contrib-prog-client.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="pgbench" HREF="pgbench.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="OID2NAME"></A>oid2name</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN151147"></A><H2>&#21517;&#31216;</H2>oid2name&nbsp;--&nbsp; 解析<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 数据目录里的 OID和文件节点</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN151153"></A><H2>&#22823;&#32434;</H2><P><TT CLASS="COMMAND">oid2name</TT> [<TT CLASS="REPLACEABLE"><I>选项</I></TT>...]</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN151158"></A><H2>描述</H2><P> <SPAN CLASS="APPLICATION">oid2name</SPAN>是一个帮助管理员检查PostgreSQL使用的文件结构的工具程序。要使用 这个工具，你必须熟悉数据库文件结构，这在<A HREF="http://school.yunwei.edu/manual/PostgreSQL/storage.html">第 58 &#31456;</A>有所描述.
+</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B> <SPAN CLASS="QUOTE">"oid2name"</SPAN>这个名字是由于历史原因而起的,但是实际上有相当的误导性。因为大多数你使用它的时候, 你真正关心的是‘filenode numbers’(它们是数据库目录中那些可见的文件名)。请确保你明白表的OID和表filenodes之间的区别
+</P></BLOCKQUOTE></DIV><P> <SPAN CLASS="APPLICATION">oid2name</SPAN> 连接到一个目标数据库并且提取OID，文件节点，和/或表名信息。你也可以展示数据库的OID和表空间的OID。
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN151168"></A><H2>选项</H2><P> <SPAN CLASS="APPLICATION">oid2name</SPAN>接收下面的命令行参数:
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="OPTION">-f</TT> <TT CLASS="REPLACEABLE"><I>filenode</I></TT></DT><DD><P>显示文件节点是 <TT CLASS="REPLACEABLE"><I>filenode</I></TT>的表的信息</P></DD><DT><TT CLASS="OPTION">-i</TT></DT><DD><P>在这个列表中包含索引和序列</P></DD><DT><TT CLASS="OPTION">-o</TT> <TT CLASS="REPLACEABLE"><I>oid</I></TT></DT><DD><P>显示OID是 <TT CLASS="REPLACEABLE"><I>oid</I></TT>的表的信息</P></DD><DT><TT CLASS="OPTION">-q</TT></DT><DD><P>省略表头(对脚本很有用)</P></DD><DT><TT CLASS="OPTION">-s</TT></DT><DD><P>展示表空间的OID</P></DD><DT><TT CLASS="OPTION">-S</TT></DT><DD><P>包含系统对象(那些在
+<TT CLASS="OPTION">information_schema</TT>, <TT CLASS="OPTION">pg_toast</TT>
+和 <TT CLASS="OPTION">pg_catalog</TT>模式中的对象)
+</P></DD><DT><TT CLASS="OPTION">-t</TT> <TT CLASS="REPLACEABLE"><I>tablename_pattern</I></TT></DT><DD><P>显示匹配<TT CLASS="REPLACEABLE"><I>tablename_pattern</I></TT>的表信息</P></DD><DT><TT CLASS="OPTION">-V</TT><BR><TT CLASS="OPTION">--version</TT></DT><DD><P> 打印 <SPAN CLASS="APPLICATION">oid2name</SPAN> 版本并退出.
+</P></DD><DT><TT CLASS="OPTION">-x</TT></DT><DD><P>列出每一个被展示的对象的更多信息: 表空间名, 模式名和OID
+</P></DD><DT><TT CLASS="OPTION">-?</TT><BR><TT CLASS="OPTION">--help</TT></DT><DD><P>显示关于 <SPAN CLASS="APPLICATION">oid2name</SPAN>命令行参数的帮助信息和参数，并退出
+</P></DD></DL></DIV><P>
+</P><P> <SPAN CLASS="APPLICATION">oid2name</SPAN>也接受下面的命令行参数作为连接参数:
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="OPTION">-d</TT> <TT CLASS="REPLACEABLE"><I>database</I></TT></DT><DD><P>连接的目标数据库</P></DD><DT><TT CLASS="OPTION">-H</TT> <TT CLASS="REPLACEABLE"><I>host</I></TT></DT><DD><P>数据库服务器的地址</P></DD><DT><TT CLASS="OPTION">-p</TT> <TT CLASS="REPLACEABLE"><I>port</I></TT></DT><DD><P>数据库服务器的端口</P></DD><DT><TT CLASS="OPTION">-U</TT> <TT CLASS="REPLACEABLE"><I>username</I></TT></DT><DD><P>连接数据库的用户</P></DD><DT><TT CLASS="OPTION">-P</TT> <TT CLASS="REPLACEABLE"><I>password</I></TT></DT><DD><P>密码（但是不建议这么做，因为把密码放在命令行存在安全隐患）</P></DD></DL></DIV><P>
+</P><P> 要显示特定的表, 选择要显示的数据库使用 <TT CLASS="OPTION">-o</TT>, <TT CLASS="OPTION">-f</TT> 和/或 <TT CLASS="OPTION">-t</TT>。
+<TT CLASS="OPTION">-o</TT> 需要一个 OID,
+<TT CLASS="OPTION">-f</TT> 需要一个 filenode,
+<TT CLASS="OPTION">-t</TT> 需要一个表名 (事实上，它是一个 <TT CLASS="LITERAL">LIKE</TT>
+模式的, 所以你可以使用类似 <TT CLASS="LITERAL">foo%</TT>的参数).
+只要你喜欢，你可以使用许多这样的选项，输出列表将包含被其中任何一个选项所匹配的所有对象。但是请注意这些选项只能显示<TT CLASS="OPTION">-d</TT>参数指定的数据库里的对象。
+</P><P> 如果你没有提供<TT CLASS="OPTION">-o</TT>, <TT CLASS="OPTION">-f</TT> 或 <TT CLASS="OPTION">-t</TT>中的任何参数,
+但是给了 <TT CLASS="OPTION">-d</TT>参数, 它将列出以<TT CLASS="OPTION">-d</TT>指定的数据库中的所有的表。在这种模式下，<TT CLASS="OPTION">-S</TT> 和
+<TT CLASS="OPTION">-i</TT>选项控制着列表的显示内容.
+</P><P> 如果你也没有指定 <TT CLASS="OPTION">-d</TT> 它将展示数据库列表的
+OID. 或者你可以通过<TT CLASS="OPTION">-s</TT> 参数去得到表空间的列表
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN151292"></A><H2>注意</H2><P> <SPAN CLASS="APPLICATION">oid2name</SPAN>需要一个正在运行的且系统表没有被破坏的数据库服务器，因此，在从遭受灾难性破坏的数据库中恢复数据的场景中，它只能被受限的使用。
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN151296"></A><H2>例子</H2><PRE CLASS="SCREEN">$ # 数据库服务器上都有哪些数据库?
+$ oid2name
+All databases:
+    Oid  Database Name  Tablespace
+----------------------------------
+  17228       alvherre  pg_default
+  17255     regression  pg_default
+  17227      template0  pg_default
+      1      template1  pg_default
+
+$ oid2name -s
+All tablespaces:
+     Oid  Tablespace Name
+-------------------------
+    1663       pg_default
+    1664        pg_global
+  155151         fastdisk
+  155152          bigdisk
+
+$ # 好，让我们进入alvherre数据库的目录
+$ cd $PGDATA/base/17228
+
+$ # 获取缺省表空间的前十个数据库对象，并且以size排序
+$ ls -lS * | head -10
+-rw-------  1 alvherre alvherre 136536064 sep 14 09:51 155173
+-rw-------  1 alvherre alvherre  17965056 sep 14 09:51 1155291
+-rw-------  1 alvherre alvherre   1204224 sep 14 09:51 16717
+-rw-------  1 alvherre alvherre    581632 sep  6 17:51 1255
+-rw-------  1 alvherre alvherre    237568 sep 14 09:50 16674
+-rw-------  1 alvherre alvherre    212992 sep 14 09:51 1249
+-rw-------  1 alvherre alvherre    204800 sep 14 09:51 16684
+-rw-------  1 alvherre alvherre    196608 sep 14 09:50 16700
+-rw-------  1 alvherre alvherre    163840 sep 14 09:50 16699
+-rw-------  1 alvherre alvherre    122880 sep  6 17:51 16751
+
+$ #我想知道155173这个文件是什么
+$ oid2name -d alvherre -f 155173
+From database "alvherre":
+  Filenode  Table Name
+----------------------
+    155173    accounts
+
+$ # 你也可以请求更多的对象
+$ oid2name -d alvherre -f 155173 -f 1155291
+From database "alvherre":
+  Filenode     Table Name
+-------------------------
+    155173       accounts
+   1155291  accounts_pkey
+
+$ #你可以混合这些选项，通过-x获取更多的详细信息
+$ oid2name -d alvherre -t accounts -f 1155291 -x
+From database "alvherre":
+  Filenode     Table Name      Oid  Schema  Tablespace
+------------------------------------------------------
+    155173       accounts   155173  public  pg_default
+   1155291  accounts_pkey  1155291  public  pg_default
+
+$ # 显示每个数据库对象所占的磁盘空间
+$ du [0-9]* |
+&#62; while read SIZE FILENODE
+&#62; do
+&#62;   echo "$SIZE       `oid2name -q -d alvherre -i -f $FILENODE`"
+&#62; done
+16            1155287  branches_pkey
+16            1155289  tellers_pkey
+17561            1155291  accounts_pkey
+...
+
+$ # 和上面一样，但是按照大小排序
+$ du [0-9]* | sort -rn | while read SIZE FN
+&#62; do
+&#62;   echo "$SIZE   `oid2name -q -d alvherre -f $FN`"
+&#62; done
+133466             155173    accounts
+17561            1155291  accounts_pkey
+1177              16717  pg_proc_proname_args_nsp_index
+...
+
+$ # 如果你想看表空间里有什么，使用 pg_tblspc 目录
+$ cd $PGDATA/pg_tblspc
+$ oid2name -s
+All tablespaces:
+     Oid  Tablespace Name
+-------------------------
+    1663       pg_default
+    1664        pg_global
+  155151         fastdisk
+  155152          bigdisk
+
+$ #数据库在 "fastdisk"表空间都有什么?
+$ ls -d 155151/*
+155151/17228/  155151/PG_VERSION
+
+$ # 这个数据库 17228 又是什么?
+$ oid2name
+All databases:
+    Oid  Database Name  Tablespace
+----------------------------------
+  17228       alvherre  pg_default
+  17255     regression  pg_default
+  17227      template0  pg_default
+      1      template1  pg_default
+
+$ # 让我们看看这个数据库在表空间里都有什么
+$ cd 155151/17228
+$ ls -l
+total 0
+-rw-------  1 postgres postgres 0 sep 13 23:20 155156
+
+$ # 这个是一个很小的表，但是它是什么表呢?
+$ oid2name -d alvherre -f 155156
+From database "alvherre":
+  Filenode  Table Name
+----------------------
+    155156         foo</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN151299"></A><H2>作者</H2><P> B. Palmer <CODE CLASS="EMAIL">&#60;<A HREF="mailto:bpalmer@crimelabs.net">bpalmer@crimelabs.net</A>&#62;</CODE>
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="contrib-prog-client.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="pgbench.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">客户端应用程序</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="contrib-prog-client.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><SPAN CLASS="APPLICATION">pgbench</SPAN></TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>SPI_prepare_cursor</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="接口函数" HREF="spi-interface.html"><LINK REL="PREVIOUS" TITLE="SPI_prepare" HREF="spi-spi-prepare.html"><LINK REL="NEXT" TITLE="SPI_prepare_params" HREF="spi-spi-prepare-params.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/spi.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="SPI_prepare" HREF="spi-spi-prepare.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="spi-interface.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="SPI_prepare_params" HREF="spi-spi-prepare-params.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SPI-SPI-PREPARE-CURSOR"></A>SPI_prepare_cursor</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN61815"></A><H2>&#21517;&#31216;</H2>SPI_prepare_cursor&nbsp;--&nbsp;准备一个语句但不立即执行它</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN61820"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">SPIPlanPtr SPI_prepare_cursor(const char * <TT
+CLASS="PARAMETER"
+>command</TT
+>, int <TT
+CLASS="PARAMETER"
+>nargs</TT
+>,
+                              Oid * <TT
+CLASS="PARAMETER"
+>argtypes</TT
+>, int <TT
+CLASS="PARAMETER"
+>cursorOptions</TT
+>)</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN61826"></A><H2>描述</H2><P><CODE CLASS="FUNCTION">SPI_prepare_cursor</CODE>和<CODE CLASS="FUNCTION">SPI_prepare</CODE>相同，
+除了它也允许说明规划器的<SPAN CLASS="QUOTE">"游标选项"</SPAN>参数。这是一个位掩码，
+让<TT CLASS="STRUCTNAME">DeclareCursorStmt</TT>的<TT CLASS="STRUCTFIELD">options</TT>字段拥有
+<TT CLASS="FILENAME">nodes/parsenodes.h</TT>中显示的值。<CODE CLASS="FUNCTION">SPI_prepare</CODE>
+总是将游标选项看做零。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN61836"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL">const char * <TT CLASS="PARAMETER">command</TT></TT></DT><DD><P>命令字符串</P></DD><DT><TT CLASS="LITERAL">int <TT CLASS="PARAMETER">nargs</TT></TT></DT><DD><P>输入参数的个数(<TT CLASS="LITERAL">$1</TT>, <TT CLASS="LITERAL">$2</TT>等等)</P></DD><DT><TT CLASS="LITERAL">Oid * <TT CLASS="PARAMETER">argtypes</TT></TT></DT><DD><P>一个指针，指向一个包含参数数据类型的<ACRONYM CLASS="ACRONYM">OID</ACRONYM>的数组</P></DD><DT><TT CLASS="LITERAL">int <TT CLASS="PARAMETER">cursorOptions</TT></TT></DT><DD><P>游标选项的整数位标记；零表示缺省行为</P></DD></DL></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="AEN61866"></A><H2>返回值</H2><P><CODE CLASS="FUNCTION">SPI_prepare_cursor</CODE>有和<CODE CLASS="FUNCTION">SPI_prepare</CODE>
+一样的返回约定。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN61871"></A><H2>注意</H2><P><TT CLASS="PARAMETER">cursorOptions</TT>中的有效位包括<TT CLASS="SYMBOL">CURSOR_OPT_SCROLL</TT>、
+<TT CLASS="SYMBOL">CURSOR_OPT_NO_SCROLL</TT>、<TT CLASS="SYMBOL">CURSOR_OPT_FAST_PLAN</TT>、
+<TT CLASS="SYMBOL">CURSOR_OPT_GENERIC_PLAN</TT>和<TT CLASS="SYMBOL">CURSOR_OPT_CUSTOM_PLAN</TT>。
+特别要注意忽略了<TT CLASS="SYMBOL">CURSOR_OPT_HOLD</TT>。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="spi-spi-prepare.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="spi-spi-prepare-params.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">SPI_prepare</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="spi-interface.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">SPI_prepare_params</TD></TR></TABLE></DIV></BODY></HTML>

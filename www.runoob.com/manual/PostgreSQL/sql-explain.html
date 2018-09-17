@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>EXPLAIN</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="EXECUTE" HREF="sql-execute.html"><LINK REL="NEXT" TITLE="FETCH" HREF="sql-fetch.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/explain.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="EXECUTE" HREF="sql-execute.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="FETCH" HREF="sql-fetch.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-EXPLAIN"></A>EXPLAIN</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN77352"></A><H2>&#21517;&#31216;</H2>EXPLAIN&nbsp;--&nbsp;显示一个语句的执行规划</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN77363"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">EXPLAIN [ ( <TT
+CLASS="REPLACEABLE"
+><I
+>option</I
+></TT
+> [, ...] ) ] <TT
+CLASS="REPLACEABLE"
+><I
+>statement</I
+></TT
+>
+EXPLAIN [ ANALYZE ] [ VERBOSE ] <TT
+CLASS="REPLACEABLE"
+><I
+>statement</I
+></TT
+>
+
+<SPAN
+CLASS="phrase"
+><SPAN
+CLASS="PHRASE"
+>这里的 <TT
+CLASS="REPLACEABLE"
+><I
+>option</I
+></TT
+>可以是下列之一:</SPAN
+></SPAN
+>
+
+    ANALYZE [ <TT
+CLASS="REPLACEABLE"
+><I
+>boolean</I
+></TT
+> ]
+    VERBOSE [ <TT
+CLASS="REPLACEABLE"
+><I
+>boolean</I
+></TT
+> ]
+    COSTS [ <TT
+CLASS="REPLACEABLE"
+><I
+>boolean</I
+></TT
+> ]
+    BUFFERS [ <TT
+CLASS="REPLACEABLE"
+><I
+>boolean</I
+></TT
+> ]
+    TIMING [ <TT
+CLASS="REPLACEABLE"
+><I
+>boolean</I
+></TT
+> ]
+    FORMAT { TEXT | XML | JSON | YAML }</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN77375"></A><H2>描述</H2><P>这条命令显示<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>规划器为所提供的语句生成的执行规划。
+执行规划显示语句引用的表是如何被扫描的(简单的顺序扫描，还是索扫描)，并且如果引用了多个表，
+采用了什么样的连接算法从每个输入的表中取出所需要的记录。</P><P>显示出来的最关键的部分是预计的语句执行开销，这就是规划器对运行该语句所需时间的估计
+(以任意的开销单位计量，但是通常意味着磁盘页面存取)。实际上显示了两个数字：
+返回第一行记录前的启动开销，和返回所有记录的总开销。对于大多数查询而言，关心的是总开销，
+但是，在某些环境下，比如一个<TT CLASS="LITERAL">EXISTS</TT>子查询里，
+规划器将选择最小启动开销而不是最小总开销(因为执行器在获取一条记录后总是要停下来)。
+同样，如果你用一条<TT CLASS="LITERAL">LIMIT</TT>子句限制返回的记录数，
+规划器会在最终的开销上做一个合理的插值以计算哪个规划开销最省。</P><P><TT CLASS="LITERAL">ANALYZE</TT>选项导致查询被实际执行，而不仅仅是规划。显示中加入了实际的运行时间统计，
+包括在每个规划节点内部花掉的总时间(以毫秒计)和它实际返回的行数。
+这些数据对搜索该规划器的预期是否和现实相近很有帮助。</P><DIV CLASS="IMPORTANT"><BLOCKQUOTE CLASS="IMPORTANT"><P><B>&#37325;&#35201;: </B>要记住的是查询实际上在使用<TT CLASS="LITERAL">ANALYZE</TT>选项的时候是执行的。
+尽管<TT CLASS="COMMAND">EXPLAIN</TT>会抛弃任何<TT CLASS="COMMAND">SELECT</TT>返回的输出，
+但是其它查询的副作用还是一样会发生的。如果你在<TT CLASS="COMMAND">INSERT</TT>, <TT CLASS="COMMAND">UPDATE</TT>,
+<TT CLASS="COMMAND">DELETE</TT>, <TT CLASS="COMMAND">CREATE TABLE AS</TT>, <TT CLASS="COMMAND">EXECUTE</TT>
+语句里使用<TT CLASS="COMMAND">EXPLAIN ANALYZE</TT>而且还不想让查询影响数据，可以用下面的方法：
+</P><PRE CLASS="PROGRAMLISTING">BEGIN;
+EXPLAIN ANALYZE ...;
+ROLLBACK;</PRE><P></P></BLOCKQUOTE></DIV><P>只能声明<TT CLASS="LITERAL">ANALYZE</TT>和<TT CLASS="LITERAL">VERBOSE</TT>选项，并且只能以那种顺序，
+不能将选项列表放在圆括号中。<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 9.0之前，
+只支持不用圆括号的语法。人们希望只在圆括号语法中支持所有新的选项。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN77400"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL">ANALYZE</TT></DT><DD><P>执行命令并显示实际运行时间和其他统计。这个参数缺省为<TT CLASS="LITERAL">FALSE</TT>。</P></DD><DT><TT CLASS="LITERAL">VERBOSE</TT></DT><DD><P>显示关于规划的额外的信息。特别的包括规划树上的每个节点的输出字段列表，
+模式修饰表和函数名，表达式中的标签变量总是和他们的范围表别名在一起，
+并且总是打印统计数据中显示的每个触发器的名字。这个参数缺省为<TT CLASS="LITERAL">FALSE</TT>。</P></DD><DT><TT CLASS="LITERAL">COSTS</TT></DT><DD><P>包括每个规划节点的估计启动成本和总成本的信息，也包括估计行数和估计的每行的宽度。
+这个参数缺省为<TT CLASS="LITERAL">TRUE</TT>。</P></DD><DT><TT CLASS="LITERAL">BUFFERS</TT></DT><DD><P>包含缓冲区使用的信息。特别的，包括共享块命中、读、脏和写的次数，本地块命中、读、脏和写的次数，
+临时块读和写的次数。<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">命中</I></SPAN>意味着避免了读，因为块在需要时已经在缓存中发现了。
+共享块包含普通表和索引的数据；本地块包含临时表和索引的数据；而临时块包含用于排序、哈希、
+物化规划节点和相似情况的短期工作数据。<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">脏</I></SPAN>块的数量表示这个查询改变的先前未更改的块的数量；
+<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">写</I></SPAN>块的数量表示在查询处理的时候被这个后端驱逐出缓存的先前脏了的块的数量。
+高级节点显示的块的数量包含所有它的子节点使用的块的数量。在文本格式中，只打印非零值。
+这个参数可能只在<TT CLASS="LITERAL">ANALYZE</TT>也启用的时候使用。它的缺省为<TT CLASS="LITERAL">FALSE</TT>。</P></DD><DT><TT CLASS="LITERAL">TIMING</TT></DT><DD><P>在输出中包含实际启动时间和每个节点花费的时间。重复读系统块的总开销会在某些系统上显著的减缓查询的速度，
+所以当需要只有实际行被计算，并且没有准确时间时，设置这个参数为<TT CLASS="LITERAL">FALSE</TT>会很有用。
+即使是用这个选项关闭了节点级别的时间，也测量整个语句的运行时间。
+这个参数可能只在<TT CLASS="LITERAL">ANALYZE</TT>也启用的时候使用。它缺省为<TT CLASS="LITERAL">TRUE</TT>。</P></DD><DT><TT CLASS="LITERAL">FORMAT</TT></DT><DD><P>声明输出格式，可以为TEXT, XML, JSON 或 YAML。非文本的输出包含文本输出格式相同的信息，
+但是更容易被程序解析。这个参数缺省为<TT CLASS="LITERAL">TEXT</TT>。</P></DD><DT><TT CLASS="REPLACEABLE"><I>boolean</I></TT></DT><DD><P>声明选中的选项打开或者关闭。可以用<TT CLASS="LITERAL">TRUE</TT>, <TT CLASS="LITERAL">ON</TT> 或 <TT CLASS="LITERAL">1</TT>
+启用这个选项，用<TT CLASS="LITERAL">FALSE</TT>, <TT CLASS="LITERAL">OFF</TT> 或 <TT CLASS="LITERAL">0</TT>
+禁用这个选项。在假设为<TT CLASS="LITERAL">TRUE</TT>的情况下，
+<TT CLASS="REPLACEABLE"><I>boolean</I></TT>值也可以忽略，</P></DD><DT><TT CLASS="REPLACEABLE"><I>statement</I></TT></DT><DD><P>你想要查看执行规划的任何<TT CLASS="COMMAND">SELECT</TT>, <TT CLASS="COMMAND">INSERT</TT>, <TT CLASS="COMMAND">UPDATE</TT>,
+<TT CLASS="COMMAND">DELETE</TT>, <TT CLASS="COMMAND">VALUES</TT>, <TT CLASS="COMMAND">EXECUTE</TT>,
+<TT CLASS="COMMAND">DECLARE</TT>, 或 <TT CLASS="COMMAND">CREATE TABLE AS</TT>语句之一。</P></DD></DL></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="AEN77471"></A><H2>输出</H2><P>命令的结果是从<TT CLASS="REPLACEABLE"><I>statement</I></TT>选择的规划的文字描述，
+可选的有执行统计数据的注释。<A HREF="using-explain.html">第 14.1 &#33410;</A>描述提供的信息。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN77476"></A><H2>注意</H2><P>为了让<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>查询规划器在优化查询的时候做出合理的判断，
+<A HREF="catalog-pg-statistic.html"><TT CLASS="STRUCTNAME">pg_statistic</TT></A>
+数据应该为所有用于查询的表更新。通常<A HREF="routine-vacuuming.html#AUTOVACUUM">autovacuum daemon</A>
+会自动注意这些。但是如果一个表最近在内容上有大量的更改，你可能需要手动<A HREF="sql-analyze.html">ANALYZE</A>
+而不是等待autovacuum赶上变化。</P><P>为了测量运行时在执行规划中每个节点的开销，<TT CLASS="COMMAND">EXPLAIN ANALYZE</TT>
+的当前应用增加查询执行开销的性能分析。结果，在一个查询上运行<TT CLASS="COMMAND">EXPLAIN ANALYZE</TT>
+有时会比普通查询明显的花费更多的时间。超支的数量依赖于查询的本质和使用的平台。
+最坏的情况发生在他们本身的规划节点时每个执行需要非常少的时间，
+并且在操作系统相当慢的机器上需要获得时刻。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN77487"></A><H2>例子</H2><P>
+显示一个对只有一个<TT CLASS="TYPE">integer</TT>列和 10000 行表的简单查询的查询规划：
+</P><PRE CLASS="PROGRAMLISTING">EXPLAIN SELECT * FROM foo;
+
+                       QUERY PLAN
+---------------------------------------------------------
+ Seq Scan on foo  (cost=0.00..155.00 rows=10000 width=4)
+(1 row)</PRE><P>
+</P><P>
+相同的查询用JSON输出格式：
+</P><PRE CLASS="PROGRAMLISTING">EXPLAIN (FORMAT JSON) SELECT * FROM foo;
+           QUERY PLAN
+--------------------------------
+ [                             +
+   {                           +
+     "Plan": {                 +
+       "Node Type": "Seq Scan",+
+       "Relation Name": "foo", +
+       "Alias": "foo",         +
+       "Startup Cost": 0.00,   +
+       "Total Cost": 155.00,   +
+       "Plan Rows": 10000,     +
+       "Plan Width": 4         +
+     }                         +
+   }                           +
+ ]
+(1 row)</PRE><P>
+</P><P>
+如果存在一个索引，并且使用一个可应用索引的<TT CLASS="LITERAL">WHERE</TT>条件的查询，
+<TT CLASS="COMMAND">EXPLAIN</TT>会显示不同的规划：
+</P><PRE CLASS="PROGRAMLISTING">EXPLAIN SELECT * FROM foo WHERE i = 4;
+
+                         QUERY PLAN
+--------------------------------------------------------------
+ Index Scan using fi on foo  (cost=0.00..5.98 rows=1 width=4)
+   Index Cond: (i = 4)
+(2 rows)</PRE><P>
+</P><P>
+相同的查询，但是用YAML格式：
+</P><PRE CLASS="PROGRAMLISTING">EXPLAIN (FORMAT YAML) SELECT * FROM foo WHERE i='4';
+          QUERY PLAN
+-------------------------------
+ - Plan:                      +
+     Node Type: "Index Scan"  +
+     Scan Direction: "Forward"+
+     Index Name: "fi"         +
+     Relation Name: "foo"     +
+     Alias: "foo"             +
+     Startup Cost: 0.00       +
+     Total Cost: 5.98         +
+     Plan Rows: 1             +
+     Plan Width: 4            +
+     Index Cond: "(i = 4)"
+(1 row)</PRE><P>
+XML格式留给读者做练习。
+</P><P>
+这是相同的查询关闭成本估算：
+</P><PRE CLASS="PROGRAMLISTING">EXPLAIN (COSTS FALSE) SELECT * FROM foo WHERE i = 4;
+
+        QUERY PLAN
+----------------------------
+ Index Scan using fi on foo
+   Index Cond: (i = 4)
+(2 rows)</PRE><P>
+</P><P>
+下面是一个使用了聚集函数的查询的查询规划的例子：
+</P><PRE CLASS="PROGRAMLISTING">EXPLAIN SELECT sum(i) FROM foo WHERE i &lt; 10;
+
+                             QUERY PLAN
+---------------------------------------------------------------------
+ Aggregate  (cost=23.93..23.93 rows=1 width=4)
+   -&gt;  Index Scan using fi on foo  (cost=0.00..23.92 rows=6 width=4)
+         Index Cond: (i &lt; 10)
+(3 rows)</PRE><P>
+</P><P>
+下面是一个使用<TT CLASS="COMMAND">EXPLAIN EXECUTE</TT>显示一个已预编写的查询规划的例子：
+</P><PRE CLASS="PROGRAMLISTING">PREPARE query(int, int) AS SELECT sum(bar) FROM test
+    WHERE id &gt; $1 AND id &lt; $2
+    GROUP BY foo;
+
+EXPLAIN ANALYZE EXECUTE query(100, 200);
+
+                                                       QUERY PLAN
+-------------------------------------------------------------------------------------------------------------------------
+ HashAggregate  (cost=39.53..39.53 rows=1 width=8) (actual time=0.661..0.672 rows=7 loops=1)
+   -&gt;  Index Scan using test_pkey on test  (cost=0.00..32.97 rows=1311 width=8) (actual time=0.050..0.395 rows=99 loops=1)
+         Index Cond: ((id &gt; $1) AND (id &lt; $2))
+ Total runtime: 0.851 ms
+(4 rows)</PRE><P>
+</P><P>注意这里显示的数字，依赖于所包含的表的实际内容。还请注意该数字甚至还有选择的查询策略都有可能在各个
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>版本之间不同，因为规划器在不断改进。另外，<TT CLASS="COMMAND">ANALYZE</TT>
+命令使用随机的采样来估计数据统计；因此，一次新的<TT CLASS="COMMAND">ANALYZE</TT>
+运行之后开销估计可能会变化，即使数据的实际分布没有改变也这样。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN77511"></A><H2>兼容性</H2><P>在 SQL 标准中没有<TT CLASS="COMMAND">EXPLAIN</TT>语句。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN77515"></A><H2>又见</H2><A HREF="sql-analyze.html">ANALYZE</A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-execute.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-fetch.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">EXECUTE</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">FETCH</TD></TR></TABLE></DIV></BODY></HTML>

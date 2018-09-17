@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>运行SQL命令</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="ECPG - 在C中嵌入SQL" HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html"><LINK REL="PREVIOUS" TITLE="管理数据库连接" HREF="ecpg-connect.html"><LINK REL="NEXT" TITLE="使用宿主变量" HREF="ecpg-variables.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ecpg.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="管理数据库连接" HREF="ecpg-connect.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 33. <SPAN CLASS="APPLICATION">ECPG</SPAN> - 在C中嵌入<ACRONYM CLASS="ACRONYM">SQL</ACRONYM></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="使用宿主变量" HREF="ecpg-variables.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="ECPG-COMMANDS">33.3. 运行SQL命令</A></H1><P> 在嵌入的SQL应用中可以运行任何SQL命令。下面是一些如何使用它们的例子。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="ECPG-EXECUTING">33.3.1. 执行SQL语句</A></H2><P>
+创建一个表：
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL CREATE TABLE foo (number integer, ascii char(16));
+EXEC SQL CREATE UNIQUE INDEX num1 ON foo(number);
+EXEC SQL COMMIT;</PRE><P>
+</P><P>
+插入一行：
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL INSERT INTO foo (number, ascii) VALUES (9999, 'doodad');
+EXEC SQL COMMIT;</PRE><P>
+</P><P>
+删除一行：
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL DELETE FROM foo WHERE number = 9999;
+EXEC SQL COMMIT;</PRE><P>
+</P><P>
+更新：
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL UPDATE foo
+    SET ascii = 'foobar'
+    WHERE number = 9999;
+EXEC SQL COMMIT;</PRE><P>
+</P><P> 可以通过<TT CLASS="LITERAL">EXEC SQL</TT>直接执行返回一个结果行的<TT CLASS="LITERAL">SELECT</TT>
+语句。为了处理多行结果集，应用程序必须使用游标；
+参阅<A HREF="ecpg-commands.html#ECPG-CURSORS">第 33.3.2 &#33410;</A>。（特殊情况下，应用程序可以一次读取多行到数组宿主变量中；
+参阅<A HREF="ecpg-variables.html#ECPG-VARIABLES-ARRAYS">第 33.4.4.3.1 &#33410;</A>。）</P><P>
+单行select:
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL SELECT foo INTO :FooBar FROM table1 WHERE ascii = 'doodad';</PRE><P>
+</P><P>
+同时，可以使用<TT CLASS="LITERAL">SHOW</TT>命令检索配置参数：
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL SHOW search_path INTO :var;</PRE><P>
+</P><P> 形如<TT CLASS="LITERAL">:<TT CLASS="REPLACEABLE"><I>something</I></TT></TT>
+这样的记号是<I CLASS="FIRSTTERM">宿主变量</I>，也就是说，他们指向C程序中的变量。
+在<A HREF="ecpg-variables.html">第 33.4 &#33410;</A>中有解释。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="ECPG-CURSORS">33.3.2. 使用游标</A></H2><P> 为了检索出多行的结果集，应用程序必须声明一个游标并且从游标中抓取每一行。
+使用游标的步骤如下：声明一个游标，打开它，从游标中抓取一行，重复，最后关闭它。</P><P>
+使用游标选择：
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL DECLARE foo_bar CURSOR FOR
+    SELECT number, ascii FROM foo
+    ORDER BY ascii;
+EXEC SQL OPEN foo_bar;
+EXEC SQL FETCH foo_bar INTO :FooBar, DooDad;
+...
+EXEC SQL CLOSE foo_bar;
+EXEC SQL COMMIT;</PRE><P>
+</P><P> 关于游标声明的更多细节，请参阅<A HREF="ecpg-sql-declare.html">DECLARE</A>，关于
+<TT CLASS="LITERAL">FETCH</TT>命令的细节请参阅<A HREF="sql-fetch.html">FETCH</A>。</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B> ECPG <TT CLASS="COMMAND">DECLARE</TT>命令实际上不会造成语句被发送到PostgreSQL后端。
+当执行<TT CLASS="COMMAND">OPEN</TT>命令时，
+在后端(使用后端的<TT CLASS="COMMAND">DECLARE</TT>命令)打开游标。</P></BLOCKQUOTE></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="ECPG-TRANSACTIONS">33.3.3. 管理事务</A></H2><P> 在缺省模式下，语句只有在<TT CLASS="COMMAND">EXEC SQL COMMIT</TT>
+发出的时候才提交，
+嵌入的SQL接口也支持事务的自动提交（类似<SPAN CLASS="APPLICATION">libpq</SPAN>的行为），
+方法是通过给<TT CLASS="COMMAND">ecpg</TT>（见<A HREF="app-ecpg.html"><SPAN CLASS="APPLICATION">ecpg</SPAN></A>）
+增加命令行选项<TT CLASS="OPTION">-t</TT>，
+或者是通过<TT CLASS="LITERAL">EXEC SQL SET AUTOCOMMIT TO ON</TT>语句。
+在自动提交模式里，每条命令都是自动提交的，
+除非它们包围在一个明确的事务块里。
+这个模式可以用<TT CLASS="LITERAL">EXEC SQL SET AUTOCOMMIT TO OFF</TT>明确地关闭。</P><P>
+有以下事务管理命令可用：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL">EXEC SQL COMMIT</TT></DT><DD><P>
+提交正在进行的事务。
+</P></DD><DT><TT CLASS="LITERAL">EXEC SQL ROLLBACK</TT></DT><DD><P> 回滚正在进行的事务。</P></DD><DT><TT CLASS="LITERAL">EXEC SQL SET AUTOCOMMIT TO ON</TT></DT><DD><P> 启动自动提交模式。</P></DD><DT><TT CLASS="LITERAL">SET AUTOCOMMIT TO OFF</TT></DT><DD><P> 禁用自动提交模式。这是缺省的。</P></DD></DL></DIV><P>
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="ECPG-PREPARED">33.3.4. 预备语句</A></H2><P> 当编译时间不知道该值已被传递给SQL语句，或者同一语句将使用多次，
+那么预备语句是有帮助的。</P><P>
+使用命令<TT CLASS="LITERAL">PREPARE</TT>准备语句。对于不知道的值，
+使用占位符<SPAN CLASS="QUOTE">"<TT CLASS="LITERAL">?</TT>"</SPAN>:
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL PREPARE stmt1 FROM "SELECT oid, datname FROM pg_database WHERE oid = ?";</PRE><P>
+</P><P>
+如果一个语句返回单行，应用程序可以在<TT CLASS="LITERAL">PREPARE</TT>
+执行语句之后调用<TT CLASS="LITERAL">EXECUTE</TT>，
+使用<TT CLASS="LITERAL">USING</TT>子句为占位符提供实际值：
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL EXECUTE stmt1 INTO :dboid, :dbname USING 1;</PRE><P>
+</P><P>
+如果一个语句返回多行，应用程序可以使用基于预备语句声明的游标。
+为了结合输入参数，必须使用<TT CLASS="LITERAL">USING</TT>子句打开游标：
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL PREPARE stmt1 FROM "SELECT oid,datname FROM pg_database WHERE oid &gt; ?";
+EXEC SQL DECLARE foo_bar CURSOR FOR stmt1;
+
+/* 当结果集达到最后时，打破while循环 */
+
+EXEC SQL WHENEVER NOT FOUND DO BREAK;
+
+EXEC SQL OPEN foo_bar USING 100;
+...
+while (1)
+{
+    EXEC SQL FETCH NEXT FROM foo_bar INTO :dboid, :dbname;
+    ...
+}
+EXEC SQL CLOSE foo_bar;</PRE><P>
+</P><P>
+当你不再需要预备语句的时候，你应该重新分配它：
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL DEALLOCATE PREPARE <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+>;</PRE><P>
+</P><P> 为获得关于<TT CLASS="LITERAL">PREPARE</TT>的更多详情，
+请参阅<A HREF="ecpg-sql-prepare.html">PREPARE</A>。同时参阅<A HREF="ecpg-dynamic.html">第 33.5 &#33410;</A>
+获得关于占位符和输入参数的更多详情。</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="ecpg-connect.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="ecpg-variables.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">管理数据库连接</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">使用宿主变量</TD></TR></TABLE></DIV></BODY></HTML>

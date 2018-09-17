@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>版本 7.4.2</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="版本 7.4.3" HREF="release-7-4-3.html"><LINK REL="NEXT" TITLE="版本 7.4.1" HREF="release-7-4-1.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-7.4.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="版本 7.4.3" HREF="release-7-4-3.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="版本 7.4.1" HREF="release-7-4-1.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-7-4-2">E.181. 版本 7.4.2</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>2004-03-08</P></BLOCKQUOTE></DIV><P>这个版本包含各种自7.4.1以来的修复。关于7.4主版本的新特性的信息，
+请查阅<A HREF="release-7-4.html">第 E.183 &#33410;</A>。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN139516">E.181.1. 迁移到版本 7.4.2</A></H2><P>运行7.4.X的用户不需要转储/恢复。不过，
+作为合并修复在最初的7.4.X系统目录中发现的两个错误的最简单的方法，这应该会是明智的。
+使用7.4.2的initdb的dump/initdb/reload序列将自动纠正这些问题。</P><P>更严重的两个错误是数据类型<TT CLASS="TYPE">anyarray</TT>有错误的对齐标签；
+这是一个问题，因为<TT CLASS="STRUCTNAME">pg_statistic</TT>系统目录使用<TT CLASS="TYPE">anyarray</TT>字段。
+贴错标签会引起规划器错误估计甚至当包含<TT CLASS="LITERAL">WHERE</TT>
+子句的规划器查询在两端对齐的字段(如<TT CLASS="TYPE">float8</TT>和<TT CLASS="TYPE">timestamp</TT>)上时会崩溃。
+强烈建议所有安装都修复这个错误，通过initdb或遵循下面给出的手动修复程序。</P><P>较小的错误是系统视图<TT CLASS="STRUCTNAME">pg_settings</TT>应该被标记为有公共更新访问，
+以允许<TT CLASS="LITERAL">UPDATE pg_settings</TT>用作<TT CLASS="COMMAND">SET</TT>的替代。
+这也可以通过initdb或者手动修复，但是没有必要修复，除非你想要使用<TT CLASS="LITERAL">UPDATE pg_settings</TT>。</P><P>如果你不愿意做initdb，那么下面的程序将修复<TT CLASS="STRUCTNAME">pg_statistic</TT>。
+作为数据库超级用户，执行：
+</P><PRE CLASS="PROGRAMLISTING">-- clear out old data in pg_statistic:
+DELETE FROM pg_statistic;
+VACUUM pg_statistic;
+-- this should update 1 row:
+UPDATE pg_type SET typalign = 'd' WHERE oid = 2277;
+-- this should update 6 rows:
+UPDATE pg_attribute SET attalign = 'd' WHERE atttypid = 2277;
+--
+-- At this point you MUST start a fresh backend to avoid a crash!
+--
+-- repopulate pg_statistic:
+ANALYZE;</PRE><P>
+这可以在活动的数据库中完成，但是要注意所有运行在改变了的数据库中的后端都必须在
+重新填充<TT CLASS="STRUCTNAME">pg_statistic</TT>是安全的之前重新启动。
+</P><P>要修复<TT CLASS="STRUCTNAME">pg_statistic</TT>错误，只需要做：
+</P><PRE CLASS="PROGRAMLISTING">GRANT SELECT, UPDATE ON pg_settings TO PUBLIC;</PRE><P></P><P>上面的程序必须在<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">每个</I></SPAN>安装的数据库中执行，包括<TT CLASS="LITERAL">template1</TT>，
+理想上也包括<TT CLASS="LITERAL">template0</TT>。如果你没有修复模板数据库，
+那么任何随后创建的数据库都将包含相同的错误。<TT CLASS="LITERAL">template1</TT>的修复方式和其他数据库相同，
+但是修复<TT CLASS="LITERAL">template0</TT>需要额外的步骤。首先，从任意数据库中发出：
+</P><PRE CLASS="PROGRAMLISTING">UPDATE pg_database SET datallowconn = true WHERE datname = 'template0';</PRE><P>
+下一步，连接到<TT CLASS="LITERAL">template0</TT>，并执行上面的修复步骤。最后，执行：
+</P><PRE CLASS="PROGRAMLISTING">-- re-freeze template0:
+VACUUM FREEZE;
+-- and protect it against future alterations:
+UPDATE pg_database SET datallowconn = false WHERE datname = 'template0';</PRE><P>
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN139547">E.181.2. 修改列表</A></H2><P>版本7.4.2合并了所有包含在版本7.3.6中的修复，加上下面的修复：</P><P></P><UL><LI><P>修复会使优化器崩溃的<TT CLASS="STRUCTNAME">pg_statistics</TT>对齐错误</P><P>关于这个问题的详细信息请查看上文。</P></LI><LI><P>允许非超级用户更新<TT CLASS="STRUCTNAME">pg_settings</TT></P></LI><LI><P>修复几个优化器错误，大多数会导致<SPAN CLASS="QUOTE">"variable not found in subplan target lists"</SPAN>错误</P></LI><LI><P>避免启动大的多个索引扫描期间的超出内存失败</P></LI><LI><P>修复<TT CLASS="COMMAND">COPY IN</TT>期间可能导致<SPAN CLASS="QUOTE">"内存不足"</SPAN>错误的多字节问题</P></LI><LI><P>修复没有OID的表的<TT CLASS="COMMAND">SELECT INTO</TT> / <TT CLASS="COMMAND">CREATE TABLE AS</TT>问题</P></LI><LI><P>修复并行测试期间<TT CLASS="FILENAME">alter_table</TT>回归测试的问题</P></LI><LI><P>修复打开文件限制的问题，尤其是在OS X上 (Tom)</P></LI><LI><P>部分的修复Turkish区域设置问题</P><P>initdb在Turkish的区域设置现在将成功，但是仍然有一些与<TT CLASS="LITERAL">i/I</TT>问题相关的不便。</P></LI><LI><P>使得pg_dump在恢复时设置客户端编码</P></LI><LI><P>其他较小的pg_dump修复</P></LI><LI><P>允许ecpg再次使用C关键字作为字段名 (Michael)</P></LI><LI><P>添加ecpg <TT CLASS="LITERAL">WHENEVER NOT_FOUND</TT>到<TT CLASS="LITERAL">SELECT/INSERT/UPDATE/DELETE</TT> (Michael)</P></LI><LI><P>修复查询调用设置返回函数时的ecpg崩溃 (Michael)</P></LI><LI><P>各种其他ecpg修复 (Michael)</P></LI><LI><P>修复Borland编译器</P></LI><LI><P>线程构建的改进 (Bruce)</P></LI><LI><P>各种其他构建修复</P></LI><LI><P>各种JDBC修复</P></LI></UL></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-7-4-3.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-7-4-1.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">版本 7.4.3</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">版本 7.4.1</TD></TR></TABLE></DIV></BODY></HTML>

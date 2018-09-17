@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>用SSH隧道进行安全 TCP/IP 连接</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="服务器设置和操作" HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime.html"><LINK REL="PREVIOUS" TITLE="用 SSL 进行安全的 TCP/IP 连接" HREF="ssl-tcp.html"><LINK REL="NEXT" TITLE="在Windows上注册事件日志" HREF="event-log-registration.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/runtime.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="用 SSL 进行安全的 TCP/IP 连接" HREF="ssl-tcp.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 17. 服务器设置和操作</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="在Windows上注册事件日志" HREF="event-log-registration.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="SSH-TUNNELS">17.10. 用<SPAN CLASS="APPLICATION">SSH</SPAN>隧道进行安全 TCP/IP 连接</A></H1><P>使用<SPAN CLASS="APPLICATION">SSH</SPAN>对<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+服务器和客户端之间的网络连接进行加密是可能的。经过适当处理后，
+这样做可以获得一个足够安全的网络连接。即使是没有 SSL 的客户端上也如此。</P><P>首先确认<SPAN CLASS="APPLICATION">SSH</SPAN>正在和<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+服务器的同一台机器上正确地运行，而且你可以通过某个用户用<TT CLASS="COMMAND">ssh</TT>登录。
+然后你可以用下面这样的命令从客户端的机器上建立一个安全通道：
+</P><PRE CLASS="PROGRAMLISTING">ssh -L 63333:localhost:5432 joe@foo.com</PRE><P>
+<TT CLASS="OPTION">-L</TT>参数的第一个数字(63333)是你这端通道的端口号，可以是任何未使用的端口。
+（IANA提供端口49152到65535位私人使用。）第二个数字(5432)是通道的远端，
+也就是服务器使用的端口号。在两个端口号之间的名称或者 IP 地址是你准备连接的数据库服务器，
+在例子中是<TT CLASS="LITERAL">foo.com</TT>。为了使用这个通道与数据库服务器连接，
+你在本机于端口63333连接：
+</P><PRE CLASS="PROGRAMLISTING">psql -h localhost -p 63333 postgres</PRE><P>
+对于数据库服务器而言，在这种情况下，它会把你当做主机<TT CLASS="LITERAL">foo.com</TT>
+连接到<TT CLASS="LITERAL">localhost</TT>的真正的用户<TT CLASS="LITERAL">joe</TT>，
+并且使用为这个用户和主机设置的认证手段进行认证。请注意，服务器不会认为连接是 SSL 加密的，
+因为实际上在<SPAN CLASS="APPLICATION">SSH</SPAN>服务器和<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+服务器之间是没有加密的。只要它们在同一台机器上，这么做并不会导致任何安全漏洞。
+</P><P>为了保证能够成功地建立通道，你必须被允许作为<TT CLASS="LITERAL">joe@foo.com</TT>
+通过<TT CLASS="COMMAND">ssh</TT>建立连接，就像你使用<TT CLASS="COMMAND">ssh</TT>创建终端会话一样。</P><P>你也可以设置端口转发
+</P><PRE CLASS="PROGRAMLISTING">ssh -L 63333:foo.com:5432 joe@foo.com</PRE><P>
+但是随后数据库服务器将看到连接从<TT CLASS="LITERAL">foo.com</TT>界面进来，
+这是不被缺省设置<TT CLASS="LITERAL">listen_addresses = 'localhost'</TT>开放的。
+这通常不是你想要的。
+</P><P>如果你必须通过某些登陆主机<SPAN CLASS="QUOTE">"跳跃"</SPAN>到数据库服务器，
+一个可能的设置看起来像这样：
+</P><PRE CLASS="PROGRAMLISTING">ssh -L 63333:db.foo.com:5432 joe@shell.foo.com</PRE><P>
+请注意，这个方式从<TT CLASS="LITERAL">shell.foo.com</TT>到<TT CLASS="LITERAL">db.foo.com</TT>
+的连接将不会通过SSH通道加密。当网络以各种方式被限制时，SSH提供了相当多的配置可能性。
+请参阅SSH文档获取详情。
+</P><DIV CLASS="TIP"><BLOCKQUOTE CLASS="TIP"><P><B>&#25552;&#31034;: </B>还有几种不同的产品可以提供安全的通道，所使用的过程类似我们刚刚描述的过程。</P></BLOCKQUOTE></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="ssl-tcp.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="event-log-registration.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">用 SSL 进行安全的 TCP/IP 连接</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">在<SPAN CLASS="SYSTEMITEM">Windows</SPAN>上注册<SPAN CLASS="APPLICATION">事件日志</SPAN></TD></TR></TABLE></DIV></BODY></HTML>

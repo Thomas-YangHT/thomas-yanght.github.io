@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>dict_int</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="额外提供的模块" HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html"><LINK REL="PREVIOUS" TITLE="dblink_build_sql_update" HREF="contrib-dblink-build-sql-update.html"><LINK REL="NEXT" TITLE="dict_xsyn" HREF="dict-xsyn.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/dict-int.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="dblink_build_sql_update" HREF="contrib-dblink-build-sql-update.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; F. 额外提供的模块</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="dict_xsyn" HREF="dict-xsyn.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="DICT-INT">F.10. dict_int</A></H1><P><TT CLASS="FILENAME">dict_int</TT>是一个全文检索的扩展字典模板的示例。这个示例字典的动机是控制整数
+（有符号和无符号）的索引，允许在防止唯一码的数量过度增长时给整数索引，
+这将大大的影响搜索的性能。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN145682">F.10.1. 配置</A></H2><P>该字典接受两个选项：</P><P></P><UL><LI><P><TT CLASS="LITERAL">maxlen</TT>参数声明整数数字的最大位数。缺省值是6。</P></LI><LI><P><TT CLASS="LITERAL">rejectlong</TT>参数声明一个超长的整数是否应该被截断或忽略。如果<TT CLASS="LITERAL">rejectlong</TT>
+为<TT CLASS="LITERAL">false</TT>（缺省），那么字典返回该整数前面的<TT CLASS="LITERAL">maxlen</TT>位。如果
+<TT CLASS="LITERAL">rejectlong</TT>为<TT CLASS="LITERAL">true</TT>，那么字典认为一个超长的整数是结束词，
+所以它将不会被索引。请注意，这也意味着这样一个整数不能被搜索。</P></LI></UL></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN145697">F.10.2. 用法</A></H2><P>安装<TT CLASS="LITERAL">dict_int</TT>扩展创建基于它的一个文本搜索模板<TT CLASS="LITERAL">intdict_template</TT>
+和一个字典<TT CLASS="LITERAL">intdict</TT>，带有缺省的参数。你可以修改这些参数，例如
+</P><PRE CLASS="PROGRAMLISTING">mydb# ALTER TEXT SEARCH DICTIONARY intdict (MAXLEN = 4, REJECTLONG = true);
+ALTER TEXT SEARCH DICTIONARY</PRE><P>
+或创建新的基于该模板的字典。</P><P>
+要测试这个字典，可以尝试
+</P><PRE CLASS="PROGRAMLISTING">mydb# select ts_lexize('intdict', '12345678');
+ ts_lexize
+-----------
+ {123456}</PRE><P>
+但是真实的使用情况将包括包含它在一个文本搜索配置里，就像<A HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html">第 12 &#31456;</A>
+里描述的那样。可能看起来像这样：
+</P><PRE CLASS="PROGRAMLISTING">ALTER TEXT SEARCH CONFIGURATION english
+    ALTER MAPPING FOR int, uint WITH intdict;</PRE><P>
+</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="contrib-dblink-build-sql-update.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="dict-xsyn.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">dblink_build_sql_update</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">dict_xsyn</TD></TR></TABLE></DIV></BODY></HTML>

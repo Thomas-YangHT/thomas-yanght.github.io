@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>DECLARE</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="嵌入的SQL命令" HREF="ecpg-sql-commands.html"><LINK REL="PREVIOUS" TITLE="DEALLOCATE DESCRIPTOR" HREF="ecpg-sql-deallocate-descriptor.html"><LINK REL="NEXT" TITLE="DESCRIBE" HREF="ecpg-sql-describe.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ecpg.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="DEALLOCATE DESCRIPTOR" HREF="ecpg-sql-deallocate-descriptor.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="ecpg-sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="DESCRIBE" HREF="ecpg-sql-describe.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="ECPG-SQL-DECLARE"></A>DECLARE</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN45553"></A><H2>&#21517;&#31216;</H2>DECLARE&nbsp;--&nbsp;定义游标</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN45556"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">DECLARE <TT
+CLASS="REPLACEABLE"
+><I
+>cursor_name</I
+></TT
+> [ BINARY ] [ INSENSITIVE ] [ [ NO ] SCROLL ] CURSOR [ { WITH | WITHOUT } HOLD ] FOR <TT
+CLASS="REPLACEABLE"
+><I
+>prepared_name</I
+></TT
+>
+DECLARE <TT
+CLASS="REPLACEABLE"
+><I
+>cursor_name</I
+></TT
+> [ BINARY ] [ INSENSITIVE ] [ [ NO ] SCROLL ] CURSOR [ { WITH | WITHOUT } HOLD ] FOR <TT
+CLASS="REPLACEABLE"
+><I
+>query</I
+></TT
+></PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN45562"></A><H2>描述</H2><P> <TT CLASS="COMMAND">DECLARE</TT>为了迭代预备语句结果集声明了游标。
+该命令与直接SQL命令<TT CLASS="COMMAND">DECLARE</TT>略微有些不同语法：
+后者执行查询并且为检索准备结果集，这个嵌入SQL命令只为迭代查询结果集
+声明作为<SPAN CLASS="QUOTE">"循环变量"</SPAN>的名字；
+当使用<TT CLASS="COMMAND">OPEN</TT>命令打开游标时，发生实际执行情况。&#13;</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN45569"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="REPLACEABLE"><I>cursor_name</I></TT></DT><DD><P> 游标名大小写敏感。这可以是一个SQL标识符或者宿主变量。</P></DD><DT><TT CLASS="REPLACEABLE"><I>prepared_name</I></TT></DT><DD><P> 一个准备好查询的名字，要么作为SQL标识符或者宿主变量。</P></DD><DT><TT CLASS="REPLACEABLE"><I>query</I></TT></DT><DD><P> <A HREF="sql-select.html">SELECT</A>或者<A HREF="sql-values.html">VALUES</A>命令
+将提供通过游标返回的行。</P></DD></DL></DIV><P> 关于游标选项的含义，参阅<A HREF="sql-declare.html">DECLARE</A>。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN45591"></A><H2>例子</H2><P>
+为查询声明游标的例子：
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL DECLARE C CURSOR FOR SELECT * FROM My_Table;
+EXEC SQL DECLARE C CURSOR FOR SELECT Item1 FROM T;
+EXEC SQL DECLARE cur1 CURSOR FOR SELECT version();</PRE><P>
+</P><P>
+为预备语句声明游标的例子：
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL PREPARE stmt1 AS SELECT version();
+EXEC SQL DECLARE cur1 CURSOR FOR stmt1;</PRE><P>
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN45597"></A><H2>兼容性</H2><P> 在SQL标准中声明<TT CLASS="COMMAND">DECLARE</TT>。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN45601"></A><H2>参见</H2><A HREF="ecpg-sql-open.html">OPEN</A>, <A HREF="sql-close.html">CLOSE</A>, <A HREF="sql-declare.html">DECLARE</A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="ecpg-sql-deallocate-descriptor.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="ecpg-sql-describe.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">DEALLOCATE DESCRIPTOR</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="ecpg-sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">DESCRIBE</TD></TR></TABLE></DIV></BODY></HTML>

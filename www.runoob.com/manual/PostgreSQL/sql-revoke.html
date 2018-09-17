@@ -1,0 +1,318 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>REVOKE</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="RESET" HREF="sql-reset.html"><LINK REL="NEXT" TITLE="ROLLBACK" HREF="sql-rollback.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/revoke.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="RESET" HREF="sql-reset.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="ROLLBACK" HREF="sql-rollback.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-REVOKE"></A>REVOKE</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN79140"></A><H2>&#21517;&#31216;</H2>REVOKE&nbsp;--&nbsp;删除访问权限</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN79145"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">REVOKE [ GRANT OPTION FOR ]
+    { { SELECT | INSERT | UPDATE | DELETE | TRUNCATE | REFERENCES | TRIGGER }
+    [, ...] | ALL [ PRIVILEGES ] }
+    ON { [ TABLE ] <TT
+CLASS="REPLACEABLE"
+><I
+>table_name</I
+></TT
+> [, ...]
+         | ALL TABLES IN SCHEMA <TT
+CLASS="REPLACEABLE"
+><I
+>schema_name</I
+></TT
+> [, ...] }
+    FROM { [ GROUP ] <TT
+CLASS="REPLACEABLE"
+><I
+>role_name</I
+></TT
+> | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
+
+REVOKE [ GRANT OPTION FOR ]
+    { { SELECT | INSERT | UPDATE | REFERENCES } ( <TT
+CLASS="REPLACEABLE"
+><I
+>column_name</I
+></TT
+> [, ...] )
+    [, ...] | ALL [ PRIVILEGES ] ( <TT
+CLASS="REPLACEABLE"
+><I
+>column_name</I
+></TT
+> [, ...] ) }
+    ON [ TABLE ] <TT
+CLASS="REPLACEABLE"
+><I
+>table_name</I
+></TT
+> [, ...]
+    FROM { [ GROUP ] <TT
+CLASS="REPLACEABLE"
+><I
+>role_name</I
+></TT
+> | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
+
+REVOKE [ GRANT OPTION FOR ]
+    { { USAGE | SELECT | UPDATE }
+    [, ...] | ALL [ PRIVILEGES ] }
+    ON { SEQUENCE <TT
+CLASS="REPLACEABLE"
+><I
+>sequence_name</I
+></TT
+> [, ...]
+         | ALL SEQUENCES IN SCHEMA <TT
+CLASS="REPLACEABLE"
+><I
+>schema_name</I
+></TT
+> [, ...] }
+    FROM { [ GROUP ] <TT
+CLASS="REPLACEABLE"
+><I
+>role_name</I
+></TT
+> | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
+
+REVOKE [ GRANT OPTION FOR ]
+    { { CREATE | CONNECT | TEMPORARY | TEMP } [, ...] | ALL [ PRIVILEGES ] }
+    ON DATABASE <TT
+CLASS="REPLACEABLE"
+><I
+>database_name</I
+></TT
+> [, ...]
+    FROM { [ GROUP ] <TT
+CLASS="REPLACEABLE"
+><I
+>role_name</I
+></TT
+> | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
+
+REVOKE [ GRANT OPTION FOR ]
+    { USAGE | ALL [ PRIVILEGES ] }
+    ON DOMAIN <TT
+CLASS="REPLACEABLE"
+><I
+>domain_name</I
+></TT
+> [, ...]
+    FROM { [ GROUP ] <TT
+CLASS="REPLACEABLE"
+><I
+>role_name</I
+></TT
+> | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
+
+REVOKE [ GRANT OPTION FOR ]
+    { USAGE | ALL [ PRIVILEGES ] }
+    ON FOREIGN DATA WRAPPER <TT
+CLASS="REPLACEABLE"
+><I
+>fdw_name</I
+></TT
+> [, ...]
+    FROM { [ GROUP ] <TT
+CLASS="REPLACEABLE"
+><I
+>role_name</I
+></TT
+> | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
+
+REVOKE [ GRANT OPTION FOR ]
+    { USAGE | ALL [ PRIVILEGES ] }
+    ON FOREIGN SERVER <TT
+CLASS="REPLACEABLE"
+><I
+>server_name</I
+></TT
+> [, ...]
+    FROM { [ GROUP ] <TT
+CLASS="REPLACEABLE"
+><I
+>role_name</I
+></TT
+> | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
+
+REVOKE [ GRANT OPTION FOR ]
+    { EXECUTE | ALL [ PRIVILEGES ] }
+    ON { FUNCTION <TT
+CLASS="REPLACEABLE"
+><I
+>function_name</I
+></TT
+> ( [ [ <TT
+CLASS="REPLACEABLE"
+><I
+>argmode</I
+></TT
+> ] [ <TT
+CLASS="REPLACEABLE"
+><I
+>arg_name</I
+></TT
+> ] <TT
+CLASS="REPLACEABLE"
+><I
+>arg_type</I
+></TT
+> [, ...] ] ) [, ...]
+         | ALL FUNCTIONS IN SCHEMA <TT
+CLASS="REPLACEABLE"
+><I
+>schema_name</I
+></TT
+> [, ...] }
+    FROM { [ GROUP ] <TT
+CLASS="REPLACEABLE"
+><I
+>role_name</I
+></TT
+> | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
+
+REVOKE [ GRANT OPTION FOR ]
+    { USAGE | ALL [ PRIVILEGES ] }
+    ON LANGUAGE <TT
+CLASS="REPLACEABLE"
+><I
+>lang_name</I
+></TT
+> [, ...]
+    FROM { [ GROUP ] <TT
+CLASS="REPLACEABLE"
+><I
+>role_name</I
+></TT
+> | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
+
+REVOKE [ GRANT OPTION FOR ]
+    { { SELECT | UPDATE } [, ...] | ALL [ PRIVILEGES ] }
+    ON LARGE OBJECT <TT
+CLASS="REPLACEABLE"
+><I
+>loid</I
+></TT
+> [, ...]
+    FROM { [ GROUP ] <TT
+CLASS="REPLACEABLE"
+><I
+>role_name</I
+></TT
+> | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
+
+REVOKE [ GRANT OPTION FOR ]
+    { { CREATE | USAGE } [, ...] | ALL [ PRIVILEGES ] }
+    ON SCHEMA <TT
+CLASS="REPLACEABLE"
+><I
+>schema_name</I
+></TT
+> [, ...]
+    FROM { [ GROUP ] <TT
+CLASS="REPLACEABLE"
+><I
+>role_name</I
+></TT
+> | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
+
+REVOKE [ GRANT OPTION FOR ]
+    { CREATE | ALL [ PRIVILEGES ] }
+    ON TABLESPACE <TT
+CLASS="REPLACEABLE"
+><I
+>tablespace_name</I
+></TT
+> [, ...]
+    FROM { [ GROUP ] <TT
+CLASS="REPLACEABLE"
+><I
+>role_name</I
+></TT
+> | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
+
+REVOKE [ GRANT OPTION FOR ]
+    { USAGE | ALL [ PRIVILEGES ] }
+    ON TYPE <TT
+CLASS="REPLACEABLE"
+><I
+>type_name</I
+></TT
+> [, ...]
+    FROM { [ GROUP ] <TT
+CLASS="REPLACEABLE"
+><I
+>role_name</I
+></TT
+> | PUBLIC } [, ...]
+    [ CASCADE | RESTRICT ]
+
+REVOKE [ ADMIN OPTION FOR ]
+    <TT
+CLASS="REPLACEABLE"
+><I
+>role_name</I
+></TT
+> [, ...] FROM <TT
+CLASS="REPLACEABLE"
+><I
+>role_name</I
+></TT
+> [, ...]
+    [ CASCADE | RESTRICT ]</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-REVOKE-DESCRIPTION"></A><H2>描述</H2><P><TT CLASS="COMMAND">REVOKE</TT>撤销以前赋予一个或多个角色的权限。关键字<TT CLASS="LITERAL">PUBLIC</TT>
+代表隐含定义的、拥有所有角色的组。</P><P>参阅<A HREF="sql-grant.html">GRANT</A>命令的描述获取权限类型的含义。</P><P>请注意，任何特定的角色都将拥有直接赋予它的权限，加上它所在组的权限，
+再加上赋予<TT CLASS="LITERAL">PUBLIC</TT>的权限的总和。因此，举例来说，废止<TT CLASS="LITERAL">PUBLIC</TT>
+的<TT CLASS="LITERAL">SELECT</TT>权限并不意味着所有角色都失去了对该对象的<TT CLASS="LITERAL">SELECT</TT>权限：
+那些直接得到的权限以及通过一个组得到的权限仍然有效。相似的，废止一个用户的<TT CLASS="LITERAL">SELECT</TT>
+权限可能并不阻止用户使用<TT CLASS="LITERAL">SELECT</TT>，如果<TT CLASS="LITERAL">PUBLIC</TT>或其他成员组仍然拥有
+<TT CLASS="LITERAL">SELECT</TT>权限。</P><P>如果指定了<TT CLASS="LITERAL">GRANT OPTION FOR</TT>，那么只是撤销对该权限的授权的权力，
+而不是撤销该权限本身。否则，权限和授权选项都被撤销。</P><P>如果一个用户持有某个权限，并且还有授权的选项，并且还把这个权限赋予了其它用户，
+那么那些其它用户持有的权限都叫做依赖性权限。如果第一个用户持有的权限或者授权选项被撤销，
+而依赖性权限仍然存在；那么如果声明了<TT CLASS="LITERAL">CASCADE</TT>，则所有依赖性权限都被撤销，
+否则撤销动作就会失败。这个递规的撤销只影响那种通过一个用户链赋予的权限，
+这个链条可以通过这条<TT CLASS="LITERAL">REVOKE</TT>命令里面给出的用户跟踪。因此，
+如果权限本身是通过其它用户赋予的，那么被影响的用户可以有效地保留这个权限。</P><P>当在表上撤销权限时，相应的字段权限（如果有）也自动撤销。另一方面，
+如果已经赋予了一个角色在表上的权限，那么在单独的字段上删除相同的权限将不会有作用。</P><P>在撤销一个角色里的成员关系的时候，不是调用<TT CLASS="LITERAL">ADMIN OPTION</TT>而是调用
+<TT CLASS="LITERAL">GRANT OPTION</TT>，但是行为类似。不过这种形式的命令不允许出现<TT CLASS="LITERAL">GROUP</TT>噪声字。</P></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-REVOKE-NOTES"></A><H2>注意</H2><P>使用<A HREF="app-psql.html"><SPAN CLASS="APPLICATION">psql</SPAN></A>的<TT CLASS="COMMAND">\dp</TT>命令显示在一个现存表和字段上赋予的权限。
+又见<A HREF="sql-grant.html">GRANT</A>获取关于格式的信息。对于非表对象，可以使用<TT CLASS="COMMAND">\d</TT>
+命令显示他们的权限。</P><P>一个用户只能撤销由它自己直接赋予的权限。举例来说，如果用户 A 带着授权选项把一个权限赋予了用户 B ，
+然后用户 B 又赋予了用户 C ，那么用户 A 不能直接将 C 的权限撤销。但是，
+用户 A 可以撤销用户 B 的授权选项，并且使用<TT CLASS="LITERAL">CASCADE</TT>选项，这样，
+用户 C 的权限就会自动被撤销。另外一个例子：如果 A 和 B 都赋予了 C 同样的权限，
+则 A 可以撤销他自己的授权选项，但是不能撤销 B 的，因此 C 仍然有效地拥有该权限。</P><P>如果一个对象的非所有者试图<TT CLASS="COMMAND">REVOKE</TT>对象上的权限，那么，如果这个用户没有该对象上的权限，
+则命令马上失败。只要他有某些权限，则命令继续，但是它只撤销那些该用户有授权选项的权限。
+如果没有在授权选项，那么<TT CLASS="COMMAND">REVOKE ALL PRIVILEGES</TT>形式将发出一个错误信息，
+而对于其它形式的命令而言，如果同样是命令中指定名字的权限没有相应的授权选项，
+那么该命令将发出一个警告。原则上这些语句也适用于对象所有者，
+但是因为所有者总是认为持有所有授权选项，所以这种情况绝不会发生。</P><P>如果一个超级用户发出一个<TT CLASS="COMMAND">GRANT</TT>或<TT CLASS="COMMAND">REVOKE</TT>命令，
+那么命令是以被影响的对象的所有者执行的。因为所有权限最终从对象所有者
+(可能间接通过赋权选项)获取，超级用户可以废除所有权限，
+但是这样就要求像上面说的那样使用<TT CLASS="LITERAL">CASCADE</TT>。</P><P><TT CLASS="COMMAND">REVOKE</TT>也可以由一个并非被影响对象的所有者来执行，
+不过这个角色必须是拥有该对象的角色的成员，或者是一个在该对象上持有
+<TT CLASS="LITERAL">WITH GRANT OPTION</TT>的角色的成员。在这种情况下，
+该命令执行起来就好像是由实际拥有该对象的角色，或者是在该对象上持有
+<TT CLASS="LITERAL">WITH GRANT OPTION</TT>权限的角色发出的一样。比如，如果表<TT CLASS="LITERAL">t1</TT>
+被<TT CLASS="LITERAL">g1</TT>所有，而<TT CLASS="LITERAL">u1</TT>是<TT CLASS="LITERAL">g1</TT>的成员，那么<TT CLASS="LITERAL">u1</TT>
+可以撤销<TT CLASS="LITERAL">t1</TT>上的权限，而纪录为<TT CLASS="LITERAL">g1</TT>发出的命令。这种现像包括
+<TT CLASS="LITERAL">u1</TT>和其它<TT CLASS="LITERAL">g1</TT>角色成员发出的授权。</P><P>如果执行<TT CLASS="COMMAND">REVOKE</TT>的角色持有权限是通过多层成员关系获得的，
+那么具体是哪个包含的角色执行的该命令就是未声明的。在这种场合下，
+最好的方法是使用<TT CLASS="COMMAND">SET ROLE</TT>成为你希望执行<TT CLASS="COMMAND">REVOKE</TT>的角色。
+不这么做的后果可能导致删除你不想删除的权限，或者是啥权限都没有删除。</P></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-REVOKE-EXAMPLES"></A><H2>例子</H2><P>撤销公众在表<TT CLASS="LITERAL">films</TT>上的插入权限：
+</P><PRE CLASS="PROGRAMLISTING">REVOKE INSERT ON films FROM PUBLIC;</PRE><P></P><P>撤销用户<TT CLASS="LITERAL">manuel</TT>对视图<TT CLASS="LITERAL">kinds</TT>的所有权限：
+</P><PRE CLASS="PROGRAMLISTING">REVOKE ALL PRIVILEGES ON kinds FROM manuel;</PRE><P>
+请注意这样实际上意味着<SPAN CLASS="QUOTE">"撤销所有我赋予的权限"</SPAN>。</P><P>删除用户<TT CLASS="LITERAL">joe</TT>的<TT CLASS="LITERAL">admins</TT>成员关系：
+</P><PRE CLASS="PROGRAMLISTING">REVOKE admins FROM joe;</PRE><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-REVOKE-COMPATIBILITY"></A><H2>兼容性</H2><P><A HREF="sql-grant.html">GRANT</A>命令的兼容性信息基本上也适用于<TT CLASS="COMMAND">REVOKE</TT>。
+标准要求<TT CLASS="LITERAL">RESTRICT</TT>或<TT CLASS="LITERAL">CASCADE</TT>必须出现，
+但是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>假设缺省是<TT CLASS="LITERAL">RESTRICT</TT>。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN79265"></A><H2>又见</H2><P> <A HREF="sql-grant.html">GRANT</A>
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-reset.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-rollback.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">RESET</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">ROLLBACK</TD></TR></TABLE></DIV></BODY></HTML>

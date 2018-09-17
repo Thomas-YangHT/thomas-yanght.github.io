@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>索引的系统表记录</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="索引访问方法接口定义" HREF="http://school.yunwei.edu/manual/PostgreSQL/indexam.html"><LINK REL="PREVIOUS" TITLE="索引访问方法接口定义" HREF="http://school.yunwei.edu/manual/PostgreSQL/indexam.html"><LINK REL="NEXT" TITLE="索引访问方法函数" HREF="index-functions.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/indexam.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="索引访问方法接口定义" HREF="http://school.yunwei.edu/manual/PostgreSQL/indexam.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/indexam.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 54. 索引访问方法接口定义</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="索引访问方法函数" HREF="index-functions.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="INDEX-CATALOG">54.1. 索引的系统表记录</A></H1><P>每个索引访问方法都在系统表<TT CLASS="STRUCTNAME">pg_am</TT>里面用一行来描述(参阅<A HREF="catalog-pg-am.html">第 47.3 &#33410;</A>)。
+一个<TT CLASS="STRUCTNAME">pg_am</TT>行的主要内容是引用<A HREF="catalog-pg-proc.html"><TT CLASS="STRUCTNAME">pg_proc</TT></A>
+里面的记录，用来标识索引访问方法提供的索引访问函数。
+这些函数的接口(API)在本章后面描述。另外，<TT CLASS="STRUCTNAME">pg_am</TT>的数据行声明了几个索引访问方法的固定属性，比如，它是否支持多字段索引。
+目前还没有创建、删除<TT CLASS="STRUCTNAME">pg_am</TT>记录的特殊支持；任何想写这么一个新的访问方法的人都需要能够自己向这个表里面插入合适的新行。
+</P><P>要想有真正用处，一个索引访问方法还必须有一个或多个<I CLASS="FIRSTTERM">操作符族</I>和<I CLASS="FIRSTTERM">操作符类</I>，定义在
+<A HREF="catalog-pg-opfamily.html"><TT CLASS="STRUCTNAME">pg_opfamily</TT></A>,
+<A HREF="catalog-pg-opclass.html"><TT CLASS="STRUCTNAME">pg_opclass</TT></A>,
+<A HREF="catalog-pg-amop.html"><TT CLASS="STRUCTNAME">pg_amop</TT></A>和
+<A HREF="catalog-pg-amproc.html"><TT CLASS="STRUCTNAME">pg_amproc</TT></A>里面。
+这些记录允许规划器判断哪些查询的条件可以适用于用这个索引访问方法创建的索引。
+操作符族和操作符类在<A HREF="xindex.html">第 35.14 &#33410;</A>里面定义，是读取本章的前提之一。
+</P><P>一个独立的索引是由一行 <A HREF="catalog-pg-class.html"><TT CLASS="STRUCTNAME">pg_class</TT></A>
+记录以物理关系的方式描述的，加上一个<A HREF="catalog-pg-index.html"><TT CLASS="STRUCTNAME">pg_index</TT></A>
+行，表示该索引的逻辑内容 &mdash;也就是说，它所拥有的索引字段集，以及被相关的操作符类捕获的这些字段的语义。
+索引字段(键值)可以是下层表的字段，也可以是该表的数据行上的表达式。
+索引访问方法通常不关心索引的键值来自哪里(它总是操作经过预计算的键值)，但是它会对<TT CLASS="STRUCTNAME">pg_index</TT>里面的操作符类信息很感兴趣。
+所有这些系统表记录都可以当作<TT CLASS="STRUCTNAME">Relation</TT>数据结构的一部分访问，这个数据结构会被传递到对该索引的所有操作上。
+</P><P><TT CLASS="STRUCTNAME">pg_am</TT>中的有些标志字段的含义并不那么直观。
+<TT CLASS="STRUCTFIELD">amcanunique</TT>的需求在<A HREF="index-unique-checks.html">第 54.5 &#33410;</A>里讨论，
+<TT CLASS="STRUCTFIELD">amcanmulticol</TT>标志断言该索引访问方法支持多字段索引，
+<TT CLASS="STRUCTFIELD">amoptionalkey</TT>断言它允许对那种在第一个索引字段上没有给出可索引限制子句的扫描。
+如果<TT CLASS="STRUCTFIELD">amcanmulticol</TT>为假，那么<TT CLASS="STRUCTFIELD">amoptionalkey</TT>
+实际上说的是该访问方法是否允许不带限制子句的全索引扫描。
+那些支持多字段索引的访问访法必须支持那些在省略了除第一个字段以外的其它字段的约束的扫描；
+不过，系统允许这些访问访法要求在第一个字段上出现一些限制，这一点是通过把 amoptionalkey 设置为假来实现的。
+一个访问访法可能设置<TT CLASS="STRUCTFIELD">amoptionalkey</TT>为假,如果它不索引NULL值的话。
+因为大多数可以索引的操作符都是严格的，因此不能对 NULL 输入返回 TRUE ，所以，第一眼看见会觉得不为 NULL 存储索引记录的想法很吸引人：因为他们不可能被一个索引扫描返回。
+不过，这个想法在一个给出的索引字段上没有限制子句的索引扫描的情况下就不行了；这样的扫描应该包括 NULL 行。
+实际上，这意味着设置了<TT CLASS="STRUCTFIELD">amoptionalkey</TT>为真的索引必须索引 NULL值 ，因为规划器可能会决定在根本没有扫描键字的时候使用这样的索引。
+这样的索引必须可以在完全没有扫描键字的情况下运行。
+另外一个限制是一个支持多字段索引的索引访问方法<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">必须</I></SPAN>索引第一个字段后面的字段的 NULL值，因为规划器会认为这个索引可以用于那些没有限制这些字段的查询。
+比如，假设有个在(a,b)上的索引，而一个查询的条件是<TT CLASS="LITERAL">WHERE a = 4</TT>。系统会认为这个索引可以用于扫描<TT CLASS="LITERAL">a = 4</TT>的数据行，如果索引忽略了<TT CLASS="LITERAL">b</TT>为空的数据行，那么就是错误的。
+不过，如果第一个索引字段值是空，那么忽略它是 OK 的。
+一个索引NULL值的索引访问方法可能会设置<TT CLASS="STRUCTFIELD">amsearchnulls</TT>，
+表明它支持<TT CLASS="LITERAL">IS NULL</TT> 和 <TT CLASS="LITERAL">IS NOT NULL</TT>子句作为搜索条件。
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/indexam.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="index-functions.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">索引访问方法接口定义</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/indexam.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">索引访问方法函数</TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>pg_type</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="系统表" HREF="http://school.yunwei.edu/manual/PostgreSQL/catalogs.html"><LINK REL="PREVIOUS" TITLE="pg_ts_template" HREF="catalog-pg-ts-template.html"><LINK REL="NEXT" TITLE="pg_user_mapping" HREF="catalog-pg-user-mapping.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/catalogs.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="pg_ts_template" HREF="catalog-pg-ts-template.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/catalogs.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 47. 系统表</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="pg_user_mapping" HREF="catalog-pg-user-mapping.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="CATALOG-PG-TYPE">47.51. <TT CLASS="STRUCTNAME">pg_type</TT></A></H1><P><TT CLASS="STRUCTNAME">pg_type</TT>存储有关数据类型的信息。基本类型和枚举类型(标量类型)是用
+<A HREF="sql-createtype.html">CREATE TYPE</A>创建的，域是使用<A HREF="sql-createdomain.html">CREATE DOMAIN</A>创建的。
+同时还为数据库中每个表自动创建一个复合类型，以表示该表的行结构。还可以用
+<TT CLASS="COMMAND">CREATE TYPE AS</TT>创建复合类型。</P><DIV CLASS="TABLE"><A NAME="AEN96127"></A><P><B>&#34920; 47-51. <TT CLASS="STRUCTNAME">pg_type</TT> 字段</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><COL><THEAD><TR><TH>名字</TH><TH>类型</TH><TH>引用</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD><TT CLASS="STRUCTFIELD">oid</TT></TD><TD><TT CLASS="TYPE">oid</TT></TD><TD>&nbsp;</TD><TD>行标识符(隐藏属性；必须明确选择)</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typname</TT></TD><TD><TT CLASS="TYPE">name</TT></TD><TD>&nbsp;</TD><TD>数据类型名</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typnamespace</TT></TD><TD><TT CLASS="TYPE">oid</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-namespace.html"><TT CLASS="STRUCTNAME">pg_namespace</TT></A>.oid</TT></TD><TD>
+包含这个类型的名字空间的OID
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typowner</TT></TD><TD><TT CLASS="TYPE">oid</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-authid.html"><TT CLASS="STRUCTNAME">pg_authid</TT></A>.oid</TT></TD><TD>该类型的所有者</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typlen</TT></TD><TD><TT CLASS="TYPE">int2</TT></TD><TD>&nbsp;</TD><TD>
+对于定长类型是该类型内部表现形式的字节数目。对于变长类型是负数。
+-1 表示一种<SPAN CLASS="QUOTE">"变长"</SPAN>类型(有长度字属性的数据)，
+-2 表示这是一个 NULL 结尾的 C 字符串。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typbyval</TT></TD><TD><TT CLASS="TYPE">bool</TT></TD><TD>&nbsp;</TD><TD>
+判断内部过程传递这个类型的数值时是通过传值还是传引用。
+如果该类型不是 1, 2, 4, 8 字节长将只能按引用传递，因此 typbyval 最好是假。
+即使可以传值，typbyval 也可以为假。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typtype</TT></TD><TD><TT CLASS="TYPE">char</TT></TD><TD>&nbsp;</TD><TD>
+对于基础类型是<TT CLASS="LITERAL">b</TT>，对于复合类型是<TT CLASS="LITERAL">c</TT>
+(比如，一个表的行类型)。对于域类型是<TT CLASS="LITERAL">d</TT>，对于枚举类型是<TT CLASS="LITERAL">e</TT>，
+对于伪类型是<TT CLASS="LITERAL">p</TT>，对于范围类型是<TT CLASS="LITERAL">r</TT>。
+又见<TT CLASS="STRUCTFIELD">typrelid</TT>和<TT CLASS="STRUCTFIELD">typbasetype</TT>。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typcategory</TT></TD><TD><TT CLASS="TYPE">char</TT></TD><TD>&nbsp;</TD><TD>
+<TT CLASS="STRUCTFIELD">typcategory</TT>是数据类型的任意分类，
+该数据类型被触发器用来决定哪种隐式转换应该是<SPAN CLASS="QUOTE">"首选"</SPAN>。
+参阅<A HREF="catalog-pg-type.html#CATALOG-TYPCATEGORY-TABLE">&#34920; 47-52</A>。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typispreferred</TT></TD><TD><TT CLASS="TYPE">bool</TT></TD><TD>&nbsp;</TD><TD>
+如果类型在它的<TT CLASS="STRUCTFIELD">typcategory</TT> 里是首选转换目标则为真。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typisdefined</TT></TD><TD><TT CLASS="TYPE">bool</TT></TD><TD>&nbsp;</TD><TD>
+如果定义了类型则为真，如果是一种尚未定义的类型的占位符则为假。如果为假，
+那么除了该类型名称，名字空间，和 OID 之外没有可靠的信息。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typdelim</TT></TD><TD><TT CLASS="TYPE">char</TT></TD><TD>&nbsp;</TD><TD>
+当分析数组输入时，分隔两个此类型数值的字符。请注意该分隔符是与数组元素数据类型相关联的，
+而不是和数组数据类型关联。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typrelid</TT></TD><TD><TT CLASS="TYPE">oid</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-class.html"><TT CLASS="STRUCTNAME">pg_class</TT></A>.oid</TT></TD><TD>
+如果是复合类型(见<TT CLASS="STRUCTFIELD">typtype</TT>)那么这个字段指向<TT CLASS="STRUCTNAME">pg_class</TT>
+中定义该表的行。对于自由存在的复合类型，<TT CLASS="STRUCTNAME">pg_class</TT>记录并不表示一个表，
+但是总需要它来查找该类型连接的<TT CLASS="STRUCTNAME">pg_attribute</TT>记录。对于非复合类型为零。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typelem</TT></TD><TD><TT CLASS="TYPE">oid</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-type.html"><TT CLASS="STRUCTNAME">pg_type</TT></A>.oid</TT></TD><TD>
+如果不为 0 ，那么它标识<TT CLASS="STRUCTNAME">pg_type</TT>里面的另外一行。
+当前类型可以像一个数组产生类型为<TT CLASS="STRUCTFIELD">typelem</TT>的值一样当做下标。
+一个<SPAN CLASS="QUOTE">"真正的"</SPAN>数组类型是变长的(<TT CLASS="STRUCTFIELD">typlen</TT> = -1)，
+但是一些定长的(<TT CLASS="STRUCTFIELD">typlen</TT> &gt; 0)类型也拥有非零的<TT CLASS="STRUCTFIELD">typelem</TT>
+(比如<TT CLASS="TYPE">name</TT>和<TT CLASS="TYPE">point</TT>)。如果一个定长类型拥有一个<TT CLASS="STRUCTFIELD">typelem</TT>，
+那么他的内部形式必须是<TT CLASS="STRUCTFIELD">typelem</TT>数据类型的某个数目的个数值，
+不能有其它数据。变长数组类型有一个该数组子过程定义的头(文件)。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typarray</TT></TD><TD><TT CLASS="TYPE">oid</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-type.html"><TT CLASS="STRUCTNAME">pg_type</TT></A>.oid</TT></TD><TD>
+如果<TT CLASS="STRUCTFIELD">typarray</TT>非零，那么它在<TT CLASS="STRUCTNAME">pg_type</TT>
+里定义另外一行，该行是将这个类型作为元素的<SPAN CLASS="QUOTE">"真正的"</SPAN>数组类型。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typinput</TT></TD><TD><TT CLASS="TYPE">regproc</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-proc.html"><TT CLASS="STRUCTNAME">pg_proc</TT></A>.oid</TT></TD><TD>输入转换函数(文本格式)</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typoutput</TT></TD><TD><TT CLASS="TYPE">regproc</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-proc.html"><TT CLASS="STRUCTNAME">pg_proc</TT></A>.oid</TT></TD><TD>输出转换函数(文本格式)</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typreceive</TT></TD><TD><TT CLASS="TYPE">regproc</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-proc.html"><TT CLASS="STRUCTNAME">pg_proc</TT></A>.oid</TT></TD><TD>输入转换函数(二进制格式)，如果没有则为 0</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typsend</TT></TD><TD><TT CLASS="TYPE">regproc</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-proc.html"><TT CLASS="STRUCTNAME">pg_proc</TT></A>.oid</TT></TD><TD>输出转换函数(二进制格式)，如果没有则为 0</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typmodin</TT></TD><TD><TT CLASS="TYPE">regproc</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-proc.html"><TT CLASS="STRUCTNAME">pg_proc</TT></A>.oid</TT></TD><TD>类型修饰符输入函数，如果类型不支持修饰符则为0</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typmodout</TT></TD><TD><TT CLASS="TYPE">regproc</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-proc.html"><TT CLASS="STRUCTNAME">pg_proc</TT></A>.oid</TT></TD><TD>类型修饰符输出函数，如果使用标准格式则为0</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typanalyze</TT></TD><TD><TT CLASS="TYPE">regproc</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-proc.html"><TT CLASS="STRUCTNAME">pg_proc</TT></A>.oid</TT></TD><TD>自定义的<TT CLASS="COMMAND">ANALYZE</TT>函数，如果使用标准函数，则为 0</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typalign</TT></TD><TD><TT CLASS="TYPE">char</TT></TD><TD>&nbsp;</TD><TD><P>当存储此类型的数值时要求的对齐性质。它应用于磁盘存储以及该值在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+内部的大多数形式。如果数值是连续存放的，比如在磁盘上以完全的裸数据的形式存放时，
+那么先在此类型的数据前填充空白，这样它就可以按照要求的界限存储。对齐引用是该序列中第一个数据的开头。</P>
+<P>
+可能的值有：
+<P></P></P><UL><LI><P><TT CLASS="LITERAL">c</TT> = <TT CLASS="TYPE">char</TT>对齐，也就是不需要对齐。</P></LI><LI><P><TT CLASS="LITERAL">s</TT> = <TT CLASS="TYPE">short</TT>对齐(在大多数机器上是 2 字节)</P></LI><LI><P><TT CLASS="LITERAL">i</TT> = <TT CLASS="TYPE">int</TT>对齐(在大多数机器上是 4 字节)</P></LI><LI><P><TT CLASS="LITERAL">d</TT> = <TT CLASS="TYPE">double</TT>对齐(在大多数机器上是 8 字节，但不一定是全部)</P></LI></UL><P>
+</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>对于在系统表里使用的类型，在<TT CLASS="STRUCTNAME">pg_type</TT>
+里定义的尺寸和对齐必须和编译器在一个表示表的一行的结构里的布局一样。</P></BLOCKQUOTE></DIV></TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typstorage</TT></TD><TD><TT CLASS="TYPE">char</TT></TD><TD>&nbsp;</TD><TD><P> 告诉一个变长类型(那些有<TT CLASS="STRUCTFIELD">typlen</TT> = -1的)
+说该类型是否准备好应付非常规值，以及对这种类型的属性的缺省策略是什么。可能的值有
+<P></P></P><UL><LI><P><TT CLASS="LITERAL">p</TT>:数值总是以简单方式存储</P></LI><LI><P><TT CLASS="LITERAL">e</TT>: 数值可以存储在一个<SPAN CLASS="QUOTE">"次要"</SPAN>关系中(如果该关系有这么一个，
+参阅<TT CLASS="LITERAL">pg_class.reltoastrelid</TT>)</P></LI><LI><P><TT CLASS="LITERAL">m</TT>: 数值可以以内联的压缩方式存储</P></LI><LI><P><TT CLASS="LITERAL">x</TT>: 数值可以以内联的压缩方式或者在<SPAN CLASS="QUOTE">"次要"</SPAN>表里存储。</P></LI></UL><P>
+请注意<TT CLASS="LITERAL">m</TT>域也可以移到从属表里存储，但只是最后的解决方法
+(<TT CLASS="LITERAL">e</TT>和<TT CLASS="LITERAL">x</TT>域先移走)。
+</P></TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typnotnull</TT></TD><TD><TT CLASS="TYPE">bool</TT></TD><TD>&nbsp;</TD><TD><P>代表在某类型上的一个 NOTNULL 约束。目前只用于域。</P></TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typbasetype</TT></TD><TD><TT CLASS="TYPE">oid</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-type.html"><TT CLASS="STRUCTNAME">pg_type</TT></A>.oid</TT></TD><TD><P>如果这是一个域(参阅<TT CLASS="STRUCTFIELD">typtype</TT>)，
+那么标识作为这个类型的基础的类型。如果不是域则为零。</P></TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typtypmod</TT></TD><TD><TT CLASS="TYPE">int4</TT></TD><TD>&nbsp;</TD><TD><P>域使用<TT CLASS="STRUCTFIELD">typtypmod</TT>记录要作用到它们的基础类型上的<TT CLASS="LITERAL">typmod</TT>
+(如果基础类型不使用<TT CLASS="LITERAL">typmod</TT>则为 -1)。如果这种类型不是域，那么为 -1 。</P></TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typndims</TT></TD><TD><TT CLASS="TYPE">int4</TT></TD><TD>&nbsp;</TD><TD><P>如果是一个域数组，那么<TT CLASS="STRUCTFIELD">typndims</TT>是数组维数的数值(也就是说，
+<TT CLASS="STRUCTFIELD">typbasetype</TT>是一个数组类型）。非域非数组类型为零。&#13;</P></TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typcollation</TT></TD><TD><TT CLASS="TYPE">oid</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-collation.html"><TT CLASS="STRUCTNAME">pg_collation</TT></A>.oid</TT></TD><TD><P>指定类型的排序规则。如果类型不支持排序，则为0。一个支持排序的基础类型将有
+<TT CLASS="SYMBOL">DEFAULT_COLLATION_OID</TT>。一个可排序类型的域可以有一些其他排序OID，
+如果为该域指定了一个的话。</P></TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typdefaultbin</TT></TD><TD><TT CLASS="TYPE">pg_node_tree</TT></TD><TD>&nbsp;</TD><TD><P>如果为非 NULL ，那么它是该类型缺省表达式的<CODE CLASS="FUNCTION">nodeToString()</CODE>表现形式。
+目前这个字段只用于域。</P></TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typdefault</TT></TD><TD><TT CLASS="TYPE">text</TT></TD><TD>&nbsp;</TD><TD><P>如果某类型没有相关缺省值，那么<TT CLASS="STRUCTFIELD">typdefault</TT>是 NULL 。如果<TT CLASS="STRUCTFIELD">typdefaultbin</TT>
+不是 NULL ，那么<TT CLASS="STRUCTFIELD">typdefault</TT>必须包含一个<TT CLASS="STRUCTFIELD">typdefaultbin</TT>
+代表的缺省表达式的人类可读的版本。如果<TT CLASS="STRUCTFIELD">typdefaultbin</TT>为 NULL 但<TT CLASS="STRUCTFIELD">typdefault</TT>
+不是，那么<TT CLASS="STRUCTFIELD">typdefault</TT>是该类型缺省值的外部表现形式，
+可以把它交给该类型的输入转换器生成一个常量。</P></TD></TR><TR><TD><TT CLASS="STRUCTFIELD">typacl</TT></TD><TD><TT CLASS="TYPE">aclitem[]</TT></TD><TD>&nbsp;</TD><TD>
+访问权限；参阅<A HREF="sql-grant.html">GRANT</A>和<A HREF="sql-revoke.html">REVOKE</A>获取细节。
+</TD></TR></TBODY></TABLE></DIV><P><A HREF="catalog-pg-type.html#CATALOG-TYPCATEGORY-TABLE">&#34920; 47-52</A>列出了系统定义的<TT CLASS="STRUCTFIELD">typcategory</TT>的值。
+任何未来添加到这个列表的也是大写的ASCII字母。所有其他ASCII字符为用户定义的范畴保留。</P><DIV CLASS="TABLE"><A NAME="CATALOG-TYPCATEGORY-TABLE"></A><P><B>&#34920; 47-52. <TT CLASS="STRUCTFIELD">typcategory</TT> 代码</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><THEAD><TR><TH>代码</TH><TH>种类</TH></TR></THEAD><TBODY><TR><TD><TT CLASS="LITERAL">A</TT></TD><TD>数组类型</TD></TR><TR><TD><TT CLASS="LITERAL">B</TT></TD><TD>布尔类型</TD></TR><TR><TD><TT CLASS="LITERAL">C</TT></TD><TD>复合类型</TD></TR><TR><TD><TT CLASS="LITERAL">D</TT></TD><TD>日期/时间类型</TD></TR><TR><TD><TT CLASS="LITERAL">E</TT></TD><TD>枚举类型</TD></TR><TR><TD><TT CLASS="LITERAL">G</TT></TD><TD>几何类型</TD></TR><TR><TD><TT CLASS="LITERAL">I</TT></TD><TD>网络地址类型</TD></TR><TR><TD><TT CLASS="LITERAL">N</TT></TD><TD>数值类型</TD></TR><TR><TD><TT CLASS="LITERAL">P</TT></TD><TD>伪类型</TD></TR><TR><TD><TT CLASS="LITERAL">R</TT></TD><TD>范围类型</TD></TR><TR><TD><TT CLASS="LITERAL">S</TT></TD><TD>字符串类型</TD></TR><TR><TD><TT CLASS="LITERAL">T</TT></TD><TD>时间间隔类型</TD></TR><TR><TD><TT CLASS="LITERAL">U</TT></TD><TD>用户定义类型</TD></TR><TR><TD><TT CLASS="LITERAL">V</TT></TD><TD>位串类型</TD></TR><TR><TD><TT CLASS="LITERAL">X</TT></TD><TD><TT CLASS="TYPE">未知</TT> 类型</TD></TR></TBODY></TABLE></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="catalog-pg-ts-template.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="catalog-pg-user-mapping.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><TT CLASS="STRUCTNAME">pg_ts_template</TT></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/catalogs.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><TT CLASS="STRUCTNAME">pg_user_mapping</TT></TD></TR></TABLE></DIV></BODY></HTML>

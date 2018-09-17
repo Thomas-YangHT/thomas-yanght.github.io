@@ -1,0 +1,20 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>规则和命令状态</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="规则系统" HREF="http://school.yunwei.edu/manual/PostgreSQL/rules.html"><LINK REL="PREVIOUS" TITLE="规则和权限" HREF="rules-privileges.html"><LINK REL="NEXT" TITLE="规则与触发器的比较" HREF="rules-triggers.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/rules.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="规则和权限" HREF="rules-privileges.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/rules.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 38. 规则系统</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="规则与触发器的比较" HREF="rules-triggers.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RULES-STATUS">38.6. 规则和命令状态</A></H1><P><SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>服务器为它收到的每个命令返回一个命令状态字符串，
+比如<TT CLASS="LITERAL">INSERT 149592 1</TT>。如果没有涉及规则，那么这些就很简单，
+但是如果查询是被规则重写的又会怎样呢?</P><P> 规则对命令状态的影响如下：
+<P></P></P><UL><LI><P>如果查询不存在无条件的<TT CLASS="LITERAL">INSTEAD</TT>规则，那么最初给出的查询将会被执行，
+并且它的命令状态将像平常一样返回。但是请注意如果存在任何条件<TT CLASS="LITERAL">INSTEAD</TT>规则，
+那么他们的条件的反条件将会已经加到最初的查询里了。这样可能会减少它处理的行数，
+如果这样的话，报告状态将受影响。</P></LI><LI><P>如果查询有任何无条件的<TT CLASS="LITERAL">INSTEAD</TT>规则，那么最初的查询将完全不会被执行。
+在这种情况下，服务器将返回由<TT CLASS="LITERAL">INSTEAD</TT>规则(条件的或非条件的)
+插入的最后一条和源查询同命令类型(<TT CLASS="COMMAND">INSERT</TT>, <TT CLASS="COMMAND">UPDATE</TT>, 或
+<TT CLASS="COMMAND">DELETE</TT>)查询的命令状态。如果规则添加的查询都不符合这些要求，
+那么返回的命令状态显示源查询类型而行计数和 OID 字段为零。</P></LI></UL><P>
+（这个系统是在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 7.3建立的。在之前的版本里，
+命令状态可能在规则退出时显示不同的结果。）</P><P>程序员可以用下面的方法确保任何需要的<TT CLASS="LITERAL">INSTEAD</TT>规则都是在上面第二种情况里设置命令状态的规则：
+给这个规则命名为字母顺序最后一个活动的规则，这样它就最后附加。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="rules-privileges.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="rules-triggers.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">规则和权限</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/rules.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">规则与触发器的比较</TD></TR></TABLE></DIV></BODY></HTML>

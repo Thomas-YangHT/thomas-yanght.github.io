@@ -1,0 +1,206 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>版本 6.4</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="版本 6.4.1" HREF="release-6-4-1.html"><LINK REL="NEXT" TITLE="版本 6.3.2" HREF="release-6-3-2.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-old.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="版本 6.4.1" HREF="release-6-4-1.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="版本 6.3.2" HREF="release-6-3-2.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-6-4">E.229. 版本 6.4</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>1998-10-30</P></BLOCKQUOTE></DIV><P>这个版本有<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">许多</I></SPAN>新特性和改进。感谢开发者和维护者，与前一个版本相比，
+几乎系统的每个方面都得到了重视。下面是一个不完全的概要：
+<P></P></P><UL><LI><P>感谢 Jan Wieck 为重写规则系统添加的新的代码，视图和规则现在可以工作了。
+他就此还为<I CLASS="CITETITLE">程序员手册</I>写了一章。</P></LI><LI><P>与他在上一版本提供的最初的 <SPAN CLASS="APPLICATION">PL/pgTCL</SPAN> 过程语言一起，
+Jan 还提供了第二种过程语言，<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>。</P></LI><LI><P>我们有了可选的多字节字符集支持，是 Tatsuo Iishi 提供的，用以完善我们现存的本地支持。</P></LI><LI><P>感谢 Tom Lane 清理了 Client/server（客户/服务器）通讯部分，对异步消息和中断有了更好的支持．</P></LI><LI><P>分析器现在会进行自动的类型转换，以与现有的操作符和函数的参数相匹配，
+以及与目标字段的字段（类型）和表达式匹配。这是通过通用的机制实现的，
+该机制支持 <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 的类型扩展特性。
+在<I CLASS="CITETITLE">用户手册</I>中有一章介绍这个主题。</P></LI><LI><P>新增了三种数据类型。其中两种类型 <TT CLASS="TYPE">inet</TT> 和 <TT CLASS="TYPE">cidr</TT>，
+支持各种各样的IP网络，子网和机器寻址形式。而且现在在某些平台上有8字节整数支持了。
+请参阅<I CLASS="CITETITLE">用户手册</I>中的数据类型章节获取详细信息。第四种类型，
+<TT CLASS="TYPE">serial</TT>，现在被分析器当作 <TT CLASS="TYPE">int4</TT> 类型，序列号，和唯一索引的混合物来支持。</P></LI><LI><P>增加了更多 <ACRONYM CLASS="ACRONYM">SQL92</ACRONYM> 兼容的语法特性，包括 <TT CLASS="COMMAND">INSERT DEFAULT VALUES</TT>。</P></LI><LI><P>自动配置和安装系统受到了一定的重视，现在在更多平台上应该比以前更坚固，稳定了。</P></LI></UL><P></P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN143759">E.229.1. 迁移到版本 6.4</A></H2><P>要想从以前的 <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 版本迁移到新的版本，
+你需要用 <SPAN CLASS="APPLICATION">pg_dump</SPAN> 或 <SPAN CLASS="APPLICATION">pg_dumpall</SPAN>
+进行一个转储/恢复的操作。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN143765">E.229.2. 修改列表</A></H2><P></P><PRE CLASS="PROGRAMLISTING">Bug 修复
+---------
+修复 PQsetdb/PQfinish 中微小的内存泄露 (Bryan)
+使用 char/varchar 删除 char2-16 数据类型 (Darren)
+Pqfn 不处理 NOTICE 信息 (Anders)
+减少了许多后端自旋锁的 busywaiting 开销 (dg)
+自旋锁检测卡住 (dg)
+修复 "ISO-style" 时间间隔解码和编码 (Thomas)
+修复在事务回滚之后删除表的问题 (Vadim)
+更改错误信息和删除非功能性的升级信息 (Vadim)
+修复 COPY 数组检测
+修复 SELECT 1 UNION SELECT NULL 
+修复大对象调用中的缓存泄露 (Pascal)
+改变所有者从 oid 到 int4 类型 (Bruce)
+修复 oracle 兼容性函数 btrim() ltrim() 和 rtrim() 中的一个bug
+修复共享的失效缓存溢出 (Massimo)
+阻止文件描述符泄漏到已失败的 COPY (Bruce)
+修复 libpgtcl 的 pg_select 中的内存泄露 (Constantin)
+修复用户名/口令超过8个字符的问题 (Tom)
+修复在后端处理异步的 NOTIFY 问题 (Tom)
+修复许多损坏了的系统表条目 (Tom) 
+
+增强
+------------
+升级 ecpg 和 ecpglib，参阅 src/interfaces/ecpc/ChangeLog(Michael)
+显示在一个 EXPLAIN 中使用的索引 (Zeugswetter)
+EXPLAIN 调用规则系统并显示重写查询的规划 (Jan)
+通过配置，多字节意识到许多数据类型和函数 (Tatsuo)
+新增 configure --with-mb 选项 (Tatsuo)
+新增 initdb --pgencoding 选项 (Tatsuo)
+新增 createdb -E multibyte 选项 (Tatsuo)
+Select version(); 现在返回 PostgreSQL 版本 (Jeroen)
+libpq 现在允许异步的客户端 (Tom)
+允许取消客户端的后端查询 (Tom)
+psql 现在用 Control-C 取消查询 (Tom)
+libpq 用户不需要发出虚假的查询来获取 NOTIFY 信息 （Tom）
+NOTIFY 现在可以发送发送者的 PID，所以你可以知道它是否是你自己的 (Tom)
+PGresult 结构现在包括关联的错误信息，如果有的话 (Tom)
+定义 "tz_hour" 和 "tz_minute" 参数到 date_part()(Thomas)
+添加 varchar 和 bpchar 之间相互转换的例程 (Thomas)
+添加允许 varchar 和 bpchar 的大小到目标字段的例程 (Thomas)
+添加位标记以在数据检索中支持时区小时和分钟 (Thomas)
+允许更多的变化在浮点数上 (如 ".1", "1e6") (Thomas)
+修复带有前导空格的一元符号语法分析 (Thomas) 
+实现了 TIMEZONE_HOUR, TIMEZONE_MINUTE 每 SQL92 规格 (Thomas)
+检查并适当的忽略 FOREIGN KEY 字段约束 (Thomas)
+定义 USER 作为 CURRENT_USER 的同义词每 SQL92 规格 (Thomas)
+启用 HAVING 子句，但是在别处还没有修复
+使 "char" 类型是 "char(1)" 的同义词（实际上是作为 bpchar 来实现） (Thomas)
+如果为 DEFAULT 子句处理指定则保存字符串类型 (Thomas)
+强制操作包括不同的数据类型 (Thomas)
+允许一些索引用于不同类型的字段 (Thomas)
+为自动类型转换添加功能 (Thomas)
+清理大对象，因此文件打开时被截断 (Peter)
+Readline 清理(Tom)
+允许 psql  \f \ 将空格作为分隔符 (Bruce)
+为列字段长度传送 pg_attribute.atttypmod 到前端 (Tom,Bruce)
+Msql 兼容库在 /contrib 中 (Aldrin)
+删除 ORDER/GROUP BY 子句标识符被包含在目标列表中的要求 (David)
+转换字段以匹配 UNION 子句中的字段 (Thomas)
+删除 fork()/exec() 只进行 fork() (Bruce)
+Jdbc 清理 (Peter)
+在 ps 命令行上显示后端状态 (只在某些平台上工作) (Bruce) 
+Pg_hba.conf 现在在数据库字段中有一个 sameuser 选项
+使 lo_unlink 接受 oid 参数，而不是 int4
+为不能处理我们的宏命令的编译器新增 DISABLE_COMPLEX_MACRO (Bruce)
+Libpgtcl 现在把 NOTIFY 当做一个 Tcl 事件处理，不需要发送脏查询 (Tom)
+libpgtcl 清理(Tom)
+添加 -error 选项到 libpgtcl 的 pg_result 命令(Tom)
+新增本地路径，参阅 docs/README/locale (Oleg)
+修复 pg_dump，因此 CONSTRAINT 和 CHECK 语法是不正确的 (ccb)
+为除去孤立的大对象新增 contrib/lo 代码 (Peter)
+为多字节特性新增 psql 命令 "SET CLIENT_ENCODING TO 'encoding'"，参阅 /doc/README.mb (Tatsuo)
+contrib/noupdate 代码以撤销在一个字段上的更新许可
+libpq 现在可以在 Windows 上编译 (Magnus)
+在 libpq 里添加 PQsetdbLogin()
+新增8字节整数类型，为了 OS 支持由配置校对 (Thomas)
+对引用表/字段名有了更好的支持 (Thomas)
+pg_dump 中的表和字段名由双引号包围 (Thomas)
+PQreset() 现在带有口令工作 (Tom)
+处理 GROUP BY 目标列表字段编号超出范围的情况 (David)
+允许在子查询中 UNION 
+添加 auto-size 到屏幕的 \d? 命令 (Bruce)
+使用 UNION 显示一个查询中所有 \d? 的结果 （Bruce）
+添加 \d? 字段搜索特性 (Bruce)
+Pg_dump 发出少数 \connect  请求 (Tom)
+使 pg_dump -z 标识工作的更好，在手册页中记录它 (Tom)
+添加全力支持子查询和联合的 HAVING 子句 (Stephan)
+全文本搜索例程在 contrib/fulltextindex 中 (Maarten)
+事务 id 现在存储在共享内存中 (Vadim)
+新增发出 COPY 命令时的 PGCLIENTENCODING (Tatsuo)
+支持 SQL92 语法 "SET NAMES" (Tatsuo)
+支持 LATIN2-5 (Tatsuo) 
+添加 UNICODE 回归测试案例 (Tatsuo)
+锁住管理者清理，为 LLL 新增锁模式 (Vadim)
+允许索引和 OR 子句一起使用 (Bruce)
+允许 "SELECT NULL ORDER BY 1;"
+Explain VERBOSE 打印规划，现在倾向于打印规划到主进程日志文件 (Bruce)
+添加索引显示到 \d 命令 (Bruce)
+允许在函数上 GROUP BY (Bruce)
+为大对象新增 pg_class.relkind (Bruce)
+新的方式发送 libpq NOTICE 信息到不同的位置 (Tom) 
+新增 \w 写入命令到 psql (Bruce)
+新增 /contrib/findoidjoins 扫描 oid 字段以找出连接关系 (Bruce)
+当为包含一个常量的约束子句检查有效索引时允许被认为是二进制兼容的索引 (Thomas)
+在 /contrib/isbn_issn 中新增 ISBN/ISSN 代码
+允许 NOT LIKE, IN, NOT IN, BETWEEN, 和 NOT BETWEEN 约束 (Thomas)
+新的重写系统修复了许多规则和视图的问题 (Jan)
+   * 关系上的规则可以工作了
+   * 在 insert/update/delete 上的事件限制可以工作了
+   * 新增 OLD 变量引用 CURRENT，CURRENT 将在将来删除
+   * 更新规则可以在规则限制/动作中引用 NEW 和 OLD
+   * 在视图上的 Insert/update/delete 可以工作了
+   * 现在支持多规则动作了，由圆括号包围
+   * 固定用户可以在他们有 RULE 许可的表上创建视图/规则
+   * 规则和视图继承创建者的权限
+   * 没有规则是字段级别的
+   * 没有 UPDATE NEW/OLD 的规则
+   * 新增 pg_tables, pg_indexes, pg_rules 和 pg_views 系统视图
+   * 在 SELECT 规则上只有一个单一动作
+   * 完全重写改革，可能是为了6.5
+   * 处理子查询
+   * 处理视图上的聚集
+   * 处理 insert into select from view 工作了
+系统索引现在是多键的 (Bruce)
+删除了 Oidint2, oidint4, 和 oidname 类型 (Bruce)
+为更多系统表查找使用系统缓存 (Bruce)
+在 backend/pl 中新增后端编程语言 PL/pgSQL (Jan)
+新增 SERIAL 数据类型，自动创建序列/索引 (Thomas)
+启用不带有重新编译的维护检查 (Massimo)
+用户锁增强 (Massimo)
+新增 setval() 命令设置序列值 (Massimo)
+如果没有主进程正在运行，那么在启动时自动删除 unix 套接字文件 (Massimo)
+有条件的跟踪包裹 (Massimo) 
+新增 UNLISTEN 命令 (Massimo)
+psql 和 libpq 现在在 Windows 下使用 win32.mak 编译 (Magnus)
+Lo_read 不再存储尾随的 NULL (Bruce)
+标识符现在在内部截断为31为字符 (Bruce)
+Createuser 选项现在在命令行中可用
+为64为整数支持的编码添加了，配置测试，int8类型 (Thomas)
+阻止来自失败 COPY 的文件描述符页 (Bruce)
+新增 pg_upgrade 命令 (Bruce)
+升级了 /contrib 目录 (Massimo)
+新增 CREATE TABLE DEFAULT VALUES 声明可用 (Thomas) 
+新增 INSERT INTO TABLE DEFAULT VALUES 声明可用 (Thomas)
+新增 DECLARE 和 FETCH 特性 (Thomas)
+现在不再输出 libpq 的内部构件 (Tom)
+允许多达8个键字索引 (Bruce)
+删除 ARCHIVE 关键字，不再使用它了 (Thomas)
+pg_dump -n 标记抑制包围标识符的引号
+为视图禁用系统字段 (Jan)
+为网络地址新增 INET 和 CIDR 类型 (TomH, Paul)
+在 psql 输出中不再有双引号
+pg_dump 现在可以转储视图了 (Terry)
+新增 SET QUERY_LIMIT (Tatsuo,Jan) 
+
+源代码树变化
+-------------------
+/contrib 清理 (Jun)
+为每行内联一些小的函数调用 (Bruce)
+Alpha/linux 修复
+HP-UX 清理 (Tom)
+多字节回归测试 (Soonmyung.)
+从配置中删除 --disabled 选项
+定义 PGDOC 以在缺省情况下使用 POSTGRESDIR
+使回归可选
+删除 pgindent 中多余的花括号代码 (Bruce)
+添加 bsdi 共享库支持 (Bruce) 
+新增 --without-CXX 支持配置选项 (Brook)
+新增 FAQ_CVS
+更新 tools/backend 中的后端流程图 (Bruce)
+将 atttypmod 从 int16 更改为 int32 (Bruce, Tom)
+修复平台上没有 Getrusage() 的问题 (Tom)
+添加 PQconnectdb, PGUSER, PGPASSWORD 到libpq手册页
+NS32K 平台修复 (Phil Nelson, John Buller)
+SCO 7/UnixWare 2.x 修复(Billy,others)
+Sparc/Solaris 2.5 修复(Ryan)
+Pgbuiltin.3 已经废弃了，移动到了 doc 文件中 (Thomas) 
+更多的文档 (Thomas)
+Nextstep 支持 (Jacek)
+Aix 支持 (David)
+pginterface 手册页 (Bruce)
+共享库都有版本号
+合并所有 OS 特定的共享库定义到一个文件
+更智能的 TCL/TK  配置检测 (Billy)
+更智能的 perl 配置 (Brook)
+如果没有发现安装脚本，那么配置使用提供的安装 sh (Tom)
+为共享库配置新增 Makefile.shlib (Tom) </PRE><P></P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-6-4-1.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-6-3-2.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">版本 6.4.1</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">版本 6.3.2</TD></TR></TABLE></DIV></BODY></HTML>

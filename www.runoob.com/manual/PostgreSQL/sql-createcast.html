@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>CREATE CAST</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="CREATE AGGREGATE" HREF="sql-createaggregate.html"><LINK REL="NEXT" TITLE="CREATE COLLATION" HREF="sql-createcollation.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/create_cast.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="CREATE AGGREGATE" HREF="sql-createaggregate.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="CREATE COLLATION" HREF="sql-createcollation.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-CREATECAST"></A>CREATE CAST</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN69171"></A><H2>&#21517;&#31216;</H2>CREATE CAST&nbsp;--&nbsp;定义一个用户定义的转换</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN69176"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">CREATE CAST (<TT
+CLASS="REPLACEABLE"
+><I
+>source_type</I
+></TT
+> AS <TT
+CLASS="REPLACEABLE"
+><I
+>target_type</I
+></TT
+>)
+    WITH FUNCTION <TT
+CLASS="REPLACEABLE"
+><I
+>function_name</I
+></TT
+> (<TT
+CLASS="REPLACEABLE"
+><I
+>argument_type</I
+></TT
+> [, ...])
+    [ AS ASSIGNMENT | AS IMPLICIT ]
+
+CREATE CAST (<TT
+CLASS="REPLACEABLE"
+><I
+>source_type</I
+></TT
+> AS <TT
+CLASS="REPLACEABLE"
+><I
+>target_type</I
+></TT
+>)
+    WITHOUT FUNCTION
+    [ AS ASSIGNMENT | AS IMPLICIT ]
+
+CREATE CAST (<TT
+CLASS="REPLACEABLE"
+><I
+>source_type</I
+></TT
+> AS <TT
+CLASS="REPLACEABLE"
+><I
+>target_type</I
+></TT
+>)
+    WITH INOUT
+    [ AS ASSIGNMENT | AS IMPLICIT ]</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-CREATECAST-DESCRIPTION"></A><H2>描述</H2><P><TT CLASS="COMMAND">CREATE CAST</TT>定义一个新的转换。一个转换说明如何在两个类型之间进行转换。比如：
+</P><PRE CLASS="PROGRAMLISTING">SELECT CAST(42 AS float8);</PRE><P>
+通过调用前面指定的函数将整数常量42转化为<TT CLASS="TYPE">float8</TT>类型，即<TT CLASS="TYPE">float8(int4)</TT>的形式。
+（如果没有定义合适的转换, 转换将失败。） </P><P>两种形式是二进制可强制转换的，这意味转换可以在不调用函数的情况下自由执行。
+这要求相应的值使用相同的内部表示。例如，<TT CLASS="TYPE">text</TT>和<TT CLASS="TYPE">varchar</TT>形式都是二进制可强制转换的两种类型。
+二进制可可强制转换未必是一个对称的关系。例如： <TT CLASS="TYPE">xml</TT>到text的转换可以在当前的处理中可直接执行。
+但相反的方向的转换需要一个函数来执行，至少一个语法检查。（两种二进制可强制转换的形式也被称为二进制兼容。） </P><P>您可以定义一个转换为使用<TT CLASS="LITERAL">WITH INOUT</TT>语法的<I CLASS="FIRSTTERM">I/O conversion cast</I>转化转换。
+一个I/O转化转换通过调用原数据库类型的输出函数来执行，并将结果传给目标数据类型的输入函数。 </P><P>缺省时，只有在明确要求转换的情况下才调用一个转换，也就是一个明确的<TT CLASS="LITERAL">CAST(<TT CLASS="REPLACEABLE"><I>x</I></TT> AS <TT CLASS="REPLACEABLE"><I>typename</I></TT>)</TT>或<TT CLASS="REPLACEABLE"><I>x</I></TT><TT CLASS="LITERAL">::</TT><TT CLASS="REPLACEABLE"><I>typename</I></TT>转换要求。 </P><P> 如果转换被标记为<TT CLASS="LITERAL">AS ASSIGNMENT</TT>，那么在给目标数据类型的字段赋值的时候，可以隐含调用它。
+比如，假设<TT CLASS="LITERAL">foo.f1</TT>是一个类型为<TT CLASS="TYPE">text</TT>的字段， 那么：
+</P><PRE CLASS="PROGRAMLISTING">INSERT INTO foo (f1) VALUES (42);</PRE><P>
+如果从<TT CLASS="TYPE">integer</TT>类型到<TT CLASS="TYPE">text</TT>类型的转换标记为<TT CLASS="LITERAL">AS ASSIGNMENT</TT>，上面的这句就被允许，否则就不允许。
+（通常用术语<I CLASS="FIRSTTERM">assignment cast</I>来描述这种转换。） </P><P>如果转换标记了<TT CLASS="LITERAL">AS IMPLICIT</TT>，那么可以在任何环境下调用，不管是作业还是在一个内部表达式中。
+（我们通常使用术语<I CLASS="FIRSTTERM">implicit cast</I>来描述这种转换。 ） 例如，考虑下面这个查询：
+</P><PRE CLASS="PROGRAMLISTING">SELECT 2 + 4.0;</PRE><P>
+解析器初始时标记常量分别为<TT CLASS="TYPE">integer</TT>和<TT CLASS="TYPE">numeric</TT>。
+在系统目录中没有<TT CLASS="TYPE">integer</TT> + <TT CLASS="TYPE">numeric</TT>的操作符， 但是有一个<TT CLASS="TYPE">integer</TT> + <TT CLASS="TYPE">numeric</TT>操作符。
+若<TT CLASS="TYPE">integer</TT>到<TT CLASS="TYPE">numeric</TT>的转换是可以执行的并且标记为 <TT CLASS="LITERAL">AS IMPLICIT</TT> — 则该查询将会成功执行。
+解析器将使用隐性的转换并按所写的查询生成结果：
+</P><PRE CLASS="PROGRAMLISTING">SELECT CAST ( 2 AS numeric ) + 4.0;</PRE><P></P><P>现在，目录提供了一个从<TT CLASS="TYPE">numeric</TT>到<TT CLASS="TYPE">integer</TT>的转换。
+如果那个转换标记了<TT CLASS="LITERAL">AS IMPLICIT</TT> —而它并不是— 然后解析器会面临对选择上面的解释还是选择<TT CLASS="TYPE">numeric</TT>常量到<TT CLASS="TYPE">integer</TT>的转换，
+然后应用<TT CLASS="TYPE">integer</TT> <TT CLASS="LITERAL">+</TT> <TT CLASS="TYPE">integer</TT>操作符。
+缺乏选择哪一种处理方式的足够信息，系统会放弃执行并返回查询是模棱两可的信息。
+两种转换中仅有一个是缺省的方式正是我们设计的方式，我们让解析器更偏向于将<TT CLASS="TYPE">numeric</TT>-和-<TT CLASS="TYPE">integer</TT>的混合表达式的结果视作<TT CLASS="TYPE">numeric</TT>；
+没有关于那方面的内置信息。 </P><P>在是否将转换标记为隐性的问题上保守一些是明智的。
+过于丰富的隐含转换路径 会导致<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>选择让人奇怪的命令解析，或者是完全不能解析命令，因为存在多个可能的解析。
+一个好的规则是，只有在同一个通用类型范畴里面的那些可以保留转换信息的类型之间才标记为可隐含调用转换。
+比如，从<TT CLASS="TYPE">int2</TT>到<TT CLASS="TYPE">int4</TT>可以合理地标记为隐含转换，但是从<TT CLASS="TYPE">float8</TT>到<TT CLASS="TYPE">int4</TT>也许应该标记为赋值转换。
+跨类型范围的转换，比如<TT CLASS="TYPE">text</TT>到<TT CLASS="TYPE">int4</TT>，只能明确地转换。 </P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>有时，有必要为了可用性和标准支持的原因在一组类型中提供多个隐含转换，导致上述无法避免的模棱两可的问题。
+解析器有一个基于<I CLASS="FIRSTTERM">type categories</I>和<I CLASS="FIRSTTERM">preferred types</I>的启发式函数回调功能，有助于在这种情况下提供所期望的行为。
+参阅<A HREF="sql-createtype.html">CREATE TYPE</A>获取更多详细信息。 </P></BLOCKQUOTE></DIV><P>为了能够创建一个转换，您必须是源或者目标数据类型的所有者。
+为了创建一个强制二进制的转换，您必须是超级用户。
+（做这个约束的原因是错误的二进制可强迫转换转换可以很容易让服务器崩溃。） </P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN69256"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="REPLACEABLE"><I>source_type</I></TT></DT><DD><P>转换的源数据类型。</P></DD><DT><TT CLASS="REPLACEABLE"><I>target_type</I></TT></DT><DD><P>转换的目标数据类型。</P></DD><DT><TT CLASS="REPLACEABLE"><I>function_name</I></TT>(<TT CLASS="REPLACEABLE"><I>argument_type</I></TT> [, ...])</DT><DD><P>用于执行转换的函数。
+这个函数名可以是用模式名修饰的。
+如果它没有用模式名修饰， 那么该函数将从模式搜索路径中找出来。
+函数的结果数据类型必须匹配转换的目标类型。 它的参数在下面讨论。 </P></DD><DT><TT CLASS="LITERAL">WITHOUT FUNCTION</TT></DT><DD><P>表明源类型是对目标类型是二进制可强制转换的，所以没有函数需要执行此转换。 </P></DD><DT><TT CLASS="LITERAL">WITH INOUT</TT></DT><DD><P>表明转换是I/O转换，通过调用源数据类型的输出函数来执行，并将结果传给目标数据类型的输入函数。 </P></DD><DT><TT CLASS="LITERAL">AS ASSIGNMENT</TT></DT><DD><P>表示转换可以在赋值模式下隐含调用。</P></DD><DT><TT CLASS="LITERAL">AS IMPLICIT</TT></DT><DD><P>表示转换可以在任何环境里隐含调用。</P></DD></DL></DIV><P>转换实现函数可以有一到三个参数。
+第一个参数的类型必须与转换的源类型相同的，或可以从转换的源类型二进制可强制转换的。
+第二个参数，如果存在，必须是<TT CLASS="TYPE">integer</TT>类型；它接收这些与目标类型相关联的类型修饰符，或者若什么都没有则是-1。
+第三个参数，如果存在，必须是<TT CLASS="TYPE">boolean</TT>类型；若转换是一个显式类型转换则会收到<TT CLASS="LITERAL">true</TT>，否则是<TT CLASS="LITERAL">false</TT>。
+（奇怪的是，在一些情况下SQL标准要求对显式和隐式转换的不同表现。我们不推荐您设计自己的数据类型，这很重要。） </P><P> 一个转换函数的返回类型必须是与转换的目标类型相同或者对转换的目标类型二进制可强制转换 。</P><P>通常，一个转换必须有不同的源和目标数据类型。
+然而，若有多于一个参数的转换实现函数，则允许声明一个有相同的源和目标类型的转换。
+这用于表示系统目录中的特定类型的长度强制函数。
+命名的函数用于强制一个该类型的值为第二个参数给出的类型修饰符值。 </P><P>如果一个类型转换的源类型和目标类型不同，并且接收多于一个参数，它就表示从一种类型转换成另外一种类型只用一个步骤，并且同时实施长度转换。
+如果没有这样的项可用， 那么转换成一个使用了类型修饰词的类型将涉及两个步骤，一个是在数据类型之间转换， 另外一个是施加修饰词指定的转换。 </P><P>对域类型的转换目前没有作用。转换一般是针对域相关的所属数据类型。</P></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-CREATECAST-NOTES"></A><H2>注意</H2><P> 使用<A HREF="sql-dropcast.html">DROP CAST</A>删除用户定义的转换。
+</P><P> 请注意，如果希望能双向转换类型，那么你需要明确地定义两个方向的转换。 </P><P>通常不需要创建用户定义类型与标准字符串类型之间的转换(<TT CLASS="TYPE">text</TT>，<TT CLASS="TYPE">varchar</TT>和<TT CLASS="TYPE">char(<TT CLASS="REPLACEABLE"><I>n</I></TT>)</TT>，以及被定义为字符串的范畴的用户定义的类型)。
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>为此提供自动I/O转换转换。
+字符串类型的自动转换可以认为是分配转换，而来自字符串的自动转换是唯一显式的。
+您可以通过声明自己的转换替换系统的自动转换，但是，通常这么做的唯一原因是，你想让转化比标准唯一分配或者唯一显式设置更容易调用。
+另一个可能的原因是你想让转化变现的不同于类型的I/O函数；
+但是最重要的是您应该反复考虑这是否是一个好主意。（少量内部类型确实对转换有不同的性能要求，大部分是因为要求SQL标准。） </P><P>在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>7.3之前，每个与数据类型名称相同的函数会返回那个数据类型，并取一个不同类型的参数的函数，自动成为一个转换函数。
+在面临模式引入时约定已取消并且能代表系统表中的二进制可强制转换。内置的转换功能仍然遵循这种命名模式，但是他们必须像系统表<TT CLASS="STRUCTNAME">pg_cast</TT>中的转换一样显示。 </P><P>虽然不是必须的，但是还是建议你遵循旧的命名类型转换实现函数的习惯，也就是说， 函数名和目标数据类型同名。
+许多用户习惯于使用函数风格的表示法<TT CLASS="REPLACEABLE"><I>typename</I></TT>(<TT CLASS="REPLACEABLE"><I>x</I></TT>)来做数据类型转换。
+这种表示法恰好就是调用类型转换实现函数，这样并不会被当作一种类型转换而被特殊看待。
+如果你的转换函数没有按照这种传统命名，那么你就会让用户很奇怪。
+因为<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>允许同名不同参数的函数重载，因此同时存在多个从不同类型向同样类型转换的同名转换函数一点问题都没有。 </P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>事实上前面所述是过分简化的：在两种情况下函数调用结构被认为是一个转换请求而不需要将其匹配为一个实际函数。
+如果函数调用<TT CLASS="REPLACEABLE"><I>name</I></TT>(<TT CLASS="REPLACEABLE"><I>x</I></TT>)不准确匹配任何现有函数，但是<TT CLASS="REPLACEABLE"><I>name</I></TT>是一个数据类型的名称
+并且<TT CLASS="STRUCTNAME">pg_cast</TT>从<TT CLASS="REPLACEABLE"><I>x</I></TT>类型提供了一个二进制可强制转换到这个类型，则调用会被解析为一个二进制可强制转换。
+即使是没有任何转换函数，也设计了一种异常，二进制可强制转换可以通过使用函数语法来调用，
+同样的，若无<TT CLASS="STRUCTNAME">pg_cast</TT>条目，但转换会到达或者来自一个字符串类型， 调用将会被视为一个I/O转换转换。
+该异常情况下允许I/O转换转换通过使用函数语法来调用。</P></BLOCKQUOTE></DIV><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>也还有一种异常中的异常：从复合数据类型向字符串类型的I/O转换不能使用函数语法，必须设计为精确的转换语法（<TT CLASS="LITERAL">CAST</TT> 或 <TT CLASS="LITERAL">::</TT> 声明）
+增加这种异常是因为在介绍过自动执行的I/O转换后，用户会发现在一个函数或是字段参考时很容易误执行一个类似的转换。</P></BLOCKQUOTE></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-CREATECAST-EXAMPLES"></A><H2>例子</H2><P>为了从类型<TT CLASS="TYPE">bigint</TT>到类型<TT CLASS="TYPE">int4</TT>创建一个指派映射要通过使用函数<TT CLASS="LITERAL">int4(bigint)</TT>:
+</P><PRE CLASS="PROGRAMLISTING">CREATE CAST (bigint AS int4) WITH FUNCTION int4(bigint) AS ASSIGNMENT;</PRE><P>
+（这个转换在系统中已经预先定义了。） </P></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-CREATECAST-COMPAT"></A><H2>兼容性</H2><P><TT CLASS="COMMAND">CREATE CAST</TT>指令符合<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>标准，除了SQL没有为二进制可强制转换类型或者实现函数的额外参数来实现功能。
+<TT CLASS="LITERAL">AS IMPLICIT</TT>也是一个<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>扩展。 </P></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-CREATECAST-SEEALSO"></A><H2>参见</H2><P> <A HREF="sql-createfunction.html">CREATE FUNCTION</A>、<A HREF="sql-createtype.html">CREATE TYPE</A> 和<A HREF="sql-dropcast.html">DROP CAST</A></P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-createaggregate.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-createcollation.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">CREATE AGGREGATE</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">CREATE COLLATION</TD></TR></TABLE></DIV></BODY></HTML>

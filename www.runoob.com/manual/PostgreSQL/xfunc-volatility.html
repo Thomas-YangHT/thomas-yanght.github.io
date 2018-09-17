@@ -1,0 +1,64 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>函数易失性范畴</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="扩展SQL" HREF="http://school.yunwei.edu/manual/PostgreSQL/extend.html"><LINK REL="PREVIOUS" TITLE="函数重载" HREF="xfunc-overload.html"><LINK REL="NEXT" TITLE="过程语言函数" HREF="xfunc-pl.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/xfunc.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="函数重载" HREF="xfunc-overload.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/extend.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 35. 扩展<ACRONYM CLASS="ACRONYM">SQL</ACRONYM></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="过程语言函数" HREF="xfunc-pl.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="XFUNC-VOLATILITY">35.6. 函数易失性范畴</A></H1><P>
+每个函数都有一个<I CLASS="FIRSTTERM">易失性</I>级别<TT CLASS="LITERAL">VOLATILE</TT>，<TT CLASS="LITERAL">STABLE</TT>或者
+<TT CLASS="LITERAL">IMMUTABLE</TT>。
+如果<A HREF="sql-createfunction.html">CREATE FUNCTION</A>命令没有明确声明范畴的话，
+<TT CLASS="LITERAL">VOLATILE</TT>就是缺省。易失性范畴是给优化器的一个关于函数行为的承诺：
+<P></P></P><UL><LI><P>
+<TT CLASS="LITERAL">VOLATILE</TT>可以做任何事情，包括修改数据库。
+它可以在使用同样参数调用时返回不同的结果。优化器对这样的函数不做任何假设。
+一个使用易失函数的查询在需要数据值的时候每次都重新计算函数的值。
+</P></LI><LI><P> <TT CLASS="LITERAL">STABLE</TT>函数不会修改数据库，
+并且保证在同一个查询的环境里给出相同参数的情况下，会给出相同的结果。
+这个范畴允许优化器在一个查询里把多个函数调用优化成一个。
+特别是在索引扫描的条件表达式里面包含这样的函数是安全的。
+因为索引扫描只计算一次比较值，而不是每行一次。
+在索引扫描条件里使用一个<TT CLASS="LITERAL">VOLATILE</TT>函数是非法的。&#13;</P></LI><LI><P> <TT CLASS="LITERAL">IMMUTABLE</TT>函数不会修改数据库，
+并且保证在任何情况下同样的参数永远返回同样的结果。
+这个范畴允许优化器在查询调用函数的时候预先把函数计算成一个常量参数。
+比如，类似<TT CLASS="LITERAL">SELECT ... WHERE x = 2 + 2</TT>的查询可以简化成
+<TT CLASS="LITERAL">SELECT ... WHERE x = 4</TT>，因为在加法操作符下层的函数是标记为
+<TT CLASS="LITERAL">IMMUTABLE</TT>的。</P></LI></UL><P>
+</P><P> 为了最佳的优化结果，应该尽可能使用最严格的易失性范畴标记你的函数。</P><P> 任何有副作用的函数都<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">必须</I></SPAN>标记为<TT CLASS="LITERAL">VOLATILE</TT>，
+这样对它的调用就不会被优化。即使一个函数没有副作用，
+但它的数值可能在一个查询里改变，那么也必须标记为<TT CLASS="LITERAL">VOLATILE</TT>；
+例如<TT CLASS="LITERAL">random()</TT>，<TT CLASS="LITERAL">currval()</TT>，<TT CLASS="LITERAL">timeofday()</TT>函数。</P><P> 另一个重要例子是<CODE CLASS="FUNCTION">current_timestamp</CODE>函数簇描述为<TT CLASS="LITERAL">STABLE</TT>，
+因为他们的值在一个事务中没有改变。</P><P> 在那些简单的规划后马上执行的交互查询上，<TT CLASS="LITERAL">STABLE</TT>和
+<TT CLASS="LITERAL">IMMUTABLE</TT>没有什么区别：
+函数是在规划开始时执行还是在查询开始时执行的差别并不大。
+但是如果规划被保存并且后来被重用，那差别可就大了。
+如果把一个函数标记为<TT CLASS="LITERAL">IMMUTABLE</TT>而它实际上又不是，
+那么就会导致在随后使用其规划的时候用上一个不完整的数值。
+如果在使用预先准备好语句或者使用一种缓冲规划的函数语言(比如<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>)，
+那么后果可能很严重。</P><P> 为了编写SQL或在任何标准的程序语言的函数，还有一个通过波动性范畴决定的重要属性，
+即由SQL命令决定的任何数据变化能见度正在调用函数。
+一个<TT CLASS="LITERAL">VOLATILE</TT>函数将看到这样的变化，<TT CLASS="LITERAL">STABLE</TT>
+或者<TT CLASS="LITERAL">IMMUTABLE</TT>函数不这样。这种行为
+使用MVCC快照行为实现（参阅<A HREF="http://school.yunwei.edu/manual/PostgreSQL/mvcc.html">第 13 &#31456;</A>）：
+<TT CLASS="LITERAL">STABLE</TT>和<TT CLASS="LITERAL">IMMUTABLE</TT>函数使用快照
+确立为调用查询的开始，
+而<TT CLASS="LITERAL">VOLATILE</TT>函数每个查询执行开始时获得一个新的快照。</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B> 用C写的函数管理快照然而是他们想要的，但是使C函数这样进行工作往往是一个好主意。</P></BLOCKQUOTE></DIV><P> 因为快照行为，
+一个只包含<TT CLASS="COMMAND">SELECT</TT>命令的函数可以安全地标记为<TT CLASS="LITERAL">STABLE</TT>，
+即使它所选择的表可能会被其它并发查询修改也一样。
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>将会在执行<TT CLASS="LITERAL">STABLE</TT>
+函数时为调用它的查询建立快照，
+因此它在该查询的生存期内都会看到一致的数据库视图。</P><P> 同样的快照行为也用于<TT CLASS="LITERAL">IMMUTABLE</TT>函数里面的<TT CLASS="COMMAND">SELECT</TT>命令。
+通常，在一个<TT CLASS="LITERAL">IMMUTABLE</TT>函数里选择一个数据库的表是不明智的，
+因为如果表的内容改变，那么这种不变性就将改变。不过，
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>并不禁止你这样做。</P><P> 一个常见的错误是把一个函数标记为<TT CLASS="LITERAL">IMMUTABLE</TT>，
+而实际上这个函数的结果依赖某个配置参数。比如，
+一个操作时间戳的函数可能有依赖于<A HREF="runtime-config-client.html#GUC-TIMEZONE">TimeZone</A>设置的结果。
+为了安全考虑，这样的函数应该标记为<TT CLASS="LITERAL">STABLE</TT>。</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B> 在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>之前，要求<TT CLASS="LITERAL">STABLE</TT>和
+<TT CLASS="LITERAL">IMMUTABLE</TT>
+函数不能修改数据库这个约束并未由系统强制。版本8.0
+通过要求这类函数不能包含<TT CLASS="COMMAND">SELECT</TT>之外的 SQL 命令来强制这个约束。
+不过，这么做并不是完全防弹的升级，
+因为这样的函数仍然可以调用那些可能修改数据库的<TT CLASS="LITERAL">VOLATILE</TT>函数。
+如果你这么做的话将会发现<TT CLASS="LITERAL">STABLE</TT>或者
+<TT CLASS="LITERAL">IMMUTABLE</TT>
+并不会觉察到被它调用的函数对数据库所做的修改。&#13;</P></BLOCKQUOTE></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="xfunc-overload.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="xfunc-pl.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">函数重载</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/extend.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">过程语言函数</TD></TR></TABLE></DIV></BODY></HTML>

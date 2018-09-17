@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>cube</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="额外提供的模块" HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html"><LINK REL="PREVIOUS" TITLE="citext" HREF="citext.html"><LINK REL="NEXT" TITLE="dblink" HREF="dblink.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/cube.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="citext" HREF="citext.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; F. 额外提供的模块</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="dblink" HREF="dblink.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="CUBE">F.8. cube</A></H1><P> 这个模块为了表示多维立方体实现了数据类型<TT CLASS="TYPE">cube</TT>。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN144592">F.8.1. 语法</A></H2><P> <A HREF="cube.html#CUBE-REPR-TABLE">&#34920; F-1</A>为<TT CLASS="TYPE">cube</TT>类型显示有效外部表示。
+<TT CLASS="REPLACEABLE"><I>x</I></TT>, <TT CLASS="REPLACEABLE"><I>y</I></TT>等表示浮点数。</P><DIV CLASS="TABLE"><A NAME="CUBE-REPR-TABLE"></A><P><B>&#34920; F-1. Cube外部表示</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><TBODY><TR><TD><TT CLASS="LITERAL"><TT CLASS="REPLACEABLE"><I>x</I></TT></TT></TD><TD>一维点（或者，零长度一维间隔）
+</TD></TR><TR><TD><TT CLASS="LITERAL">(<TT CLASS="REPLACEABLE"><I>x</I></TT>)</TT></TD><TD>同上</TD></TR><TR><TD><TT CLASS="LITERAL"><TT CLASS="REPLACEABLE"><I>x1</I></TT>,<TT CLASS="REPLACEABLE"><I>x2</I></TT>,...,<TT CLASS="REPLACEABLE"><I>xn</I></TT></TT></TD><TD>n维空间点，内部表示为零体积立方体
+</TD></TR><TR><TD><TT CLASS="LITERAL">(<TT CLASS="REPLACEABLE"><I>x1</I></TT>,<TT CLASS="REPLACEABLE"><I>x2</I></TT>,...,<TT CLASS="REPLACEABLE"><I>xn</I></TT>)</TT></TD><TD>同上</TD></TR><TR><TD><TT CLASS="LITERAL">(<TT CLASS="REPLACEABLE"><I>x</I></TT>),(<TT CLASS="REPLACEABLE"><I>y</I></TT>)</TT></TD><TD>一维间隔起始于<TT CLASS="REPLACEABLE"><I>x</I></TT>并且结束于<TT CLASS="REPLACEABLE"><I>y</I></TT>或者反之亦然；
+顺序并不重要
+</TD></TR><TR><TD><TT CLASS="LITERAL">[(<TT CLASS="REPLACEABLE"><I>x</I></TT>),(<TT CLASS="REPLACEABLE"><I>y</I></TT>)]</TT></TD><TD>同上</TD></TR><TR><TD><TT CLASS="LITERAL">(<TT CLASS="REPLACEABLE"><I>x1</I></TT>,...,<TT CLASS="REPLACEABLE"><I>xn</I></TT>),(<TT CLASS="REPLACEABLE"><I>y1</I></TT>,...,<TT CLASS="REPLACEABLE"><I>yn</I></TT>)</TT></TD><TD>一个n维立方体通过一对斜对角线地对立角表示
+</TD></TR><TR><TD><TT CLASS="LITERAL">[(<TT CLASS="REPLACEABLE"><I>x1</I></TT>,...,<TT CLASS="REPLACEABLE"><I>xn</I></TT>),(<TT CLASS="REPLACEABLE"><I>y1</I></TT>,...,<TT CLASS="REPLACEABLE"><I>yn</I></TT>)]</TT></TD><TD>同上</TD></TR></TBODY></TABLE></DIV><P> 它无关立方体的相对角进入的哪个顺序。
+如果需要创建一个统一的<SPAN CLASS="QUOTE">"左下 &mdash; 右上"</SPAN>内部表示，
+该<TT CLASS="TYPE">cube</TT>函数自动交换值。</P><P> 忽略空格，因此<TT CLASS="LITERAL">[(<TT CLASS="REPLACEABLE"><I>x</I></TT>),(<TT CLASS="REPLACEABLE"><I>y</I></TT>)]</TT>和
+<TT CLASS="LITERAL">[ ( <TT CLASS="REPLACEABLE"><I>x</I></TT> ), ( <TT CLASS="REPLACEABLE"><I>y</I></TT> ) ]</TT>是一样的。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN144667">F.8.2. 精确度</A></H2><P> 值内部被存储为64位浮点数。
+这意味着超过16位有效数字将被截断。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN144670">F.8.3. 用法</A></H2><P> <TT CLASS="FILENAME">cube</TT>模块包含<TT CLASS="TYPE">cube</TT>值的GiST索引操作类。
+通过GiST操作符类支持的操作符显示在<A HREF="cube.html#CUBE-GIST-OPERATORS">&#34920; F-2</A>中。</P><DIV CLASS="TABLE"><A NAME="CUBE-GIST-OPERATORS"></A><P><B>&#34920; F-2. Cube GiST 运算符</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><THEAD><TR><TH>运算符</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD><TT CLASS="LITERAL">a = b</TT></TD><TD>立方体a和b是相同的。</TD></TR><TR><TD><TT CLASS="LITERAL">a &amp;&amp; b</TT></TD><TD>立方体a和b重叠</TD></TR><TR><TD><TT CLASS="LITERAL">a @&gt; b</TT></TD><TD>立方体a包含立方体b。</TD></TR><TR><TD><TT CLASS="LITERAL">a &lt;@ b</TT></TD><TD>立方体a被包含在立方体b中。</TD></TR></TBODY></TABLE></DIV><P> (PostgreSQL 8.2之前，
+包含操作符<TT CLASS="LITERAL">@&gt;</TT>和<TT CLASS="LITERAL">&lt;@</TT>分别称为
+<TT CLASS="LITERAL">@</TT>和<TT CLASS="LITERAL">~</TT>。
+这些名字仍然可用，但是被否决并且最终被废弃。
+请注意旧的名称从先前遵循核心几何数据类型的规定中被反转！)</P><P>
+提供标准B树运算符，比如
+<DIV CLASS="INFORMALTABLE"><P></P><A NAME="AEN144706"></A><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><THEAD><TR><TH>运算符</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD><TT CLASS="LITERAL">[a, b] &lt; [c, d]</TT></TD><TD>小于</TD></TR><TR><TD><TT CLASS="LITERAL">[a, b] &gt; [c, d]</TT></TD><TD>大于</TD></TR></TBODY></TABLE><P></P></DIV>
+这些操作符没有任何实际目的意义但排序。
+这些操作符首先比较(a)和(c)，如果是相等的，
+那么比较(b)和(d)。
+导致在某些情况下合理排序，
+如果你想使用这种类型的ORDER BY，那么它是有用的。
+</P><P> <A HREF="cube.html#CUBE-FUNCTIONS-TABLE">&#34920; F-3</A>显示可用函数。</P><DIV CLASS="TABLE"><A NAME="CUBE-FUNCTIONS-TABLE"></A><P><B>&#34920; F-3. Cube函数</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><TBODY><TR><TD><TT CLASS="LITERAL">cube(float8)返回cube</TT></TD><TD>两个坐标相同的一维立方体。
+<TT CLASS="LITERAL">cube(1) == '(1)'</TT>
+</TD></TR><TR><TD><TT CLASS="LITERAL">cube(float8, float8)返回cube</TT></TD><TD>一维立方体。
+<TT CLASS="LITERAL">cube(1,2) == '(1),(2)'</TT>
+</TD></TR><TR><TD><TT CLASS="LITERAL">cube(float8[])返回cube</TT></TD><TD>使用数组定义的坐标的零体积立方体。
+<TT CLASS="LITERAL">cube(ARRAY[1,2]) == '(1,2)'</TT>
+</TD></TR><TR><TD><TT CLASS="LITERAL">cube(float8[], float8[])返回cube</TT></TD><TD>通过两个数组定义的右上和左下坐标的立方体，必须是相同长度。
+<TT CLASS="LITERAL">cube('{1,2}'::float[], '{3,4}'::float[]) == '(1,2),(3,4)'
+</TT>
+</TD></TR><TR><TD><TT CLASS="LITERAL">cube(cube, float8)返回cube</TT></TD><TD>通过添加一个维度到新坐标两个部分相同值的已存在立方体来构建一个新的立方体
+这对于逐渐地从计算值建构立方体是有用的。
+<TT CLASS="LITERAL">cube('(1)',2) == '(1,2),(1,2)'</TT>
+</TD></TR><TR><TD><TT CLASS="LITERAL">cube(cube, float8, float8)返回cube</TT></TD><TD>通过添加一个维度到已存在立方体上构建一个新的立方体。
+这对于逐渐地从计算值建构立方体是有用的。
+<TT CLASS="LITERAL">cube('(1,2)',3,4) == '(1,3),(2,4)'</TT>
+</TD></TR><TR><TD><TT CLASS="LITERAL">cube_dim(cube)返回int</TT></TD><TD>返回立方体的维数
+</TD></TR><TR><TD><TT CLASS="LITERAL">cube_ll_coord(cube, int)返回double </TT></TD><TD>返回立方体左下角的第n个坐标值
+</TD></TR><TR><TD><TT CLASS="LITERAL">cube_ur_coord(cube, int)返回double
+</TT></TD><TD>返回立方体右上角的第n个坐标值
+</TD></TR><TR><TD><TT CLASS="LITERAL">cube_is_point(cube)返回bool</TT></TD><TD>如果cube是一点，那么返回真。也就是说，两个定义的角是一样的。</TD></TR><TR><TD><TT CLASS="LITERAL">cube_distance(cube, cube)返回double</TT></TD><TD>返回两个立方体之间的距离。
+如果两个立方体是点，那么这是一个正常距离函数。
+</TD></TR><TR><TD><TT CLASS="LITERAL">cube_subset(cube, int[])返回cube
+</TT></TD><TD>从一个已经存在立方体构建新的立方体，使用来自数组的维度索引列表。
+可以用于查找单维的LL和UR坐标，比如，
+<TT CLASS="LITERAL">cube_subset(cube('(1,3,5),(6,7,8)'), ARRAY[2]) = '(3),(7)'</TT>.
+或者可以用于降低维度，或者按照需要重新排序它们，比如
+<TT CLASS="LITERAL">cube_subset(cube('(1,3,5),(6,7,8)'), ARRAY[3,2,1,1]) = '(5, 3,
+1, 1),(8, 7, 6, 6)'</TT>.
+</TD></TR><TR><TD><TT CLASS="LITERAL">cube_union(cube, cube)返回cube</TT></TD><TD>产生两个立方体并集
+</TD></TR><TR><TD><TT CLASS="LITERAL">cube_inter(cube, cube)返回cube</TT></TD><TD>产生两个立方体交集
+</TD></TR><TR><TD><TT CLASS="LITERAL">cube_enlarge(cube c, double r, int n)返回cube</TT></TD><TD>通过至少n维的指定半径增加立方体大小。
+如果半径是负数立方体反而缩减。
+在点周围搜索临近点创建边界区域是很有用的。
+所有定义维数通过半径r来改变。
+LL坐标减少了r，UR坐标增加了r。
+如果LL坐标增加到可以大于相应的UR坐标（当r &lt; 0时，这可以发生）
+比起两个坐标系被设置为平均来说，
+如果n大于定义维度数，并且立方体正被增加(r &gt;= 0)，
+然后使用0作为额外坐标基础。
+</TD></TR></TBODY></TABLE></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN144795">F.8.4. 缺省</A></H2><P> 我相信这个联合：</P><PRE CLASS="PROGRAMLISTING">select cube_union('(0,5,2),(2,3,1)', '0');
+cube_union
+-------------------
+(0, 0, 0),(2, 5, 2)
+(1 row)</PRE><P> 不违背常识，也不违背交集</P><PRE CLASS="PROGRAMLISTING">select cube_inter('(0,-1),(1,1)', '(-2),(2)');
+cube_inter
+-------------
+(0, 0),(1, 0)
+(1 row)</PRE><P> 在不同的维度立方体的所有二进制运算中，我认为降低笛卡尔积投影维数，比如，
+在字符串表示中忽略坐标的地方归零。上面例子等同于：</P><PRE CLASS="PROGRAMLISTING">cube_union('(0,5,2),(2,3,1)','(0,0,0),(0,0,0)');
+cube_inter('(0,-1),(1,1)','(-2,0),(2,0)');</PRE><P> 下面的包含谓词使用point语法，
+而实际上第二个参数通过box内部表示。
+这个语法没必要定义单独的point类型
+以及(box,point)谓词函数。</P><PRE CLASS="PROGRAMLISTING">select cube_contains('(0,0),(1,1)', '0.5,0.5');
+cube_contains
+--------------
+t
+(1 row)</PRE></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN144805">F.8.5. 注意</A></H2><P> 对于用法实例，参阅回归测试<TT CLASS="FILENAME">sql/cube.sql</TT>。</P><P> 为了使人们突破该事物更加难，
+在立方体维度数量上有100的限制。
+如果你需要大一些的，
+可以在<TT CLASS="FILENAME">cubedata.h</TT>中设置。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN144811">F.8.6. 赞扬</A></H2><P> 原作者：Gene Selkov, Jr. <CODE CLASS="EMAIL">&#60;<A HREF="mailto:selkovjr@mcs.anl.gov">selkovjr@mcs.anl.gov</A>&#62;</CODE>，
+数学和计算机科学系，Argonne国家实验室。</P><P> 首先感谢
+Prof. Joe Hellerstein(<A HREF="http://db.cs.berkeley.edu/jmh/" TARGET="_top">http://db.cs.berkeley.edu/jmh/</A>)
+阐明GiST (<A HREF="http://gist.cs.berkeley.edu/" TARGET="_top">http://gist.cs.berkeley.edu/</A>)的要点，
+和他以前的学生Andy Dong
+(<A HREF="http://best.me.berkeley.edu/~adong/" TARGET="_top">http://best.me.berkeley.edu/~adong/</A>)，
+比如书面说明例子，<A HREF="http://best.berkeley.edu/~adong/rtree/index.html" TARGET="_top">http://best.berkeley.edu/~adong/rtree/index.html</A>。
+我还要感谢所有现在的和以前的Postgres开发人员，使我可以创造我的世界并且在这个领域生存。
+并且我还想要感谢Argonne Lab和能源
+U.S. Department对我的数据库研究多年的忠实支持。
+</P><P> 这个包较小更新是由Bruno Wolff III
+<CODE CLASS="EMAIL">&#60;<A HREF="mailto:bruno@wolff.to">bruno@wolff.to</A>&#62;</CODE>在2002年八月/九月完成的。
+这些包含从单精度到双精度改变精度以及添加一些新的函数。</P><P> 额外更新是由Joshua Reich <CODE CLASS="EMAIL">&#60;<A HREF="mailto:josh@root.net">josh@root.net</A>&#62;</CODE>在2006年7月进行的。
+这些包含<TT CLASS="LITERAL">cube(float8[], float8[])</TT>并且
+使用V1调用协议而不是过时的V0协议来清理代码。</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="citext.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="dblink.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">citext</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">dblink</TD></TR></TABLE></DIV></BODY></HTML>

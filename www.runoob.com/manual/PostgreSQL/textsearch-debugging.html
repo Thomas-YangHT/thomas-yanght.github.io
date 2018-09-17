@@ -1,0 +1,382 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>测试和调试文本搜索</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="全文检索" HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html"><LINK REL="PREVIOUS" TITLE="配置实例" HREF="textsearch-configuration.html"><LINK REL="NEXT" TITLE="GiST和GIN索引类型" HREF="textsearch-indexes.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/textsearch.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="配置实例" HREF="textsearch-configuration.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 12. 全文检索</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="GiST和GIN索引类型" HREF="textsearch-indexes.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="TEXTSEARCH-DEBUGGING">12.8. 测试和调试文本搜索</A></H1><P> 一个自定义文本搜索配置的行为很容易变得混乱。在本节中描述的函数对测试文本搜索对象是有用的。
+你可以测试一个完整的配置，或分别测试分析器和词典。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TEXTSEARCH-CONFIGURATION-TESTING">12.8.1. 配置测试</A></H2><P> 函数<CODE CLASS="FUNCTION">ts_debug</CODE>允许简单测试文本搜索配置。</P><PRE CLASS="SYNOPSIS">ts_debug([<SPAN
+CLASS="OPTIONAL"
+> <TT
+CLASS="REPLACEABLE"
+><I
+>config</I
+></TT
+> <TT
+CLASS="TYPE"
+>regconfig</TT
+>, </SPAN
+>] <TT
+CLASS="REPLACEABLE"
+><I
+>document</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>,
+         OUT <TT
+CLASS="REPLACEABLE"
+><I
+>alias</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>,
+         OUT <TT
+CLASS="REPLACEABLE"
+><I
+>description</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>,
+         OUT <TT
+CLASS="REPLACEABLE"
+><I
+>token</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>,
+         OUT <TT
+CLASS="REPLACEABLE"
+><I
+>dictionaries</I
+></TT
+> <TT
+CLASS="TYPE"
+>regdictionary[]</TT
+>,
+         OUT <TT
+CLASS="REPLACEABLE"
+><I
+>dictionary</I
+></TT
+> <TT
+CLASS="TYPE"
+>regdictionary</TT
+>,
+         OUT <TT
+CLASS="REPLACEABLE"
+><I
+>lexemes</I
+></TT
+> <TT
+CLASS="TYPE"
+>text[]</TT
+>)
+         returns setof record</PRE><P> <CODE CLASS="FUNCTION">ts_debug</CODE>显示关于通过解析器产生的和通过配置词典处理的<TT CLASS="REPLACEABLE"><I>document</I></TT>的每个标记的信息。
+如果忽略参数，它使用通过<TT CLASS="REPLACEABLE"><I>config</I></TT>或者<TT CLASS="VARNAME">default_text_search_config</TT>指定的配置。</P><P>
+<CODE CLASS="FUNCTION">ts_debug</CODE>返回通过文本解析器标识的每个标记的每一行，返回的列是：
+<P></P></P><UL COMPACT="COMPACT"><LI STYLE="list-style-type: disc"><P>
+<TT CLASS="REPLACEABLE"><I>alias</I></TT> <TT CLASS="TYPE">text</TT> &mdash;标记类型的别名
+</P></LI><LI STYLE="list-style-type: disc"><P> <TT CLASS="REPLACEABLE"><I>description</I></TT> <TT CLASS="TYPE">text</TT> &mdash;标记类型描述</P></LI><LI STYLE="list-style-type: disc"><P> <TT CLASS="REPLACEABLE"><I>token</I></TT> <TT CLASS="TYPE">text</TT> &mdash;标记文本</P></LI><LI STYLE="list-style-type: disc"><P> <TT CLASS="REPLACEABLE"><I>dictionaries</I></TT> <TT CLASS="TYPE">regdictionary[]</TT> &mdash;通过配置为这个标记类型选定的词典</P></LI><LI STYLE="list-style-type: disc"><P> <TT CLASS="REPLACEABLE"><I>dictionary</I></TT> <TT CLASS="TYPE">regdictionary</TT> &mdash;词典公认的标记，如果不这样，则为<TT CLASS="LITERAL">空</TT>。</P></LI><LI STYLE="list-style-type: disc"><P> <TT CLASS="REPLACEABLE"><I>lexemes</I></TT> <TT CLASS="TYPE">text[]</TT> &mdash; 公认标记的词典产生的词（s），或者如果不做则为<TT CLASS="LITERAL">NULL</TT>；空数组（<TT CLASS="LITERAL">{}</TT>）意味着它是公认的屏蔽词。</P></LI></UL><P>
+</P><P>
+一个简单例子：
+</P><PRE CLASS="SCREEN">SELECT * FROM ts_debug('english','a fat  cat sat on a mat - it ate a fat rats');
+   alias   |   description   | token |  dictionaries  |  dictionary  | lexemes 
+-----------+-----------------+-------+----------------+--------------+---------
+ asciiword | Word, all ASCII | a     | {english_stem} | english_stem | {}
+ blank     | Space symbols   |       | {}             |              | 
+ asciiword | Word, all ASCII | fat   | {english_stem} | english_stem | {fat}
+ blank     | Space symbols   |       | {}             |              | 
+ asciiword | Word, all ASCII | cat   | {english_stem} | english_stem | {cat}
+ blank     | Space symbols   |       | {}             |              | 
+ asciiword | Word, all ASCII | sat   | {english_stem} | english_stem | {sat}
+ blank     | Space symbols   |       | {}             |              | 
+ asciiword | Word, all ASCII | on    | {english_stem} | english_stem | {}
+ blank     | Space symbols   |       | {}             |              | 
+ asciiword | Word, all ASCII | a     | {english_stem} | english_stem | {}
+ blank     | Space symbols   |       | {}             |              | 
+ asciiword | Word, all ASCII | mat   | {english_stem} | english_stem | {mat}
+ blank     | Space symbols   |       | {}             |              | 
+ blank     | Space symbols   | -     | {}             |              | 
+ asciiword | Word, all ASCII | it    | {english_stem} | english_stem | {}
+ blank     | Space symbols   |       | {}             |              | 
+ asciiword | Word, all ASCII | ate   | {english_stem} | english_stem | {ate}
+ blank     | Space symbols   |       | {}             |              | 
+ asciiword | Word, all ASCII | a     | {english_stem} | english_stem | {}
+ blank     | Space symbols   |       | {}             |              | 
+ asciiword | Word, all ASCII | fat   | {english_stem} | english_stem | {fat}
+ blank     | Space symbols   |       | {}             |              | 
+ asciiword | Word, all ASCII | rats  | {english_stem} | english_stem | {rat}</PRE><P>
+</P><P> 一个更广泛的例子，我们首先用英语创建一个 <TT CLASS="LITERAL">public.english</TT>配置和Ispell词典：</P><PRE CLASS="PROGRAMLISTING">CREATE TEXT SEARCH CONFIGURATION public.english ( COPY = pg_catalog.english );
+
+CREATE TEXT SEARCH DICTIONARY english_ispell (
+    TEMPLATE = ispell,
+    DictFile = english,
+    AffFile = english,
+    StopWords = english
+);
+
+ALTER TEXT SEARCH CONFIGURATION public.english
+   ALTER MAPPING FOR asciiword WITH english_ispell, english_stem;</PRE><PRE CLASS="SCREEN">SELECT * FROM ts_debug('public.english','The Brightest supernovaes');
+   alias   |   description   |    token    |         dictionaries          |   dictionary   |   lexemes   
+-----------+-----------------+-------------+-------------------------------+----------------+-------------
+ asciiword | Word, all ASCII | The         | {english_ispell,english_stem} | english_ispell | {}
+ blank     | Space symbols   |             | {}                            |                | 
+ asciiword | Word, all ASCII | Brightest   | {english_ispell,english_stem} | english_ispell | {bright}
+ blank     | Space symbols   |             | {}                            |                | 
+ asciiword | Word, all ASCII | supernovaes | {english_ispell,english_stem} | english_stem   | {supernova}</PRE><P> 在这个例子中，<TT CLASS="LITERAL">Brightest</TT>是由解析器作为<TT CLASS="LITERAL">ASCII词</TT>来标识（别名<TT CLASS="LITERAL">asciiword</TT>）。
+为这个标识类型，词典列表是<TT CLASS="LITERAL">english_ispell</TT>和<TT CLASS="LITERAL">english_stem</TT>。这个词通过<TT CLASS="LITERAL">english_ispell</TT>标识，
+归纳它为名词<TT CLASS="LITERAL">bright</TT>。词<TT CLASS="LITERAL">supernovaes</TT>于<TT CLASS="LITERAL">english_ispell</TT>词典是未知的，所以它传递给下一个词典，
+幸运的是，是公认的（事实上，<TT CLASS="LITERAL">english_stem</TT>是一个识别一切的Snowball词典；
+这就是为什么它被放置在词典列表末尾的原因）。</P><P> 词<TT CLASS="LITERAL">The</TT>是由 <TT CLASS="LITERAL">english_ispell</TT>词典被公认为屏蔽词（节<A HREF="textsearch-dictionaries.html#TEXTSEARCH-STOPWORDS">第 12.6.1 &#33410;</A>），不会被索引。
+空间也被丢弃，因为该配置根本没有为它们提供词典。</P><P>
+你可以通过明确指定你想要查看的列减少输出的宽度：
+</P><PRE CLASS="SCREEN">SELECT alias, token, dictionary, lexemes
+FROM ts_debug('public.english','The Brightest supernovaes');
+   alias   |    token    |   dictionary   |   lexemes   
+-----------+-------------+----------------+-------------
+ asciiword | The         | english_ispell | {}
+ blank     |             |                | 
+ asciiword | Brightest   | english_ispell | {bright}
+ blank     |             |                | 
+ asciiword | supernovaes | english_stem   | {supernova}</PRE><P>
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TEXTSEARCH-PARSER-TESTING">12.8.2. 解析器测试</A></H2><P> 下列函数允许直接测试文本搜索解析器。</P><PRE CLASS="SYNOPSIS">ts_parse(<TT
+CLASS="REPLACEABLE"
+><I
+>parser_name</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>document</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>,
+         OUT <TT
+CLASS="REPLACEABLE"
+><I
+>tokid</I
+></TT
+> <TT
+CLASS="TYPE"
+>integer</TT
+>, OUT <TT
+CLASS="REPLACEABLE"
+><I
+>token</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>) returns <TT
+CLASS="TYPE"
+>setof record</TT
+>
+ts_parse(<TT
+CLASS="REPLACEABLE"
+><I
+>parser_oid</I
+></TT
+> <TT
+CLASS="TYPE"
+>oid</TT
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>document</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>,
+         OUT <TT
+CLASS="REPLACEABLE"
+><I
+>tokid</I
+></TT
+> <TT
+CLASS="TYPE"
+>integer</TT
+>, OUT <TT
+CLASS="REPLACEABLE"
+><I
+>token</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>) returns <TT
+CLASS="TYPE"
+>setof record</TT
+></PRE><P>
+<CODE CLASS="FUNCTION">ts_parse</CODE>解析给定的<TT CLASS="REPLACEABLE"><I>document</I></TT>并返回一系列的记录，每一个标记通过解析而产生。
+每个记录包括<TT CLASS="VARNAME">tokid</TT>显示已分配的标记类型，并且<TT CLASS="VARNAME">token</TT>是标记的文本。比如：
+</P><PRE CLASS="SCREEN">SELECT * FROM ts_parse('default', '123 - a number');
+ tokid | token
+-------+--------
+    22 | 123
+    12 |
+    12 | -
+     1 | a
+    12 |
+     1 | number</PRE><P>
+</P><PRE CLASS="SYNOPSIS">ts_token_type(<TT
+CLASS="REPLACEABLE"
+><I
+>parser_name</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>, OUT <TT
+CLASS="REPLACEABLE"
+><I
+>tokid</I
+></TT
+> <TT
+CLASS="TYPE"
+>integer</TT
+>,
+              OUT <TT
+CLASS="REPLACEABLE"
+><I
+>alias</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>, OUT <TT
+CLASS="REPLACEABLE"
+><I
+>description</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>) returns <TT
+CLASS="TYPE"
+>setof record</TT
+>
+ts_token_type(<TT
+CLASS="REPLACEABLE"
+><I
+>parser_oid</I
+></TT
+> <TT
+CLASS="TYPE"
+>oid</TT
+>, OUT <TT
+CLASS="REPLACEABLE"
+><I
+>tokid</I
+></TT
+> <TT
+CLASS="TYPE"
+>integer</TT
+>,
+              OUT <TT
+CLASS="REPLACEABLE"
+><I
+>alias</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>, OUT <TT
+CLASS="REPLACEABLE"
+><I
+>description</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>) returns <TT
+CLASS="TYPE"
+>setof record</TT
+></PRE><P>
+<CODE CLASS="FUNCTION">ts_token_type</CODE>返回一个表，这个表描述了每种可以识别的指定分析器标记类型。
+每个标记类型，该表给出了整数<TT CLASS="VARNAME">tokid</TT>，解析器用于标记那个类型标记，<TT CLASS="VARNAME">alias</TT>命名配置命令的标记类型，
+并且简称<TT CLASS="VARNAME">description</TT>。比如：
+</P><PRE CLASS="SCREEN">SELECT * FROM ts_token_type('default');
+ tokid |      alias      |               description                
+-------+-----------------+------------------------------------------
+     1 | asciiword       | Word, all ASCII
+     2 | word            | Word, all letters
+     3 | numword         | Word, letters and digits
+     4 | email           | Email address
+     5 | url             | URL
+     6 | host            | Host
+     7 | sfloat          | Scientific notation
+     8 | version         | Version number
+     9 | hword_numpart   | Hyphenated word part, letters and digits
+    10 | hword_part      | Hyphenated word part, all letters
+    11 | hword_asciipart | Hyphenated word part, all ASCII
+    12 | blank           | Space symbols
+    13 | tag             | XML tag
+    14 | protocol        | Protocol head
+    15 | numhword        | Hyphenated word, letters and digits
+    16 | asciihword      | Hyphenated word, all ASCII
+    17 | hword           | Hyphenated word, all letters
+    18 | url_path        | URL path
+    19 | file            | File or path name
+    20 | float           | Decimal notation
+    21 | int             | Signed integer
+    22 | uint            | Unsigned integer
+    23 | entity          | XML entity</PRE><P>
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TEXTSEARCH-DICTIONARY-TESTING">12.8.3. 词典测试</A></H2><P> <CODE CLASS="FUNCTION">ts_lexize</CODE>函数有易于进行词典测试。</P><PRE CLASS="SYNOPSIS">ts_lexize(<TT
+CLASS="REPLACEABLE"
+><I
+>dict</I
+></TT
+> <TT
+CLASS="TYPE"
+>regdictionary</TT
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>token</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>) returns <TT
+CLASS="TYPE"
+>text[]</TT
+></PRE><P> 如果输入<TT CLASS="REPLACEABLE"><I>token</I></TT>为词典已知的，那么<CODE CLASS="FUNCTION">ts_lexize</CODE>返回词的数组，如果这个token对词典是已知的，
+但它是一个屏蔽词，则返回空数组。如果它是一个未知的词则返回<TT CLASS="LITERAL">NULL</TT>。</P><P>
+比如：
+</P><PRE CLASS="SCREEN">SELECT ts_lexize('english_stem', 'stars');
+ ts_lexize
+-----------
+ {star}
+
+SELECT ts_lexize('english_stem', 'a');
+ ts_lexize
+-----------
+ {}</PRE><P>
+</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>
+<CODE CLASS="FUNCTION">ts_lexize</CODE>函数需要单一<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">标记</I></SPAN>，没有文本。这是一种引起混淆的情况：
+</P><PRE CLASS="SCREEN">SELECT ts_lexize('thesaurus_astro','supernovae stars') is null;
+ ?column?
+----------
+ t</PRE><P>
+同义词词典<TT CLASS="LITERAL">thesaurus_astro</TT>确实知道短语<TT CLASS="LITERAL">supernovae stars</TT>，但<CODE CLASS="FUNCTION">ts_lexize</CODE>失败了，
+因为它不解析输入文本，而是把它作为一个单一标记。
+使用<CODE CLASS="FUNCTION">plainto_tsquery</CODE>或者<CODE CLASS="FUNCTION">to_tsvector</CODE>测试同义词词典，例如：
+</P><PRE CLASS="SCREEN">SELECT plainto_tsquery('supernovae stars');
+ plainto_tsquery
+-----------------
+ 'sn'</PRE><P>
+</P></BLOCKQUOTE></DIV></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="textsearch-configuration.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="textsearch-indexes.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">配置实例</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">GiST和GIN索引类型</TD></TR></TABLE></DIV></BODY></HTML>

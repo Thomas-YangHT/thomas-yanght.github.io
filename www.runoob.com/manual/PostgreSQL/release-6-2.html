@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>版本 6.2</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="版本 6.2.1" HREF="release-6-2-1.html"><LINK REL="NEXT" TITLE="版本 6.1.1" HREF="release-6-1-1.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-old.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="版本 6.2.1" HREF="release-6-2-1.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="版本 6.1.1" HREF="release-6-1-1.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-6-2">E.234. 版本 6.2</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>1997-10-02</P></BLOCKQUOTE></DIV><P>希望从以前版本的 <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+升级到此版本的用户需要对数据库做一转储/恢复的工作。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN143911">E.234.1. 从版本 6.1 迁移到版本 6.2</A></H2><P>这种迁移需要对6.1的数据库进行一次完全的转储，然后再恢复到6.2的数据库里面。</P><P>请注意，6.2 的<TT CLASS="COMMAND">pg_dump</TT> 和 <TT CLASS="COMMAND">pg_dumpall</TT> 工具应该用来转储 6.1 数据库。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN143917">E.234.2. 从版本 1.<TT CLASS="REPLACEABLE"><I>x</I></TT> 迁移到版本 6.2</A></H2><P>任何从早于 1.* 版本的升级都要首先升级到 1.09，
+因为在 1.02 版本中对 COPY 的输出格式进行了改进。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN143921">E.234.3. 修改列表</A></H2><P></P><PRE CLASS="PROGRAMLISTING">Bug 修复
+---------
+修复 pg_dump 继承、序列、归档表的问题 (Bruce)
+修复由于 Solaris 中转换、无符号和坏的原型引起的溢出导致的编译错误 (Diab Jerius)
+修复几何线算法的 bug (损坏的交叉计算) (Thomas)
+检查在端点处的几何交叉以避免圆整 (Thomas)
+捕捉非功能性的删除尝试 (Vadim)
+更改时间函数名使其更一致 (Michael Reifenberg)
+检查零分 (Michael Reifenberg)
+检查一个命令对其本身可见的行更改/插入（这样我们有多个更新行的更新，等）的非常老旧的bug (Vadim) 
+修复 SELECT null, 'fail' FROM pg_am (Patrick)
+SELECT NULL as EMPTY_FIELD 现在被允许了 (Patrick)
+从 contrib/pginterface 中删除不需要的信号的东西
+修复了 OR (where x != 1 or x isnull didn't return rows with x NULL) (Vadim)
+修复了 time_cmp 函数 (Vadim)
+修复了在 WHERE 子句中处理带有非属性第一参数的函数 (Vadim)
+修复了记录的顺序和目标列表的顺序不同时的 GROUP BY (Vadim)
+修复了不带有 sfunc1 的聚集的 pg_dump (Vadim)
+
+增强
+------------
+默认遗传优化器 GEQO 参数现在是 8 个 (Bruce)
+允许在函数中的有聚集的目标列表中使用参数 (Vadim)
+添加 JDBC 驱动器作为一个接口 (Adrian &amp; Peter)
+pg_password 工具
+返回 INSERT/UPDATE/DELETE 等 inserted/affected 的行数 (Vadim)
+触发器由 CREATE TRIGGER 实现 (SQL3)(Vadim)
+SPI (Server Programming Interface) 允许查询在 C 函数内部执行 (Vadim)
+实现了 NOT NULL (SQL92)(Robson Paniago de Miranda)
+为字符串处理、外连接和联合包括保留字 (Thomas) 
+使用唯一状态实现了扩展的注释 ("/* ... */") (Thomas)
+添加 "//" 单行注释 (Bruce)
+删除操作符名字里的一些字符上的限制 (Thomas)
+实现了表的 DEFAULT 和 CONSTRAINT (SQL92)(Thomas)
+添加文本串联操作符和函数 (SQL92)(Thomas)
+支持 WITH TIME ZONE 语法 (SQL92)(Thomas)
+支持 INTERVAL unit TO unit 语法 (SQL92)(Thomas)
+定义类型 DOUBLE PRECISION, INTERVAL, CHARACTER, 和 CHARACTER VARYING (SQL92)(Thomas)
+定义类型 FLOAT(p) 和基本的 DECIMAL(p,s), NUMERIC(p,s) (SQL92)(Thomas) 
+定义 EXTRACT(), POSITION(), SUBSTRING(), 和 TRIM() (SQL92)(Thomas)
+定义 CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP (SQL92)(Thomas)
+为 UNION, HAVING, INNER 和 OUTER JOIN 添加语法和警告 (SQL92)(Thomas)
+添加更多保留字，大部分是 SQL92 兼容的 (Thomas)
+允许 timespan/reltime 类型的 hh:mm:ss 时间选项 (Thomas)
+为 lseg, path, polygon 添加 center() 例程 (Thomas)
+为 circle-polygon, polygon-polygon 添加 distance() 例程 (Thomas)
+明确的检查使用轴线交叉算法的多边形包含的点和多边形 (Thomas)
+添加转换 circle-box 的例程 (Thomas) 
+合并不同几何数据类型冲突的操作符 (Thomas)
+用 "&lt;-&gt;" 替换距离操作符 "&lt;===&gt;" (Thomas)
+用"&gt;^" 替换 "above" 操作符 "!^" 和用 "&lt;^" 替换 "below" 操作符 "!|" (Thomas)
+为文本在两端截取、子字符串和字符串位置添加例程 (Thomas)
+添加转换程序 circle(box) 和 poly(circle) (Thomas)
+允许以内存而不是文件排序的内部排序 (Bruce &amp; Vadim)
+允许在内部同一类型上的函数和操作符成功 (Bruce)
+加速剖像分析之后的后端启动 (Bruce)
+为了性能内联频繁的调用函数 (Bruce) 
+减少 open() 调用 (Bruce)
+psql:  添加 PAGER 为了 \h 和 \?,\C 修复
+修复没有 tty 时的 psql pager (Bruce)
+新增 entab 工具 (Bruce)
+为参照完整性添加一般触发器函数 (Vadim)
+为时间间隔添加一般触发器函数 (Vadim)
+为 AUTOINCREMENT/IDENTITY 特性添加一般触发器函数 (Vadim)
+MOVE 实现 (Vadim) 
+
+源代码树的变化
+-------------------
+HP-UX 10 补丁 (Vladimir Turin)
+添加 SCO 支持 (Daniel Harris)
+MkLinux 补丁 (Tatsuo Ishii)
+更改几何盒子术语从 "length" 到 "width" (Thomas)
+反对几何学代码中临时的未存储的斜率字段 (Thomas)
+从 INSTALL 中删除重启指令 (Bruce)
+安装时首先查看 /usr/ucb (Bruce)
+修复 c++ 拷贝示例代码 (Thomas)
+添加 -o 到 psql 手册页 (Bruce)
+阻止未分配字符串长度的真实名被拷贝到数据库 (Bruce) 
+清理 NAMEDATALEN 的使用 (Bruce)
+修复在输出中超过 15 个字符的 pg_proc 名 (Bruce)
+添加 strNcpy() 函数 (Bruce)
+删除一些不需要的 (void) 转换 (Bruce)
+新增接口路径 (Marc)
+用到 fd.c 函数的调用替换 fopen() 调用 (Bruce)
+尽可能使函数静态 (Bruce)
+将不适用的函数放在 #ifdef NOT_USED 中 (Bruce)
+删除时间戳支持中对 difftime() 的调用以修复 SunOS (Bruce &amp; Thomas)
+修改 Digital Unix
+pg_dumpall 的可移植性修复 (Bruce)
+重命名 pg_attribute.attnvals 为 attdispersion (Bruce)
+"intro/unix" 手册页现在是 "pgintro" (Bruce)
+"built-in" 手册页现在是 "pgbuiltin"(Bruce)
+"drop" 手册页现在是 "drop_table"(Bruce)
+添加 "create_trigger", "drop_trigger" 手册页 (Thomas)
+添加约束回归测试 (Vadim &amp; Thomas)
+添加注释语法回归测试 (Thomas)
+添加 PGINDENT 并支持编程 (Bruce)
+大量的提交在所有的 *.c 和 *.h 文件上运行 PGINDENT (Bruce)
+文件移动到了 /src/tools 目录 (Bruce)
+SPI 和触发器编程指南 (Vadim &amp; D'Arcy) </PRE><P></P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-6-2-1.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-6-1-1.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">版本 6.2.1</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">版本 6.1.1</TD></TR></TABLE></DIV></BODY></HTML>

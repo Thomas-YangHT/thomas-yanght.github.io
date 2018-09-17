@@ -1,0 +1,1063 @@
+<!Doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta property="qc:admins" content="465267610762567726375" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>4.1.3 Activity登堂入室 | 菜鸟教程</title>
+<link rel='dns-prefetch' href='http://s.w.org/' />
+<link rel="canonical" href="android-tutorial-activity-intro.html" />
+<meta name="keywords" content="4.1.3 Activity登堂入室">
+<meta name="description" content="1.Activity，Window与View的关系  好吧，本来就想了解下他们几个的关系，然后手多多，然后就开始看起他们的调用过程来了...结果扣了两个小时，只理解了很小很小的一部分，果然，到底层撸源码的都是大神，比如老罗，还没到那个等级，下面是自己查阅资料，看了下一点源码的归纳所得，如果哪写错了欢迎指出！下面贴下小结图：    流程解析： Activity调用startActivity后最后会调用attach方法，然后在PolicyM..">
+<link rel="shortcut icon" href="http://static.runoob.com/images/favicon.ico" mce_href="//static.runoob.com/images/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="http://school.yunwei.edu/wp-content/themes/runoob/style.css?v=1.147" type="text/css" media="all" />
+<link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />
+<!--[if gte IE 9]><!-->
+  <script src="http://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+  <!--<![endif]-->
+<!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+<link rel="apple-touch-icon" href="http://static.runoob.com/images/icon/mobile-icon.png"/>
+<meta name="apple-mobile-web-app-title" content="菜鸟教程">
+</head>
+<body>
+<div class="container logo-search">
+<div class="col search row-search-mobile">
+<form action="http://school.yunwei.edu/w3cnote/index.php">
+<input class="placeholder" placeholder="搜索……" name="s" autocomplete="off">
+</form>
+</div>
+<div class="row">
+<div class="col logo">
+<h1><a href="http://school.yunwei.edu/">菜鸟教程 -- 学的不仅是技术，更是梦想！</a></h1>
+</div>
+<div class="col right-list">
+<button class="btn btn-responsive-nav btn-inverse" data-toggle="collapse" data-target=".nav-main-collapse" id="pull" style=""> <i class="fa fa-navicon"></i> </button>
+</div>
+<div class="col search search-desktop last">
+<form action="http://school.yunwei.edu/" target="_blank">
+<input class="placeholder" id="s" name="s" placeholder="搜索……" autocomplete="off">
+</form>
+</div>
+</div>
+</div>
+<div class="container navigation">
+<div class="row">
+<div class="col nav">
+<ul class="pc-nav" id="note-nav">
+<li><a href="http://school.yunwei.edu/">首页</a></li>
+<li><a href="index.html">笔记首页</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/android" title="Android 基础入门教程">Android</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/net-2" title="互联网">互联网</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/coderlife" title="程序员人生">程序员人生</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/joke" title="程序员笑话">程序员笑话</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/code" title="编程技术">编程技术</a></li>
+</ul>
+<ul class="mobile-nav">
+<li><a href="index.html">首页</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/android" target="_blank" title="Android 基础入门教程">Android</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/coderlife" target="_blank" title="程序员人生">鸡汤</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/joke" target="_blank" title="程序员笑话">逗乐</a></li>
+<a href="javascript:void(0)" class="search-reveal">Search</a>
+</ul>
+</div>
+</div>
+</div>
+<div class="container main">
+<div class="row">
+<div class="col left-column" style="display:none;">
+<div class="tab">Android 基础入门教程</div>
+<div class="sidebar-box gallery-list">
+<div class="design" id="leftcolumn">
+</div>
+</div>
+</div>
+<div class="col middle-column big-middle-column">
+<div class="article">
+<div class="article-heading">
+<h2>4.1.3 Activity登堂入室</h2> <h3><em>分类</em> <a href="http://school.yunwei.edu/w3cnote_genre/android" title="Android 基础入门教程">Android 基础入门教程</a> </h3>
+</div>
+<div class="article-body note-body">
+<div class="article-intro">
+<h2>1.Activity，Window与View的关系</h2>
+<blockquote><p>好吧，本来就想了解下他们几个的关系，然后手多多，然后就开始看起他们的调用过程来了...结果扣了两个小时，只理解了很小很小的一部分，果然，到底层撸源码的都是大神，比如老罗，还没到那个等级，下面是自己查阅资料，看了下一点源码的归纳所得，如果哪写错了欢迎指出！下面贴下小结图：</p></blockquote>
+<p><img src="../wp-content/uploads/2015/08/93497523.jpg" alt="" /></p>
+<p><strong>流程解析：</strong>
+Activity调用startActivity后最后会调用attach方法，然后在PolicyManager实现一个Ipolicy接口，接着实现一个Policy对象，接着调用makenewwindow(Context)方法，该方法会返回一个PhoneWindow对象，而PhoneWindow
+是Window的子类，在这个PhoneWindow中有一个DecorView的内部类，是所有应用窗口的根View，即View的老大，
+直接控制Activity是否显示(引用老司机原话..)，好吧，接着里面有一个LinearLayout，里面又有两个FrameLayout他们分别拿来装ActionBar和CustomView，而我们setContentView()加载的布局就放到这个CustomView中！</p>
+<p><strong>总结下这三者的关系：</strong>
+打个牵强的比喻：
+我们可以把这三个类分别堪称：画家，画布，画笔画出的东西；
+画家通过画笔( <strong>LayoutInflater.infalte</strong>)画出图案，再绘制在画布(<strong>addView</strong>)上！
+最后显示出来(<strong>setContentView</strong>)</p>
+<hr />
+<h2>2.Activity，Task和Back Stack的一些概念</h2>
+<p>接着我们来了解Android中Activity的管理机制，这就涉及到了两个名词：Task和Back Stack了！</p>
+<p><strong>概念解析：</strong></p>
+<p>我们的APP一般都是由多个Activity构成的，而在Android中给我们提供了一个<strong>Task(任务)</strong>的概念，
+就是将多个相关的Activity收集起来，然后进行Activity的跳转与返回！当然，这个Task只是一个
+frameworker层的概念，而在Android中实现了Task的数据结构就是<strong>Back Stack（回退堆栈）</strong>！
+相信大家对于栈这种数据结构并不陌生，Java中也有个Stack的集合类！栈具有如下特点：</p>
+<blockquote><p><strong>后进先出(LIFO)，常用操作入栈(push)，出栈(pop)，处于最顶部的叫栈顶，最底部叫栈底</strong></p></blockquote>
+<p>而Android中的Stack Stack也具有上述特点，他是这样来管理Activity的：</p>
+<blockquote><p>当切换到新的Activity，那么该Activity会被压入栈中，成为栈顶！
+而当用户点击Back键，栈顶的Activity出栈，紧随其后的Activity来到栈顶！</p></blockquote>
+<p>我们来看下官方文档给出的一个流程图：</p>
+<p><img src="../wp-content/uploads/2015/08/93537362.jpg" alt="" /></p>
+<p><strong>流程解析：</strong></p>
+<p>应用程序中存在A1,A2,A3三个activity，当用户在Launcher或Home Screen点击应用程序图标时，
+启动主A1，接着A1开启A2，A2开启A3，这时栈中有三个Activity，并且这三个Activity默认在
+同一个任务（Task）中，当用户按返回时，弹出A3，栈中只剩A1和A2，再按返回键，
+弹出A2，栈中只剩A1，再继续按返回键，弹出A1，任务被移除，即程序退出！</p>
+<p>接着在官方文档中又看到了另外两个图，处于好奇，我又看了下解释，然后跟群里的人讨论了下：</p>
+<p><img src="../wp-content/uploads/2015/08/76132682.jpg" alt="" /> <img src="../wp-content/uploads/2015/08/2159561.jpg" alt="" /></p>
+<p>然后还有这段解释：</p>
+<p><img src="../wp-content/uploads/2015/08/94874923.jpg" alt="" /></p>
+<p><strong>然后总结下了结论：</strong></p>
+<blockquote><p>Task是Activity的集合，是一个概念，实际使用的Back Stack来存储Activity，可以有多个Task，但是
+同一时刻只有一个栈在最前面，其他的都在后台！那栈是如何产生的呢？</p>
+<p>答：当我们通过主屏幕，点击图标打开一个新的App，此时会创建一个新的Task！举个例子：<br>
+我们通过点击通信录APP的图标打开APP，这个时候会新建一个栈1，然后开始把新产生的Activity添加进来，可能我们在通讯录的APP中打开了短信APP的页面，但是此时不会新建一个栈，而是继续添加到栈1中，这是
+Android推崇一种用户体验方式，即不同应用程序之间的切换能使用户感觉就像是同一个应用程序，
+很连贯的用户体验，官方称其为seamless (无缝衔接）！
+——————这个时候假如我们点击Home键，回到主屏幕，此时栈1进入后台，我们可能有下述两种操作：<br>
+1）点击菜单键(正方形那个按钮)，点击打开刚刚的程序，然后栈1又回到前台了！
+又或者我们点击主屏幕上通信录的图标，打开APP，此时也不会创建新的栈，栈1回到前台！<br>
+2）如果此时我们点击另一个图标打开一个新的APP，那么此时则会创建一个新的栈2，栈2就会到前台，
+而栈1继续呆在后台；<br>
+3) 后面也是这样...以此类推！</p></blockquote>
+<hr />
+<h2>3.Task的管理</h2>
+<h3>1）文档翻译：</h3>
+<p>好的，继续走文档，从文档中的ManagingTasks开始，大概的翻译如下：</p>
+<hr />
+<h3>1）文档翻译</h3>
+<p>继续走文档，从文档中的ManagingTasks开始，翻译如下：</p>
+<blockquote><p>如上面所述，Android会将新成功启动的Activity添加到同一个Task中并且按照以"先进先出"方式管理多个Task
+和Back Stack，用户就无需去担心Activites如何与Task任务进行交互又或者它们是如何存在于Back Stack中！
+或许，你想改变这种正常的管理方式。比如，你希望你的某个Activity能够在一个新的Task中进行管理；
+或者你只想对某个Activity进行实例化，又或者你想在用户离开任务时清理Task中除了根Activity所有Activities。你可以做这些事或者更多，只需要通过修改AndroidManifest.xml中
+&lt; activity >的相关属性值或者在代码中通过传递特殊标识的Intent给startActivity( )就可以轻松的实现
+对Actvitiy的管理了。</p></blockquote>
+<p><strong>&lt; activity >中我们可以使用的属性如下：</strong></p>
+<blockquote><ul>
+<li><strong>taskAffinity</strong></li>
+<li><strong>launchMode</strong></li>
+<li><strong>allowTaskReparenting</strong></li>
+<li><strong>clearTaskOnLaunch</strong></li>
+<li><strong>alwaysRetainTaskState</strong></li>
+<li><strong>finishOnTaskLaunch</strong></li>
+</ul>
+</blockquote>
+<p><strong>你能用的主要的Intent标志有：</strong></p>
+<blockquote><ul>
+<li><strong>FLAG_ACTIVITY_NEW_TASK</strong></li>
+<li><strong>FLAG_ACTIVITY_CLEAR_TOP</strong></li>
+<li><strong>FLAG_ACTIVITY_SINGLE_TOP</strong></li>
+</ul>
+</blockquote>
+<p>好的，接下来逐个介绍这些怎么用：</p>
+<hr />
+<h3>2）taskAffinity和allowTaskReparenting</h3>
+<p>默认情况下，一个应用程序中的<strong>所有activity都有一个Affinity</strong>，这让它们属于同一个Task。
+你可以理解为是否处于同一个Task的标志，然而，每个Activity可以通过
+&lt; activity>中的taskAffinity属性设置单独的Affinity。
+不同应用程序中的Activity可以共享同一个Affinity，同一个应用程序中的不同Activity
+也可以设置成不同的Affinity。
+Affinity属性在2种情况下起作用：</p>
+<blockquote><p>1）当启动 activity的Intent对象包含<strong>FLAG_ACTIVITY_NEW_TASK</strong>标记：
+当传递给startActivity()的Intent对象包含 FLAG_ACTIVITY_NEW_TASK标记时，系统会为需要启动的Activity寻找与当前Activity不同Task。如果要启动的 Activity的Affinity属性与当前所有的Task的Affinity属性都不相同，系统会新建一个带那个Affinity属性的Task，并将要启动的Activity压到新建的Task栈中；否则将Activity压入那个Affinity属性相同的栈中。</p><p>
+2）<strong>allowTaskReparenting</strong>属性设置为true
+如果一个activity的allowTaskReparenting属性为true， 那么它可以从一个Task（Task1）移到另外一个有相同Affinity的Task（Task2）中（Task2带到前台时）。
+如果一个.apk文件从用户角度来看包含了多个"应用程序"，你可能需要对那些 Activity赋不同的Affinity值。</p></blockquote>
+<hr />
+<h3>3）launchMode：</h3>
+<p>四个可选值，启动模式我们研究的核心，下面再详细讲!
+他们分别是：<strong>standard</strong>(默认)，<strong>singleTop</strong>，<strong>singleTask</strong>，<strong>singleInstance</strong></p>
+<hr />
+<h3>4）清空栈</h3>
+<blockquote><p>当用户长时间离开Task（当前task被转移到后台）时，系统会清除task中栈底Activity外的所有Activity
+。这样，当用户返回到Task时，只留下那个task最初始的Activity了。我们可以通过修改下面这些属性来
+改变这种行为！</p>
+<p><strong>alwaysRetainTaskState</strong>：
+如果栈底Activity的这个属性被设置为true，上述的情况就不会发生。 Task中的所有activity将被长时间保存。</p>
+<p><strong>clearTaskOnLaunch</strong>
+如果栈底activity的这个属性被设置为true，一旦用户离开Task，
+则 Task栈中的Activity将被清空到只剩下栈底activity。这种情况刚好与
+alwaysRetainTaskState相反。即使用户只是短暂地离开，task也会返回到初始状态
+（只剩下栈底acitivty）。</p>
+<p><strong>finishOnTaskLaunch</strong>
+与clearTaskOnLaunch相似，但它只对单独的activity操
+作，而不是整个Task。它可以结束任何Activity，包括栈底的Activity。
+当它设置为true时，当前的Activity只在当前会话期间作为Task的一部分存在，
+当用户退出Activity再返回时，它将不存在。</p></blockquote>
+<hr />
+<h2>4.Activity的四种加载模式详解：</h2>
+<p>接下来我们来详细地讲解下四种加载模式：
+他们分别是：<strong>standard</strong>(默认)，<strong>singleTop</strong>，<strong>singleTask</strong>，<strong>singleInstance</strong>
+在泡在网上的日子看到一篇图文并茂的讲解启动模式的，很赞，可能更容易理解吧，这里借鉴下：</p><p>
+原文链接：<a href="http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2015/0520/2897.html">Activity启动模式图文详解：standard, singleTop, singleTask 以及 singleInstance</a></p><p>
+英文原文：<a href="http://inthecheesefactory.com/blog/understand-android-activity-launchmode/en">Understand Android Activity's launchMode: standard, singleTop, singleTask and singleInstance</a>
+另外还有一篇详细讲解加载模式的：<a href="http://blog.csdn.net/zhangjg_blog/article/details/10923643">Android中Activity四种启动模式和taskAffinity属性详解</a></p>
+<p><strong>先来看看总结图：</strong></p>
+<p><img src="../wp-content/uploads/2015/08/50179298.jpg" alt="" /></p>
+<p><strong>模式详解：</strong></p>
+<hr />
+<h3>standard模式：</h3>
+<p>标准启动模式，也是activity的默认启动模式。在这种模式下启动的activity可以被多次实例化，即在同一个任务中可以存在多个activity的实例，每个实例都会处理一个Intent对象。如果Activity A的启动模式为standard，并且A已经启动，在A中再次启动Activity A，即调用startActivity（new Intent（this，A.class）），会在A的上面再次启动一个A的实例，即当前的桟中的状态为A-->A。</p>
+<p><img src="http://www.jcodecraeer.com/uploads/20150520/1432087372621766.jpg" alt="" />
+<img src="http://www.jcodecraeer.com/uploads/20150520/1432087374604123.jpg" alt="" /></p>
+<hr />
+<h3>singleTop模式：</h3>
+<p>如果一个以singleTop模式启动的Activity的实例已经存在于任务栈的栈顶，
+那么再启动这个Activity时，不会创建新的实例，而是重用位于栈顶的那个实例，
+并且会调用该实例的<strong>onNewIntent()</strong>方法将Intent对象传递到这个实例中。
+举例来说，如果A的启动模式为singleTop，并且A的一个实例已经存在于栈顶中，
+那么再调用startActivity（new Intent（this，A.class））启动A时，
+不会再次创建A的实例，而是重用原来的实例，并且调用原来实例的onNewIntent()方法。
+这时任务栈中还是这有一个A的实例。如果以singleTop模式启动的activity的一个实例
+已经存在与任务栈中，但是不在栈顶，那么它的行为和standard模式相同，也会创建多个实例。</p>
+<p><img src="http://www.jcodecraeer.com/uploads/20150520/1432087389219419.jpg" alt="" /></p>
+<hr />
+<h3>singleTask模式：</h3>
+<p>只允许在系统中有一个Activity实例。如果系统中已经有了一个实例，
+持有这个实例的任务将移动到顶部，同时intent将被通过onNewIntent()发送。
+如果没有，则会创建一个新的Activity并置放在合适的任务中。</p>
+<p><img src="http://www.jcodecraeer.com/uploads/20150520/1432087394416117.jpg" alt="" /></p>
+<p>官方文档中提到的一个问题：</p>
+<blockquote><p>系统会创建一个新的任务，并将这个Activity实例化为新任务的根部（root）
+这个则需要我们对taskAffinity进行设置了，使用taskAffinity后的解雇：</p></blockquote>
+<p><img src="http://www.jcodecraeer.com/uploads/20150520/1432087640888692.jpg" alt="" />
+<img src="http://www.jcodecraeer.com/uploads/20150520/1432087642408027.jpg" alt="" /></p>
+<hr />
+<hr />
+<h3>singleInstance模式</h3>
+<p>保证系统无论从哪个Task启动Activity都只会创建一个Activity实例,并将它加入新的Task栈顶
+也就是说被该实例启动的其他activity会自动运行于另一个Task中。
+当再次启动该activity的实例时，会重用已存在的任务和实例。并且会调用这个实例
+的onNewIntent()方法，将Intent实例传递到该实例中。和singleTask相同，
+同一时刻在系统中只会存在一个这样的Activity实例。</p>
+<p><img src="http://www.jcodecraeer.com/uploads/20150520/1432087655129646.jpg" alt="" /></p>
+<hr />
+<h2>5.Activity拾遗</h2>
+<p>对于Activity可能有些东西还没讲到，这里预留一个位置，漏掉的都会在这里补上！
+首先是群友珠海-坤的建议，把开源中国的Activity管理类也贴上，嗯，这就贴上，大家可以直接用到
+项目中~</p>
+<h3>1）开源中国客户端Activity管理类：</h3>
+<pre>
+package net.oschina.app;
+
+import java.util.Stack;
+
+import android.app.Activity;
+import android.app.ActivityManager;
+import android.content.Context;
+
+
+public class AppManager {
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;private static Stack&lt;Activity&gt; activityStack;
+&nbsp;&nbsp;&nbsp;&nbsp;private static AppManager instance;
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;private AppManager(){}
+&nbsp;&nbsp;&nbsp;&nbsp;/**
+&nbsp;&nbsp;&nbsp;&nbsp; * 单一实例
+&nbsp;&nbsp;&nbsp;&nbsp; */
+&nbsp;&nbsp;&nbsp;&nbsp;public static AppManager getAppManager(){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(instance==null){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instance=new AppManager();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return instance;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;/**
+&nbsp;&nbsp;&nbsp;&nbsp; * 添加Activity到堆栈
+&nbsp;&nbsp;&nbsp;&nbsp; */
+&nbsp;&nbsp;&nbsp;&nbsp;public void addActivity(Activity activity){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(activityStack==null){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;activityStack=new Stack&lt;Activity&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;activityStack.add(activity);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;/**
+&nbsp;&nbsp;&nbsp;&nbsp; * 获取当前Activity（堆栈中最后一个压入的）
+&nbsp;&nbsp;&nbsp;&nbsp; */
+&nbsp;&nbsp;&nbsp;&nbsp;public Activity currentActivity(){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Activity activity=activityStack.lastElement();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return activity;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;/**
+&nbsp;&nbsp;&nbsp;&nbsp; * 结束当前Activity（堆栈中最后一个压入的）
+&nbsp;&nbsp;&nbsp;&nbsp; */
+&nbsp;&nbsp;&nbsp;&nbsp;public void finishActivity(){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Activity activity=activityStack.lastElement();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;finishActivity(activity);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;/**
+&nbsp;&nbsp;&nbsp;&nbsp; * 结束指定的Activity
+&nbsp;&nbsp;&nbsp;&nbsp; */
+&nbsp;&nbsp;&nbsp;&nbsp;public void finishActivity(Activity activity){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(activity!=null){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;activityStack.remove(activity);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;activity.finish();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;activity=null;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;/**
+&nbsp;&nbsp;&nbsp;&nbsp; * 结束指定类名的Activity
+&nbsp;&nbsp;&nbsp;&nbsp; */
+&nbsp;&nbsp;&nbsp;&nbsp;public void finishActivity(Class&lt;?&gt; cls){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (Activity activity : activityStack) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(activity.getClass().equals(cls) ){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;finishActivity(activity);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;/**
+&nbsp;&nbsp;&nbsp;&nbsp; * 结束所有Activity
+&nbsp;&nbsp;&nbsp;&nbsp; */
+&nbsp;&nbsp;&nbsp;&nbsp;public void finishAllActivity(){
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for (int i = 0, size = activityStack.size(); i &lt; size; i++){
+            if (null != activityStack.get(i)){
+            &nbsp;&nbsp;&nbsp;&nbsp;activityStack.get(i).finish();
+            }
+&nbsp;&nbsp;&nbsp;&nbsp;    }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;activityStack.clear();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;/**
+&nbsp;&nbsp;&nbsp;&nbsp; * 退出应用程序
+&nbsp;&nbsp;&nbsp;&nbsp; */
+&nbsp;&nbsp;&nbsp;&nbsp;public void AppExit(Context context) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;finishAllActivity();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ActivityManager activityMgr= (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;activityMgr.restartPackage(context.getPackageName());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.exit(0);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;} catch (Exception e) {&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+</pre>
+<hr />
+<h2>本节小结：</h2>
+<p>好的，本节就到这里，东西都比较苦涩难懂，暂时知道下即可，总结下Task进行整体调度的
+相关操作吧：</p>
+<blockquote><ul>
+<li>按Home键，将之前的Task切换到后台</li>
+<li>长按Home键，会显示出最近执行过的Task列表</li>
+<li>在Launcher或HomeScreen点击app图标，开启一个新Task，或者是将已有的Task调度到前台</li>
+<li>启动singleTask模式的Activity时，会在系统中搜寻是否已经存在一个合适的Task，若存在，则会将这个Task调度到前台以重用这个Task。如果这个Task中已经存在一个要启动的Activity的实例，则清除这个实例之上的所有Activity，将这个实例显示给用户。如果这个已存在的Task中不存在一个要启动的Activity的实例，则在这个Task的顶端启动一个实例。若这个Task不存在，则会启动一个新的Task，在这个新的Task中启动这个singleTask模式的Activity的一个实例。</li>
+<li>启动singleInstance的Activity时，会在系统中搜寻是否已经存在一个这个Activity的实例，如果存在，会将这个实例所在的Task调度到前台，重用这个Activity的实例（该Task中只有这一个Activity），如果不存在，会开启一个新任务，并在这个新Task中启动这个singleInstance模式的Activity的一个实例。</li>
+</ul>
+</blockquote>
+<p>好的本节就到这里，关于Task与Activity加载模式的东西还是比较复杂的，下面给大家贴下编写该文的
+时候的一些参考文献，可以自己看看~</p>
+<hr />
+<h2>参考文献：</h2>
+<ul><li>1.<a href="http://developer.android.com/intl/zh-cn/guide/components/tasks-and-back-stack.html#ManagingTasks">Tasks and Back Stack</a></li><li>
+2.<a href="http://my.oschina.net/MrGuan/blog/75392">理解android中Activity和Task的关系</a></li><li>
+3.<a href="http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2015/0520/2897.html">Activity启动模式图文详解：standard, singleTop, singleTask 以及 singleInstance</a></li><li>
+4.<a href="http://inthecheesefactory.com/blog/understand-android-activity-launchmode/en">Understand Android Activity's launchMode: standard, singleTop, singleTask and singleInstance</a></li><li>
+5.<a href="http://blog.csdn.net/zhangjg_blog/article/details/10923643">Android中Activity四种启动模式和taskAffinity属性详解</a></li><li>
+6.<a href="http://blog.csdn.net/infsafe/article/details/5666964">Android的Activity和Tasks详解</a></li><li>
+7.<a href="http://gundumw100.iteye.com/blog/2160467">Activity的四种启动模式和onNewIntent()</a></li><li>
+8.<a href="http://blog.csdn.net/guolin_blog/article/details/41087993">译：Android任务和返回栈完全解析，细数那些你所不知道的细节</a></li></ul> </div>
+</div>
+<div class="previous-next-links">
+<div class="previous-design-link">← <a href="android-tutorial-activity-start.html" rel="prev"> 4.1.2 Activity初窥门径</a> </div>
+<div class="next-design-link"><a href="android-tutorial-service-1.html" rel="next"> 4.2.1 Service初涉</a> →</div>
+</div>
+<div class="article-heading-ad" id="w3cnote-ad728">
+<script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle" style="display:inline-block;min-width:300px;max-width:970px;width:100%;height:90px" data-ad-client="ca-pub-5751451760833794" data-ad-slot="1691338467" data-ad-format="horizontal"></ins>
+<script>
+			(adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
+</div>
+<style>
+@media screen and (max-width: 768px) {
+	#w3cnote-ad728 {
+		display: none;
+	}
+}
+p.note-author {
+    border-bottom: 1px solid #ddd;
+    font-size: 18px;
+    font-weight: bold;
+    color: #78a15a;
+    padding-bottom: 2px;
+    margin-bottom: 4px;
+}
+</style>
+<script>
+var aid = 13168;
+</script>
+</div>
+</div>
+<div class="listcol last right-column">
+<script type="text/javascript">
+jQuery(document).ready(function ($){
+	var total = $(".membership li").length;
+	var left_list = '';
+	href = window.location.href;
+	
+	$(".membership li").each(function(index, value){
+
+		left_list += $(this).html();
+
+		cur_href = $(this).find("a").attr("href");
+		cur_obj = $(this);
+		
+		if(href.match(cur_href) != null) {
+			if(index==0) {
+				$(".previous-design-link").hide();
+			}
+			if(index==(total-1)) {
+				$(".next-design-link").hide();
+			}
+			prev_href = cur_obj.prev("li").find("a").attr("href");
+			prev_title = cur_obj.prev("li").find("a").attr("title");
+
+			next_href = cur_obj.next("li").find("a").attr("href");
+			next_title = cur_obj.next("li").find("a").attr("title");
+			if(prev_title) {
+				$(".previous-design-link a").attr("href", prev_href);
+				$(".previous-design-link a").attr("title", prev_title);
+				$(".previous-design-link a").text(prev_title);
+			} else {
+				$(".previous-design-link").html("");
+			}
+
+			if(next_title) {
+				$(".next-design-link a").attr("href", next_href);
+				$(".next-design-link a").attr("title", next_title);
+				$(".next-design-link a").text(next_title);
+			} else {
+				$(".next-design-link").html("");
+			}
+		}
+	});
+
+	$("#leftcolumn").html(left_list);
+});
+	</script>
+<div class="sidebar-box cate-list">
+<div class="sidebar-box advertise-here list-link"">
+	<a href="javascript:void(0);">Android 基础入门教程(Q群号：153836263)</a>	</div>
+	
+	<ul class="membership">
+		
+	<li><a target="_top" title="1.0 Android基础入门教程" href="http://school.yunwei.edu/w3cnote/android-tutorial-intro.html" >1.0 Android基础入门教程</a></li>
+		
+	<li><a target="_top" title="1.0.1 2015年最新Android基础入门教程目录" href="android-tutorial-contents.html" >1.0.1 2015年最新Android基础入门教程目录</a></li>
+		
+	<li><a target="_top" title="1.1 背景相关与系统架构分析" href="android-tutorial-system-architecture-analysis.html" >1.1 背景相关与系统架构分析</a></li>
+		
+	<li><a target="_top" title="1.2 开发环境搭建" href="android-tutorial-development-environment-build.html" >1.2 开发环境搭建</a></li>
+		
+	<li><a target="_top" title="1.2.1 使用Eclipse + ADT + SDK开发Android APP" href="android-tutorial-eclipse-adt-sdk-app.html" >1.2.1 使用Eclipse + ADT + SDK开发Android APP</a></li>
+		
+	<li><a target="_top" title="1.2.2 使用Android Studio开发Android APP" href="android-tutorial-android-studio.html" >1.2.2 使用Android Studio开发Android APP</a></li>
+		
+	<li><a target="_top" title="1.3 SDK更新不了问题解决" href="android-tutorial-sdk-problem-solve.html" >1.3 SDK更新不了问题解决</a></li>
+		
+	<li><a target="_top" title="1.4 Genymotion模拟器安装" href="android-tutorial-genymotion-install.html" >1.4 Genymotion模拟器安装</a></li>
+		
+	<li><a target="_top" title="1.5.1 Git使用教程之本地仓库的基本操作" href="android-tutorial-git-repo-operate.html" >1.5.1 Git使用教程之本地仓库的基本操作</a></li>
+		
+	<li><a target="_top" title="1.5.2 Git之使用GitHub搭建远程仓库" href="android-tutorial-git-repo-create.html" >1.5.2 Git之使用GitHub搭建远程仓库</a></li>
+		
+	<li><a target="_top" title="1.6 .9(九妹)图片怎么玩" href="android-tutorial-9-image.html" >1.6 .9(九妹)图片怎么玩</a></li>
+		
+	<li><a target="_top" title="1.7 界面原型设计" href="android-tutorial-interface-design.html" >1.7 界面原型设计</a></li>
+		
+	<li><a target="_top" title="1.8 工程相关解析(各种文件，资源访问)" href="android-tutorial-project-src-analysis.html" >1.8 工程相关解析(各种文件，资源访问)</a></li>
+		
+	<li><a target="_top" title="1.9 Android程序签名打包" href="android-tutorial-sign-package.html" >1.9 Android程序签名打包</a></li>
+		
+	<li><a target="_top" title="1.11 反编译APK获取代码&资源" href="android-tutorial-decompile-apk-get-code-resources.html" >1.11 反编译APK获取代码&资源</a></li>
+		
+	<li><a target="_top" title="2.1 View与ViewGroup的概念" href="android-tutorial-view-viewgroup-intro.html" >2.1 View与ViewGroup的概念</a></li>
+		
+	<li><a target="_top" title="2.2.1 LinearLayout(线性布局)" href="android-tutorial-linearlayout.html" >2.2.1 LinearLayout(线性布局)</a></li>
+		
+	<li><a target="_top" title="2.2.2 RelativeLayout(相对布局)" href="android-tutorial-relativelayout.html" >2.2.2 RelativeLayout(相对布局)</a></li>
+		
+	<li><a target="_top" title="2.2.3 TableLayout(表格布局)" href="android-tutorial-tablelayout.html" >2.2.3 TableLayout(表格布局)</a></li>
+		
+	<li><a target="_top" title="2.2.4 FrameLayout(帧布局)" href="android-tutorial-framelayout.html" >2.2.4 FrameLayout(帧布局)</a></li>
+		
+	<li><a target="_top" title="2.2.5 GridLayout(网格布局)" href="android-tutorial-gridlayout.html" >2.2.5 GridLayout(网格布局)</a></li>
+		
+	<li><a target="_top" title="2.2.6 AbsoluteLayout(绝对布局)" href="android-tutorial-absolutelayout.html" >2.2.6 AbsoluteLayout(绝对布局)</a></li>
+		
+	<li><a target="_top" title="2.3.1 TextView(文本框)详解" href="android-tutorial-textview.html" >2.3.1 TextView(文本框)详解</a></li>
+		
+	<li><a target="_top" title="2.3.2 EditText(输入框)详解" href="android-tutorial-edittext.html" >2.3.2 EditText(输入框)详解</a></li>
+		
+	<li><a target="_top" title="2.3.3 Button(按钮)与ImageButton(图像按钮)" href="android-tutorial-button-imagebutton.html" >2.3.3 Button(按钮)与ImageButton(图像按钮)</a></li>
+		
+	<li><a target="_top" title="2.3.4 ImageView(图像视图)" href="android-tutorial-imageview.html" >2.3.4 ImageView(图像视图)</a></li>
+		
+	<li><a target="_top" title="2.3.5.RadioButton(单选按钮)&Checkbox(复选框)" href="android-tutorial-radiobutton-checkbox.html" >2.3.5.RadioButton(单选按钮)&Checkbox(复选框)</a></li>
+		
+	<li><a target="_top" title="2.3.6 开关按钮ToggleButton和开关Switch" href="android-tutorial-togglebutton-switch.html" >2.3.6 开关按钮ToggleButton和开关Switch</a></li>
+		
+	<li><a target="_top" title="2.3.7 ProgressBar(进度条)" href="android-tutorial-progressbar.html" >2.3.7 ProgressBar(进度条)</a></li>
+		
+	<li><a target="_top" title="2.3.8 SeekBar(拖动条)" href="android-tutorial-seekbar.html" >2.3.8 SeekBar(拖动条)</a></li>
+		
+	<li><a target="_top" title="2.3.9 RatingBar(星级评分条)" href="android-tutorial-ratingbar.html" >2.3.9 RatingBar(星级评分条)</a></li>
+		
+	<li><a target="_top" title="2.4.1 ScrollView(滚动条)" href="android-tutorial-scrollview.html" >2.4.1 ScrollView(滚动条)</a></li>
+		
+	<li><a target="_top" title="2.4.2 Date & Time组件(上)" href="android-tutorial-date-time-1.html" >2.4.2 Date & Time组件(上)</a></li>
+		
+	<li><a target="_top" title="2.4.3 Date & Time组件(下)" href="android-tutorial-date-time-2.html" >2.4.3 Date & Time组件(下)</a></li>
+		
+	<li><a target="_top" title="2.4.4 Adapter基础讲解" href="android-tutorial-adapter.html" >2.4.4 Adapter基础讲解</a></li>
+		
+	<li><a target="_top" title="2.4.5 ListView简单实用" href="android-tutorial-listview.html" >2.4.5 ListView简单实用</a></li>
+		
+	<li><a target="_top" title="2.4.6 BaseAdapter优化" href="android-tutorial-baseadapter.html" >2.4.6 BaseAdapter优化</a></li>
+		
+	<li><a target="_top" title="2.4.7ListView的焦点问题" href="android-tutorial-listview-focus.html" >2.4.7ListView的焦点问题</a></li>
+		
+	<li><a target="_top" title="2.4.8 ListView之checkbox错位问题解决" href="android-tutorial-listview-checkbox.html" >2.4.8 ListView之checkbox错位问题解决</a></li>
+		
+	<li><a target="_top" title="2.4.9 ListView的数据更新问题" href="android-tutorial-listview-update.html" >2.4.9 ListView的数据更新问题</a></li>
+		
+	<li><a target="_top" title="2.5.0 构建一个可复用的自定义BaseAdapter" href="android-tutorial-customer-baseadapter.html" >2.5.0 构建一个可复用的自定义BaseAdapter</a></li>
+		
+	<li><a target="_top" title="2.5.1 ListView Item多布局的实现" href="android-tutorial-listview-item.html" >2.5.1 ListView Item多布局的实现</a></li>
+		
+	<li><a target="_top" title="2.5.2 GridView(网格视图)的基本使用" href="android-tutorial-gridview.html" >2.5.2 GridView(网格视图)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.3 Spinner(列表选项框)的基本使用" href="android-tutorial-spinner.html" >2.5.3 Spinner(列表选项框)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.4 AutoCompleteTextView(自动完成文本框)的基本使用" href="android-tutorial-autocompletetextview.html" >2.5.4 AutoCompleteTextView(自动完成文本框)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.5 ExpandableListView(可折叠列表)的基本使用" href="android-tutorial-expandablelistview.html" >2.5.5 ExpandableListView(可折叠列表)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.6 ViewFlipper(翻转视图)的基本使用" href="android-tutorial-viewflipper.html" >2.5.6 ViewFlipper(翻转视图)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.7 Toast(吐司)的基本使用" href="android-tutorial-toast.html" >2.5.7 Toast(吐司)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.8 Notification(状态栏通知)详解" href="android-tutorial-notification.html" >2.5.8 Notification(状态栏通知)详解</a></li>
+		
+	<li><a target="_top" title="2.5.9 AlertDialog(对话框)详解" href="android-tutorial-alertdialog.html" >2.5.9 AlertDialog(对话框)详解</a></li>
+		
+	<li><a target="_top" title="2.6.0 其他几种常用对话框基本使用" href="android-tutorial-dialog.html" >2.6.0 其他几种常用对话框基本使用</a></li>
+		
+	<li><a target="_top" title="2.6.1 PopupWindow(悬浮框)的基本使用" href="android-tutorial-popupwindow.html" >2.6.1 PopupWindow(悬浮框)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.6.2 菜单(Menu)" href="android-tutorial-menu.html" >2.6.2 菜单(Menu)</a></li>
+		
+	<li><a target="_top" title="2.6.3 ViewPager的简单使用" href="android-tutorial-viewpager.html" >2.6.3 ViewPager的简单使用</a></li>
+		
+	<li><a target="_top" title="2.6.4 DrawerLayout(官方侧滑菜单)的简单使用" href="android-tutorial-drawerlayout.html" >2.6.4 DrawerLayout(官方侧滑菜单)的简单使用</a></li>
+		
+	<li><a target="_top" title="3.1.1 基于监听的事件处理机制" href="android-tutorial-listen-event-handle.html" >3.1.1 基于监听的事件处理机制</a></li>
+		
+	<li><a target="_top" title="3.2 基于回调的事件处理机制" href="android-tutorial-callback-event-handle.html" >3.2 基于回调的事件处理机制</a></li>
+		
+	<li><a target="_top" title="3.3 Handler消息传递机制浅析" href="android-tutorial-handler-message.html" >3.3 Handler消息传递机制浅析</a></li>
+		
+	<li><a target="_top" title="3.4 TouchListener PK OnTouchEvent + 多点触碰" href="android-tutorial-touchlistener-ontouchevent.html" >3.4 TouchListener PK OnTouchEvent + 多点触碰</a></li>
+		
+	<li><a target="_top" title="3.5 监听EditText的内容变化" href="android-tutorial-listener-edittext-change.html" >3.5 监听EditText的内容变化</a></li>
+		
+	<li><a target="_top" title="3.6 响应系统设置的事件(Configuration类)" href="android-tutorial-configuration.html" >3.6 响应系统设置的事件(Configuration类)</a></li>
+		
+	<li><a target="_top" title="3.7 AnsyncTask异步任务" href="android-tutorial-ansynctask.html" >3.7 AnsyncTask异步任务</a></li>
+		
+	<li><a target="_top" title="3.8 Gestures(手势)" href="android-tutorial-gestures.html" >3.8 Gestures(手势)</a></li>
+		
+	<li><a target="_top" title="4.1.1 Activity初学乍练" href="android-tutorial-activity.html" >4.1.1 Activity初学乍练</a></li>
+		
+	<li><a target="_top" title="4.1.2 Activity初窥门径" href="android-tutorial-activity-start.html" >4.1.2 Activity初窥门径</a></li>
+		<li>
+	4.1.3 Activity登堂入室	</li>
+	
+		
+	<li><a target="_top" title="4.2.1 Service初涉" href="android-tutorial-service-1.html" >4.2.1 Service初涉</a></li>
+		
+	<li><a target="_top" title="4.2.2 Service进阶" href="android-tutorial-service-2.html" >4.2.2 Service进阶</a></li>
+		
+	<li><a target="_top" title="4.2.3 Service精通" href="android-tutorial-service-3.html" >4.2.3 Service精通</a></li>
+		
+	<li><a target="_top" title="4.3.1 BroadcastReceiver牛刀小试" href="android-tutorial-broadcastreceiver.html" >4.3.1 BroadcastReceiver牛刀小试</a></li>
+		
+	<li><a target="_top" title="4.3.2 BroadcastReceiver庖丁解牛" href="android-tutorial-broadcastreceiver-2.html" >4.3.2 BroadcastReceiver庖丁解牛</a></li>
+		
+	<li><a target="_top" title="4.4.1 ContentProvider初探" href="android-tutorial-contentprovider.html" >4.4.1 ContentProvider初探</a></li>
+		
+	<li><a target="_top" title="4.4.2 ContentProvider再探——Document Provider" href="android-tutorial-contentprovider-2.html" >4.4.2 ContentProvider再探——Document Provider</a></li>
+		
+	<li><a target="_top" title="4.5.1 Intent的基本使用" href="android-tutorial-intent-base.html" >4.5.1 Intent的基本使用</a></li>
+		
+	<li><a target="_top" title="4.5.2 Intent之复杂数据的传递" href="android-tutorial-intent-pass-data.html" >4.5.2 Intent之复杂数据的传递</a></li>
+		
+	<li><a target="_top" title="5.1 Fragment基本概述" href="android-tutorial-fragment-base.html" >5.1 Fragment基本概述</a></li>
+		
+	<li><a target="_top" title="5.2.1 Fragment实例精讲——底部导航栏的实现(方法1)" href="android-tutorial-fragment-demo1.html" >5.2.1 Fragment实例精讲——底部导航栏的实现(方法1)</a></li>
+		
+	<li><a target="_top" title="5.2.2 Fragment实例精讲——底部导航栏的实现(方法2)" href="android-tutorial-fragment-demo2.html" >5.2.2 Fragment实例精讲——底部导航栏的实现(方法2)</a></li>
+		
+	<li><a target="_top" title="5.2.3 Fragment实例精讲——底部导航栏的实现(方法3)" href="android-tutorial-fragment-demo3.html" >5.2.3 Fragment实例精讲——底部导航栏的实现(方法3)</a></li>
+		
+	<li><a target="_top" title="5.2.4 Fragment实例精讲——底部导航栏+ViewPager滑动切换页面" href="android-tutorial-fragment-demo4.html" >5.2.4 Fragment实例精讲——底部导航栏+ViewPager滑动切换页面</a></li>
+		
+	<li><a target="_top" title="5.2.5 Fragment实例精讲——新闻(购物)类App列表Fragment的简单实现" href="android-tutorial-fragment-demo5.html" >5.2.5 Fragment实例精讲——新闻(购物)类App列表Fragment的简单实现</a></li>
+		
+	<li><a target="_top" title="6.1 数据存储与访问之——文件存储读写" href="android-tutorial-file.html" >6.1 数据存储与访问之——文件存储读写</a></li>
+		
+	<li><a target="_top" title="6.2 数据存储与访问之——SharedPreferences保存用户偏好参数" href="android-tutorial-sharedpreferences.html" >6.2 数据存储与访问之——SharedPreferences保存用户偏好参数</a></li>
+		
+	<li><a target="_top" title="6.3.1 数据存储与访问之——初见SQLite数据库" href="android-tutorial-sqlite-intro.html" >6.3.1 数据存储与访问之——初见SQLite数据库</a></li>
+		
+	<li><a target="_top" title="6.3.2 数据存储与访问之——又见SQLite数据库" href="android-tutorial-sqlite-2.html" >6.3.2 数据存储与访问之——又见SQLite数据库</a></li>
+		
+	<li><a target="_top" title="7.1.1 Android网络编程要学的东西与Http协议学习" href="android-tutorial-http.html" >7.1.1 Android网络编程要学的东西与Http协议学习</a></li>
+		
+	<li><a target="_top" title="7.1.2 Android Http请求头与响应头的学习" href="android-tutorial-http-response-header.html" >7.1.2 Android Http请求头与响应头的学习</a></li>
+		
+	<li><a target="_top" title="7.1.3 Android HTTP请求方式:HttpURLConnection" href="android-tutorial-httpurlconnection.html" >7.1.3 Android HTTP请求方式:HttpURLConnection</a></li>
+		
+	<li><a target="_top" title="7.1.4 Android HTTP请求方式:HttpClient" href="android-tutorial-httpclient.html" >7.1.4 Android HTTP请求方式:HttpClient</a></li>
+		
+	<li><a target="_top" title="7.2.1 Android XML数据解析" href="android-tutorial-xml.html" >7.2.1 Android XML数据解析</a></li>
+		
+	<li><a target="_top" title="7.2.2 Android JSON数据解析" href="android-tutorial-json.html" >7.2.2 Android JSON数据解析</a></li>
+		
+	<li><a target="_top" title="7.3.1 Android 文件上传" href="android-tutorial-upload-file.html" >7.3.1 Android 文件上传</a></li>
+		
+	<li><a target="_top" title="7.3.2 Android 文件下载（1）" href="android-tutorial-download1.html" >7.3.2 Android 文件下载（1）</a></li>
+		
+	<li><a target="_top" title="7.3.3 Android 文件下载（2）" href="android-tutorial-download2.html" >7.3.3 Android 文件下载（2）</a></li>
+		
+	<li><a target="_top" title="7.4 Android 调用 WebService" href="android-tutorial-webservice.html" >7.4 Android 调用 WebService</a></li>
+		
+	<li><a target="_top" title="7.5.1 WebView(网页视图)基本用法" href="android-tutorial-webview.html" >7.5.1 WebView(网页视图)基本用法</a></li>
+		
+	<li><a target="_top" title="7.5.2 WebView和JavaScrip交互基础" href="android-tutorial-webview-javascrip.html" >7.5.2 WebView和JavaScrip交互基础</a></li>
+		
+	<li><a target="_top" title="7.5.3 Android 4.4后WebView的一些注意事项" href="android-tutorial-webview-attention.html" >7.5.3 Android 4.4后WebView的一些注意事项</a></li>
+		
+	<li><a target="_top" title="7.5.4 WebView文件下载" href="android-tutorial-webview-download-file.html" >7.5.4 WebView文件下载</a></li>
+		
+	<li><a target="_top" title="7.5.5 WebView缓存问题" href="android-tutorial-webview-cache.html" >7.5.5 WebView缓存问题</a></li>
+		
+	<li><a target="_top" title="7.5.6 WebView处理网页返回的错误码信息" href="android-tutorial-webview-error-code.html" >7.5.6 WebView处理网页返回的错误码信息</a></li>
+		
+	<li><a target="_top" title="7.6.1 Socket学习网络基础准备" href="android-tutorial-socket-intro.html" >7.6.1 Socket学习网络基础准备</a></li>
+		
+	<li><a target="_top" title="7.6.2 基于TCP协议的Socket通信(1)" href="android-tutorial-socket1.html" >7.6.2 基于TCP协议的Socket通信(1)</a></li>
+		
+	<li><a target="_top" title="7.6.3 基于TCP协议的Socket通信(2)" href="android-tutorial-socket2.html" >7.6.3 基于TCP协议的Socket通信(2)</a></li>
+		
+	<li><a target="_top" title="7.6.4 基于UDP协议的Socket通信" href="android-tutorial-udp-socket.html" >7.6.4 基于UDP协议的Socket通信</a></li>
+		
+	<li><a target="_top" title="8.1.1 Android中的13种Drawable小结 Part 1" href="android-tutorial-drawable1.html" >8.1.1 Android中的13种Drawable小结 Part 1</a></li>
+		
+	<li><a target="_top" title="8.1.2 Android中的13种Drawable小结 Part 2" href="android-tutorial-drawable2.html" >8.1.2 Android中的13种Drawable小结 Part 2</a></li>
+		
+	<li><a target="_top" title="8.1.3 Android中的13种Drawable小结 Part 3" href="android-tutorial-drawable3.html" >8.1.3 Android中的13种Drawable小结 Part 3</a></li>
+		
+	<li><a target="_top" title="8.2.1 Bitmap(位图)全解析 Part 1" href="android-tutorial-bitmap1.html" >8.2.1 Bitmap(位图)全解析 Part 1</a></li>
+		
+	<li><a target="_top" title="8.2.2 Bitmap引起的OOM问题" href="android-tutorial-bitmap2.html" >8.2.2 Bitmap引起的OOM问题</a></li>
+		
+	<li><a target="_top" title="8.3.1 三个绘图工具类详解" href="android-tutorial-drawable-tool.html" >8.3.1 三个绘图工具类详解</a></li>
+		
+	<li><a target="_top" title="8.3.2 绘图类实战示例" href="android-tutorial-bitmap-demo.html" >8.3.2 绘图类实战示例</a></li>
+		
+	<li><a target="_top" title="8.3.3 Paint API之—— MaskFilter(面具)" href="android-tutorial-maskfilter.html" >8.3.3 Paint API之—— MaskFilter(面具)</a></li>
+		
+	<li><a target="_top" title="8.3.4 Paint API之—— Xfermode与PorterDuff详解(一)" href="android-tutorial-xfermode-porterduff.html" >8.3.4 Paint API之—— Xfermode与PorterDuff详解(一)</a></li>
+		
+	<li><a target="_top" title="8.3.5 Paint API之—— Xfermode与PorterDuff详解(二)" href="android-tutorial-xfermode-porterduff2.html" >8.3.5 Paint API之—— Xfermode与PorterDuff详解(二)</a></li>
+		
+	<li><a target="_top" title="8.3.6 Paint API之—— Xfermode与PorterDuff详解(三)" href="android-tutorial-xfermode-porterduff3.html" >8.3.6 Paint API之—— Xfermode与PorterDuff详解(三)</a></li>
+		
+	<li><a target="_top" title="8.3.7 Paint API之—— Xfermode与PorterDuff详解(四)" href="android-tutorial-xfermode-porterduff4.html" >8.3.7 Paint API之—— Xfermode与PorterDuff详解(四)</a></li>
+		
+	<li><a target="_top" title="8.3.8 Paint API之—— Xfermode与PorterDuff详解(五)" href="android-tutorial-xfermode-porterduff5.html" >8.3.8 Paint API之—— Xfermode与PorterDuff详解(五)</a></li>
+		
+	<li><a target="_top" title="8.3.9 Paint API之—— ColorFilter(颜色过滤器)(1/3)" href="android-tutorial-colorfilter1.html" >8.3.9 Paint API之—— ColorFilter(颜色过滤器)(1/3)</a></li>
+		
+	<li><a target="_top" title="8.3.10 Paint API之—— ColorFilter(颜色过滤器)(2-3)" href="android-tutorial-colorfilterl2.html" >8.3.10 Paint API之—— ColorFilter(颜色过滤器)(2-3)</a></li>
+		
+	<li><a target="_top" title="8.3.11 Paint API之—— ColorFilter(颜色过滤器)(3-3)" href="android-tutorial-colorfilter3.html" >8.3.11 Paint API之—— ColorFilter(颜色过滤器)(3-3)</a></li>
+		
+	<li><a target="_top" title="8.3.12 Paint API之—— PathEffect(路径效果)" href="android-tutorial-patheffect.html" >8.3.12 Paint API之—— PathEffect(路径效果)</a></li>
+		
+	<li><a target="_top" title="8.3.13 Paint API之—— Shader(图像渲染)" href="android-tutorial-shader.html" >8.3.13 Paint API之—— Shader(图像渲染)</a></li>
+		
+	<li><a target="_top" title="8.3.14 Paint几个枚举/常量值以及ShadowLayer阴影效果" href="android-tutorial-shadowlayer.html" >8.3.14 Paint几个枚举/常量值以及ShadowLayer阴影效果</a></li>
+		
+	<li><a target="_top" title="8.3.15 Paint API之——Typeface(字型)" href="android-tutorial-typeface.html" >8.3.15 Paint API之——Typeface(字型)</a></li>
+		
+	<li><a target="_top" title="8.3.16 Canvas API详解(Part 1)" href="android-tutorial-canvas-api1.html" >8.3.16 Canvas API详解(Part 1)</a></li>
+		
+	<li><a target="_top" title="8.3.17 Canvas API详解(Part 2)剪切方法合集" href="android-tutorial-canvas-api2.html" >8.3.17 Canvas API详解(Part 2)剪切方法合集</a></li>
+		
+	<li><a target="_top" title="8.3.18 Canvas API详解(Part 3)Matrix和drawBitmapMesh" href="android-tutorial-canvas-api3.html" >8.3.18 Canvas API详解(Part 3)Matrix和drawBitmapMesh</a></li>
+		
+	<li><a target="_top" title="8.4.1 Android动画合集之帧动画" href="android-tutorial-animation.html" >8.4.1 Android动画合集之帧动画</a></li>
+		
+	<li><a target="_top" title="8.4.2 Android动画合集之补间动画" href="android-tutorial-alphaanimation.html" >8.4.2 Android动画合集之补间动画</a></li>
+		
+	<li><a target="_top" title="8.4.3 Android动画合集之属性动画-初见" href="android-tutorial-valueanimator.html" >8.4.3 Android动画合集之属性动画-初见</a></li>
+		
+	<li><a target="_top" title="8.4.4 Android动画合集之属性动画-又见" href="android-tutorial-valueanimator2.html" >8.4.4 Android动画合集之属性动画-又见</a></li>
+		
+	<li><a target="_top" title="9.1 使用SoundPool播放音效(Duang~)" href="android-tutorial-soundpool.html" >9.1 使用SoundPool播放音效(Duang~)</a></li>
+		
+	<li><a target="_top" title="9.2 MediaPlayer播放音频与视频" href="android-tutorial-mediaplayer.html" >9.2 MediaPlayer播放音频与视频</a></li>
+		
+	<li><a target="_top" title="9.3 使用Camera拍照" href="android-tutorial-camera.html" >9.3 使用Camera拍照</a></li>
+		
+	<li><a target="_top" title="9.4 使用MediaRecord录音" href="android-tutorial-mediarecord.html" >9.4 使用MediaRecord录音</a></li>
+		
+	<li><a target="_top" title="10.1 TelephonyManager(电话管理器)" href="android-tutorial-telephonymanager.html" >10.1 TelephonyManager(电话管理器)</a></li>
+		
+	<li><a target="_top" title="10.2 SmsManager(短信管理器)" href="android-tutorial-smsmanager.html" >10.2 SmsManager(短信管理器)</a></li>
+		
+	<li><a target="_top" title="10.3 AudioManager(音频管理器)" href="android-tutorial-audiomanager.html" >10.3 AudioManager(音频管理器)</a></li>
+		
+	<li><a target="_top" title="10.4 Vibrator(振动器)" href="android-tutorial-vibrator.html" >10.4 Vibrator(振动器)</a></li>
+		
+	<li><a target="_top" title="10.5 AlarmManager(闹钟服务)" href="android-tutorial-alarmmanager.html" >10.5 AlarmManager(闹钟服务)</a></li>
+		
+	<li><a target="_top" title="10.6 PowerManager(电源服务)" href="android-tutorial-powermanager.html" >10.6 PowerManager(电源服务)</a></li>
+		
+	<li><a target="_top" title="10.7 WindowManager(窗口管理服务)" href="android-tutorial-windowmanager.html" >10.7 WindowManager(窗口管理服务)</a></li>
+		
+	<li><a target="_top" title="10.8 LayoutInflater(布局服务)" href="android-tutorial-layoutinflater.html" >10.8 LayoutInflater(布局服务)</a></li>
+		
+	<li><a target="_top" title="10.9 WallpaperManager(壁纸管理器)" href="android-tutorial-wallpapermanager.html" >10.9 WallpaperManager(壁纸管理器)</a></li>
+		
+	<li><a target="_top" title="10.10 传感器专题(1)——相关介绍" href="android-tutorial-sensor1.html" >10.10 传感器专题(1)——相关介绍</a></li>
+		
+	<li><a target="_top" title="10.11 传感器专题(2)——方向传感器" href="android-tutorial-sensor2.html" >10.11 传感器专题(2)——方向传感器</a></li>
+		
+	<li><a target="_top" title="10.12 传感器专题(3)——加速度/陀螺仪传感器" href="android-tutorial-sensor3.html" >10.12 传感器专题(3)——加速度/陀螺仪传感器</a></li>
+		
+	<li><a target="_top" title="10.12 传感器专题(4)——其他传感器了解" href="android-tutorial-sensor4.html" >10.12 传感器专题(4)——其他传感器了解</a></li>
+		
+	<li><a target="_top" title="10.14 Android GPS初涉" href="android-tutorial-gps.html" >10.14 Android GPS初涉</a></li>
+		
+	<li><a target="_top" title="11.0《2015最新Android基础入门教程》完结散花~" href="android-tutorial-end.html" >11.0《2015最新Android基础入门教程》完结散花~</a></li>
+		
+	<li><a target="_top" title="12.1Android 实战 ：DrySister看妹子应用(第一版) -- 项目搭建与简单实现" href="android-tutorial-exercise-1.html" >12.1Android 实战 ：DrySister看妹子应用(第一版) -- 项目搭建与简单实现</a></li>
+		
+	<li><a target="_top" title="12.2 DrySister看妹子应用(第一版)——2.解析后台数据" href="android-tutorial-exercise-2.html" >12.2 DrySister看妹子应用(第一版)——2.解析后台数据</a></li>
+		
+	<li><a target="_top" title="12.3 DrySister看妹子应用(第一版)——3.图片加载优化(写个图片缓存小框架)" href="android-tutorial-exercise-3.html" >12.3 DrySister看妹子应用(第一版)——3.图片加载优化(写个图片缓存小框架)</a></li>
+		
+	<li><a target="_top" title="12.4 DrySister看妹子应用(第一版)——4.添加数据缓存(加入SQLite)" href="android-tutorial-exercise-4.html" >12.4 DrySister看妹子应用(第一版)——4.添加数据缓存(加入SQLite)</a></li>
+		
+	<li><a target="_top" title="12.5 DrySister看妹子应用(第一版)——5.代码回顾，调整与日志类编写" href="android-tutorial-exercise-5.html" >12.5 DrySister看妹子应用(第一版)——5.代码回顾，调整与日志类编写</a></li>
+		
+	<li><a target="_top" title="12.6 DrySister看妹子应用(第一版)——6.图标制作，混淆，签名打包，APK瘦身，应用发布" href="android-tutorial-exercise-6-html.html" >12.6 DrySister看妹子应用(第一版)——6.图标制作，混淆，签名打包，APK瘦身，应用发布</a></li>
+	</ul></div>	</div>
+</div>
+
+
+<!-- 底部 -->
+
+
+<div id="footer" class="mar-t50">
+   <div class="runoob-block">
+    <div class="runoob cf">
+     <dl>
+      <dt>
+       在线实例
+      </dt>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/html/html-examples.html">HTML 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/css/css-examples.html">CSS 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/js/js-examples.html">JavaScript 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="../ajx/ajax-examples.html">Ajax 实例</a>
+      </dd>
+       <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/jquery/jquery-examples.html">jQuery 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/xml/xml-examples.html">XML 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="../html/java-examples.html">Java 实例</a>
+      </dd>
+     
+     </dl>
+     <dl>
+      <dt>
+      字符集&工具
+      </dt>
+      <dd>
+       &middot; <a target="_blank" href="../charsets.1">HTML 字符集设置</a>
+      </dd>
+      <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/html-ascii.html">HTML ASCII 字符集</a>
+      </dd>
+     <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/ref-entities.html">HTML ISO-8859-1</a>
+      </dd> 
+      <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/html-symbols.html">HTML 实体符号</a>
+      </dd>
+      <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/html-colorpicker.html">HTML 拾色器</a>
+      </dd>
+      <dd>
+       &middot; <a target="_blank" href="http://c.runoob.com/front-end/53">JSON 格式化工具</a>
+      </dd>
+     </dl>
+     <dl>
+      <dt>
+       最新更新
+      </dt>
+                   <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/w3cnote/viewport-deep-understanding.html" title="viewport 深入理解">viewport 深入理解</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/w3cnote/cpp-reference-type.html" title="C++ 引用类型">C++ 引用类型</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/w3cnote/php-different-include-and-require.html" title="PHP 中 include 和 require 的区别详解">PHP 中 include ...</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/react/react-lists-and-keys.html" title="React 列表 &#038; Keys">React 列表 &#03...</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/react/react-conditional-rendering.html" title="React 条件渲染">React 条件渲染</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/react/react-event-handle.html" title="React 事件处理">React 事件处理</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/w3cnote/csharp-polymorphism2.html" title="C# 中的多态性">C# 中的多态性</a>
+      </dd>
+             </dl>
+     <dl>
+      <dt>
+       站点信息
+      </dt>
+      <dd>
+       &middot;
+       <a target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=ssbDyoOAgfLU3crf09venNHd3w" rel="external nofollow">意见反馈</a>
+      <!--<a class="wxpopup" onclick="popFunction()">合作联系
+       <span class="popuptext" id="myPopup">微信：<strong>centos5</strong></span>
+      </a>-->
+      </dd>
+      <dd>
+       &middot;
+      <a target="_blank" href="http://school.yunwei.edu/disclaimer">免责声明</a>
+       </dd>
+       <!--
+       <dd style="display: block;">
+       &middot;
+      <a href="javascript:void(0)" onclick="dashangToggle()" style="font-weight:bold;color:#f00;" title="打赏，支持一下">打赏一下</a>
+       </dd>
+      -->
+      <dd>
+       &middot;
+       <a target="_blank" href="http://school.yunwei.edu/aboutus">关于我们</a>
+       </dd>
+      <dd>
+       &middot;
+      <a target="_blank" href="http://school.yunwei.edu/archives">文章归档</a>
+      </dd>
+      <!--
+      <dd>
+       &middot;
+      <a href="https://www.xiaoyouxi100.com/?from=runoob" onclick="_hmt.push(['_trackEvent', '小游戏', 'click', 'xiaoyouxi100']);" target="_blank" title="小游戏">小游戏</a>
+      </dd>
+      -->
+     </dl>
+    
+     <div class="search-share">
+      <div class="app-download">
+        <div>
+         <strong>关注微信</strong>
+        </div>
+      </div>
+      <div class="share">
+            <img width="128" height="128" src="http://school.yunwei.edu/wp-content/themes/runoob/assets/images/qrcode.png" />
+       </div>
+     </div>
+     
+    </div>
+   </div>
+   <div class="w-1000 copyright">
+     Copyright &copy; 2013-2018    <strong><a href="http://school.yunwei.edu/" target="_blank">菜鸟教程</a></strong>&nbsp;
+    <strong><a href="http://school.yunwei.edu/" target="_blank">runoob.com</a></strong> All Rights Reserved. 备案号：闽ICP备15012807号-1
+   </div>
+  </div>
+  <div class="fixed-btn">
+    <a class="go-top" href="javascript:void(0)" title="返回顶部"> <i class="fa fa-angle-up"></i></a>
+    <a class="qrcode"  href="javascript:void(0)" title="关注我们"><i class="fa fa-qrcode"></i></a>
+    <a class="writer" style="display:none" href="javascript:void(0)"   title="标记/收藏"><i class="fa fa-star" aria-hidden="true"></i></a>
+    <!-- qrcode modal -->
+    <div id="bottom-qrcode" class="modal panel-modal hide fade in">
+      <h4>微信关注</h4>
+      <div class="panel-body"><img alt="微信关注" width="128" height="128" src="http://school.yunwei.edu/wp-content/themes/runoob/assets/images/qrcode.png"></div> 
+    </div>
+  </div>
+
+  <div class="hide_box"></div>
+    <div class="shang_box">
+      <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="http://static.runoob.com/images/dashang/close.jpg" alt="取消" /></a>
+       
+      <div class="shang_tit">
+        <p>感谢您的支持，我会继续努力的!</p>
+      </div>
+      <div class="shang_payimg">
+        <img src="http://static.runoob.com/images/dashang/weipayimg.png" alt="扫码支持" title="扫一扫" />
+      </div>
+        <div class="pay_explain">扫码打赏，你说多少就多少</div>
+      <div class="shang_payselect">
+        <div class="pay_item checked" data-id="weipay">
+          <span class="radiobox"></span>
+          <span class="pay_logo"><img src="http://static.runoob.com/images/dashang/wechat.jpg" alt="微信" /></span>
+        </div>
+        <div class="pay_item" data-id="alipay">
+          <span class="radiobox"></span>
+          <span class="pay_logo"><img src="http://static.runoob.com/images/dashang/alipay.jpg" alt="支付宝" /></span>
+        </div>
+        
+      </div>
+      <div class="shang_info">
+        <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+        <p><a href="http://c.runoob.com/codedemo/5348" target="_blank"><span style=" font-size: 14px;color: #000;font-weight: bold;">点我查看本站打赏源码！</span></a></p>
+      </div>
+    </div>
+  <div id="testClick"></div>
+ <div style="display:none;">
+ 
+ <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3eec0b7da6548cf07db3bc477ea905ee";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-84264393-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-84264393-2');
+</script>
+</div>
+<script>
+window.jsui={
+    www: '//wschool.yunwei.edu',
+    uri: '//school.yunwei.edu/wp-content/themes/runoob'
+};
+</script>
+<style>
+ol,ul{list-style:none}.cd-switcher a{text-decoration:none;outline:0}.cd-switcher a:hover{text-decoration:underline}a:focus{outline:0;-moz-outline:0}.main_nav{width:300px;height:60px;margin:60px auto 10px auto}.main_nav li{float:left;width:60px;margin-right:10px;font-size:16px;padding:.6em 1em;border-radius:3em;background:#2f889a;text-align:center}.main_nav li a{color:#fff}.errtip{background-color:#fceaea;color:#db5353;padding:8px 15px;font-size:14px;border:1px solid #fc9797;border-radius:5px}.cd-user-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(52,54,66,0.9);z-index:3;overflow-y:auto;cursor:pointer;visibility:hidden;opacity:0;-webkit-transition:opacity .3s 0,visibility 0 .3s;-moz-transition:opacity .3s 0,visibility 0 .3s;transition:opacity .3s 0,visibility 0 .3s}.cd-user-modal.is-visible{visibility:visible;opacity:1;-webkit-transition:opacity .3s 0,visibility 0 0;-moz-transition:opacity .3s 0,visibility 0 0;transition:opacity .3s 0,visibility 0 0}.cd-user-modal.is-visible .cd-user-modal-container{-webkit-transform:translateY(0);-moz-transform:translateY(0);-ms-transform:translateY(0);-o-transform:translateY(0);transform:translateY(0)}.cd-user-modal-container{position:relative;width:90%;max-width:500px;background:#FFF;margin:3em auto 4em;cursor:auto;border-radius:.25em;-webkit-transform:translateY(-30px);-moz-transform:translateY(-30px);-ms-transform:translateY(-30px);-o-transform:translateY(-30px);transform:translateY(-30px);-webkit-transition-property:-webkit-transform;-moz-transition-property:-moz-transform;transition-property:transform;-webkit-transition-duration:.3s;-moz-transition-duration:.3s;transition-duration:.3s}.cd-user-modal-container .cd-switcher:after{content:"";display:table;clear:both}.cd-user-modal-container .cd-switcher li{width:50%;float:left;text-align:center}.cd-user-modal-container .cd-switcher li:first-child a{border-radius:.25em 0 0 0}.cd-user-modal-container .cd-switcher li:last-child a{border-radius:0 .25em 0 0}.cd-user-modal-container .cd-switcher a{font-size:1.2em;font-weight:bold;display:block;width:100%;height:50px;line-height:50px;background:#e8f1e2;color:#96b880}.cd-user-modal-container .cd-switcher a.selected{background:#FFF;color:#505260}@media only screen and (min-width:600px){.cd-user-modal-container{margin:4em auto}.cd-user-modal-container .cd-switcher a{height:70px;line-height:70px}}.cd-form{padding:1.4em}.cd-form .fieldset{position:relative;margin:1.4em 0}.cd-form .fieldset:first-child{margin-top:0}.cd-form .fieldset:last-child{margin-bottom:0}.cd-form label{font-size:16px;font-size:.875rem}.cd-form label.image-replace{display:inline-block;position:absolute;left:15px;top:50%;bottom:auto;-webkit-transform:translateY(-50%);-moz-transform:translateY(-50%);-ms-transform:translateY(-50%);-o-transform:translateY(-50%);transform:translateY(-50%);height:20px;width:20px;overflow:hidden;text-indent:100%;white-space:nowrap;color:transparent;text-shadow:none;background-repeat:no-repeat;background-position:50% 0}.cd-form label.cd-username{background-image:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-username.svg")}.cd-form label.cd-email{background-image:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-email.svg")}.cd-form label.cd-password{background-image:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-password.svg")}.cd-form input{margin:0;padding:0;border-radius:.25em}.cd-form input.full-width{width:80%}.cd-form input.full-width2{width:94%}.cd-form input.has-padding{padding:12px 20px 12px 50px}.cd-form input.has-border{border:1px solid #d2d8d8;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none;-o-appearance:none;appearance:none}.cd-form input.has-border:focus{border-color:#98b880;box-shadow:0 0 5px rgba(52,54,66,0.1);outline:0}.cd-form input.has-error{border:1px solid #d76666}.cd-form input[type=password]{padding-right:65px}.cd-form input[type=submit]{padding:16px 0;cursor:pointer;background:#96b97d;color:#FFF;font-weight:bold;border:0;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none;-o-appearance:none;appearance:none;font-size:1.2em;font-weight:bold}.no-touch .cd-form input[type=submit]:hover,.no-touch .cd-form input[type=submit]:focus{background:#3599ae;outline:0}@media only screen and (min-width:600px){.cd-form{padding:2em}.cd-form .fieldset{margin:2em 0}.cd-form .fieldset:first-child{margin-top:0}.cd-form .fieldset:last-child{margin-bottom:0}.cd-form input.has-padding{padding:16px 20px 16px 50px}.cd-form input[type=submit]{padding:16px 0}}.cd-close-form{display:block;position:absolute;width:40px;height:40px;right:0;top:-40px;background:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-close.svg") no-repeat center center;text-indent:100%;white-space:nowrap;overflow:hidden}@media only screen and (min-width:1170px){}#cd-login,#cd-signup,#cd-reset-password{display:none}#cd-login.is-selected,#cd-signup.is-selected,#cd-reset-password.is-selected{display:block}
+</style>
+<div class="cd-user-modal"> 
+	<div class="cd-user-modal-container">
+		<ul class="cd-switcher">
+			<li><a href="javascript:;">用户登录</a></li>
+			<li><a href="javascript:;">注册新用户</a></li>
+		</ul>
+
+		<div id="cd-login"> <!-- 登录表单 -->
+			<div class="cd-form">
+				<p class="fieldset">
+					<label class="image-replace cd-username" for="signin-username">用户名</label>
+					<input class="full-width has-padding has-border" id="signin-username" name=username type="text" placeholder="输入用户名">
+				</p>
+
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="signin-password">密码</label>
+					<input class="full-width has-padding has-border" id="signin-password" name="password" type="password"  placeholder="输入密码">
+				</p>
+				
+				<p class="fieldset">
+					<input type="checkbox" id="remember-me" checked>
+					<label for="remember-me">记住登录状态</label>
+          <a href="http://school.yunwei.edu/reset-password" style="float: right;padding-right: 20px;" target="_blank">忘记密码？</a>
+				</p>
+ 				<input type="hidden" name="action" value="signin">
+				<p class="fieldset">
+					<input class="full-width2" type="submit" value="登 录">
+				</p>
+        <div class="err-msg"></div>
+			</div>
+		</div>
+
+		<div id="cd-signup"> <!-- 注册表单 -->
+			<div class="cd-form">
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="verifycode">邀请码</label>
+					<input class="full-width has-padding has-border" id="signup-verifycode" name="verifycode" type="text"  placeholder="输入邀请码">
+				</p>
+				<p class="fieldset">
+					<label class="image-replace cd-username" for="signup-username">用户名</label>
+					<input class="full-width has-padding has-border" id="signup-username" name="name" type="text" placeholder="输入用户名">
+				</p>
+
+				<p class="fieldset">
+					<label class="image-replace cd-email" for="signup-email">邮箱</label>
+					<input class="full-width has-padding has-border" name="email" id="signup-email" type="email" placeholder="输入mail">
+				</p>
+
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="signup-password">密码</label>
+					<input class="full-width has-padding has-border" id="signup-password" name="password" type="password"  placeholder="输入密码">
+				</p>
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="signup-password2">重复输入密码</label>
+					<input class="full-width has-padding has-border" id="signup-password2" name="password2" type="password"  placeholder="重复输入密码">
+				</p>
+				
+				<!-- 
+				<p class="fieldset">
+					<input type="checkbox" id="accept-terms">
+					<label for="accept-terms">我已阅读并同意 <a href="javascript:;">用户协议</a></label>
+				</p>
+				 -->
+				 
+				 <input type="hidden" name="action" value="signup">
+				<p class="fieldset">
+					<input class="full-width2" type="submit" value="注册新用户">
+				</p>
+				<p class="fieldset">
+				  <a href="http://school.yunwei.edu/w3cnote/runoob-user-test-intro.html#invite" target="_blank">如何获取邀请码？</a>
+				  </p>
+				<div class="err-msg"></div>
+			</div>
+
+		</div>
+
+		<a href="javascript:;" class="cd-close-form">关闭</a>
+	</div>
+</div> 
+<script src="http://school.yunwei.edu/wp-content/themes/runoob/assets/js/main.js?v=1.188"></script>
+<script src="http://static.runoob.com/assets/libs/hl/run_prettify.js"></script>
+</body>
+</html>

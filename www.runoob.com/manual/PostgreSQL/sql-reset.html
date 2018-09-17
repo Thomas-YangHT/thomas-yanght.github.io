@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>RESET</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="RELEASE SAVEPOINT" HREF="sql-release-savepoint.html"><LINK REL="NEXT" TITLE="REVOKE" HREF="sql-revoke.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/reset.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="RELEASE SAVEPOINT" HREF="sql-release-savepoint.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="REVOKE" HREF="sql-revoke.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-RESET"></A>RESET</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN79080"></A><H2>&#21517;&#31216;</H2>RESET&nbsp;--&nbsp;把一个运行时参数重置为缺省值</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN79085"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">RESET <TT
+CLASS="REPLACEABLE"
+><I
+>configuration_parameter</I
+></TT
+>
+RESET ALL</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN79088"></A><H2>描述</H2><P><TT CLASS="COMMAND">RESET</TT>将运行时参数恢复为缺省值。<TT CLASS="COMMAND">RESET</TT>是下面语句的一个变种
+</P><PRE CLASS="SYNOPSIS">SET <TT
+CLASS="REPLACEABLE"
+><I
+>configuration_parameter</I
+></TT
+> TO DEFAULT</PRE><P>
+请参考<A HREF="sql-set.html">SET</A>命令获取详细信息。</P><P>缺省值是变量可以拥有并且在当前会话中没有用<TT CLASS="COMMAND">SET</TT>设置过的值。
+这个数值的实际源头可能是编译时的缺省：配置文件、命令行开关、针对每个数据库或每用户的缺省设置。
+这与将它定义为<SPAN CLASS="QUOTE">"在会话开始时该参数的值"</SPAN>有轻微的不同，因为如果值来自配置文件，
+将会被重新设置为现在配置文件中声明的东西。参阅<A HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime-config.html">第 18 &#31456;</A>获取细节。</P><P><TT CLASS="COMMAND">RESET</TT>的事务性行为和<TT CLASS="COMMAND">SET</TT>相同：它的影响将会被事务回滚撤销。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN79103"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="REPLACEABLE"><I>configuration_parameter</I></TT></DT><DD><P>可预置的运行时参数名。可用的参数在<A HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime-config.html">第 18 &#31456;</A>和<A HREF="sql-set.html">SET</A>
+参考页中记录。</P></DD><DT><TT CLASS="LITERAL">ALL</TT></DT><DD><P>把所有运行时参数设置为缺省值。</P></DD></DL></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="AEN79118"></A><H2>例子</H2><P>把<TT CLASS="VARNAME">timezone</TT>配置变量设为其缺省值：
+</P><PRE CLASS="SCREEN">RESET timezone;</PRE><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN79123"></A><H2>兼容性</H2><P><TT CLASS="COMMAND">RESET</TT>是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>扩展。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN79128"></A><H2>又见</H2><A HREF="sql-set.html">SET</A>, <A HREF="sql-show.html">SHOW</A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-release-savepoint.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-revoke.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">RELEASE SAVEPOINT</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">REVOKE</TD></TR></TABLE></DIV></BODY></HTML>

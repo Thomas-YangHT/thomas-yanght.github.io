@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>pg_resetxlog</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="PostgreSQL 服务器应用程序" HREF="http://school.yunwei.edu/manual/PostgreSQL/reference-server.html"><LINK REL="PREVIOUS" TITLE="pg_ctl" HREF="app-pg-ctl.html"><LINK REL="NEXT" TITLE="postgres" HREF="app-postgres.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/pg_resetxlog.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="pg_ctl" HREF="app-pg-ctl.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/reference-server.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="postgres" HREF="app-postgres.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="APP-PGRESETXLOG"></A><SPAN CLASS="APPLICATION">pg_resetxlog</SPAN></H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN89839"></A><H2>&#21517;&#31216;</H2>pg_resetxlog&nbsp;--&nbsp;重置一个数据库集群的预写日志以及其它控制内容</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN89844"></A><H2>&#22823;&#32434;</H2><P><TT CLASS="COMMAND">pg_resetxlog</TT> [<TT CLASS="OPTION">-f</TT>] [<TT CLASS="OPTION">-n</TT>] [<TT CLASS="OPTION">-o</TT> <TT CLASS="REPLACEABLE"><I>oid</I></TT>] [<TT CLASS="OPTION">-x</TT> <TT CLASS="REPLACEABLE"><I>xid</I></TT>] [<TT CLASS="OPTION">-e</TT> <TT CLASS="REPLACEABLE"><I>xid_epoch</I></TT>] [<TT CLASS="OPTION">-m</TT> <TT CLASS="REPLACEABLE"><I>mxid</I></TT>,<TT CLASS="REPLACEABLE"><I>mxid</I></TT>] [<TT CLASS="OPTION">-O</TT> <TT CLASS="REPLACEABLE"><I>mxoff</I></TT>] [<TT CLASS="OPTION">-l</TT> <TT CLASS="REPLACEABLE"><I>xlogfile</I></TT>] <TT CLASS="REPLACEABLE"><I>datadir</I></TT> </P></DIV><DIV CLASS="REFSECT1"><A NAME="R1-APP-PGRESETXLOG-1"></A><H2>描述</H2><P><TT CLASS="COMMAND">pg_resetxlog</TT>清理预写日志(WAL)并且可以有选择地重置其它一些存储在
+<TT CLASS="FILENAME">pg_control</TT>文件中的控制信息。有时候，如果这些文件崩溃了，就需要这个功能。
+一定只把它用作最后的方法，就是说只有因为这样的崩溃导致服务器无法启动的时候才使用。</P><P>运行这个命令之后，可能就可以启动服务器了，但是，
+一定要记住数据库可能因为部分提交的事务而含有不完整的数据。你应该马上转储数据，
+运行<TT CLASS="COMMAND">initdb</TT>，然后重新加载。在重新加载之后，
+检查不完整的部分然后根据需要进行修复。</P><P>这个命令只能由安装服务器的用户运行，因为它需要对数据目录的读写权限。
+出于安全考虑，<TT CLASS="COMMAND">pg_resetxlog</TT>不使用环境变量<TT CLASS="ENVAR">PGDATA</TT>，
+你必须在命令行上声明数据目录。</P><P>如果<TT CLASS="COMMAND">pg_resetxlog</TT>抱怨说它无法判断用于<TT CLASS="FILENAME">pg_control</TT>
+的有效数据，那么你可以强制它继续处理，方法是声明<TT CLASS="OPTION">-f</TT>(强制)开关。
+在这种情况下，那些丢失了的数据将用模糊的近似数值代替。大多数字段都可以匹配上，
+但是下一个 OID 、下一个事务 ID 、下一个事务 ID 的 epoch(时间点)、
+下一个多事务 ID(两阶段提交的东西)、下一个多事务偏移量、WAL 开始地址可能需要手工帮助，
+这些字段可以使用下面讨论的选项设置。如果你不能判断所有这些字段的正确数值，
+那么<TT CLASS="OPTION">-f</TT>仍然可以使用，但是这样恢复过来的数据库正确性更值得怀疑：
+立即转储和重新加载是必须的。在转储之前<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">不要</I></SPAN>执行任何修改数据的操作，
+因为任何这样的动作都可能把事情搞得更糟糕。</P><P><TT CLASS="OPTION">-o</TT>, <TT CLASS="OPTION">-x</TT>, <TT CLASS="OPTION">-e</TT>, <TT CLASS="OPTION">-m</TT>, <TT CLASS="OPTION">-O</TT>, <TT CLASS="OPTION">-l</TT>
+开关允许手工设置下一个 OID 、下一个事务 ID 、下一个事务 ID epoch 、
+下一个和最旧的多事务 ID 、下一个多事务偏移量、WAL 起始位置的数值。
+只有在<TT CLASS="COMMAND">pg_resetxlog</TT>无法通过读取<TT CLASS="FILENAME">pg_control</TT>
+判断合适的数值的时候才需要它。安全的数值可以用下面的方法判断：
+<P></P></P><UL><LI><P>对于下一个事务 ID(<TT CLASS="OPTION">-x</TT>)而言，一个安全的数值是看看数据目录里的
+<TT CLASS="FILENAME">pg_clog</TT>里数值最大的文件名，然后加一，然后再乘上 1048576 。
+请注意那些文件名是十六进制的。通常也以十六进制的形式声明选项值是最简单的。
+比如，如果<TT CLASS="FILENAME">0011</TT>是<TT CLASS="FILENAME">pg_clog</TT>里最大的记录，
+<TT CLASS="LITERAL">-x 0x1200000</TT>就可以了(后面的五个零提供了合适的乘积)。</P></LI><LI><P>下一个多事务 ID(<TT CLASS="OPTION">-m</TT>的第一部分)的安全值可以通过查看数据目录里
+<TT CLASS="FILENAME">pg_multixact/offsets</TT>子目录里面的数字最大的文件名，加一，
+然后乘以 65536 得到。相反的，最老多事务ID（<TT CLASS="OPTION">-m</TT>的第二部分）
+的安全值可以通过查看相同目录里的数字最小的文件名，然后乘以65536得到。
+和上面一样，文件名是十六进制的，因此最简单的方法是给选项声明一个十六进制的开关值，
+然后在结尾加四个零。</P></LI><LI><P>下一个多事务偏移量(<TT CLASS="OPTION">-O</TT>)的安全值可以通过检查数据目录里
+<TT CLASS="FILENAME">pg_multixact/members</TT>子目录下的数字最大的文件名，加一，
+然后乘以 65536 得到。和上面一样，文件名是十六进制的。
+这里没有像上面一样添加零的简单方法。</P></LI><LI><P>WAL 的起始位置(<TT CLASS="OPTION">-l</TT>)应该比目前存在于数据目录<TT CLASS="FILENAME">pg_xlog</TT>
+里面的任何WAL段文件号都大。它的文件名也是十六进制的，并且有三部分。
+第一部分是<SPAN CLASS="QUOTE">"时间线 ID"</SPAN>，通常应该保持相同。比如，
+如果<TT CLASS="FILENAME">00000001000000320000004A</TT>是<TT CLASS="FILENAME">pg_xlog</TT>里最大的条目，
+那么选择<TT CLASS="LITERAL">-l 00000001000000320000004B</TT>或更多。</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B><TT CLASS="COMMAND">pg_resetxlog</TT>本身查看<TT CLASS="FILENAME">pg_xlog</TT>里面的文件，
+并选择一个缺省的超过最后一个现存文件号的<TT CLASS="OPTION">-l</TT>设置。因此，
+只有知道WAL段文件当前不在<TT CLASS="FILENAME">pg_xlog</TT>中时，才需要手动调整<TT CLASS="OPTION">-l</TT>，
+例如离线归档中的条目；或如果<TT CLASS="FILENAME">pg_xlog</TT>的内容完全丢失。</P></BLOCKQUOTE></DIV></LI><LI><P>没有很容易的办法来判断比数据库中最大的 OID 大一号的下一个 OID ，
+不过很走运的是获取正确的下一个 OID 并非非常关键的事情。</P></LI><LI><P>除了由<TT CLASS="COMMAND">pg_resetxlog</TT>设定的字段外，
+事务 ID epoch 实际上并未存储在数据库里的任何地方。
+所以只要是涉及到数据库自身的任何数值都有效。你可能需要调整这个值以确保诸如
+<SPAN CLASS="APPLICATION">Slony-I</SPAN>之类的备份系统能够正常工作。如果是这样的话，
+应当从下游已复制的数据库中获取恰当的值。</P></LI></UL><P>
+</P><P><TT CLASS="OPTION">-n</TT>(无操作)选项指示<TT CLASS="COMMAND">pg_resetxlog</TT>打印从
+<TT CLASS="FILENAME">pg_control</TT>重新构造的数值然后不修改任何值就退出。这主要是一个调试工具，
+但是在<TT CLASS="COMMAND">pg_resetxlog</TT>真正处理前进行的合理性检查的时候可能会有用。</P><P><TT CLASS="OPTION">-V</TT> 和 <TT CLASS="OPTION">--version</TT>选项打印<SPAN CLASS="APPLICATION">pg_resetxlog</SPAN>
+的版本然后退出。选项<TT CLASS="OPTION">-?</TT> 和 <TT CLASS="OPTION">--help</TT>显示参数的支持信息然后退出。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN89947"></A><H2>注意</H2><P>在服务器运行的时候一定不要运行这个命令。如果发现在数据文件目录里有锁文件，
+那么<TT CLASS="COMMAND">pg_resetxlog</TT>将拒绝启动。如果服务器崩溃，
+那么可能会剩下一个锁文件；如果这样，你可以删除该锁文件以便允许
+<TT CLASS="COMMAND">pg_resetxlog</TT>运行。但是在你这么做之前，
+一定要确保没有任何后端服务器进程仍在运行。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="app-pg-ctl.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="app-postgres.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><SPAN CLASS="APPLICATION">pg_ctl</SPAN></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/reference-server.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><SPAN CLASS="APPLICATION">postgres</SPAN></TD></TR></TABLE></DIV></BODY></HTML>

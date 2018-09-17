@@ -1,0 +1,678 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>造个类型不是梦-白话Swift类型创建 | 3.0 更新说明</title>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="description" content="">
+<meta name="generator" content="GitBook 2.6.7">
+<meta name="HandheldFriendly" content="true"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+<link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../gitbook/style.css">
+<link rel="stylesheet" href="../gitbook/plugins/gitbook-plugin-highlight/website.css">
+<link rel="stylesheet" href="../gitbook/plugins/gitbook-plugin-search/search.css">
+<link rel="stylesheet" href="../gitbook/plugins/gitbook-plugin-fontsettings/website.css">
+<link rel="next" href="03_Ballons.html" />
+<link rel="prev" href="01_Access_Control.html" />
+</head>
+<body>
+<div class="book" data-level="4.2" data-chapter-title="造个类型不是梦-白话Swift类型创建" data-filepath="chapter4/02_Type_Custom.md" data-basepath=".." data-revision="Mon Jan 09 2017 10:59:56 GMT+0800 (CST)" data-innerlanguage="">
+<div class="book-summary">
+<nav role="navigation">
+<ul class="summary">
+<li class="chapter " data-level="0" data-path="index.html">
+<a href="../index.html">
+<i class="fa fa-check"></i>
+Introduction
+</a>
+</li>
+<li class="chapter " data-level="1" data-path="chapter1/chapter1.html">
+<a href="../chapter1/chapter1.html">
+<i class="fa fa-check"></i>
+<b>1.</b>
+欢迎使用 Swift
+</a>
+<ul class="articles">
+<li class="chapter " data-level="1.1" data-path="chapter1/01_swift.html">
+<a href="../chapter1/01_swift.html">
+<i class="fa fa-check"></i>
+<b>1.1.</b>
+关于 Swift
+</a>
+</li>
+<li class="chapter " data-level="1.2" data-path="chapter1/02_a_swift_tour.html">
+<a href="../chapter1/02_a_swift_tour.html">
+<i class="fa fa-check"></i>
+<b>1.2.</b>
+Swift 初见
+</a>
+</li>
+<li class="chapter " data-level="1.3" data-path="chapter1/03_revision_history.html">
+<a href="../chapter1/03_revision_history.html">
+<i class="fa fa-check"></i>
+<b>1.3.</b>
+Swift 版本历史记录
+</a>
+</li>
+<li class="chapter " data-level="1.4" data-path="v1.0.html">
+<a href="../v1.0.html">
+<i class="fa fa-check"></i>
+<b>1.4.</b>
+Swift 1.0 发布内容
+</a>
+</li>
+</ul>
+</li>
+<li class="chapter " data-level="2" data-path="chapter2/chapter2.html">
+<a href="../chapter2/chapter2.html">
+<i class="fa fa-check"></i>
+<b>2.</b>
+Swift 教程
+</a>
+<ul class="articles">
+<li class="chapter " data-level="2.1" data-path="chapter2/01_The_Basics.html">
+<a href="../chapter2/01_The_Basics.html">
+<i class="fa fa-check"></i>
+<b>2.1.</b>
+基础部分
+</a>
+</li>
+<li class="chapter " data-level="2.2" data-path="chapter2/02_Basic_Operators.html">
+<a href="../chapter2/02_Basic_Operators.html">
+<i class="fa fa-check"></i>
+<b>2.2.</b>
+基本运算符
+</a>
+</li>
+<li class="chapter " data-level="2.3" data-path="chapter2/03_Strings_and_Characters.html">
+<a href="../chapter2/03_Strings_and_Characters.html">
+<i class="fa fa-check"></i>
+<b>2.3.</b>
+字符串和字符
+</a>
+</li>
+<li class="chapter " data-level="2.4" data-path="chapter2/04_Collection_Types.html">
+<a href="../chapter2/04_Collection_Types.html">
+<i class="fa fa-check"></i>
+<b>2.4.</b>
+集合类型
+</a>
+</li>
+<li class="chapter " data-level="2.5" data-path="chapter2/05_Control_Flow.html">
+<a href="../chapter2/05_Control_Flow.html">
+<i class="fa fa-check"></i>
+<b>2.5.</b>
+控制流
+</a>
+</li>
+<li class="chapter " data-level="2.6" data-path="chapter2/06_Functions.html">
+<a href="../chapter2/06_Functions.html">
+<i class="fa fa-check"></i>
+<b>2.6.</b>
+函数
+</a>
+</li>
+<li class="chapter " data-level="2.7" data-path="chapter2/07_Closures.html">
+<a href="../chapter2/07_Closures.html">
+<i class="fa fa-check"></i>
+<b>2.7.</b>
+闭包
+</a>
+</li>
+<li class="chapter " data-level="2.8" data-path="chapter2/08_Enumerations.html">
+<a href="../chapter2/08_Enumerations.html">
+<i class="fa fa-check"></i>
+<b>2.8.</b>
+枚举
+</a>
+</li>
+<li class="chapter " data-level="2.9" data-path="chapter2/09_Classes_and_Structures.html">
+<a href="../chapter2/09_Classes_and_Structures.html">
+<i class="fa fa-check"></i>
+<b>2.9.</b>
+类和结构体
+</a>
+</li>
+<li class="chapter " data-level="2.10" data-path="chapter2/10_Properties.html">
+<a href="../chapter2/10_Properties.html">
+<i class="fa fa-check"></i>
+<b>2.10.</b>
+属性
+</a>
+</li>
+<li class="chapter " data-level="2.11" data-path="chapter2/11_Methods.html">
+<a href="../chapter2/11_Methods.html">
+<i class="fa fa-check"></i>
+<b>2.11.</b>
+方法
+</a>
+</li>
+<li class="chapter " data-level="2.12" data-path="chapter2/12_Subscripts.html">
+<a href="../chapter2/12_Subscripts.html">
+<i class="fa fa-check"></i>
+<b>2.12.</b>
+下标
+</a>
+</li>
+<li class="chapter " data-level="2.13" data-path="chapter2/13_Inheritance.html">
+<a href="../chapter2/13_Inheritance.html">
+<i class="fa fa-check"></i>
+<b>2.13.</b>
+继承
+</a>
+</li>
+<li class="chapter " data-level="2.14" data-path="chapter2/14_Initialization.html">
+<a href="../chapter2/14_Initialization.html">
+<i class="fa fa-check"></i>
+<b>2.14.</b>
+构造过程
+</a>
+</li>
+<li class="chapter " data-level="2.15" data-path="chapter2/15_Deinitialization.html">
+<a href="../chapter2/15_Deinitialization.html">
+<i class="fa fa-check"></i>
+<b>2.15.</b>
+析构过程
+</a>
+</li>
+<li class="chapter " data-level="2.16" data-path="chapter2/16_Automatic_Reference_Counting.html">
+<a href="../chapter2/16_Automatic_Reference_Counting.html">
+<i class="fa fa-check"></i>
+<b>2.16.</b>
+自动引用计数
+</a>
+</li>
+<li class="chapter " data-level="2.17" data-path="chapter2/17_Optional_Chaining.html">
+<a href="../chapter2/17_Optional_Chaining.html">
+<i class="fa fa-check"></i>
+<b>2.17.</b>
+可选链
+</a>
+</li>
+<li class="chapter " data-level="2.18" data-path="chapter2/18_Error_Handling.html">
+<a href="../chapter2/18_Error_Handling.html">
+<i class="fa fa-check"></i>
+<b>2.18.</b>
+错误处理
+</a>
+</li>
+<li class="chapter " data-level="2.19" data-path="chapter2/19_Type_Casting.html">
+<a href="../chapter2/19_Type_Casting.html">
+<i class="fa fa-check"></i>
+<b>2.19.</b>
+类型转换
+</a>
+</li>
+<li class="chapter " data-level="2.20" data-path="chapter2/20_Nested_Types.html">
+<a href="../chapter2/20_Nested_Types.html">
+<i class="fa fa-check"></i>
+<b>2.20.</b>
+嵌套类型
+</a>
+</li>
+<li class="chapter " data-level="2.21" data-path="chapter2/21_Extensions.html">
+<a href="../chapter2/21_Extensions.html">
+<i class="fa fa-check"></i>
+<b>2.21.</b>
+扩展
+</a>
+</li>
+<li class="chapter " data-level="2.22" data-path="chapter2/22_Protocols.html">
+<a href="../chapter2/22_Protocols.html">
+<i class="fa fa-check"></i>
+<b>2.22.</b>
+协议
+</a>
+</li>
+<li class="chapter " data-level="2.23" data-path="chapter2/23_Generics.html">
+<a href="../chapter2/23_Generics.html">
+<i class="fa fa-check"></i>
+<b>2.23.</b>
+泛型
+</a>
+</li>
+<li class="chapter " data-level="2.24" data-path="chapter2/24_Access_Control.html">
+<a href="../chapter2/24_Access_Control.html">
+<i class="fa fa-check"></i>
+<b>2.24.</b>
+访问控制
+</a>
+</li>
+<li class="chapter " data-level="2.25" data-path="chapter2/25_Advanced_Operators.html">
+<a href="../chapter2/25_Advanced_Operators.html">
+<i class="fa fa-check"></i>
+<b>2.25.</b>
+高级运算符
+</a>
+</li>
+</ul>
+</li>
+<li class="chapter " data-level="3">
+<span><b>3.</b> 语言参考</span>
+<ul class="articles">
+<li class="chapter " data-level="3.1" data-path="chapter3/01_About_the_Language_Reference.html">
+<a href="../chapter3/01_About_the_Language_Reference.html">
+<i class="fa fa-check"></i>
+<b>3.1.</b>
+关于语言参考
+</a>
+</li>
+<li class="chapter " data-level="3.2" data-path="chapter3/02_Lexical_Structure.html">
+<a href="../chapter3/02_Lexical_Structure.html">
+<i class="fa fa-check"></i>
+<b>3.2.</b>
+词法结构
+</a>
+</li>
+<li class="chapter " data-level="3.3" data-path="chapter3/03_Types.html">
+<a href="../chapter3/03_Types.html">
+<i class="fa fa-check"></i>
+<b>3.3.</b>
+类型
+</a>
+</li>
+<li class="chapter " data-level="3.4" data-path="chapter3/04_Expressions.html">
+<a href="../chapter3/04_Expressions.html">
+<i class="fa fa-check"></i>
+<b>3.4.</b>
+表达式
+</a>
+</li>
+<li class="chapter " data-level="3.5" data-path="chapter3/10_Statements.html">
+<a href="../chapter3/10_Statements.html">
+<i class="fa fa-check"></i>
+<b>3.5.</b>
+语句
+</a>
+</li>
+<li class="chapter " data-level="3.6" data-path="chapter3/05_Declarations.html">
+<a href="../chapter3/05_Declarations.html">
+<i class="fa fa-check"></i>
+<b>3.6.</b>
+声明
+</a>
+</li>
+<li class="chapter " data-level="3.7" data-path="chapter3/06_Attributes.html">
+<a href="../chapter3/06_Attributes.html">
+<i class="fa fa-check"></i>
+<b>3.7.</b>
+特性
+</a>
+</li>
+<li class="chapter " data-level="3.8" data-path="chapter3/07_Patterns.html">
+<a href="../chapter3/07_Patterns.html">
+<i class="fa fa-check"></i>
+<b>3.8.</b>
+模式
+</a>
+</li>
+<li class="chapter " data-level="3.9" data-path="chapter3/08_Generic_Parameters_and_Arguments.html">
+<a href="../chapter3/08_Generic_Parameters_and_Arguments.html">
+<i class="fa fa-check"></i>
+<b>3.9.</b>
+泛型参数
+</a>
+</li>
+<li class="chapter " data-level="3.10" data-path="chapter3/09_Summary_of_the_Grammar.html">
+<a href="../chapter3/09_Summary_of_the_Grammar.html">
+<i class="fa fa-check"></i>
+<b>3.10.</b>
+语法总结
+</a>
+</li>
+</ul>
+</li>
+<li class="chapter " data-level="4">
+<span><b>4.</b> 苹果官方Blog官方翻译</span>
+<ul class="articles">
+<li class="chapter " data-level="4.1" data-path="chapter4/01_Access_Control.html">
+<a href="01_Access_Control.html">
+<i class="fa fa-check"></i>
+<b>4.1.</b>
+Access Control 权限控制的黑与白
+</a>
+</li>
+<li class="chapter active" data-level="4.2" data-path="chapter4/02_Type_Custom.html">
+<a href="02_Type_Custom.html">
+<i class="fa fa-check"></i>
+<b>4.2.</b>
+造个类型不是梦-白话Swift类型创建
+</a>
+</li>
+<li class="chapter " data-level="4.3" data-path="chapter4/03_Ballons.html">
+<a href="03_Ballons.html">
+<i class="fa fa-check"></i>
+<b>4.3.</b>
+WWDC里面的那个“大炮打气球”
+</a>
+</li>
+<li class="chapter " data-level="4.4" data-path="chapter4/04_Interacting_with_C_Pointers.html">
+<a href="04_Interacting_with_C_Pointers.html">
+<i class="fa fa-check"></i>
+<b>4.4.</b>
+Swift与C语言指针友好合作
+</a>
+</li>
+<li class="chapter " data-level="4.5" data-path="chapter4/05_Value_and_Reference_Types.html">
+<a href="05_Value_and_Reference_Types.html">
+<i class="fa fa-check"></i>
+<b>4.5.</b>
+引用类型和值类型的恩怨
+</a>
+</li>
+<li class="chapter " data-level="4.6" data-path="chapter4/06_Access_Control_and_Protected.html">
+<a href="06_Access_Control_and_Protected.html">
+<i class="fa fa-check"></i>
+<b>4.6.</b>
+访问控制和Protected
+</a>
+</li>
+<li class="chapter " data-level="4.7" data-path="chapter4/07_Optional_Case_Study.html">
+<a href="07_Optional_Case_Study.html">
+<i class="fa fa-check"></i>
+<b>4.7.</b>
+可选类型完美解决占位问题
+</a>
+</li>
+</ul>
+</li>
+<li class="divider"></li>
+<li>
+<a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+Published with GitBook
+</a>
+</li>
+</ul>
+</nav>
+</div>
+<div class="book-body">
+<div class="body-inner">
+<div class="book-header" role="navigation">
+<h1>
+<i class="fa fa-circle-o-notch fa-spin"></i>
+<a href="../index.html">3.0 更新说明</a>
+</h1>
+</div>
+<div class="page-wrapper" tabindex="-1" role="main">
+<div class="page-inner">
+<section class="normal" id="section-">
+<h1 id="&#x9020;&#x4E2A;&#x7C7B;&#x578B;&#x4E0D;&#x662F;&#x68A6;&#x767D;&#x8BDD;swift&#x7C7B;&#x578B;&#x521B;&#x5EFA;">&#x9020;&#x4E2A;&#x7C7B;&#x578B;&#x4E0D;&#x662F;&#x68A6;-&#x767D;&#x8BDD;Swift&#x7C7B;&#x578B;&#x521B;&#x5EFA;</h1>
+<hr>
+<blockquote>
+<p>&#x7FFB;&#x8BD1;&#xFF1A;<a href="http://weibo.com/u/5241713117" target="_blank">&#x8001;&#x7801;&#x56E2;&#x961F;&#x7FFB;&#x8BD1;&#x7EC4;-Tyrion</a>
+&#x6821;&#x5BF9;&#xFF1A;<a href="http://weibo.com/u/5241713117" target="_blank">&#x8001;&#x7801;&#x56E2;&#x961F;&#x7FFB;&#x8BD1;&#x7EC4;-Oberyn</a></p>
+</blockquote>
+<p>&#x672C;&#x9875;&#x5305;&#x542B;&#x5185;&#x5BB9;&#xFF1A;</p>
+<ul>
+<li><a href="02_Type_Custom.html#prototype">&#x81EA;&#x5B9A;&#x4E49;&#x539F;&#x578B;</a></li>
+<li><a href="02_Type_Custom.html#imp-default">&#x5B9E;&#x73B0;&#x9ED8;&#x8BA4;&#x503C;</a></li>
+<li><a href="02_Type_Custom.html#init-by-bool">&#x652F;&#x6301;&#x57FA;&#x672C;&#x5E03;&#x5C14;&#x578B;&#x521D;&#x59CB;&#x5316;</a></li>
+<li><a href="02_Type_Custom.html#condition-by-bool">&#x652F;&#x6301;Bool&#x7C7B;&#x578B;&#x5224;&#x65AD;</a></li>
+<li><a href="02_Type_Custom.html#support-all-type">&#x652F;&#x6301;&#x517C;&#x5BB9;&#x5404;&#x4EEC;&#x5404;&#x6D3E;&#x7684;&#x7C7B;&#x578B;</a></li>
+<li><a href="02_Type_Custom.html#make-up-type">&#x5B8C;&#x5584;OCBool&#x7684;&#x5E03;&#x5C14;&#x57FA;&#x56E0;&#x4F53;&#x7CFB;</a></li>
+</ul>
+<p>&#x5C0F;&#x4F19;&#x4F34;&#x4EEC;&#xFF0C;Swift&#x4E2D;&#x7684;Bool&#x7C7B;&#x578B;&#x6709;&#x7740;&#x975E;&#x5E38;&#x91CD;&#x8981;&#x7684;&#x8BED;&#x6CD5;&#x529F;&#x80FD;&#xFF0C;&#x5E76;&#x652F;&#x6491;&#x8D77;&#x4E86;&#x6574;&#x4E2A;Swift&#x4F53;&#x7CFB;&#x4E2D;&#x7684;&#x903B;&#x8F91;&#x5224;&#x65AD;&#x4F53;&#x7CFB;&#xFF0C;&#x7ECF;&#x8FC7;&#x8001;&#x7801;&#x7684;&#x7814;&#x7A76;&#x548C;&#x5B66;&#x4E60;&#xFF0C; Bool&#x7C7B;&#x578B;&#x672C;&#x8EAB;&#x5176;&#x5B9E;&#x662F;&#x5BF9;&#x57FA;&#x7840;Boolean&#x7C7B;&#x578B;&#x5C01;&#x88C5;&#xFF0C;&#x5C0F;&#x4F19;&#x4F34;&#x4EEC;&#x53EF;&#x80FD;&#x54AC;&#x7740;&#x624B;&#x6307;&#x5934;&#x95EE;&#x8001;&#x7801;&#xFF0C;&#x600E;&#x4E48;&#x4E00;&#x4F1A;Bool&#x7C7B;&#x578B;&#xFF0C;&#x4E00;&#x4F1A;Boolean&#x7C7B;&#x578B;&#xFF0C;&#x5176;&#x533A;&#x522B;&#x5728;&#x4E8E;&#xFF0C;&#x524D;&#x8005;&#x662F;&#x57FA;&#x4E8E;&#x679A;&#x4E3E;&#x7684;&#x7EC4;&#x5408;&#x7C7B;&#x578B;&#xFF0C;&#x800C;&#x540E;&#x8005;&#x5219;&#x662F;&#x57FA;&#x672C;&#x7C7B;&#x578B;&#xFF0C;&#x53EA;&#x6709;&#x4E24;&#x79CD;true&#x548C;false&#x3002;</p>
+<p><a name="prefix_expressions"></a></p>
+<h4 id="&#x81EA;&#x5B9A;&#x4E49;&#x539F;&#x578B;">&#x81EA;&#x5B9A;&#x4E49;&#x539F;&#x578B;</h4>
+<p>&#x63A5;&#x4E0B;&#x8001;&#x7801;&#x6839;&#x636E;Bool&#x7684;&#x601D;&#x60F3;&#x6765;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;OCBool&#x7C7B;&#x578B;&#xFF0C;&#x6765;&#x8BA9;&#x5C0F;&#x4F19;&#x4F34;&#x4EEC;&#x4E86;&#x89E3;&#x4E00;&#x4E0B;Swift&#x4E2D;&#x5230;&#x5E95;&#x662F;&#x600E;&#x4E48;&#x73A9;&#x513F;&#x7684;&#x3002;
+&#x6765;&#x6211;&#x4EEC;&#x5148;&#x770B;&#x4E00;&#x4E0B;OCBool&#x7684;&#x5B9A;&#x4E49;&#x3002;</p>
+<h5 id="&#x4EE3;&#x7801;&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;">&#x4EE3;&#x7801;&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;</h5>
+<pre><code class="lang-swift"><span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">OCBool</span></span>{
+<span class="hljs-keyword">case</span> ocTrue
+<span class="hljs-keyword">case</span> ocFalse
+}
+</code></pre>
+<h5 id="&#x6CE8;&#x610F;&#xFF1A;">&#x6CE8;&#x610F;&#xFF1A;</h5>
+<ul>
+<li>&#x4EE3;&#x7801;&#x4E2D;&#x7B2C;2&#x884C;&#x548C;&#x7B2C;3&#x884C;&#xFF0C;&#x53EF;&#x4EE5;&#x5408;&#x5E76;&#x5230;&#x4E00;&#x884C;&#x5199;&#xFF0C;&#x5982;&#x82F9;&#x679C;&#x5B98;&#x65B9;Blog&#x6240;&#x5199;&#x7684;&#x4E00;&#x6837;</li>
+<li>&#x4EE3;&#x7801;&#x4E2D;&#x547D;&#x540D;&#x9700;&#x8981;&#x6CE8;&#x610F;&#xFF1A;OCBool&#x662F;&#x7C7B;&#x578B;&#x540D;&#xFF0C;&#x6240;&#x4EE5;&#x9996;&#x5B57;&#x6BCD;&#x5FC5;&#x987B;&#x5927;&#x5199;&#xFF0C;&#x800C;case&#x4E2D;&#x7684;ocTrue&#x548C;ocFalse&#x662F;&#x5C0F;&#x7C7B;&#x578B;&#x5219;&#x9700;&#x8981;&#x9996;&#x5B57;&#x6BCD;&#x5C0F;&#x5199;&#x3002;</li>
+</ul>
+<p><a name="imp-default"></a></p>
+<h4 id="&#x5B9E;&#x73B0;&#x9ED8;&#x8BA4;&#x503C;">&#x5B9E;&#x73B0;&#x9ED8;&#x8BA4;&#x503C;</h4>
+<p>&#x884C;&#xFF0C;&#x6211;&#x4EEC;&#x7ED9;&#x4E86;&#x4E00;&#x4E2A;&#x6F02;&#x4EAE;&#x7684;&#x5B9A;&#x4E49;&#xFF0C;&#x4E0D;&#x8FC7;&#x6309;&#x7167;&#x4F20;&#x7EDF;&#x8BED;&#x8A00;&#x7684;&#x7ECF;&#x9A8C;&#xFF0C;Bool&#x503C;&#x9ED8;&#x8BA4;&#x60C5;&#x51B5;&#x4E0B;&#x662F;&#x5047;&#xFF0C; &#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x7684;OCBool&#x4E5F;&#x5E94;&#x8BE5;&#x5982;&#x6B64;&#xFF0C;&#x6211;&#x4EEC;&#x4F7F;&#x7528;&#x7C7B;&#x578B;&#x6269;&#x5C55;&#x6280;&#x672F;&#x589E;&#x52A0;&#x8FD9;&#x4E2A;&#x9ED8;&#x8BA4;&#x7279;&#x6027;&#xFF1A;</p>
+<pre><code class="lang-swift"><span class="hljs-class"><span class="hljs-keyword">extension</span> <span class="hljs-title">OCBool</span></span>{
+     <span class="hljs-keyword">init</span>(){
+             <span class="hljs-keyword">self</span> =.ocFalse
+     }
+}
+</code></pre>
+<h5 id="&#x6CE8;&#x610F;&#xFF1A;">&#x6CE8;&#x610F;&#xFF1A;</h5>
+<ul>
+<li>&#x4EE3;&#x7801;&#x4E2D;&#x7B2C;1&#x884C;&#xFF1A;extension&#x5173;&#x952E;&#x5B57;&#xFF0C;&#x975E;&#x5E38;&#x5F3A;&#x5927;&#xFF0C;&#x5C0F;&#x4F19;&#x4F34;&#x4EEC;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x6B64;&#x521B;&#x9020;&#x51FA;&#x8BB8;&#x591A;&#x597D;&#x73A9;&#x7684;&#x4E1C;&#x897F;&#xFF0C;&#x5EFA;&#x8BAE;&#x5404;&#x4F4D;&#x53BB;Github&#x4E0A;&#x770B;&#x4E00;&#x4E2A;&#x540D;&#x4E3A;&#x201C;Swiftz&#x201D;&#x7684;&#x9879;&#x76EE;&#xFF0C;&#x5B83;&#x5C06;&#x6269;&#x5C55;&#x7528;&#x5230;&#x4E86;&#x6781;&#x81F4;&#x3002;</li>
+<li>&#x4EE3;&#x7801;&#x4E2D;&#x7B2C;3&#x884C;&#xFF1A;self = .ocFalse&#x8BED;&#x6CD5;&#xFF0C;&#x521A;&#x5165;&#x95E8;&#x7684;&#x5C0F;&#x4F19;&#x4F34;&#x4EEC;&#x5F88;&#x8FF7;&#x7CCA;&#xFF0C;&#x4E3A;&#x4EC0;&#x4E48;&#x4F1A;&#x6709;&#x5947;&#x602A;&#x7684;&#x70B9;&#x8BED;&#x6CD5;&#xFF0C;&#x56E0;&#x4E3A;&#x5927;&#x725B;Chris&#x5728;Swift&#x4E2D;&#x589E;&#x52A0;&#x4E86;&#x7C7B;&#x578B;&#x667A;&#x80FD;&#x63A8;&#x65AD;&#x529F;&#x80FD;&#xFF0C;&#x5728;&#x82F9;&#x679C;Blog&#x4E2D;&#xFF0C;&#x63D0;&#x5230;&#x4E86;&#x201C;Context&#x201D;&#x6982;&#x5FF5;&#xFF0C;&#x5C31;&#x662F;&#x8FD9;&#x4E2A;&#x610F;&#x601D;&#xFF0C;&#x56E0;&#x4E3A;&#x8FD9;&#x884C;&#x8BED;&#x53E5;&#x662F;&#x5728;&#x679A;&#x4E3E;OCBool&#x4E2D;&#x7684;&#xFF0C;&#x5176;&#x4E0A;&#x4E0B;&#x6587;&#x5C31;&#x662F;OCBool&#x7684;&#x5B9A;&#x4E49;&#x4F53;&#xFF0C;&#x7F16;&#x8BD1;&#x5668;&#x5F53;&#x7136;&#x77E5;&#x9053;.ocFalse&#x5C31;&#x662F;OCBool.ocFalse&#x4E86;&#xFF0C;&#x6240;&#x4EE5;&#x8FD9;&#x91CC;&#x76F4;&#x63A5;&#x70B9;&#x8BED;&#x6CD5;&#xFF0C;&#x975E;&#x5E38;&#x6574;&#x9F50;&#x3002;
+&#x73B0;&#x5728;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x5982;&#x4E0B;&#x65B9;&#x6CD5;&#x4F7F;&#x7528;&#x8FD9;&#x4E2A;Bool&#x7C7B;&#x578B;&#x3002;</li>
+</ul>
+<h5 id="&#x4EE3;&#x7801;&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;">&#x4EE3;&#x7801;&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;</h5>
+<pre><code class="lang-swift"><span class="hljs-keyword">var</span> result:<span class="hljs-type">OCBool</span> = <span class="hljs-type">OCBool</span>()
+<span class="hljs-keyword">var</span> result1:<span class="hljs-type">OCBool</span> = .ocTrue
+</code></pre>
+<p><a name="init-by-bool"></a></p>
+<h4 id="&#x652F;&#x6301;&#x57FA;&#x672C;&#x5E03;&#x5C14;&#x578B;&#x521D;&#x59CB;&#x5316;">&#x652F;&#x6301;&#x57FA;&#x672C;&#x5E03;&#x5C14;&#x578B;&#x521D;&#x59CB;&#x5316;</h4>
+<p>&#x6B63;&#x5982;&#x4E0A;&#x8FF0;&#x4EE3;&#x7801;&#x6240;&#x8FF0;&#xFF0C;&#x6211;&#x4EEC;&#x53EA;&#x80FD;&#x901A;&#x8FC7;&#x7C7B;&#x578B;&#x6216;&#x8005;&#x679A;&#x4E3E;&#x9879;&#x76EE;&#x8D4B;&#x503C;&#xFF0C;&#x8FD9;&#x662F;&#x7EC4;&#x5408;&#x7C7B;&#x578B;&#x7684;&#x7528;&#x6CD5;&#xFF0C;&#x4F46;&#x662F;&#x7F16;&#x7801;&#x7684;&#x65E5;&#x5B50;&#x91CC;&#xFF0C;&#x6211;&#x4EEC;&#x603B;&#x662F;&#x5E0C;&#x671B;&#x548C;true&#xFF0C;false&#x76F4;&#x63A5;&#x6253;&#x4EA4;&#x9053;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#xFF0C;&#x6211;&#x4EEC;&#x5E0C;&#x671B;&#x8FD9;&#x4E48;&#x505A;&#xFF0C;
+&#x4EE3;&#x7801;&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;</p>
+<pre><code class="lang-swift"><span class="hljs-keyword">var</span> isSuccess:<span class="hljs-type">OCBool</span> = <span class="hljs-literal">true</span>
+</code></pre>
+<p>&#x5982;&#x679C;&#x5C0F;&#x4F19;&#x4F34;&#x4EEC;&#x76F4;&#x63A5;&#x8FD9;&#x4E48;&#x7528;&#xFF0C;&#x5219;&#x4F1A;&#x51FA;&#x73B0;&#x5982;&#x4E0B;&#x9519;&#x8BEF;&#xFF1A;</p>
+<pre><code>/Users/tyrion-OldCoder/Documents/Learning/BoolType/BoolType/main.swift:30:24: Type &apos;OCBool&apos; does not conform to protocol &apos;BooleanLiteralConvertible&apos;
+</code></pre><p>&#x7F16;&#x8BD1;&#x5668;&#x5486;&#x54EE;&#x7684;&#x539F;&#x56E0;&#x662F;&#xFF0C;&#x6211;&#x4EEC;&#x7684;&#x7C7B;&#x578B;&#x6CA1;&#x6709;&#x9075;&#x4ECE;&#x201C;&#x5E03;&#x5C14;&#x5B57;&#x9762;&#x91CF;&#x8F6C;&#x6362;&#x534F;&#x8BAE;&#x201D;&#xFF0C;&#x63A5;&#x4E0B;&#x6765;&#x4FEE;&#x6B63;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;</p>
+<h5 id="&#x4EE3;&#x7801;&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;">&#x4EE3;&#x7801;&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;</h5>
+<pre><code class="lang-swift"><span class="hljs-keyword">import</span> Foundation
+
+<span class="hljs-built_in">println</span>(<span class="hljs-string">&quot;Hello, World!&quot;</span>)
+
+<span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">OCBool</span></span>{
+    <span class="hljs-keyword">case</span> ocTrue
+    <span class="hljs-keyword">case</span> ocFalse
+}
+
+
+<span class="hljs-class"><span class="hljs-keyword">extension</span> <span class="hljs-title">OCBool</span>: <span class="hljs-title">BooleanLiteralConvertible</span></span>{
+<span class="hljs-keyword">static</span> <span class="hljs-func"><span class="hljs-keyword">func</span> <span class="hljs-title">convertFromBooleanLiteral</span><span class="hljs-params">( value: Bool)</span></span> -&gt;<span class="hljs-type">OCBool</span>{
+    <span class="hljs-keyword">return</span> value ? ocTrue : ocFalse
+    }
+}
+
+<span class="hljs-keyword">var</span> isSuccess:<span class="hljs-type">OCBool</span> = <span class="hljs-literal">true</span>
+</code></pre>
+<h5 id="&#x6CE8;&#x610F;&#xFF1A;">&#x6CE8;&#x610F;&#xFF1A;</h5>
+<ul>
+<li><p>&#x4EE3;&#x7801;&#x4E2D;&#x7684;&#x7B2C;11&#x884C;&#x662F;&#x91CD;&#x70B9;&#xFF0C;&#x6211;&#x7684;&#x7C7B;&#x578B;OCBool&#x652F;&#x6301;&#x4E86;BooleanLiteralConvertible&#x534F;&#x8BAE;&#xFF0C;&#x8FD9;&#x4E2A;&#x534F;&#x5230;&#x5E95;&#x662F;&#x5E72;&#x4EC0;&#x4E48;&#x7684;&#x5462;&#xFF0C;&#x5C0F;&#x4F19;&#x4F34;&#x4EEC;&#x5728;Xcode&#x4EE3;&#x7801;&#x7F16;&#x8F91;&#x5668;&#xFF0C;&#x6309;&#x4F4F;Command&#x952E;&#xFF0C;&#x7136;&#x540E;&#x70B9;&#x51FB;&#x7B2C;11&#x884C;&#x4E2D;&#x7684;BooleanLiteralConvertible&#x534F;&#x8BAE;&#x540D;&#xFF0C;&#x5219;&#x4F1A;&#x8FDB;&#x5165;&#x5B83;&#x7684;&#x5B9A;&#x4E49;&#xFF0C;</p>
+<h5 id="&#x5176;&#x5B9A;&#x4E49;&#x5982;&#x4E0B;&#xFF1A;">&#x5176;&#x5B9A;&#x4E49;&#x5982;&#x4E0B;&#xFF1A;</h5>
+<pre><code class="lang-swift"><span class="hljs-class"><span class="hljs-keyword">protocol</span> <span class="hljs-title">BooleanLiteralConvertible</span> </span>{
+  <span class="hljs-keyword">typealias</span> <span class="hljs-type">BooleanLiteralType</span>
+  <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">func</span> <span class="hljs-title">convertFromBooleanLiteral</span>(<span class="hljs-title">value</span>: <span class="hljs-title">BooleanLiteralType</span>) -&gt; <span class="hljs-title">Self</span>
+}
+</span></code></pre>
+</li>
+<li><p>&#x8FD9;&#x4E2A;&#x5B9A;&#x4E49;&#x4E2D;&#x6709;&#x4E2A;&#x7C7B;&#x65B9;&#x6CD5;convertFromBooleanLiteral&#xFF0C;&#x5B83;&#x7684;&#x53C2;&#x6570;&#x4E3A;BooleanLiteralType&#x7C7B;&#x578B;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x6211;&#x4F20;&#x5165;&#x7684;Bool&#x7C7B;&#x578B;&#xFF0C; &#x4E14;&#x8FD4;&#x56DE;&#x503C;&#x4E3A;&#x5B9E;&#x73B0;&#x8FD9;&#x4E2A;&#x534F;&#x8BAE;&#x7684;&#x7C7B;&#x578B;&#x672C;&#x8EAB;&#xFF0C;&#x5728;&#x6211;&#x4EEC;&#x7684;OCBool&#x7C7B;&#x578B;&#x4E2D;&#xFF0C;&#x5176;&#x8FD4;&#x56DE;&#x503C;&#x5C31;&#x662F;OCBool&#x672C;&#x8EAB;&#x3002;&#x7ECF;&#x8FC7;&#x8FD9;&#x4E2A;&#x5B9A;&#x4E49;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x5BF9;OCBool&#x7C7B;&#x578B;&#x76F4;&#x63A5;&#x8FDB;&#x884C;&#x5E03;&#x5C14;&#x5B57;&#x9762;&#x91CF;&#x521D;&#x59CB;&#x5316;&#x4E86;&#x3002;</p>
+</li>
+</ul>
+<p><a name="condition-by-bool"></a></p>
+<h4 id="&#x652F;&#x6301;bool&#x7C7B;&#x578B;&#x5224;&#x65AD;">&#x652F;&#x6301;Bool&#x7C7B;&#x578B;&#x5224;&#x65AD;</h4>
+<p>&#x5C0F;&#x4F19;&#x4F34;&#x4EEC;&#x4E0D;&#x5B89;&#x5206;&#xFF0C; &#x80AF;&#x5B9A;&#x60F3;&#x7740;&#x6211;&#x600E;&#x4E48;&#x7528;&#x5B83;&#x5B9E;&#x73B0;&#x903B;&#x8F91;&#x5224;&#x65AD;&#xFF0C;&#x6240;&#x4EE5;&#x5982;&#x679C;&#x4F60;&#x8FD9;&#x4E48;&#x5199;&#xFF0C;</p>
+<h5 id="&#x4EE3;&#x7801;&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;">&#x4EE3;&#x7801;&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;</h5>
+<pre><code class="lang-swift"><span class="hljs-keyword">var</span> isSuccess:<span class="hljs-type">OCBool</span> = <span class="hljs-literal">true</span>
+
+<span class="hljs-keyword">if</span> isSuccess {
+    <span class="hljs-built_in">println</span>( <span class="hljs-string">&quot;&#x8001;&#x7801;&#x8BF7;&#x4F60;&#x5403;&#x706B;&#x9505;&#xFF01;&quot;</span>)
+}
+</code></pre>
+<p>&#x4F60;&#x6C38;&#x8FDC;&#x5403;&#x4E0D;&#x5230;&#x8001;&#x7801;&#x7684;&#x706B;&#x9505;&#xFF0C;&#x56E0;&#x4E3A;&#x8FD9;&#x91CC;&#x7F16;&#x8BD1;&#x5668;&#x4F1A;&#x5486;&#x54EE;&#xFF1A;</p>
+<pre><code>/Users/tyrion-OldCoder/Documents/Learning/BoolType/BoolType/main.swift:27:4: Type &apos;OCBool&apos; does not conform to protocol &apos;LogicValue&apos;
+</code></pre><p>OCBool&#x73B0;&#x5728;&#x53EA;&#x80FD;&#x7528;bool&#x7C7B;&#x578B;&#x521D;&#x59CB;&#x5316;&#xFF0C;&#x800C;&#x4E0D;&#x80FD;&#x76F4;&#x63A5;&#x8FD4;&#x56DE;bool&#x578B;&#xFF0C;&#x5C0F;&#x706B;&#x628A;&#x4EEC;&#x8FD8;&#x8BB0;&#x5F97;&#x5728;&#x300A;&#x8001;&#x7801;&#x8BF4;&#x7F16;&#x7A0B;&#x4E4B;&#x767D;&#x8BDD;Swift&#x6C5F;&#x6E56;&#x300B;&#x4E2D;&#xFF0C;&#x8001;&#x7801;&#x591A;&#x6B21;&#x63D0;&#x5230;&#xFF0C;&#x5988;&#x5988;&#x518D;&#x4E5F;&#x4E0D;&#x62C5;&#x5FC3;&#x6211;&#x4EEC; if a = 1{}&#x7684;&#x5199;&#x6CD5;&#x4E86;&#xFF0C; &#x56E0;&#x4E3A;&#x7B49;&#x53F7;&#x4E0D;&#x652F;&#x6301;&#x503C;&#x8FD4;&#x56DE;&#x4E86;&#xFF0C; &#x6240;&#x4EE5;&#x5728;if&#x5224;&#x65AD;&#x662F;&#x540E;&#x9762;&#x7684;&#x6761;&#x4EF6;&#x5FC5;&#x987B;&#x6709;&#x8FD4;&#x56DE;&#x503C;&#xFF0C;OCBool&#x6CA1;&#x6709;&#xFF0C;&#x6240;&#x4EE5;&#x7F16;&#x8BD1;&#x5668;&#x54ED;&#x4E86;&#x3002;&#x6211;&#x4EEC;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x3002;</p>
+<h5 id="&#x4EE3;&#x7801;&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;">&#x4EE3;&#x7801;&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;</h5>
+<pre><code class="lang-swift"><span class="hljs-keyword">import</span> Foundation
+
+<span class="hljs-built_in">println</span>(<span class="hljs-string">&quot;Hello, World!&quot;</span>)
+
+<span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">OCBool</span></span>{
+    <span class="hljs-keyword">case</span> ocTrue
+    <span class="hljs-keyword">case</span> ocFalse
+}
+
+
+<span class="hljs-class"><span class="hljs-keyword">extension</span> <span class="hljs-title">OCBool</span>: <span class="hljs-title">BooleanLiteralConvertible</span></span>{
+<span class="hljs-keyword">static</span> <span class="hljs-func"><span class="hljs-keyword">func</span> <span class="hljs-title">convertFromBooleanLiteral</span><span class="hljs-params">( value: Bool)</span></span> -&gt;<span class="hljs-type">OCBool</span>{
+    <span class="hljs-keyword">return</span> value ? ocTrue : ocFalse
+    }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">extension</span> <span class="hljs-title">OCBool</span>: <span class="hljs-title">LogicValue</span></span>{
+    <span class="hljs-func"><span class="hljs-keyword">func</span> <span class="hljs-title">getLogicValue</span><span class="hljs-params">()</span></span> -&gt;<span class="hljs-type">Bool</span> {
+        <span class="hljs-keyword">var</span> boolValue: <span class="hljs-type">Bool</span>{
+        <span class="hljs-keyword">switch</span> <span class="hljs-keyword">self</span>{
+        <span class="hljs-keyword">case</span> .ocTrue:
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+        <span class="hljs-keyword">case</span> .ocFalse:
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+            }
+        }
+        <span class="hljs-keyword">return</span> boolValue
+    }
+}
+
+
+<span class="hljs-keyword">var</span> isSuccess:<span class="hljs-type">OCBool</span> = <span class="hljs-literal">true</span>
+
+<span class="hljs-keyword">if</span> isSuccess {
+    <span class="hljs-built_in">println</span>( <span class="hljs-string">&quot;&#x8001;&#x7801;&#x8BF7;&#x4F60;&#x5403;&#x706B;&#x9505;&#xFF01;&quot;</span>)
+}
+</code></pre>
+<h4 id="&#x8FD0;&#x884C;&#x7ED3;&#x679C;&#x5982;&#x4E0B;&#xFF1A;">&#x8FD0;&#x884C;&#x7ED3;&#x679C;&#x5982;&#x4E0B;&#xFF1A;</h4>
+<pre><code>Hello, World!
+&#x8001;&#x7801;&#x8BF7;&#x4F60;&#x5403;&#x706B;&#x9505;&#xFF01;
+Program ended with exit code: 0
+</code></pre><h5 id="&#x6CE8;&#x610F;&#xFF1A;">&#x6CE8;&#x610F;&#xFF1A;</h5>
+<ul>
+<li>&#x5982;&#x679C;&#x5C0F;&#x4F19;&#x4F34;&#x4EEC;&#x73B0;&#x5728;&#x7528;&#x7684;&#x662F;Beta&#x7248;&#x7684;Xcode&#xFF0C;&#x6CE8;&#x610F;&#x82F9;&#x679C;&#x5B98;&#x65B9;Blog&#x4E2D;&#xFF0C;&#x5728;&#x4EE3;&#x7801;&#x7B2C;17&#x884C;&#x5982;&#x679C;&#x5728;Xcode Beta4&#x4E0B;&#x662F;&#x9519;&#x8BEF;&#x7684;&#xFF0C;&#x8FD9;&#x91CC;&#x7684;&#x534F;&#x8BAE;&#x662F;&#xFF0C;LogicValue&#x800C;&#x4E0D;&#x662F;BooleanVue&#xFF0C;&#x6240;&#x4EE5;&#x8BB0;&#x5F97;&#x770B;&#x9519;&#x8BEF;&#x63D0;&#x793A;&#x624D;&#x662F;&#x597D;&#x4E60;&#x60EF;&#x3002;</li>
+<li>&#x6CE8;&#x610F;&#x4EE3;&#x7801;&#x7B2C;34&#x884C;&#xFF0C;&#x5B8C;&#x7F8E;&#x652F;&#x6301;if&#x5224;&#x65AD;&#xFF0C;&#x4E14;&#x8F93;&#x51FA;&#x7ED3;&#x679C;&#x4E3A;&#x201C;&#x8001;&#x7801;&#x8BF7;&#x4F60;&#x5403;&#x706B;&#x9505;&#x201D;&#xFF0C;&#x8001;&#x7801;&#x4E5F;&#x662F;&#x8BF4;&#x8BF4;&#x800C;&#x5DF2;&#xFF0C;&#x8BF7;&#x4E0D;&#x8981;&#x5F53;&#x771F;&#x3002;</li>
+</ul>
+<p><a name="support-all-type"></a></p>
+<h4 id="&#x652F;&#x6301;&#x517C;&#x5BB9;&#x5404;&#x4EEC;&#x5404;&#x6D3E;&#x7684;&#x7C7B;&#x578B;">&#x652F;&#x6301;&#x517C;&#x5BB9;&#x5404;&#x4EEC;&#x5404;&#x6D3E;&#x7684;&#x7C7B;&#x578B;</h4>
+<p>&#x5C0F;&#x4F19;&#x4F34;&#x4EEC;&#xFF0C;&#x6C5F;&#x6E56;&#x98CE;&#x9669;&#xFF0C;&#x95E8;&#x6D3E;&#x4F17;&#x591A;&#xFF0C;&#x8001;&#x7801;&#x6709;&#x81EA;&#x5DF1;&#x7684;OCBool&#x7C7B;&#x578B;&#xFF0C;&#x53EF;&#x80FD;&#x5D69;&#x5C71;&#x5C11;&#x6797;&#x6709;&#x81EA;&#x5DF1;&#x7684;SSBool&#x7C7B;&#x578B;&#xFF0C;&#x751A;&#x81F3;&#x8FDE;&#x90ED;&#x7F8E;&#x7F8E;&#x90FD;&#x53EF;&#x80FD;&#x6709;&#x81EA;&#x5DF1;&#x7684;MMBool&#x7C7B;&#x578B;&#xFF0C;&#x6240;&#x4EE5;OCBool&#x5FC5;&#x987B;&#x80FD;&#x591F;&#x8BC6;&#x522B;&#x8FD9;&#x4E9B;&#x7C7B;&#x578B;&#xFF0C;&#x8FD9;&#x4E9B;&#x5404;&#x95E8;&#x5404;&#x6D3E;&#x7684;&#x7C7B;&#x578B;&#xFF0C;&#x53EA;&#x8981;&#x652F;&#x6301;LogicValue&#x534F;&#x8BAE;&#xFF0C;&#x5C31;&#x5E94;&#x8BE5;&#x53EF;&#x4EE5;&#x88AB;&#x8BC6;&#x522B;&#xFF0C;&#x770B;&#x8001;&#x7801;&#x600E;&#x4E48;&#x505A;&#xFF0C;</p>
+<h5 id="&#x4EE3;&#x7801;&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;">&#x4EE3;&#x7801;&#x793A;&#x4F8B;&#x5982;&#x4E0B;&#xFF1A;</h5>
+<pre><code class="lang-swift"><span class="hljs-class"><span class="hljs-keyword">extension</span> <span class="hljs-title">OCBool</span></span>{
+    <span class="hljs-keyword">init</span>( <span class="hljs-number">_</span> v: <span class="hljs-type">LogicValue</span> )
+    {
+        <span class="hljs-keyword">if</span> v.getLogicValue(){
+            <span class="hljs-keyword">self</span> = .ocTrue
+        }
+        <span class="hljs-keyword">else</span>{
+            <span class="hljs-keyword">self</span> = .ocFalse
+        }
+    }
+
+}
+
+<span class="hljs-keyword">var</span> mmResult: <span class="hljs-type">Bool</span> = <span class="hljs-literal">true</span>
+<span class="hljs-keyword">var</span> ocResult:<span class="hljs-type">OCBool</span> = <span class="hljs-type">OCBool</span>(mmResult)
+
+
+<span class="hljs-keyword">if</span> ocResult {
+    <span class="hljs-built_in">println</span>( <span class="hljs-string">&quot;&#x8001;&#x7801;&#x6CA1;&#x94B1;&#xFF0C;&#x90ED;&#x7F8E;&#x7F8E;&#x8BF7;&#x4F60;&#x5403;&#x706B;&#x9505;&#xFF01;&quot;</span>)
+}
+</code></pre>
+<h5 id="&#x4EE3;&#x7801;&#x8FD0;&#x884C;&#x7ED3;&#x679C;&#x5982;&#x4E0B;&#xFF1A;">&#x4EE3;&#x7801;&#x8FD0;&#x884C;&#x7ED3;&#x679C;&#x5982;&#x4E0B;&#xFF1A;</h5>
+<pre><code>Hello, World!
+&#x8001;&#x7801;&#x6CA1;&#x94B1;&#xFF0C;&#x90ED;&#x7F8E;&#x7F8E;&#x8BF7;&#x4F60;&#x5403;&#x706B;&#x9505;&#xFF01;
+Program ended with exit code: 0
+</code></pre><p>&#x6F02;&#x4EAE;&#xFF01;&#x6211;&#x4EEC;&#x7684;OCBool&#x7C7B;&#x578B;&#x73B0;&#x5728;&#x652F;&#x6301;&#x4E86;&#x6240;&#x6709;&#x7684;&#x903B;&#x8F91;&#x53D8;&#x91CF;&#x521D;&#x59CB;&#x5316;&#x3002;</p>
+<h5 id="&#x6CE8;&#x610F;&#xFF1A;">&#x6CE8;&#x610F;&#xFF1A;</h5>
+<ul>
+<li>&#x4EE3;&#x7801;&#x4E2D;&#x7B2C;2&#x884C;&#xFF1A;&#x201C;_&#x201D;&#x4E0B;&#x6A2A;&#x6760;&#x7684;&#x7528;&#x6CD5;&#xFF0C;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x529F;&#x80FD;&#x5F3A;&#x5927;&#x7684;&#x5C0F;&#x5F3A;&#xFF0C;&#x5728;&#x6B64;&#x7684;&#x76EE;&#x7684;&#x662F;&#x5C4F;&#x853D;&#x5916;&#x90E8;&#x53C2;&#x6570;&#x540D;&#xFF0C;&#x6240;&#x4EE5;&#x5C0F;&#x4F19;&#x4F34;&#x4EEC;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#xFF1A;var ocResult:OCBool = OCBool(mmResult)&#x800C;&#x4E0D;&#x662F;&#xFF1A;var ocResult:OCBool = OCBool(v: mmResult)&#xFF0C;&#x5C0F;&#x4F19;&#x4F34;&#x4EEC;&#x60CA;&#x5446;&#x4E86;&#xFF01;&#x8FD9;&#x4E2A;init&#x51FD;&#x6570;&#x4E2D;&#x672C;&#x6765;&#x5C31;&#x6CA1;&#x6709;&#x5916;&#x90E8;&#x53C2;&#x6570;&#x540D;&#x554A;&#xFF0C;&#x8FD8;&#x8BB0;&#x5F97;&#x8001;&#x7801;&#x5728;&#x4E66;&#x91CC;&#x8BF4;&#x8FC7;&#x6CA1;&#xFF0C;Swift&#x7684;&#x521D;&#x59CB;&#x5316;&#x51FD;&#x6570;&#x4F1A;&#x9ED8;&#x8BA4;&#x4F7F;&#x7528;&#x5185;&#x90E8;&#x53C2;&#x6570;&#x540D;&#xFF0C;&#x4F5C;&#x4E3A;&#x5916;&#x90E8;&#x53C2;&#x6570;&#x540D;&#x3002;</li>
+</ul>
+<p><a name="make-up-type"></a></p>
+<h4 id="&#x5B8C;&#x5584;ocbool&#x7684;&#x5E03;&#x5C14;&#x57FA;&#x56E0;&#x4F53;&#x7CFB;&#xFF1A;">&#x5B8C;&#x5584;OCBool&#x7684;&#x5E03;&#x5C14;&#x57FA;&#x56E0;&#x4F53;&#x7CFB;&#xFF1A;</h4>
+<p>&#x5C0F;&#x4F19;&#x4F34;&#x4EEC;&#xFF0C;bool&#x7C7B;&#x578B;&#x7684;&#x4EF7;&#x503C;&#x5C31;&#x662F;&#x5728;&#x4E8E;&#x5404;&#x79CD;&#x5224;&#x65AD;&#xFF0C;&#x8BF8;&#x5982;==&#xFF0C;!=, &amp;&#xFF0C;|,^,!&#xFF0C;&#x4EE5;&#x53CA;&#x5404;&#x79CD;&#x7EC4;&#x5408;&#x903B;&#x8F91;&#x8FD0;&#x7B97;&#xFF0C;&#x6211;&#x4EEC;OCBool&#x4E5F;&#x8981;&#x5177;&#x5907;&#x8FD9;&#x4E9B;&#x529F;&#x80FD;&#xFF0C;&#x5426;&#x5219;&#x5C31;&#x4F1A;&#x57FA;&#x56E0;&#x7F3A;&#x9677;&#xFF0C;&#x4E14;&#x770B;&#x8001;&#x7801;&#x5982;&#x4F55;&#x5B9E;&#x73B0;&#xFF1A;</p>
+<pre><code class="lang-swift"><span class="hljs-class"><span class="hljs-keyword">extension</span> <span class="hljs-title">OCBool</span>: <span class="hljs-title">Equatable</span></span>{
+}
+
+<span class="hljs-comment">//&#x652F;&#x6301;&#x7B49;&#x503C;&#x5224;&#x65AD;&#x8FD0;&#x7B97;&#x7B26;</span>
+<span class="hljs-func"><span class="hljs-keyword">func</span> ==<span class="hljs-params">( <span class="hljs-keyword">left</span>: OCBool, <span class="hljs-keyword">right</span>: OCBool )</span></span>-&gt;<span class="hljs-type">Bool</span>{
+    <span class="hljs-keyword">switch</span> (<span class="hljs-keyword">left</span>, <span class="hljs-keyword">right</span>){
+    <span class="hljs-keyword">case</span> (.ocTrue, .ocTrue):
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+    <span class="hljs-keyword">default</span>:
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+    }
+}
+<span class="hljs-comment">//&#x652F;&#x6301;&#x4F4D;&#x4E0E;&#x8FD0;&#x7B97;&#x7B26;</span>
+<span class="hljs-func"><span class="hljs-keyword">func</span> &amp;<span class="hljs-params">( <span class="hljs-keyword">left</span>:OCBool, <span class="hljs-keyword">right</span>: OCBool)</span></span>-&gt;<span class="hljs-type">OCBool</span>{
+
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">left</span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">right</span>
+    }
+    <span class="hljs-keyword">else</span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+    }
+}
+<span class="hljs-comment">//&#x652F;&#x6301;&#x4F4D;&#x6216;&#x8FD0;&#x7B97;&#x7B26;</span>
+<span class="hljs-func"><span class="hljs-keyword">func</span> |<span class="hljs-params">( <span class="hljs-keyword">left</span>:OCBool, <span class="hljs-keyword">right</span>: OCBool)</span></span>-&gt;<span class="hljs-type">OCBool</span>{
+
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">left</span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+    }
+    <span class="hljs-keyword">else</span>{
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">right</span>
+    }
+}
+
+<span class="hljs-comment">//&#x652F;&#x6301;&#x4F4D;&#x5F02;&#x6216;&#x8FD0;&#x7B97;&#x7B26;</span>
+<span class="hljs-func"><span class="hljs-keyword">func</span> ^<span class="hljs-params">( <span class="hljs-keyword">left</span>:OCBool, <span class="hljs-keyword">right</span>: OCBool)</span></span>-&gt;<span class="hljs-type">OCBool</span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-type">OCBool</span>( <span class="hljs-keyword">left</span> != <span class="hljs-keyword">right</span> )
+}
+<span class="hljs-comment">//&#x652F;&#x6301;&#x6C42;&#x53CD;&#x8FD0;&#x7B97;&#x7B26;</span>
+<span class="hljs-preprocessor">@prefix</span> <span class="hljs-func"><span class="hljs-keyword">func</span> !<span class="hljs-params">( a:OCBool )</span></span>-&gt; <span class="hljs-type">OCBool</span>{
+    <span class="hljs-keyword">return</span> a ^ <span class="hljs-literal">true</span>
+}
+<span class="hljs-comment">//&#x652F;&#x6301;&#x7EC4;&#x5408;&#x6C42;&#x4E0E;&#x8FD0;&#x7B97;&#x7B26;</span>
+<span class="hljs-func"><span class="hljs-keyword">func</span> &amp;= <span class="hljs-params">(<span class="hljs-keyword">inout</span> <span class="hljs-keyword">left</span>:OCBool, <span class="hljs-keyword">right</span>:OCBool )</span></span>{
+    <span class="hljs-keyword">left</span> = <span class="hljs-keyword">left</span> &amp; <span class="hljs-keyword">right</span>
+}
+
+
+<span class="hljs-keyword">var</span> isHasMoney:<span class="hljs-type">OCBool</span> = <span class="hljs-literal">true</span>
+<span class="hljs-keyword">var</span> isHasWife:<span class="hljs-type">OCBool</span> = <span class="hljs-literal">true</span>
+<span class="hljs-keyword">var</span> isHasHealty:<span class="hljs-type">OCBool</span> = <span class="hljs-literal">true</span>
+<span class="hljs-keyword">var</span> isHasLover:<span class="hljs-type">OCBool</span> = <span class="hljs-literal">true</span>
+
+isHasMoney != isHasHealty
+isHasHealty == isHasMoney
+isHasWife ^ isHasLover
+isHasWife = !isHasLover
+
+<span class="hljs-keyword">if</span> (isHasMoney | isHasHealty) &amp; isHasHealty{
+    <span class="hljs-built_in">println</span>( <span class="hljs-string">&quot;&#x4EBA;&#x751F;&#x8D62;&#x5BB6;&#xFF0C;&#x5C31;&#x50CF;&#x8001;&#x7801;&#x4E00;&#x6837;&#xFF01;&quot;</span>)
+}<span class="hljs-keyword">else</span>
+{
+    <span class="hljs-built_in">println</span>(<span class="hljs-string">&quot;&#x4EBA;&#x751F;&#x6700;&#x82E6;&#x7684;&#x4E8B;&#x4E8B;&#xFF0C;&#x4EBA;&#x6B7B;&#x4E86;&#x94B1;&#x6CA1;&#x82B1;&#x4E86;&#xFF0C;&#x4EBA;&#x751F;&#x6700;&#x82E6;&#x7684;&#x4E8B;&#x662F;&#xFF0C;&#x4EBA;&#x6D3B;&#x7740;&#xFF0C;&#x94B1;&#x6CA1;&#x4E86;&#xFF01;&quot;</span>)
+}
+</code></pre>
+<p>&#x597D;&#x4E86;&#xFF0C;&#x5230;&#x8FD9;&#x91CC;&#x5C31;&#x5230;&#x8FD9;&#x91CC;&#x4E86;&#xFF0C;&#x7A97;&#x5916;&#x7684;&#x96F7;&#x58F0;&#x53EB;&#x9192;&#x4E86;&#x8001;&#x7801;&#xFF0C;&#x73B0;&#x5728;&#x5E94;&#x8BE5;&#x53BB;&#x5403;&#x996D;&#x4E86;&#xFF0C;&#x4EE5;&#x4E0A;&#x8001;&#x7801;&#x7ED9;&#x5927;&#x5BB6;&#x5C55;&#x793A;&#x4E86;&#x5982;&#x679C;&#x5236;&#x9020;&#x4E00;&#x4E2A;&#x81EA;&#x5DF1;&#x7684;&#x7C7B;&#x578B;&#xFF0C;&#x8BB0;&#x5F97;&#x8001;&#x7801;&#x7684;&#x793A;&#x4F8B;&#x662F;&#x5728;Xcode6 Beta4&#x4E0B;&#x6D4B;&#x8BD5;&#x7684;&#xFF0C;&#x81F3;&#x4E8E;Beta5&#x7684;&#x6539;&#x53D8;&#x8FD8;&#x6CA1;&#x6709;&#x6D89;&#x53CA;&#xFF0C;&#x5C0F;&#x4F19;&#x4F34;&#x4EEC;&#x8981;&#x597D;&#x751F;&#x7EC3;&#x4E60;&#xFF0C;&#x4EE5;&#x540E;&#x5404;&#x79CD;&#x81EA;&#x5B9A;&#x7C7B;&#x578B;&#x90FD;&#x662F;&#x57FA;&#x4E8E;&#x8FD9;&#x4E2A;&#x601D;&#x60F3;&#x3002;&#x8FD8;&#x6709;&#x8FD9;&#x4E2A;&#x7AE0;&#x8282;&#x4E0D;&#x662F;&#x8001;&#x7801;&#x7684;&#x539F;&#x521B;&#xFF0C;&#x8001;&#x7801;&#x8BA4;&#x771F;&#x7684;&#x9605;&#x8BFB;&#x4E86;&#x82F9;&#x679C;&#x7684;&#x5B98;&#x65B9;&#x535A;&#x5BA2;&#xFF0C;&#x4E14;&#x81EA;&#x5DF1;&#x7684;&#x7EC3;&#x4E60;&#x603B;&#x7ED3;&#xFF0C;&#x5982;&#x679C;&#x5C0F;&#x4F19;&#x4F34;&#x4EEC;&#x8D39;&#x4E86;&#x5403;&#x5976;&#x7684;&#x52B2;&#x8FD8;&#x662F;&#x770B;&#x4E0D;&#x61C2;&#xFF0C;&#x8BF7;&#x627E;&#x5EA6;&#x5A18;&#x8C37;&#x6B4C;&#xFF0C;&#x8FD8;&#x662F;&#x770B;&#x4E0D;&#x61C2;&#x8BF7;&#x5230;&#x8001;&#x7801;&#x5B98;&#x65B9;&#x5FAE;&#x535A;&#xFF1A;<a href="http://weibo.com/u/5241713117&#x5486;&#x54EE;&#x3002;" target="_blank">http://weibo.com/u/5241713117&#x5486;&#x54EE;&#x3002;</a></p>
+<p>&#x672C;&#x6587;&#x7531;&#x7FFB;&#x8BD1;&#x81EA;Apple Swift Blog &#xFF1A;<a href="https://developer.apple.com/swift/blog/?id=8" target="_blank">https://developer.apple.com/swift/blog/?id=8</a></p>
+</section>
+</div>
+</div>
+</div>
+<a href="01_Access_Control.html" class="navigation navigation-prev " aria-label="Previous page: Access Control 权限控制的黑与白"><i class="fa fa-angle-left"></i></a>
+<a href="03_Ballons.html" class="navigation navigation-next " aria-label="Next page: WWDC里面的那个“大炮打气球”"><i class="fa fa-angle-right"></i></a>
+</div>
+</div>
+<script src="../gitbook/app.js"></script>
+<script src="../gitbook/plugins/gitbook-plugin-search/lunr.min.js"></script>
+<script src="../gitbook/plugins/gitbook-plugin-search/search.js"></script>
+<script src="../gitbook/plugins/gitbook-plugin-sharing/buttons.js"></script>
+<script src="../gitbook/plugins/gitbook-plugin-fontsettings/buttons.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+    var config = {"highlight":{},"search":{"maxIndexSize":1000000},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2}};
+    gitbook.start(config);
+});
+</script>
+</body>
+</html>

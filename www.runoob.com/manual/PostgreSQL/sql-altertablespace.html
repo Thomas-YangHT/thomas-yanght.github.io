@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>ALTER TABLESPACE</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="ALTER TABLE" HREF="sql-altertable.html"><LINK REL="NEXT" TITLE="ALTER TEXT SEARCH CONFIGURATION" HREF="sql-altertsconfig.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/alter_tablespace.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="ALTER TABLE" HREF="sql-altertable.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="ALTER TEXT SEARCH CONFIGURATION" HREF="sql-altertsconfig.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-ALTERTABLESPACE"></A>ALTER TABLESPACE</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN67021"></A><H2>&#21517;&#31216;</H2>ALTER TABLESPACE&nbsp;--&nbsp; 修改一个表空间的定义</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN67026"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">ALTER TABLESPACE <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+> RENAME TO <TT
+CLASS="REPLACEABLE"
+><I
+>new_name</I
+></TT
+>
+ALTER TABLESPACE <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+> OWNER TO <TT
+CLASS="REPLACEABLE"
+><I
+>new_owner</I
+></TT
+>
+ALTER TABLESPACE <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+> SET ( <TT
+CLASS="REPLACEABLE"
+><I
+>tablespace_option</I
+></TT
+> = <TT
+CLASS="REPLACEABLE"
+><I
+>value</I
+></TT
+> [, ... ] )
+ALTER TABLESPACE <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+> RESET ( <TT
+CLASS="REPLACEABLE"
+><I
+>tablespace_option</I
+></TT
+> [, ... ] )</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN67037"></A><H2>描述</H2><P><TT CLASS="COMMAND">ALTER TABLESPACE</TT>改变一个表空间的定义。 </P><P>要使用<TT CLASS="COMMAND">ALTER TABLESPACE</TT>，你必须是该表空间的所有者。
+要修改所有者，你还必须是新的所有角色的直接或间接成员。不过，超级用户自动获得这些权限。 </P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN67043"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="REPLACEABLE"><I>name</I></TT></DT><DD><P>一个现有的表空间的名称。</P></DD><DT><TT CLASS="REPLACEABLE"><I>new_name</I></TT></DT><DD><P>表空间的新名字。新名字不能以<TT CLASS="LITERAL">pg_</TT>开头，因为这样的名字保留给系统表空间使用了。</P></DD><DT><TT CLASS="REPLACEABLE"><I>new_owner</I></TT></DT><DD><P>表空间的新所有者。</P></DD><DT><TT CLASS="REPLACEABLE"><I>tablespace_option</I></TT></DT><DD><P>可以设置或者重置的表空间参数。目前，可以设置的参数是<TT CLASS="VARNAME">seq_page_cost</TT>和<TT CLASS="VARNAME">random_page_cost</TT>。
+为一个表空间设置任一个值，将会覆盖在那个表空间中从表中阅读页的成本优化器的一般估计值，正如同通过同名的配置参数建立的。
+（参阅<A HREF="runtime-config-query.html#GUC-SEQ-PAGE-COST">seq_page_cost</A>，<A HREF="runtime-config-query.html#GUC-RANDOM-PAGE-COST">random_page_cost</A>）。
+如果表空间所在的磁盘是一个更快或更慢的其它io子系统，那么这些参数是有用的。</P></DD></DL></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="AEN67071"></A><H2>例子</H2><P>把表空间<TT CLASS="LITERAL">index_space</TT>重命名为<TT CLASS="LITERAL">fast_raid</TT>：
+</P><PRE CLASS="PROGRAMLISTING">ALTER TABLESPACE index_space RENAME TO fast_raid;</PRE><P></P><P>改变表空间<TT CLASS="LITERAL">index_space</TT>的所有者：
+</P><PRE CLASS="PROGRAMLISTING">ALTER TABLESPACE index_space OWNER TO mary;</PRE><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN67080"></A><H2>兼容性</H2><P>SQL标准里没有<TT CLASS="COMMAND">ALTER TABLESPACE</TT>语句。 </P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN67084"></A><H2>参见</H2><A HREF="sql-createtablespace.html">CREATE TABLESPACE</A>, <A HREF="sql-droptablespace.html">DROP TABLESPACE</A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-altertable.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-altertsconfig.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">ALTER TABLE</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">ALTER TEXT SEARCH CONFIGURATION</TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,60 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>一个完整的事件触发器的例子</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="事件触发器" HREF="http://school.yunwei.edu/manual/PostgreSQL/event-triggers.html"><LINK REL="PREVIOUS" TITLE="用C编写事件触发器函数" HREF="event-trigger-interface.html"><LINK REL="NEXT" TITLE="规则系统" HREF="http://school.yunwei.edu/manual/PostgreSQL/rules.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/event-trigger.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="用C编写事件触发器函数" HREF="event-trigger-interface.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/event-triggers.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 37. 事件触发器</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="规则系统" HREF="http://school.yunwei.edu/manual/PostgreSQL/rules.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="EVENT-TRIGGER-EXAMPLE">37.4. 一个完整的事件触发器的例子</A></H1><P>这是用C编写的事件触发器函数的一个非常简单的例子。
+（用过程语言编写的触发器的例子可以在过程语言的文档中找到。）</P><P>函数<CODE CLASS="FUNCTION">noddl</CODE>在每次调用它时提出一个异常。事件触发器定义在<TT CLASS="LITERAL">ddl_command_start</TT>
+事件时联系函数。影响是阻止所有DDL命令（除了在<A HREF="event-trigger-definition.html">第 37.1 &#33410;</A>中提到的例外）运行。</P><P>这是触发器函数的源代码：
+</P><PRE CLASS="PROGRAMLISTING">#include "postgres.h"
+#include "commands/event_trigger.h"
+
+
+PG_MODULE_MAGIC;
+
+Datum noddl(PG_FUNCTION_ARGS);
+
+PG_FUNCTION_INFO_V1(noddl);
+
+Datum
+noddl(PG_FUNCTION_ARGS)
+{
+    EventTriggerData *trigdata;
+
+    if (!CALLED_AS_EVENT_TRIGGER(fcinfo))  /* internal error */
+        elog(ERROR, "not fired by event trigger manager");
+
+    trigdata = (EventTriggerData *) fcinfo-&#62;context;
+
+    ereport(ERROR,
+        (errcode(ERRCODE_INSUFFICIENT_PRIVILEGE),
+                 errmsg("command \"%s\" denied", trigdata-&#62;tag)));
+
+    PG_RETURN_NULL();
+}</PRE><P>
+</P><P>在编译源代码之后（参阅<A HREF="xfunc-c.html#DFUNC">第 35.9.6 &#33410;</A>），声明函数和触发器：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION noddl() RETURNS event_trigger
+    AS 'noddl' LANGUAGE C;
+
+CREATE EVENT TRIGGER noddl ON ddl_command_start
+    EXECUTE PROCEDURE noddl();</PRE><P>
+</P><P>现在可以测试触发的操作：
+</P><PRE CLASS="SCREEN">=# \dy
+                     List of event triggers
+ Name  |       Event       | Owner | Enabled | Procedure | Tags 
+-------+-------------------+-------+---------+-----------+------
+ noddl | ddl_command_start | dim   | enabled | noddl     | 
+(1 row)
+
+=# CREATE TABLE foo(id serial);
+ERROR:  command "CREATE TABLE" denied</PRE><P>
+</P><P>在这种情况下，当你需要做这些的时候为了能够运行一些DDL命令，你必须终止事件触发器或禁用它。
+只在事务期间禁用触发器是方便的：
+</P><PRE CLASS="PROGRAMLISTING">BEGIN;
+ALTER EVENT TRIGGER noddl DISABLE;
+CREATE TABLE foo (id serial);
+ALTER EVENT TRIGGER noddl ENABLE;
+COMMIT;</PRE><P>
+（回想一下，事件触发器自己的DDL命令不受事件触发器的影响。 ）
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="event-trigger-interface.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/rules.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">用C编写事件触发器函数</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/event-triggers.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">规则系统</TD></TR></TABLE></DIV></BODY></HTML>

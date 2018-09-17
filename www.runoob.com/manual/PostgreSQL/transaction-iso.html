@@ -1,0 +1,188 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>事务隔离</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="并发控制" HREF="http://school.yunwei.edu/manual/PostgreSQL/mvcc.html"><LINK REL="PREVIOUS" TITLE="介绍" HREF="mvcc-intro.html"><LINK REL="NEXT" TITLE="明确封锁" HREF="explicit-locking.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/mvcc.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="介绍" HREF="mvcc-intro.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/mvcc.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 13. 并发控制</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="明确封锁" HREF="explicit-locking.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="TRANSACTION-ISO">13.2. 事务隔离</A></H1><P> <ACRONYM CLASS="ACRONYM">SQL</ACRONYM>标准定义了四个级别的事务隔离。最严格的是可串行化，
+标准里定义它的段落是这样说的，保证一组可串行化事务的任意并发执行的结果和以某种顺序执行的结果相同。
+其他三个层次是通过，在并发事务的相互作用下，每个级别下不应该发生的现象来定义的。
+标准声明，由于可串行化的定义，这些现象中的任何一个都不可能在这一级别上发生
+（这毫不奇怪--如果事务的影响必须与一次只运行一个事务的情况保持一致，你怎么可能看到由于事务相互作用引起的现象呢？)</P><P>
+各个级别不应该发生的现象是：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT>脏读
+</DT><DD><P>
+一个事务读取了另一个未提交事务写入的数据。
+</P></DD><DT>不可重复读
+</DT><DD><P> 一个事务重新读取前面读取过的数据，发现该数据已经被另一个已经提交的事务修改。</P></DD><DT>幻读
+</DT><DD><P> 一个事务重新执行一个查询，返回符合查询条件的行的集合，发现满足查询条件的行的集合因为其它最近提交的事务而发生了改变。</P></DD></DL></DIV><P>
+</P><P>
+这四种隔离级别和对应的行为在表<A HREF="transaction-iso.html#MVCC-ISOLEVEL-TABLE">&#34920; 13-1</A>里描述。
+</P><DIV CLASS="TABLE"><A NAME="MVCC-ISOLEVEL-TABLE"></A><P><B>&#34920; 13-1. 标准<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>事务隔离级别</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><COL><THEAD><TR><TH>
+隔离级别
+</TH><TH>
+脏读
+</TH><TH>
+不可重复读
+</TH><TH>
+幻读
+</TH></TR></THEAD><TBODY><TR><TD>
+读未提交
+</TD><TD>
+可能
+</TD><TD> 可能
+</TD><TD>
+可能
+</TD></TR><TR><TD>
+读已提交
+</TD><TD>
+不可能
+</TD><TD>
+可能
+</TD><TD>
+可能
+</TD></TR><TR><TD>
+可重复读
+</TD><TD>
+不可能
+</TD><TD>
+不可能
+</TD><TD> 可能
+</TD></TR><TR><TD>
+可串行化
+</TD><TD> 不可能
+</TD><TD>
+不可能
+</TD><TD>
+不可能
+</TD></TR></TBODY></TABLE></DIV><P> 在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>里，你可以请求四种可能的事务隔离级别中的任意一种。但是在内部，
+实际上只有三种独立的隔离级别，分别对应读已提交，可重复读和可串行化。如果你选择了读未提交的级别，
+实际上你获得的是读已提交，并且在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的可重复读实现中，幻读是不可能的，
+所以实际的隔离级别可能比你选择的更严格。这是 SQL 标准允许的：四种隔离级别只定义了哪种现像不能发生，
+但是没有定义那种现像一定发生。<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>只提供三种隔离级别的原因是，
+这是把标准的隔离级别与多版本并发控制架构映射起来的唯一合理方法。可用的隔离级别的行为在下面小节里描述。</P><P> 要设置一个事务的隔离级别，使用<A HREF="sql-set-transaction.html">SET TRANSACTION</A>命令。</P><DIV CLASS="IMPORTANT"><BLOCKQUOTE CLASS="IMPORTANT"><P><B>&#37325;&#35201;: </B> 一些<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>数据类型和函数关于事务行为有特定的规则。
+尤其是，序列的改变（并且因此，通过<TT CLASS="TYPE">serial</TT>声明的列的计数器）对于所有其他的事务是立即可见的，
+如果作出改变的事务意外终止，不进行回退。参见<A HREF="functions-sequence.html">第 9.16 &#33410;</A>和<A HREF="datatype-numeric.html#DATATYPE-SERIAL">第 8.1.4 &#33410;</A>。</P></BLOCKQUOTE></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="XACT-READ-COMMITTED">13.2.1. 读已提交隔离级别</A></H2><P> <I CLASS="FIRSTTERM">读已提交</I>是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>里的缺省隔离级别。当一个事务运行在这个隔离级别时，
+<TT CLASS="COMMAND">SELECT</TT>查询(没有<TT CLASS="LITERAL">FOR UPDATE/SHARE</TT>子句)只能看到查询开始之前已提交的数据而无法看到未提交的数据或者在查询执行期间其它事务已提交的数据
+。实际上，<TT CLASS="COMMAND">SELECT</TT> 查询看到一个在查询开始运行的瞬间该数据库的一个快照。
+不过，<TT CLASS="COMMAND">SELECT</TT>看得见其自身所在事务中之前的更新执行的结果，即使它们尚未提交。请注意，
+在同一个事务里两个相邻的<TT CLASS="COMMAND">SELECT</TT>命令可能看到不同的快照，因为其它事务会在第一个<TT CLASS="COMMAND">SELECT</TT>执行期间提交。</P><P> <TT CLASS="COMMAND">UPDATE</TT>, <TT CLASS="COMMAND">DELETE</TT>, <TT CLASS="COMMAND">SELECT
+FOR UPDATE</TT>和<TT CLASS="COMMAND">SELECT FOR SHARE</TT>命令在搜索目标行时的行为和<TT CLASS="COMMAND">SELECT</TT>一样：
+它们只能找到在命令开始的时候已经提交的行。不过，
+这样的目标行在被找到的时候可能已经被其它并发事务更新、删除、锁住。在这种情况下，
+即将进行的更新将等待第一个事务提交或者回滚(如果它还在处理)。如果第一个事务回滚，
+那么它的作用将被忽略，而第二个事务将继续更新最初发现的行。如果第一个事务提交，
+那么如果第一个事务删除了该行，则第二个事务将忽略该行，
+否则它将试图在该行的已更新的版本上施加它的操作。系统将重新评估命令搜索条件(<TT CLASS="LITERAL">WHERE</TT>子句)，
+看看该行已更新的版本是否仍然符合搜索条件。如果符合，则第二个事务从该行的已更新版本开始继续其操作。
+如果是<TT CLASS="COMMAND">SELECT FOR UPDATE</TT>和<TT CLASS="COMMAND">SELECT FOR SHARE</TT>则意味着把已更新的行版本锁住并返回给客户端。</P><P>
+因为上面的规则，正在更新的命令可能会看到不一致的快照：
+它们可以看到影响它们更新的并发命令的效果，但是却看不到那些命令对数据库里其它行的作用。
+这样的行为令读已提交模式不适合用于那种涉及复杂搜索条件的命令。不过，它对于简单的情况而言是正确的。
+比如，假设我们用类似下面这样的命令更新银行余额：
+</P><PRE CLASS="SCREEN">BEGIN;
+UPDATE accounts SET balance = balance + 100.00 WHERE acctnum = 12345;
+UPDATE accounts SET balance = balance - 100.00 WHERE acctnum = 7534;
+COMMIT;</PRE><P>
+如果两个并发事务试图同时修改帐号12345的余额，那我们很明显希望第二个事务是从已更新过的行版本上进行更新。
+因为每个命令只是影响一个已经决定了的行，因此让它看到更新后的版本不会导致任何不一致的问题。
+</P><P>
+更复杂的用法可以在读已提交模式下产生非期望的结果。比如，考虑<TT CLASS="COMMAND">DELETE</TT>命令操作的数据
+正在被另外一个命令添加到，或者移除出它的约束条件。比如，假设<TT CLASS="LITERAL">website</TT>是拥有<TT CLASS="LITERAL">website.hits</TT> 等于<TT CLASS="LITERAL">9</TT>和
+<TT CLASS="LITERAL">10</TT>的两行数据的表格。
+</P><PRE CLASS="SCREEN">BEGIN;
+UPDATE website SET hits = hits + 1;
+-- run from another session:  DELETE FROM website WHERE hits = 10;
+COMMIT;</PRE><P>
+<TT CLASS="COMMAND">DELETE</TT>不会产生任何影响，即使在<TT CLASS="COMMAND">UPDATE</TT>之前和之后都有<TT CLASS="LITERAL">website.hits = 10</TT>的行。
+发生这样的事是因为更新前的值为<TT CLASS="LITERAL">9</TT>的行被忽略，并且当<TT CLASS="COMMAND">UPDATE</TT>完成而且<TT CLASS="COMMAND">DELETE</TT>获得锁时，
+新的行值不再是<TT CLASS="LITERAL">10</TT>而是<TT CLASS="LITERAL">11</TT>，它不再符合约束条件。
+</P><P>
+因为在读已提交模式里，每个新的命令都是从一个新的快照开始的，
+而这个快照包含所有到该时刻为止已提交的事务，
+因此同一事务中后面的命令将看到任何已提交的其它事务的效果。
+这里关心的问题是在<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">单个</I></SPAN>命令里是否看到数据库里绝对一致的视图。</P><P> 读已提交模式提供的部分事务隔离对于许多应用而言是足够的，并且这个模式速度快，使用简单。
+不过，对于做复杂查询和更新的应用，
+可能需要保证数据库有比读已提交模式更加严格的一致性视图。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="XACT-REPEATABLE-READ">13.2.2. 可重复读隔离级别</A></H2><P> <I CLASS="FIRSTTERM">可重复读</I>隔离级别仅仅看到事务开始之前提交的数据，它不能看到未提交的数据，以及在事务执行期间由其它并发事务提交的修改。
+（然而，查询能看到在自身事务中执行的先前更新的效果，即使它们没有被提交）。与这一隔离级别的<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>标准要求相比，这是更强烈的保证。
+避免所有在<A HREF="transaction-iso.html#MVCC-ISOLEVEL-TABLE">&#34920; 13-1</A>描述的现象。正如上述所提及的，这是标准允许的，
+标准仅仅描述必须提供的每个隔离级别的<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">最低限度</I></SPAN>保护。</P><P> 这个级别和读已提交级别是不一样的。重复读事务中的查询看到的是<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">事务</I></SPAN>开始时的快照，
+而不是该事务内部当前查询开始时的快照，这样，
+<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">单个</I></SPAN>事务内部的<TT CLASS="COMMAND">SELECT</TT>命令总是看到同样的数据，也就是说，它们看不到
+它们自身事务开始之后提交的其他事务所做出的改变。</P><P> 使用这个级别的应用必须准备好重试事务,因为可能会发生串行化失败。</P><P>
+<TT CLASS="COMMAND">UPDATE</TT>, <TT CLASS="COMMAND">DELETE</TT>, <TT CLASS="COMMAND">SELECT
+FOR UPDATE</TT>和<TT CLASS="COMMAND">SELECT FOR SHARE</TT>在搜索目标行时的行为和<TT CLASS="COMMAND">SELECT</TT>一样：
+它们将只寻找在事务开始的时候已经提交的目标行。但是，
+这样的目标行在被发现的时候可能已经被另外一个并发的事务更新、删除、锁住。在这种情况下，
+可串行化的事务将等待第一个正在更新的事务提交或者回滚(如果它仍然在处理中)。如果第一个事务回滚，
+那么它的影响将被忽略，而这个可串行化的就可以继续更新它最初发现的行。
+但是如果第一个事务被提交了(并且实际上更新或者删除了该行，而不只是锁住它)那么可串行化事务将回滚，
+并返回下面信息：
+</P><PRE CLASS="SCREEN">ERROR:  could not serialize access due to concurrent update</PRE><P>
+因为一个可重复读的事务在开始之后不能更改或者锁住被其它事务更改过的行。
+</P><P> 当应用收到这样的错误消息时，它应该退出当前的事务然后重新开始进行整个事务。第二次运行时，
+该事务看到的快照将包含前一次已提交的修改，所以不会有逻辑冲突。</P><P> 请注意只有更新事务才需要重试，只读事务从来没有串行化冲突。</P><P> 可重复读事务级别提供了严格的保证：每个事务都看到一个完全稳定的数据库视图。然而，
+这种视图也不一定总是与同一级别的并发事务的某个串行执行（一次一个）相一致。
+例如，即使在这个级别上的一个只读事务可以看到一个被更新的控制记录显示一个批处理已经完成，但
+<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">不能</I></SPAN>看到逻辑上是批处理的一部分的详细记录，
+因为它读取了较早版本的控制记录。如果不小心翼翼地使用显式锁来阻止冲突事务，试图通过运行在这个隔离级别上的事务强制执行业务规则是不大可能正常工作的。</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B> <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>9.1版本之前，为串行化事务隔离级别请求提供的行为和这里描述的完全相同。所以，为获得传统的可串行化行为，现在应该请求可重复读。</P></BLOCKQUOTE></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="XACT-SERIALIZABLE">13.2.3. 可串行化隔离级别</A></H2><P> <I CLASS="FIRSTTERM">可串行化</I>级别提供最严格的事务隔离。这个级别为所有已提交事务模拟串行的事务执行，
+就好像事务将被一个接着一个那样串行(而不是并行)的执行。不过，正如可重复读隔离级别一样，
+使用这个级别的应用必须准备在串行化失败的时候重新启动事务。
+事实上，该隔离级别和可重复读的工作方式完全一样，
+除了它会监视一些条件，这些条件可能会使，一系列可串行化事务并行执行的行为不能和任何可能的这些事务的顺序执行（一次一个）相 一致。
+这种监视不引入任何超出可重复读中会出现的阻塞，但监测有一些开销，并且，检测到可能导致<I CLASS="FIRSTTERM">串行化异常</I>
+的条件将触发<I CLASS="FIRSTTERM">串行化失败</I>。</P><P>
+举例来说，假设一个表<TT CLASS="STRUCTNAME">mytab</TT>，最初包含:
+</P><PRE CLASS="SCREEN"> class | value
+-------+-------
+     1 |    10
+     1 |    20
+     2 |   100
+     2 |   200</PRE><P>
+假设可串行化事务 A 计算:
+</P><PRE CLASS="SCREEN">SELECT SUM(value) FROM mytab WHERE class = 1;</PRE><P>
+然后把结果(30)作为<TT CLASS="STRUCTFIELD">value</TT>字段值插入到表中，并令新行的<TT CLASS="STRUCTFIELD">class</TT><TT CLASS="LITERAL"> = 2</TT> 。同时，另一个并发的可串行化的事务B进行下面计算
+</P><PRE CLASS="SCREEN">SELECT SUM(value) FROM mytab WHERE class = 2;</PRE><P>
+然后把结果(300)作为<TT CLASS="STRUCTFIELD">class</TT><TT CLASS="LITERAL"> = 1</TT>字段值插入到表中。
+然后两个事务都提交。如果事务都在可重复读隔离级别上运行，两者都允许被提交；
+但是因为没有任何一个顺序执行的结果和这个一致，使用可串行化事务将只允许其中一个事务被提交，并且以这样的错误消息回滚另外一个。
+</P><PRE CLASS="SCREEN">ERROR:  could not serialize access due to read/write dependencies among transactions</PRE><P>
+这是因为如果 A 在 B 之前执行，B 应该计算出总和 330 ，而不是300，
+如果B在A之前执行，那么 A 计算出的总和也会不同。
+</P><P> 当依赖于可串行化事务阻止异常现象时，来自永久用户表读取的任何数据，直到读取它的事务成功提交为止，都不被认为是有效的。
+这即使对于只读事务也是对的，除了在<I CLASS="FIRSTTERM">可延期的</I>只读事务中，数据在读到它的时候就是有效的。
+因为这样一个事务将一直等到可以获得一个保证不会受此类问题困扰的快照的时候，才开始读取数据。
+在所有其他情况下，应用不能依赖于事务期间读到的结果，这个事务之后可能会被终止；取而代之的是，它们应该重试事务直到成功为止。</P><P> 为了保证真正的可串行化，<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>使用<I CLASS="FIRSTTERM">谓词锁</I>。
+这意味着它保持这些锁用来决定，当写将对一个并发事务先前的读结果有重大影响时，让它首先运行。
+在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>中这些锁不会造成任何阻塞，因此也<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">不会</I></SPAN>在死锁中扮演任何角色。
+它们被用来识别和标记并发串行化事务中的依赖关系，其中的某些组合可能导致串行化异常。
+相比之下，读已提交或者可重复读取的事务要确保数据的一致性可能需要获取整个表锁，
+它可以阻塞其他尝试使用该表的用户，也可以使用<TT CLASS="LITERAL">SELECT FOR UPDATE</TT>或者<TT CLASS="LITERAL">SELECT FOR SHARE</TT>，这不仅可以阻塞其他事务而且可能导致磁盘访问。</P><P> <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>中的谓词锁，像其他大多数数据库系统一样，
+基于通过事务实际访问的数据。这些显示在<A HREF="view-pg-locks.html"><TT CLASS="STRUCTNAME">pg_locks</TT></A>
+系统视图中，并带有<TT CLASS="LITERAL">SIReadLock</TT>的<TT CLASS="LITERAL">mode</TT>。
+查询执行期间获得的谓词锁取决于使用的查询计划，在事务期间多个细粒度锁（例如，元组锁）可能被组合成较少的粗粒度的锁（例如，页锁），以防止用于跟踪锁的内存耗尽。
+<TT CLASS="LITERAL">READ ONLY</TT>事务可以在完成之前释放SIRead锁，如果它检测到不会发生可能会导致串行化异常的冲突。事实上，
+<TT CLASS="LITERAL">READ ONLY</TT>事务在启动时经常可以建立这样的事实，并且避免获取任何谓词锁。如果你明确要求<TT CLASS="LITERAL">SERIALIZABLE READ ONLY DEFERRABLE</TT>事务，这将阻塞直到它可以建立这一事实。
+（这是<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">唯一</I></SPAN>的可串行化事务会阻塞而可重复读事务不会阻塞的情况。）另一方面，SIRead锁经常需要保持到事务提交以后，直到重叠的读写事务完成。</P><P> 坚持使用可串行化的事务可以简化开发。保证任何一组并发串行化事务将和它们一次一个按顺序依次执行具有相同的效果，
+将意味着，如果你能证明单个事务，就像字面上那样，在当只有它自己运行时能够做正确的事情，
+你可以有信心它也会在任何可串行化事务的混合中做正确的事，即使没有任何有关其他那些事务的信息。
+在使用这种技术的环境中，有一个通用的处理串行化失败（它总是返回'40001'的SQLSTATE值）的方法是很重要的，
+因为很难准确预测，哪个事务可能贡献了读/写依赖并且需要回滚防止串行化异常。读/写依赖的监控是有成本的，比如由于串行化失败而被终止的事务的重新启动，
+但权衡成本以及使用显式锁和<TT CLASS="LITERAL">SELECT FOR UPDATE</TT>或者<TT CLASS="LITERAL">SELECT FOR SHARE</TT>涉及到的阻塞，
+可串行化事务在某些环境下是性能最好的选择。</P><P>
+当依赖可串行化事务做并发控制时，为了最佳性能应该考虑这些问题：
+<P></P></P><UL><LI><P>
+尽可能把事务声明为<TT CLASS="LITERAL">READ ONLY</TT>。
+</P></LI><LI><P> 如果需要，可以使用连接池，控制活动连接数。这总是一个重要性能的考虑，但是在使用可串行化
+事务的繁忙系统中尤其重要。</P></LI><LI><P> 不要往单个事务里放入超过为了完整性目的而应该放入的东西。</P></LI><LI><P> 不要让连接在<SPAN CLASS="QUOTE">"idle in transaction"</SPAN>中停留超过需要的时间。 </P></LI><LI><P> 消除显示锁，<TT CLASS="LITERAL">SELECT FOR UPDATE</TT>和
+<TT CLASS="LITERAL">SELECT FOR SHARE</TT>不再需要，因为通过可串行化事务自动提供保护。</P></LI><LI><P> 当系统因为谓词锁表的内存不足，强制合并多个页级别谓词锁到单个的关系级别谓词锁时，
+可能导致可串行化失败率的增加。你可以通过增加<A HREF="runtime-config-locks.html#GUC-MAX-PRED-LOCKS-PER-TRANSACTION">max_pred_locks_per_transaction</A>
+来避免这个问题。</P></LI><LI><P> 顺序扫描总是需要一个关系级别谓词锁。这可能会导致串行化失败率的增加。
+减小<A HREF="runtime-config-query.html#GUC-RANDOM-PAGE-COST">random_page_cost</A>
+和/或增大<A HREF="runtime-config-query.html#GUC-CPU-TUPLE-COST">cpu_tuple_cost</A>可能有助于促使使用索引扫描。
+一定要权衡事务回滚和重启的任何减少，和查询执行时间上的任何整体的变化。</P></LI></UL><P>
+</P><DIV CLASS="WARNING"><P></P><TABLE CLASS="WARNING" BORDER="1" WIDTH="100%"><TR><TD ALIGN="CENTER"><B>&#35686;&#21578;</B></TD></TR><TR><TD ALIGN="LEFT"><P> 串行化事务隔离级别尚未被添加到热备复制目标中
+（正如在<A HREF="hot-standby.html">第 25.5 &#33410;</A>中描述的）。
+目前热备方式上支持的最严格的隔离级别是可重复读。
+所有在主库上可串行化事务执行的永久数据库写入将确保，所有的从库将最终达成一致，
+然而运行在从库上的可重复读事务可能会看到一个过渡状态，与主库上的可串行化事务的任何串行执行不一致。</P></TD></TR></TABLE></DIV></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="mvcc-intro.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="explicit-locking.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">介绍</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/mvcc.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">明确封锁</TD></TR></TABLE></DIV></BODY></HTML>

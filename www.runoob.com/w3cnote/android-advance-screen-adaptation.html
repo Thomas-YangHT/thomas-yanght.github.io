@@ -1,0 +1,720 @@
+<!Doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta property="qc:admins" content="465267610762567726375" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>1.1 Android 中喜闻乐见的屏幕适配 | 菜鸟教程</title>
+<link rel='dns-prefetch' href='http://s.w.org/' />
+<link rel="canonical" href="android-advance-screen-adaptation.html" />
+<meta name="keywords" content="1.1 Android 中喜闻乐见的屏幕适配">
+<meta name="description" content="引言 Andriod开源所带来的梗莫过于在各种不同型号、版本的手机中兼容的问题，同时成为每一位Android开发者中所要面临的挑战，或者说各种七七八八的问题来的毫无防备，本文接下来将主要介绍兼容性问题中适配问题。   基本概念 屏幕大小屏幕对角线的长度，通常使用“寸”来表示分辨率指手机屏幕的像素点个数屏幕像素密度（Pixels Per Inch）每英寸像素点个数。说的详细点就是对角线的像素点除以屏幕大小。 结合屏幕以上几点，Androi..">
+<link rel="shortcut icon" href="http://static.runoob.com/images/favicon.ico" mce_href="//static.runoob.com/images/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="http://school.yunwei.edu/wp-content/themes/runoob/style.css?v=1.147" type="text/css" media="all" />
+<link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />
+<!--[if gte IE 9]><!-->
+  <script src="http://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+  <!--<![endif]-->
+<!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+<link rel="apple-touch-icon" href="http://static.runoob.com/images/icon/mobile-icon.png"/>
+<meta name="apple-mobile-web-app-title" content="菜鸟教程">
+</head>
+<body>
+<div class="container logo-search">
+<div class="col search row-search-mobile">
+<form action="http://school.yunwei.edu/w3cnote/index.php">
+<input class="placeholder" placeholder="搜索……" name="s" autocomplete="off">
+</form>
+</div>
+<div class="row">
+<div class="col logo">
+<h1><a href="http://school.yunwei.edu/">菜鸟教程 -- 学的不仅是技术，更是梦想！</a></h1>
+</div>
+<div class="col right-list">
+<button class="btn btn-responsive-nav btn-inverse" data-toggle="collapse" data-target=".nav-main-collapse" id="pull" style=""> <i class="fa fa-navicon"></i> </button>
+</div>
+<div class="col search search-desktop last">
+<form action="http://school.yunwei.edu/" target="_blank">
+<input class="placeholder" id="s" name="s" placeholder="搜索……" autocomplete="off">
+</form>
+</div>
+</div>
+</div>
+<div class="container navigation">
+<div class="row">
+<div class="col nav">
+<ul class="pc-nav" id="note-nav">
+<li><a href="http://school.yunwei.edu/">首页</a></li>
+<li><a href="index.html">笔记首页</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/android" title="Android 基础入门教程">Android</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/net-2" title="互联网">互联网</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/coderlife" title="程序员人生">程序员人生</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/joke" title="程序员笑话">程序员笑话</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/code" title="编程技术">编程技术</a></li>
+</ul>
+<ul class="mobile-nav">
+<li><a href="index.html">首页</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/android" target="_blank" title="Android 基础入门教程">Android</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/coderlife" target="_blank" title="程序员人生">鸡汤</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/joke" target="_blank" title="程序员笑话">逗乐</a></li>
+<a href="javascript:void(0)" class="search-reveal">Search</a>
+</ul>
+</div>
+</div>
+</div>
+<div class="container main">
+<div class="row">
+<div class="col middle-column big-middle-column">
+<div class="article">
+<div class="article-heading">
+<h2>1.1 Android 中喜闻乐见的屏幕适配</h2> <h3><em>分类</em> <a href="../w3cnote_genre/android-advance" title="Android 扩展教程">Android 扩展教程</a> </h3>
+</div>
+<div class="article-body note-body">
+<div class="article-intro">
+<h2>引言</h2>
+<p>Andriod开源所带来的梗莫过于在各种不同型号、版本的手机中兼容的问题，同时成为每一位Android开发者中所要面临的挑战，或者说各种七七八八的问题来的毫无防备，本文接下来将主要介绍兼容性问题中适配问题。</p>
+<p><img src="../wp-content/uploads/2016/12/1.png"></p>
+<hr>
+<h2>基本概念</h2>
+<ul><li><p>屏幕大小</p><p>屏幕对角线的长度，通常使用"寸"来表示</p></li><li><p>分辨率</p><p>指手机屏幕的像素点个数</p></li><li><p>屏幕像素密度（Pixels Per Inch）</p><p>每英寸像素点个数。说的详细点就是对角线的像素点除以屏幕大小。</p></li></ul>
+<p><strong>结合屏幕以上几点，Android系统中定义了几个标准的DPI(PPI)值。</strong></p>
+<table class="reference"><thead><tr><th>密度</th><th>ldpi</th><th>mdpi</th><th>hdpi</th><th>xhpi</th><th>xxhdpi</th><th></th></tr></thead><tbody><tr><td>密度值</td><td>120</td><td>160</td><td>240</td><td>320</td><td>480</td><td></td></tr><tr><td>分辨率</td><td>240X320</td><td>320X480</td><td>480X800</td><td>720X1280</td><td>1080X1920</td><td></td></tr></tbody></table>
+<p><img src="../wp-content/uploads/2016/12/2.png"></p>
+<h3>独立像素dp</h3>
+<p>真是由于各种屏幕密度的不同，导致同样像素大小的长度在不同屏幕闪显示的长度有所不同。Android系统使用mdpi既160dpi作为标准在这个屏幕上 1px = 1dp，其他屏幕坐下比例换算，在hdpi(240dpi)中 1dp = 1.5px...(即ldpi:mdpi:hdpi:xhdpi:xxhdpi = 3:4:6:8:12)</p>
+<h3>独立像素sp</h3>
+<p>开发中关于设置字体的大小使用sp作为单位，这个单位所设置的字体受系统字体大小影响，推荐使用12sp、14sp、18sp、22sp作为字体设置的大小。</p>
+<hr>
+<h2>解决屏幕适配</h2>
+<p>有了关于屏幕的基本概念以后，在实际开发中碎片化的问题不断发生，于是乎，我们开始踏上屏幕适配之旅吧。</p>
+<h3>图片适配</h3>
+<p>除了小猪在之前文章写道使用 <a href="http://school.yunwei.edu/w3cnote/.9图片" href="android-tutorial-9-image.html">.9图片</a>以外，更多的时候我们要解决图片失真的问题。</p>
+<p><strong>Android SDK加载图片流程</strong></p>
+<blockquote><ol start=""><li>Android SDK会根据屏幕密度自动选择对应的资源文件进行渲染加载，比如说，SDK检测到你手机的分辨率是xhdpi，会优先到xhdpi文件夹下找对应的图片资源；</li><li>如果xhdpi文件夹下没有图片资源，那么就会去分辨率高的文件夹下查找，比如xxhdpi，直到找到同名图片资源，将它按比例缩小成xhpi图片；</li><li>如果往上查找图片还是没有找到，那么就会往低分辨率的文件夹查找，比如hdpi，直到找到同名图片资源，将它按比例放大成xhpi图片。</li></ol></blockquote>
+<p>对此在与美工配合的情况下，尽可能选择较大的图片,同时结合当前主流分辨率屏幕。</p>
+<p>到此，关于适配的图片解决方案就到这里，接下来...停，我还没说完呢！！</p>
+<p>在很多时候，我们只是使用到一些简单的图片，可以考虑到时候矢量图。</p>
+<p><strong>Android 矢量图</strong></p>
+<ul><li><p>介绍：</p>
+<blockquote><p>Android从Android5.0开始引入了对矢量图的支持，但是其并不支持svg这种矢量图片格式,，而是以VectorDrawable的方式来实现矢量图的效果。</p><p>Google官方关于矢量图的相关说明：<a title="VectorDrawable相关说明" href="https://developer.android.com/reference/android/graphics/drawable/VectorDrawable.html">VectorDrawable相关说明</a></p></blockquote>
+</li>
+<li><p>使用：</p>
+<blockquote><p>基本使用：Android Studio 中的使用 <img src="../wp-content/uploads/2016/12/3.png" alt=""></p><p>更多的学习（这里给大家指点一个方向，就不做深入说明了，不让跑题了）</p></blockquote>
+</li>
+<li><a title="Android开发中使用矢量图" target="_blank" href="http://blog.csdn.net/sg392361615/article/details/52764030"> Android开发中使用矢量图 </a></li>
+</ul>
+<h3>布局适配</h3>
+<p>就先从layout_weight开始说起吧，layout_weight是android.widget.LinearLayout的属性，说简单点就是只能在LinearLayout的子空间中才允许使用，当然wrap_content与match_parent也就不用了，想必使用方法想必大家都知道了，只是layout_weight使用有一些注意事项，我都不知道该不该废话了，算了！跳过（逃）。
+<img src="../wp-content/uploads/2016/12/1-1.png" alt=""></p>
+<h3>限定符</h3>
+<p><strong>尺寸限定符</strong></p>
+<ul><li><p>使用场景</p>
+<blockquote><p>用过平板和手机的朋友想必应该见过，一个app会有这种情况，在手机中(较小的屏幕)，使用单面板分别显示内容。在平板中实施的是双面板模式显示更多内容。</p></blockquote></li>
+<li><p>使用方式</p>
+<blockquote><p>我们可以使用尺寸限定符（layout-large）通过创建一个文件，这样，我们的目录就会变成这样,并且，我们给他放入不同的内容。</p></blockquote>
+<div class="example">
+<h2 class="example">res/layout/activity_main.xml</h2>
+<div class="example_code">
+<div class="hl-main"><span class="hl-brackets">&lt;</span><span class="hl-reserved">LinearLayout</span><span class="hl-code"> </span><span class="hl-var">xmlns:android</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">http://schemas.android.com/apk/res/android</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:orientation</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">vertical</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_width</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">match_parent</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_height</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">match_parent</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">fragment</span><span class="hl-code"> </span><span class="hl-var">android:id</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">@+id/left_fragment</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_height</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">match_parent</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:name</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">com.xlhgo.demo.LeftFragment</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_width</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">match_parent</span><span class="hl-quotes">&quot;</span><span class="hl-code"> </span><span class="hl-brackets">/&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">LinearLayout</span><span class="hl-brackets">&gt;</span></div>
+</div>
+</div>
+<div class="example">
+<h2 class="example">res/layout-large/activity_main.xml</h2>
+<div class="example_code">
+<div class="hl-main"><span class="hl-brackets">&lt;</span><span class="hl-reserved">LinearLayout</span><span class="hl-code"> </span><span class="hl-var">xmlns:android</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">http://schemas.android.com/apk/res/android</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_width</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">match_parent</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_height</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">match_parent</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:orientation</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">horizontal</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">fragment</span><span class="hl-code"> </span><span class="hl-var">android:id</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">@+id/left_fragment</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_height</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">match_parent</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_width</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">0dp</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_weight</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">1</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:name</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">com.xlhgo.demo.LeftFragment</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-brackets">/&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">fragment</span><span class="hl-code"> </span><span class="hl-var">android:id</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">@+id/right_fragment</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_height</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">match_parent</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_width</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">0dp</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_weight</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">1</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:name</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">com.xlhgo.demo.RightFragment /&gt;
+&lt;/LinearLayout&gt;</span></div>
+</div></div>
+</li>
+<li><p>注意事项</p>
+<blockquote>
+<p>这种方式只适合Android3.2之前，在之后，又有一个新的玩物</p>
+</blockquote>
+</li></ul>
+<p><strong>最小宽度限定符</strong></p>
+<p>在原尺寸限定符的基础上，large的存在非得模糊，Google爸爸就给大家带来一种新的玩法，就是最小宽度（Smallest-width）限度符。</p>
+<ul>
+<li><p>使用方式</p>
+<div class="example">
+<h2 class="example">res/layout-sw600dp/activity_main.xml</h2>
+<div class="example_code">
+<div class="hl-main"><span class="hl-brackets">&lt;</span><span class="hl-reserved">LinearLayout</span><span class="hl-code"> </span><span class="hl-var">xmlns:android</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">http://schemas.android.com/apk/res/android</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_width</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">match_parent</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_height</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">match_parent</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:orientation</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">horizontal</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">fragment</span><span class="hl-code"> </span><span class="hl-var">android:id</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">@+id/left_fragment</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_height</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">match_parent</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_width</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">0dp</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_weight</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">1</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:name</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">com.xlhgo.demo.LeftFragment</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-brackets">/&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">fragment</span><span class="hl-code"> </span><span class="hl-var">android:id</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">@+id/right_fragment</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_height</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">match_parent</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_width</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">0dp</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_weight</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">1</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:name</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">com.xlhgo.demo.RightFragment /&gt;
+&lt;/LinearLayout&gt;</span></div>
+</div></div>
+</li>
+<li><p>分析</p>
+<blockquote><p>也就是说，对于最小宽度大于等于 600 dp 的设备，系统会选择 layout-sw600dp/main.xml（双面板）布局，否则系统就会选择 layout/activity_main.xml（单面板）布局。</p><p>但 Android 版本低于 3.2 的设备不支持此技术，原因是这些设备无法将 sw600dp 识别为尺寸限定符，因此我们仍需使用 large 限定符。这样一来，就会有一个名称为 res/layout-large/main.xml 的文件（与 res/layout-sw600dp/activity_main.xml 一样）。嘿嘿，Android早就看穿这一切了。</p></blockquote>
+</li>
+</ul>
+<p><strong>使用布局别名</strong></p>
+<p>为了解决上面的问题，我们就用使用布局别名。</p>
+<ul><li><p>使用方式：</p>
+<blockquote><p>我们把原来 res/layout-sw600dp/activity_main.xml 布局移到 res/layoout/ 目录下，并且取名为 activity_main_(xxx).xml (xxx的命名规范最好可以规范下，统一标准)</p>
+<p>接下里就看看 values-large 与 values-sw600dp 的布局吧</p>
+</blockquote>
+<div class="example">
+<div class="example_code">
+<div class="hl-main"><span class="hl-brackets">&lt;</span><span class="hl-reserved">resources</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">item</span><span class="hl-code"> </span><span class="hl-var">name</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">main</span><span class="hl-quotes">&quot;</span><span class="hl-code"> </span><span class="hl-var">type</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">layout</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">&gt;</span><span class="hl-code">@layout/activity_main_(xxx)</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">item</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">resources</span><span class="hl-brackets">&gt;</span></div>
+</div></div>
+</li></ul>
+<p><strong>屏幕方向（Orientation）限定符</strong></p>
+<ul><li>res/layout-land</li><li>res/layout-port</li><li>res/layout-sw600dp-land</li><li>res/layout-sw600dp-port</li></ul>
+<h3>dimen的使用</h3>
+<p>即便使用dp其实也不能完全的解决屏幕适配的问题，尤其是横向布局的时候最容易察觉，因为不同手机一个屏幕的宽高dp值各不相同，所以说无论怎么给控件分配dp值都无法很好的解决适配。</p>
+<ul><li><p>解决方案</p>
+<blockquote><p>我们将一个屏幕宽度分为320份，高度480份，然后按照实际像素对每一个单位进行复制，放在对应values-widthxheight文件夹下面的lay_x.xml和lay_y.xml里面，</p></blockquote>
+</li>
+<li><p>具体代码</p>
+<div class="example">
+<div class="example_code">
+<div class="hl-main"><span class="hl-reserved">import</span><span class="hl-code"> </span><span class="hl-identifier">java</span><span class="hl-code">.</span><span class="hl-identifier">io</span><span class="hl-code">.</span><span class="hl-identifier">File</span><span class="hl-code">;
+</span><span class="hl-reserved">import</span><span class="hl-code"> </span><span class="hl-identifier">java</span><span class="hl-code">.</span><span class="hl-identifier">io</span><span class="hl-code">.</span><span class="hl-identifier">FileNotFoundException</span><span class="hl-code">;
+</span><span class="hl-reserved">import</span><span class="hl-code"> </span><span class="hl-identifier">java</span><span class="hl-code">.</span><span class="hl-identifier">io</span><span class="hl-code">.</span><span class="hl-identifier">FileOutputStream</span><span class="hl-code">;
+</span><span class="hl-reserved">import</span><span class="hl-code"> </span><span class="hl-identifier">java</span><span class="hl-code">.</span><span class="hl-identifier">io</span><span class="hl-code">.</span><span class="hl-identifier">PrintWriter</span><span class="hl-code">;
+</span><span class="hl-comment">/*</span><span class="hl-comment">*
+* Created by xlh on 2016/12/4.
+</span><span class="hl-comment">*/</span><span class="hl-code">
+</span><span class="hl-reserved">public</span><span class="hl-code"> </span><span class="hl-reserved">class</span><span class="hl-code"> </span><span class="hl-identifier">MakeXml</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-reserved">private</span><span class="hl-code"> </span><span class="hl-types">final</span><span class="hl-code"> </span><span class="hl-types">static</span><span class="hl-code"> </span><span class="hl-identifier">String</span><span class="hl-code"> </span><span class="hl-identifier">rootPath</span><span class="hl-code"> = </span><span class="hl-quotes">&quot;</span><span class="hl-string">F:</span><span class="hl-special">\\</span><span class="hl-string">layoutroot</span><span class="hl-special">\\</span><span class="hl-string">values-{0}x{1}</span><span class="hl-special">\\</span><span class="hl-quotes">&quot;</span><span class="hl-code">;
+</span><span class="hl-comment">//</span><span class="hl-comment">可以根据自己情况去更改</span><span class="hl-comment"></span><span class="hl-code">
+</span><span class="hl-reserved">private</span><span class="hl-code"> </span><span class="hl-types">final</span><span class="hl-code"> </span><span class="hl-types">static</span><span class="hl-code"> </span><span class="hl-types">float</span><span class="hl-code"> </span><span class="hl-identifier">dw</span><span class="hl-code"> = </span><span class="hl-number">320</span><span class="hl-identifier">f</span><span class="hl-code">;
+</span><span class="hl-reserved">private</span><span class="hl-code"> </span><span class="hl-types">final</span><span class="hl-code"> </span><span class="hl-types">static</span><span class="hl-code"> </span><span class="hl-types">float</span><span class="hl-code"> </span><span class="hl-identifier">dh</span><span class="hl-code"> = </span><span class="hl-number">480</span><span class="hl-identifier">f</span><span class="hl-code">;
+</span><span class="hl-reserved">private</span><span class="hl-code"> </span><span class="hl-types">final</span><span class="hl-code"> </span><span class="hl-types">static</span><span class="hl-code"> </span><span class="hl-identifier">String</span><span class="hl-code"> </span><span class="hl-identifier">WTemplate</span><span class="hl-code"> = </span><span class="hl-quotes">&quot;</span><span class="hl-string">&lt;dimen name=</span><span class="hl-special">\&quot;</span><span class="hl-string">x{0}</span><span class="hl-special">\&quot;</span><span class="hl-string">&gt;{1}px&lt;/dimen&gt;</span><span class="hl-special">\n</span><span class="hl-quotes">&quot;</span><span class="hl-code">;
+</span><span class="hl-reserved">private</span><span class="hl-code"> </span><span class="hl-types">final</span><span class="hl-code"> </span><span class="hl-types">static</span><span class="hl-code"> </span><span class="hl-identifier">String</span><span class="hl-code"> </span><span class="hl-identifier">HTemplate</span><span class="hl-code"> = </span><span class="hl-quotes">&quot;</span><span class="hl-string">&lt;dimen name=</span><span class="hl-special">\&quot;</span><span class="hl-string">y{0}</span><span class="hl-special">\&quot;</span><span class="hl-string">&gt;{1}px&lt;/dimen&gt;</span><span class="hl-special">\n</span><span class="hl-quotes">&quot;</span><span class="hl-code">;
+</span><span class="hl-reserved">public</span><span class="hl-code"> </span><span class="hl-types">static</span><span class="hl-code"> </span><span class="hl-types">void</span><span class="hl-code"> </span><span class="hl-identifier">main</span><span class="hl-brackets">(</span><span class="hl-identifier">String</span><span class="hl-brackets">[</span><span class="hl-brackets">]</span><span class="hl-code"> </span><span class="hl-identifier">args</span><span class="hl-brackets">)</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">makeString</span><span class="hl-brackets">(</span><span class="hl-number">320</span><span class="hl-code">, </span><span class="hl-number">480</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">makeString</span><span class="hl-brackets">(</span><span class="hl-number">480</span><span class="hl-code">, </span><span class="hl-number">800</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">makeString</span><span class="hl-brackets">(</span><span class="hl-number">480</span><span class="hl-code">, </span><span class="hl-number">854</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">makeString</span><span class="hl-brackets">(</span><span class="hl-number">540</span><span class="hl-code">, </span><span class="hl-number">960</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">makeString</span><span class="hl-brackets">(</span><span class="hl-number">600</span><span class="hl-code">, </span><span class="hl-number">1024</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">makeString</span><span class="hl-brackets">(</span><span class="hl-number">720</span><span class="hl-code">, </span><span class="hl-number">1184</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">makeString</span><span class="hl-brackets">(</span><span class="hl-number">720</span><span class="hl-code">, </span><span class="hl-number">1196</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">makeString</span><span class="hl-brackets">(</span><span class="hl-number">720</span><span class="hl-code">, </span><span class="hl-number">1280</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">makeString</span><span class="hl-brackets">(</span><span class="hl-number">768</span><span class="hl-code">, </span><span class="hl-number">1024</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">makeString</span><span class="hl-brackets">(</span><span class="hl-number">800</span><span class="hl-code">, </span><span class="hl-number">1280</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">makeString</span><span class="hl-brackets">(</span><span class="hl-number">1080</span><span class="hl-code">, </span><span class="hl-number">1812</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">makeString</span><span class="hl-brackets">(</span><span class="hl-number">1080</span><span class="hl-code">, </span><span class="hl-number">1920</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">makeString</span><span class="hl-brackets">(</span><span class="hl-number">1440</span><span class="hl-code">, </span><span class="hl-number">2560</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-reserved">public</span><span class="hl-code"> </span><span class="hl-types">static</span><span class="hl-code"> </span><span class="hl-types">void</span><span class="hl-code"> </span><span class="hl-identifier">makeString</span><span class="hl-brackets">(</span><span class="hl-types">int</span><span class="hl-code"> </span><span class="hl-identifier">w</span><span class="hl-code">, </span><span class="hl-types">int</span><span class="hl-code"> </span><span class="hl-identifier">h</span><span class="hl-brackets">)</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">StringBuffer</span><span class="hl-code"> </span><span class="hl-identifier">sb</span><span class="hl-code"> = </span><span class="hl-reserved">new</span><span class="hl-code"> </span><span class="hl-identifier">StringBuffer</span><span class="hl-brackets">(</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">sb</span><span class="hl-code">.</span><span class="hl-identifier">append</span><span class="hl-brackets">(</span><span class="hl-quotes">&quot;</span><span class="hl-string">&lt;?xml version=</span><span class="hl-special">\&quot;</span><span class="hl-string">1.0</span><span class="hl-special">\&quot;</span><span class="hl-string"> encoding=</span><span class="hl-special">\&quot;</span><span class="hl-string">utf-8</span><span class="hl-special">\&quot;</span><span class="hl-string">?&gt;</span><span class="hl-special">\n</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">sb</span><span class="hl-code">.</span><span class="hl-identifier">append</span><span class="hl-brackets">(</span><span class="hl-quotes">&quot;</span><span class="hl-string">&lt;resources&gt;</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-types">float</span><span class="hl-code"> </span><span class="hl-identifier">cellw</span><span class="hl-code"> = </span><span class="hl-identifier">w</span><span class="hl-code"> / </span><span class="hl-identifier">dw</span><span class="hl-code">;
+</span><span class="hl-reserved">for</span><span class="hl-code"> </span><span class="hl-brackets">(</span><span class="hl-types">int</span><span class="hl-code"> </span><span class="hl-identifier">i</span><span class="hl-code"> = </span><span class="hl-number">1</span><span class="hl-code">; </span><span class="hl-identifier">i</span><span class="hl-code"> &lt; </span><span class="hl-number">320</span><span class="hl-code">; </span><span class="hl-identifier">i</span><span class="hl-code">++</span><span class="hl-brackets">)</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">sb</span><span class="hl-code">.</span><span class="hl-identifier">append</span><span class="hl-brackets">(</span><span class="hl-identifier">WTemplate</span><span class="hl-code">.</span><span class="hl-identifier">replace</span><span class="hl-brackets">(</span><span class="hl-quotes">&quot;</span><span class="hl-string">{0}</span><span class="hl-quotes">&quot;</span><span class="hl-code">, </span><span class="hl-identifier">i</span><span class="hl-code"> + </span><span class="hl-quotes">&quot;</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">)</span><span class="hl-code">.</span><span class="hl-identifier">replace</span><span class="hl-brackets">(</span><span class="hl-quotes">&quot;</span><span class="hl-string">{1}</span><span class="hl-quotes">&quot;</span><span class="hl-code">,
+</span><span class="hl-identifier">change</span><span class="hl-brackets">(</span><span class="hl-identifier">cellw</span><span class="hl-code"> * </span><span class="hl-identifier">i</span><span class="hl-brackets">)</span><span class="hl-code"> + </span><span class="hl-quotes">&quot;</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">)</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-identifier">sb</span><span class="hl-code">.</span><span class="hl-identifier">append</span><span class="hl-brackets">(</span><span class="hl-identifier">WTemplate</span><span class="hl-code">.</span><span class="hl-identifier">replace</span><span class="hl-brackets">(</span><span class="hl-quotes">&quot;</span><span class="hl-string">{0}</span><span class="hl-quotes">&quot;</span><span class="hl-code">, </span><span class="hl-quotes">&quot;</span><span class="hl-string">320</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">)</span><span class="hl-code">.</span><span class="hl-identifier">replace</span><span class="hl-brackets">(</span><span class="hl-quotes">&quot;</span><span class="hl-string">{1}</span><span class="hl-quotes">&quot;</span><span class="hl-code">, </span><span class="hl-identifier">w</span><span class="hl-code"> + </span><span class="hl-quotes">&quot;</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">)</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">sb</span><span class="hl-code">.</span><span class="hl-identifier">append</span><span class="hl-brackets">(</span><span class="hl-quotes">&quot;</span><span class="hl-string">&lt;/resources&gt;</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">StringBuffer</span><span class="hl-code"> </span><span class="hl-identifier">sb2</span><span class="hl-code"> = </span><span class="hl-reserved">new</span><span class="hl-code"> </span><span class="hl-identifier">StringBuffer</span><span class="hl-brackets">(</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">sb2</span><span class="hl-code">.</span><span class="hl-identifier">append</span><span class="hl-brackets">(</span><span class="hl-quotes">&quot;</span><span class="hl-string">&lt;?xml version=</span><span class="hl-special">\&quot;</span><span class="hl-string">1.0</span><span class="hl-special">\&quot;</span><span class="hl-string"> encoding=</span><span class="hl-special">\&quot;</span><span class="hl-string">utf-8</span><span class="hl-special">\&quot;</span><span class="hl-string">?&gt;</span><span class="hl-special">\n</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">sb2</span><span class="hl-code">.</span><span class="hl-identifier">append</span><span class="hl-brackets">(</span><span class="hl-quotes">&quot;</span><span class="hl-string">&lt;resources&gt;</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-types">float</span><span class="hl-code"> </span><span class="hl-identifier">cellh</span><span class="hl-code"> = </span><span class="hl-identifier">h</span><span class="hl-code"> / </span><span class="hl-identifier">dh</span><span class="hl-code">;
+</span><span class="hl-reserved">for</span><span class="hl-code"> </span><span class="hl-brackets">(</span><span class="hl-types">int</span><span class="hl-code"> </span><span class="hl-identifier">i</span><span class="hl-code"> = </span><span class="hl-number">1</span><span class="hl-code">; </span><span class="hl-identifier">i</span><span class="hl-code"> &lt; </span><span class="hl-number">480</span><span class="hl-code">; </span><span class="hl-identifier">i</span><span class="hl-code">++</span><span class="hl-brackets">)</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">sb2</span><span class="hl-code">.</span><span class="hl-identifier">append</span><span class="hl-brackets">(</span><span class="hl-identifier">HTemplate</span><span class="hl-code">.</span><span class="hl-identifier">replace</span><span class="hl-brackets">(</span><span class="hl-quotes">&quot;</span><span class="hl-string">{0}</span><span class="hl-quotes">&quot;</span><span class="hl-code">, </span><span class="hl-identifier">i</span><span class="hl-code"> + </span><span class="hl-quotes">&quot;</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">)</span><span class="hl-code">.</span><span class="hl-identifier">replace</span><span class="hl-brackets">(</span><span class="hl-quotes">&quot;</span><span class="hl-string">{1}</span><span class="hl-quotes">&quot;</span><span class="hl-code">,
+</span><span class="hl-identifier">change</span><span class="hl-brackets">(</span><span class="hl-identifier">cellh</span><span class="hl-code"> * </span><span class="hl-identifier">i</span><span class="hl-brackets">)</span><span class="hl-code"> + </span><span class="hl-quotes">&quot;</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">)</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-identifier">sb2</span><span class="hl-code">.</span><span class="hl-identifier">append</span><span class="hl-brackets">(</span><span class="hl-identifier">HTemplate</span><span class="hl-code">.</span><span class="hl-identifier">replace</span><span class="hl-brackets">(</span><span class="hl-quotes">&quot;</span><span class="hl-string">{0}</span><span class="hl-quotes">&quot;</span><span class="hl-code">, </span><span class="hl-quotes">&quot;</span><span class="hl-string">480</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">)</span><span class="hl-code">.</span><span class="hl-identifier">replace</span><span class="hl-brackets">(</span><span class="hl-quotes">&quot;</span><span class="hl-string">{1}</span><span class="hl-quotes">&quot;</span><span class="hl-code">, </span><span class="hl-identifier">h</span><span class="hl-code"> + </span><span class="hl-quotes">&quot;</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">)</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">sb2</span><span class="hl-code">.</span><span class="hl-identifier">append</span><span class="hl-brackets">(</span><span class="hl-quotes">&quot;</span><span class="hl-string">&lt;/resources&gt;</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">String</span><span class="hl-code"> </span><span class="hl-identifier">path</span><span class="hl-code"> = </span><span class="hl-identifier">rootPath</span><span class="hl-code">.</span><span class="hl-identifier">replace</span><span class="hl-brackets">(</span><span class="hl-quotes">&quot;</span><span class="hl-string">{0}</span><span class="hl-quotes">&quot;</span><span class="hl-code">, </span><span class="hl-identifier">h</span><span class="hl-code"> + </span><span class="hl-quotes">&quot;</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">)</span><span class="hl-code">.</span><span class="hl-identifier">replace</span><span class="hl-brackets">(</span><span class="hl-quotes">&quot;</span><span class="hl-string">{1}</span><span class="hl-quotes">&quot;</span><span class="hl-code">, </span><span class="hl-identifier">w</span><span class="hl-code"> + </span><span class="hl-quotes">&quot;</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">File</span><span class="hl-code"> </span><span class="hl-identifier">rootFile</span><span class="hl-code"> = </span><span class="hl-reserved">new</span><span class="hl-code"> </span><span class="hl-identifier">File</span><span class="hl-brackets">(</span><span class="hl-identifier">path</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-reserved">if</span><span class="hl-code"> </span><span class="hl-brackets">(</span><span class="hl-code">!</span><span class="hl-identifier">rootFile</span><span class="hl-code">.</span><span class="hl-identifier">exists</span><span class="hl-brackets">(</span><span class="hl-brackets">)</span><span class="hl-brackets">)</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">rootFile</span><span class="hl-code">.</span><span class="hl-identifier">mkdirs</span><span class="hl-brackets">(</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-identifier">File</span><span class="hl-code"> </span><span class="hl-identifier">layxFile</span><span class="hl-code"> = </span><span class="hl-reserved">new</span><span class="hl-code"> </span><span class="hl-identifier">File</span><span class="hl-brackets">(</span><span class="hl-identifier">path</span><span class="hl-code"> + </span><span class="hl-quotes">&quot;</span><span class="hl-string">lay_x.xml</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">File</span><span class="hl-code"> </span><span class="hl-identifier">layyFile</span><span class="hl-code"> = </span><span class="hl-reserved">new</span><span class="hl-code"> </span><span class="hl-identifier">File</span><span class="hl-brackets">(</span><span class="hl-identifier">path</span><span class="hl-code"> + </span><span class="hl-quotes">&quot;</span><span class="hl-string">lay_y.xml</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-reserved">try</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">PrintWriter</span><span class="hl-code"> </span><span class="hl-identifier">pw</span><span class="hl-code"> = </span><span class="hl-reserved">new</span><span class="hl-code"> </span><span class="hl-identifier">PrintWriter</span><span class="hl-brackets">(</span><span class="hl-reserved">new</span><span class="hl-code"> </span><span class="hl-identifier">FileOutputStream</span><span class="hl-brackets">(</span><span class="hl-identifier">layxFile</span><span class="hl-brackets">)</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">pw</span><span class="hl-code">.</span><span class="hl-identifier">print</span><span class="hl-brackets">(</span><span class="hl-identifier">sb</span><span class="hl-code">.</span><span class="hl-identifier">toString</span><span class="hl-brackets">(</span><span class="hl-brackets">)</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">pw</span><span class="hl-code">.</span><span class="hl-identifier">close</span><span class="hl-brackets">(</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">pw</span><span class="hl-code"> = </span><span class="hl-reserved">new</span><span class="hl-code"> </span><span class="hl-identifier">PrintWriter</span><span class="hl-brackets">(</span><span class="hl-reserved">new</span><span class="hl-code"> </span><span class="hl-identifier">FileOutputStream</span><span class="hl-brackets">(</span><span class="hl-identifier">layyFile</span><span class="hl-brackets">)</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">pw</span><span class="hl-code">.</span><span class="hl-identifier">print</span><span class="hl-brackets">(</span><span class="hl-identifier">sb2</span><span class="hl-code">.</span><span class="hl-identifier">toString</span><span class="hl-brackets">(</span><span class="hl-brackets">)</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">pw</span><span class="hl-code">.</span><span class="hl-identifier">close</span><span class="hl-brackets">(</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code"> </span><span class="hl-reserved">catch</span><span class="hl-code"> </span><span class="hl-brackets">(</span><span class="hl-identifier">FileNotFoundException</span><span class="hl-code"> </span><span class="hl-identifier">e</span><span class="hl-brackets">)</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">e</span><span class="hl-code">.</span><span class="hl-identifier">printStackTrace</span><span class="hl-brackets">(</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-reserved">public</span><span class="hl-code"> </span><span class="hl-types">static</span><span class="hl-code"> </span><span class="hl-types">float</span><span class="hl-code"> </span><span class="hl-identifier">change</span><span class="hl-brackets">(</span><span class="hl-types">float</span><span class="hl-code"> </span><span class="hl-identifier">a</span><span class="hl-brackets">)</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-types">int</span><span class="hl-code"> </span><span class="hl-identifier">temp</span><span class="hl-code"> = </span><span class="hl-brackets">(</span><span class="hl-types">int</span><span class="hl-brackets">)</span><span class="hl-code"> </span><span class="hl-brackets">(</span><span class="hl-identifier">a</span><span class="hl-code"> * </span><span class="hl-number">100</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-reserved">return</span><span class="hl-code"> </span><span class="hl-identifier">temp</span><span class="hl-code"> / </span><span class="hl-number">100</span><span class="hl-identifier">f</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-brackets">}</span></div>
+</div></div>
+<blockquote><p><img src="../wp-content/uploads/2016/12/4.png" alt=""></p>
+<p>
+相对应每个目录下都有lay_x.xml和lay_y.xml</p><p>
+<img src="../wp-content/uploads/2016/12/5.png" alt=""></p><p>
+里面的代码也非常的有规律</p><p>
+<img src="../wp-content/uploads/2016/12/6.png" alt=""></p></blockquote>
+</li>
+<li><p>使用方式</p>
+<blockquote><p>有了这些文件以后，使用起来就非常方便了，假设美工给我的图是320*480的就可以直接这样子调用 android:layout_xxx="@dimen/xxxx"</p></blockquote></li>
+</ul>
+<h3>百分比布局</h3>
+<p>关于百分比布局，如果鄙人没记错应该是在15年初的新物，因为是google的亲儿子，所以话不多说，先直接上官网链接：<a href="https://github.com/JulienGenoud/android-percent-support-lib-sample" target="_blank" title="android-percent-support-lib-sample">android-percent-support-lib-sample</a></p>
+<p>无非就是百分比布局，如果能和美工进行合理的沟通，这将是Android开发中一个不错的选择。</p>
+<div class="example">
+<div class="example_code">
+<div class="hl-main"><span class="hl-brackets">&lt;?</span><span class="hl-reserved">xml</span><span class="hl-code"> </span><span class="hl-var">version</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">1.0</span><span class="hl-quotes">&quot;</span><span class="hl-code"> </span><span class="hl-var">encoding</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">utf-8</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">?&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">android</span><span class="hl-code">.</span><span class="hl-var">support</span><span class="hl-code">.</span><span class="hl-var">percent</span><span class="hl-code">.</span><span class="hl-var">PercentRelativeLayout</span><span class="hl-code">
+</span><span class="hl-var">xmlns:android</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">http://schemas.android.com/apk/res/android</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">xmlns:app</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">http://schemas.android.com/apk/res-auto</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_width</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">match_parent</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_height</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">wrap_content</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">Button</span><span class="hl-code">
+</span><span class="hl-var">android:layout_width</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">0dp</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_height</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">wrap_content</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:text</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">30%</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">app:layout_widthPercent</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">30%</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">/&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">Button</span><span class="hl-code">
+</span><span class="hl-var">android:layout_width</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">0dp</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_height</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">wrap_content</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:layout_alignParentRight</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">true</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">android:text</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">20%</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-var">app:layout_widthPercent</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">20%</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">/&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">android</span><span class="hl-code">.</span><span class="hl-var">support</span><span class="hl-code">.</span><span class="hl-var">percent</span><span class="hl-code">.</span><span class="hl-var">PercentRelativeLayout</span><span class="hl-brackets">&gt;</span></div>
+</div></div>
+<h3>其他工具的使用</h3>
+<p>除了以上这些传统的屏幕适配方案，鄙人在很久以前开发一个外包的项目使用到了一个非常有意思的工具，就是 鸿神的<a titile="Android屏幕自动适配" target="_blank" href="https://github.com/zhengjingle/Autolayout">Android屏幕自动适配</a>。因为美工给我的图片是ios的尺寸，使用了之后简直是大快人心，当然博主在后来的面试社交中提到关于这个适配方案，被告知会在某种情况下出现bug，所以现在开始抱有谨慎的情况。。。但是总的来说还是比较少的吧，至少我没直接遇到（一定是我太low了）。</p>
+<hr>
+<h2>尾声</h2>
+<p>到此，我的第一篇文章已经结束，不知道给大家带来的效果如何，关于markdown文档编辑的格式欢迎直接，说真的，我也中感觉哪里有点别扭。。</p> </div>
+</div>
+<div class="previous-next-links">
+<div class="previous-design-link"> </div>
+<div class="next-design-link"><a href="android-advance-custom-view.html" rel="next"> 1.2 自定义 View</a> →</div>
+</div>
+<div class="article-heading-ad" id="w3cnote-ad728">
+<script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle" style="display:inline-block;min-width:300px;max-width:970px;width:100%;height:90px" data-ad-client="ca-pub-5751451760833794" data-ad-slot="1691338467" data-ad-format="horizontal"></ins>
+<script>
+			(adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
+</div>
+<style>
+@media screen and (max-width: 768px) {
+	#w3cnote-ad728 {
+		display: none;
+	}
+}
+p.note-author {
+    border-bottom: 1px solid #ddd;
+    font-size: 18px;
+    font-weight: bold;
+    color: #78a15a;
+    padding-bottom: 2px;
+    margin-bottom: 4px;
+}
+</style>
+<script>
+var aid = 17013;
+</script>
+</div>
+</div>
+<div class="listcol last right-column">
+<script type="text/javascript">
+jQuery(document).ready(function ($){
+	var total = $(".membership li").length;
+	var left_list = '';
+	href = window.location.href;
+	
+	$(".membership li").each(function(index, value){
+
+		left_list += $(this).html();
+
+		cur_href = $(this).find("a").attr("href");
+		cur_obj = $(this);
+		
+		if(href.match(cur_href) != null) {
+			if(index==0) {
+				$(".previous-design-link").hide();
+			}
+			if(index==(total-1)) {
+				$(".next-design-link").hide();
+			}
+			prev_href = cur_obj.prev("li").find("a").attr("href");
+			prev_title = cur_obj.prev("li").find("a").attr("title");
+
+			next_href = cur_obj.next("li").find("a").attr("href");
+			next_title = cur_obj.next("li").find("a").attr("title");
+			if(prev_title) {
+				$(".previous-design-link a").attr("href", prev_href);
+				$(".previous-design-link a").attr("title", prev_title);
+				$(".previous-design-link a").text(prev_title);
+			} else {
+				$(".previous-design-link").html("");
+			}
+
+			if(next_title) {
+				$(".next-design-link a").attr("href", next_href);
+				$(".next-design-link a").attr("title", next_title);
+				$(".next-design-link a").text(next_title);
+			} else {
+				$(".next-design-link").html("");
+			}
+		}
+	});
+
+	$("#leftcolumn").html(left_list);
+});
+	</script>
+<div class="sidebar-box cate-list">
+<div class="sidebar-box advertise-here list-link"">
+	<a href="javascript:void(0);"> Android 进阶教程(Q群号：531878064)</a>	</div>
+	
+	<ul class="membership">
+		<li>
+	1.1 Android 中喜闻乐见的屏幕适配	</li>
+	
+		
+	<li><a target="_top" title="1.2 自定义 View" href="android-advance-custom-view.html" >1.2 自定义 View</a></li>
+		
+	<li><a target="_top" title="1.3 自定义 ViewGroup" href="android-advance-viewgrouphtml.html" >1.3 自定义 ViewGroup</a></li>
+		
+	<li><a target="_top" title="1.4 Android6.0权限管理-开源框架源码分析" href="android-advance-authority-management.html" >1.4 Android6.0权限管理-开源框架源码分析</a></li>
+		
+	<li><a target="_top" title="2.0 Android 插件式开发" href="android-advance-plug-in-development.html" >2.0 Android 插件式开发</a></li>
+		
+	<li><a target="_top" title="2.1 带你全方位学习Picasso（一）" href="android-advance-picasso1.html" >2.1 带你全方位学习Picasso（一）</a></li>
+		
+	<li><a target="_top" title="2.2 带你全方位学习Picasso（二）" href="android-advance-picasso2.html" >2.2 带你全方位学习Picasso（二）</a></li>
+	</ul></div>	</div>
+</div>
+
+
+<!-- 底部 -->
+
+
+<div id="footer" class="mar-t50">
+   <div class="runoob-block">
+    <div class="runoob cf">
+     <dl>
+      <dt>
+       在线实例
+      </dt>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/html/html-examples.html">HTML 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/css/css-examples.html">CSS 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/js/js-examples.html">JavaScript 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="../ajx/ajax-examples.html">Ajax 实例</a>
+      </dd>
+       <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/jquery/jquery-examples.html">jQuery 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/xml/xml-examples.html">XML 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="../html/java-examples.html">Java 实例</a>
+      </dd>
+     
+     </dl>
+     <dl>
+      <dt>
+      字符集&工具
+      </dt>
+      <dd>
+       &middot; <a target="_blank" href="../charsets.1">HTML 字符集设置</a>
+      </dd>
+      <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/html-ascii.html">HTML ASCII 字符集</a>
+      </dd>
+     <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/ref-entities.html">HTML ISO-8859-1</a>
+      </dd> 
+      <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/html-symbols.html">HTML 实体符号</a>
+      </dd>
+      <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/html-colorpicker.html">HTML 拾色器</a>
+      </dd>
+      <dd>
+       &middot; <a target="_blank" href="http://c.runoob.com/front-end/53">JSON 格式化工具</a>
+      </dd>
+     </dl>
+     <dl>
+      <dt>
+       最新更新
+      </dt>
+                   <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/w3cnote/scala-option-some-none.html" title="Scala 使用 Option、Some、None，避免使用 Null">Scala 使用 Opti...</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/w3cnote/viewport-deep-understanding.html" title="viewport 深入理解">viewport 深入理解</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/w3cnote/cpp-reference-type.html" title="C++ 引用类型">C++ 引用类型</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/w3cnote/php-different-include-and-require.html" title="PHP 中 include 和 require 的区别详解">PHP 中 include ...</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/react/react-lists-and-keys.html" title="React 列表 &#038; Keys">React 列表 &#03...</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/react/react-conditional-rendering.html" title="React 条件渲染">React 条件渲染</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/react/react-event-handle.html" title="React 事件处理">React 事件处理</a>
+      </dd>
+             </dl>
+     <dl>
+      <dt>
+       站点信息
+      </dt>
+      <dd>
+       &middot;
+       <a target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=ssbDyoOAgfLU3crf09venNHd3w" rel="external nofollow">意见反馈</a>
+      <!--<a class="wxpopup" onclick="popFunction()">合作联系
+       <span class="popuptext" id="myPopup">微信：<strong>centos5</strong></span>
+      </a>-->
+      </dd>
+      <dd>
+       &middot;
+      <a target="_blank" href="http://school.yunwei.edu/disclaimer">免责声明</a>
+       </dd>
+       <!--
+       <dd style="display: block;">
+       &middot;
+      <a href="javascript:void(0)" onclick="dashangToggle()" style="font-weight:bold;color:#f00;" title="打赏，支持一下">打赏一下</a>
+       </dd>
+      -->
+      <dd>
+       &middot;
+       <a target="_blank" href="http://school.yunwei.edu/aboutus">关于我们</a>
+       </dd>
+      <dd>
+       &middot;
+      <a target="_blank" href="http://school.yunwei.edu/archives">文章归档</a>
+      </dd>
+      <!--
+      <dd>
+       &middot;
+      <a href="https://www.xiaoyouxi100.com/?from=runoob" onclick="_hmt.push(['_trackEvent', '小游戏', 'click', 'xiaoyouxi100']);" target="_blank" title="小游戏">小游戏</a>
+      </dd>
+      -->
+     </dl>
+    
+     <div class="search-share">
+      <div class="app-download">
+        <div>
+         <strong>关注微信</strong>
+        </div>
+      </div>
+      <div class="share">
+            <img width="128" height="128" src="http://school.yunwei.edu/wp-content/themes/runoob/assets/images/qrcode.png" />
+       </div>
+     </div>
+     
+    </div>
+   </div>
+   <div class="w-1000 copyright">
+     Copyright &copy; 2013-2018    <strong><a href="http://school.yunwei.edu/" target="_blank">菜鸟教程</a></strong>&nbsp;
+    <strong><a href="http://school.yunwei.edu/" target="_blank">runoob.com</a></strong> All Rights Reserved. 备案号：闽ICP备15012807号-1
+   </div>
+  </div>
+  <div class="fixed-btn">
+    <a class="go-top" href="javascript:void(0)" title="返回顶部"> <i class="fa fa-angle-up"></i></a>
+    <a class="qrcode"  href="javascript:void(0)" title="关注我们"><i class="fa fa-qrcode"></i></a>
+    <a class="writer" style="display:none" href="javascript:void(0)"   title="标记/收藏"><i class="fa fa-star" aria-hidden="true"></i></a>
+    <!-- qrcode modal -->
+    <div id="bottom-qrcode" class="modal panel-modal hide fade in">
+      <h4>微信关注</h4>
+      <div class="panel-body"><img alt="微信关注" width="128" height="128" src="http://school.yunwei.edu/wp-content/themes/runoob/assets/images/qrcode.png"></div> 
+    </div>
+  </div>
+
+  <div class="hide_box"></div>
+    <div class="shang_box">
+      <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="http://static.runoob.com/images/dashang/close.jpg" alt="取消" /></a>
+       
+      <div class="shang_tit">
+        <p>感谢您的支持，我会继续努力的!</p>
+      </div>
+      <div class="shang_payimg">
+        <img src="http://static.runoob.com/images/dashang/weipayimg.png" alt="扫码支持" title="扫一扫" />
+      </div>
+        <div class="pay_explain">扫码打赏，你说多少就多少</div>
+      <div class="shang_payselect">
+        <div class="pay_item checked" data-id="weipay">
+          <span class="radiobox"></span>
+          <span class="pay_logo"><img src="http://static.runoob.com/images/dashang/wechat.jpg" alt="微信" /></span>
+        </div>
+        <div class="pay_item" data-id="alipay">
+          <span class="radiobox"></span>
+          <span class="pay_logo"><img src="http://static.runoob.com/images/dashang/alipay.jpg" alt="支付宝" /></span>
+        </div>
+        
+      </div>
+      <div class="shang_info">
+        <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+        <p><a href="http://c.runoob.com/codedemo/5348" target="_blank"><span style=" font-size: 14px;color: #000;font-weight: bold;">点我查看本站打赏源码！</span></a></p>
+      </div>
+    </div>
+  <div id="testClick"></div>
+ <div style="display:none;">
+ 
+ <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3eec0b7da6548cf07db3bc477ea905ee";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-84264393-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-84264393-2');
+</script>
+</div>
+<script>
+window.jsui={
+    www: '//wschool.yunwei.edu',
+    uri: '//school.yunwei.edu/wp-content/themes/runoob'
+};
+</script>
+<style>
+ol,ul{list-style:none}.cd-switcher a{text-decoration:none;outline:0}.cd-switcher a:hover{text-decoration:underline}a:focus{outline:0;-moz-outline:0}.main_nav{width:300px;height:60px;margin:60px auto 10px auto}.main_nav li{float:left;width:60px;margin-right:10px;font-size:16px;padding:.6em 1em;border-radius:3em;background:#2f889a;text-align:center}.main_nav li a{color:#fff}.errtip{background-color:#fceaea;color:#db5353;padding:8px 15px;font-size:14px;border:1px solid #fc9797;border-radius:5px}.cd-user-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(52,54,66,0.9);z-index:3;overflow-y:auto;cursor:pointer;visibility:hidden;opacity:0;-webkit-transition:opacity .3s 0,visibility 0 .3s;-moz-transition:opacity .3s 0,visibility 0 .3s;transition:opacity .3s 0,visibility 0 .3s}.cd-user-modal.is-visible{visibility:visible;opacity:1;-webkit-transition:opacity .3s 0,visibility 0 0;-moz-transition:opacity .3s 0,visibility 0 0;transition:opacity .3s 0,visibility 0 0}.cd-user-modal.is-visible .cd-user-modal-container{-webkit-transform:translateY(0);-moz-transform:translateY(0);-ms-transform:translateY(0);-o-transform:translateY(0);transform:translateY(0)}.cd-user-modal-container{position:relative;width:90%;max-width:500px;background:#FFF;margin:3em auto 4em;cursor:auto;border-radius:.25em;-webkit-transform:translateY(-30px);-moz-transform:translateY(-30px);-ms-transform:translateY(-30px);-o-transform:translateY(-30px);transform:translateY(-30px);-webkit-transition-property:-webkit-transform;-moz-transition-property:-moz-transform;transition-property:transform;-webkit-transition-duration:.3s;-moz-transition-duration:.3s;transition-duration:.3s}.cd-user-modal-container .cd-switcher:after{content:"";display:table;clear:both}.cd-user-modal-container .cd-switcher li{width:50%;float:left;text-align:center}.cd-user-modal-container .cd-switcher li:first-child a{border-radius:.25em 0 0 0}.cd-user-modal-container .cd-switcher li:last-child a{border-radius:0 .25em 0 0}.cd-user-modal-container .cd-switcher a{font-size:1.2em;font-weight:bold;display:block;width:100%;height:50px;line-height:50px;background:#e8f1e2;color:#96b880}.cd-user-modal-container .cd-switcher a.selected{background:#FFF;color:#505260}@media only screen and (min-width:600px){.cd-user-modal-container{margin:4em auto}.cd-user-modal-container .cd-switcher a{height:70px;line-height:70px}}.cd-form{padding:1.4em}.cd-form .fieldset{position:relative;margin:1.4em 0}.cd-form .fieldset:first-child{margin-top:0}.cd-form .fieldset:last-child{margin-bottom:0}.cd-form label{font-size:16px;font-size:.875rem}.cd-form label.image-replace{display:inline-block;position:absolute;left:15px;top:50%;bottom:auto;-webkit-transform:translateY(-50%);-moz-transform:translateY(-50%);-ms-transform:translateY(-50%);-o-transform:translateY(-50%);transform:translateY(-50%);height:20px;width:20px;overflow:hidden;text-indent:100%;white-space:nowrap;color:transparent;text-shadow:none;background-repeat:no-repeat;background-position:50% 0}.cd-form label.cd-username{background-image:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-username.svg")}.cd-form label.cd-email{background-image:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-email.svg")}.cd-form label.cd-password{background-image:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-password.svg")}.cd-form input{margin:0;padding:0;border-radius:.25em}.cd-form input.full-width{width:80%}.cd-form input.full-width2{width:94%}.cd-form input.has-padding{padding:12px 20px 12px 50px}.cd-form input.has-border{border:1px solid #d2d8d8;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none;-o-appearance:none;appearance:none}.cd-form input.has-border:focus{border-color:#98b880;box-shadow:0 0 5px rgba(52,54,66,0.1);outline:0}.cd-form input.has-error{border:1px solid #d76666}.cd-form input[type=password]{padding-right:65px}.cd-form input[type=submit]{padding:16px 0;cursor:pointer;background:#96b97d;color:#FFF;font-weight:bold;border:0;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none;-o-appearance:none;appearance:none;font-size:1.2em;font-weight:bold}.no-touch .cd-form input[type=submit]:hover,.no-touch .cd-form input[type=submit]:focus{background:#3599ae;outline:0}@media only screen and (min-width:600px){.cd-form{padding:2em}.cd-form .fieldset{margin:2em 0}.cd-form .fieldset:first-child{margin-top:0}.cd-form .fieldset:last-child{margin-bottom:0}.cd-form input.has-padding{padding:16px 20px 16px 50px}.cd-form input[type=submit]{padding:16px 0}}.cd-close-form{display:block;position:absolute;width:40px;height:40px;right:0;top:-40px;background:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-close.svg") no-repeat center center;text-indent:100%;white-space:nowrap;overflow:hidden}@media only screen and (min-width:1170px){}#cd-login,#cd-signup,#cd-reset-password{display:none}#cd-login.is-selected,#cd-signup.is-selected,#cd-reset-password.is-selected{display:block}
+</style>
+<div class="cd-user-modal"> 
+	<div class="cd-user-modal-container">
+		<ul class="cd-switcher">
+			<li><a href="javascript:;">用户登录</a></li>
+			<li><a href="javascript:;">注册新用户</a></li>
+		</ul>
+
+		<div id="cd-login"> <!-- 登录表单 -->
+			<div class="cd-form">
+				<p class="fieldset">
+					<label class="image-replace cd-username" for="signin-username">用户名</label>
+					<input class="full-width has-padding has-border" id="signin-username" name=username type="text" placeholder="输入用户名">
+				</p>
+
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="signin-password">密码</label>
+					<input class="full-width has-padding has-border" id="signin-password" name="password" type="password"  placeholder="输入密码">
+				</p>
+				
+				<p class="fieldset">
+					<input type="checkbox" id="remember-me" checked>
+					<label for="remember-me">记住登录状态</label>
+          <a href="http://school.yunwei.edu/reset-password" style="float: right;padding-right: 20px;" target="_blank">忘记密码？</a>
+				</p>
+ 				<input type="hidden" name="action" value="signin">
+				<p class="fieldset">
+					<input class="full-width2" type="submit" value="登 录">
+				</p>
+        <div class="err-msg"></div>
+			</div>
+		</div>
+
+		<div id="cd-signup"> <!-- 注册表单 -->
+			<div class="cd-form">
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="verifycode">邀请码</label>
+					<input class="full-width has-padding has-border" id="signup-verifycode" name="verifycode" type="text"  placeholder="输入邀请码">
+				</p>
+				<p class="fieldset">
+					<label class="image-replace cd-username" for="signup-username">用户名</label>
+					<input class="full-width has-padding has-border" id="signup-username" name="name" type="text" placeholder="输入用户名">
+				</p>
+
+				<p class="fieldset">
+					<label class="image-replace cd-email" for="signup-email">邮箱</label>
+					<input class="full-width has-padding has-border" name="email" id="signup-email" type="email" placeholder="输入mail">
+				</p>
+
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="signup-password">密码</label>
+					<input class="full-width has-padding has-border" id="signup-password" name="password" type="password"  placeholder="输入密码">
+				</p>
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="signup-password2">重复输入密码</label>
+					<input class="full-width has-padding has-border" id="signup-password2" name="password2" type="password"  placeholder="重复输入密码">
+				</p>
+				
+				<!-- 
+				<p class="fieldset">
+					<input type="checkbox" id="accept-terms">
+					<label for="accept-terms">我已阅读并同意 <a href="javascript:;">用户协议</a></label>
+				</p>
+				 -->
+				 
+				 <input type="hidden" name="action" value="signup">
+				<p class="fieldset">
+					<input class="full-width2" type="submit" value="注册新用户">
+				</p>
+				<p class="fieldset">
+				  <a href="http://school.yunwei.edu/w3cnote/runoob-user-test-intro.html#invite" target="_blank">如何获取邀请码？</a>
+				  </p>
+				<div class="err-msg"></div>
+			</div>
+
+		</div>
+
+		<a href="javascript:;" class="cd-close-form">关闭</a>
+	</div>
+</div> 
+<script src="http://school.yunwei.edu/wp-content/themes/runoob/assets/js/main.js?v=1.188"></script>
+<script src="http://static.runoob.com/assets/libs/hl/run_prettify.js"></script>
+</body>
+</html>

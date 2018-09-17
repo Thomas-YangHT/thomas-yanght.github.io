@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>PL/Perl 触发器</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="PL/Perl - Perl 过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/plperl.html"><LINK REL="PREVIOUS" TITLE="可信的和不可信的 PL/Perl" HREF="plperl-trusted.html"><LINK REL="NEXT" TITLE="后台PL/Perl" HREF="plperl-under-the-hood.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/plperl.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="可信的和不可信的 PL/Perl" HREF="plperl-trusted.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plperl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 42. PL/Perl - Perl 过程语言</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="后台PL/Perl" HREF="plperl-under-the-hood.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="PLPERL-TRIGGERS">42.6. PL/Perl 触发器</A></H1><P>PL/Perl 可以用来书写触发器函数。在一个触发器函数中，散列引用<TT CLASS="VARNAME">$_TD</TT>
+包含了当前触发事件的信息。<TT CLASS="VARNAME">$_TD</TT>是一个全局变量，
+它对于每次触发器调用都能够获取一个局部值。<TT CLASS="VARNAME">$_TD</TT>散列引用的字段有：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL">$_TD-&gt;{new}{foo}</TT></DT><DD><P>
+字段<TT CLASS="LITERAL">foo</TT>的<TT CLASS="LITERAL">NEW</TT>值
+</P></DD><DT><TT CLASS="LITERAL">$_TD-&gt;{old}{foo}</TT></DT><DD><P>字段<TT CLASS="LITERAL">foo</TT>的<TT CLASS="LITERAL">OLD</TT>值</P></DD><DT><TT CLASS="LITERAL">$_TD-&gt;{name}</TT></DT><DD><P>被调用的触发器的名字</P></DD><DT><TT CLASS="LITERAL">$_TD-&gt;{event}</TT></DT><DD><P>触发器事件：<TT CLASS="LITERAL">INSERT</TT>, <TT CLASS="LITERAL">UPDATE</TT>,
+<TT CLASS="LITERAL">DELETE</TT>, <TT CLASS="LITERAL">TRUNCATE</TT>, 或 <TT CLASS="LITERAL">UNKNOWN</TT></P></DD><DT><TT CLASS="LITERAL">$_TD-&gt;{when}</TT></DT><DD><P>何时调用触发器：<TT CLASS="LITERAL">BEFORE</TT>,
+<TT CLASS="LITERAL">AFTER</TT>, <TT CLASS="LITERAL">INSTEAD OF</TT>, 或
+<TT CLASS="LITERAL">UNKNOWN</TT></P></DD><DT><TT CLASS="LITERAL">$_TD-&gt;{level}</TT></DT><DD><P>触发器的级别： <TT CLASS="LITERAL">ROW</TT>, <TT CLASS="LITERAL">STATEMENT</TT>, 或 <TT CLASS="LITERAL">UNKNOWN</TT></P></DD><DT><TT CLASS="LITERAL">$_TD-&gt;{relid}</TT></DT><DD><P>触发触发器的表的 OID</P></DD><DT><TT CLASS="LITERAL">$_TD-&gt;{table_name}</TT></DT><DD><P>触发触发器的表的名字</P></DD><DT><TT CLASS="LITERAL">$_TD-&gt;{relname}</TT></DT><DD><P>触发触发器的表的名字。已经废弃了，并且可能在将来的版本中移除。请使用$_TD-&gt;{table_name}。</P></DD><DT><TT CLASS="LITERAL">$_TD-&gt;{table_schema}</TT></DT><DD><P>触发触发器的表的模式名</P></DD><DT><TT CLASS="LITERAL">$_TD-&gt;{argc}</TT></DT><DD><P>触发器函数的参数个数</P></DD><DT><TT CLASS="LITERAL">@{$_TD-&gt;{args}}</TT></DT><DD><P>触发器函数的参数，如果<TT CLASS="LITERAL">$_TD-&gt;{argc}</TT>为 0 则不存在。</P></DD></DL></DIV><P>
+</P><P> 行级别的触发器返回下列之一：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL">return;</TT></DT><DD><P>执行该操作</P></DD><DT><TT CLASS="LITERAL">"SKIP"</TT></DT><DD><P>不执行该操作</P></DD><DT><TT CLASS="LITERAL">"MODIFY"</TT></DT><DD><P>表明<TT CLASS="LITERAL">NEW</TT>行被触发器函数修改过</P></DD></DL></DIV><P>
+</P><P>下面是一个触发器函数，演示了上面的一些东西。
+</P><PRE CLASS="PROGRAMLISTING">CREATE TABLE test (
+    i int,
+    v varchar
+);
+
+CREATE OR REPLACE FUNCTION valid_id() RETURNS trigger AS $$
+    if (($_TD-&gt;{new}{i} &gt;= 100) || ($_TD-&gt;{new}{i} &lt;= 0)) {
+        return "SKIP";    #跳过 INSERT/UPDATE 命令
+    } elsif ($_TD-&gt;{new}{v} ne "immortal") {
+        $_TD-&gt;{new}{v} .= "(modified by trigger)";
+        return "MODIFY";  #修改一行并且执行 INSERT/UPDATE 命令
+
+    } else {
+        return;           # 执行 INSERT/UPDATE 命令
+    }
+$$ LANGUAGE plperl;
+
+CREATE TRIGGER test_valid_id_trig
+    BEFORE INSERT OR UPDATE ON test
+    FOR EACH ROW EXECUTE PROCEDURE valid_id();</PRE><P>
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="plperl-trusted.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="plperl-under-the-hood.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">可信的和不可信的 PL/Perl</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plperl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">后台PL/Perl</TD></TR></TABLE></DIV></BODY></HTML>

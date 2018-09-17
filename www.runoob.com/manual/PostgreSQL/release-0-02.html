@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Postgres95 版本 0.02</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="Postgres95 版本 0.03" HREF="release-0-03.html"><LINK REL="NEXT" TITLE="Postgres95 版本 0.01" HREF="release-0-01.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-old.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="Postgres95 版本 0.03" HREF="release-0-03.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="Postgres95 版本 0.01" HREF="release-0-01.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-0-02">E.243. <SPAN CLASS="PRODUCTNAME">Postgres95</SPAN> 版本 0.02</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>1995-05-25</P></BLOCKQUOTE></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN144119">E.243.1. 修改列表</A></H2><P></P><PRE CLASS="PROGRAMLISTING"> 不兼容的更改：
+ * 创建一个数据库的 SQL 语句是 'CREATE DATABASE' 而不是 'CREATEDB'。相似的，
+   删除一个数据库的是 'DROP DATABASE' 而不是 'DESTROYDB'。不过，
+   可执行文件 'createdb' 和 'destroydb' 的名字保持不变
+
+ 新工具：
+ * pgperl - a Perl (4.036) 接口到 Postgres95
+ * pg_dump - a 工具转储一个 postgres 数据库到一个包含查询命令的脚本文件。
+   该脚本文件是 ASCII 格式的并且可以用来重建该数据库，即使是在其他机器和其他架构上。
+   （转换 Postgres 4.2 数据库到 Postgres95 数据库也是很好的。）
+
+ 下列接口已经并入 postgres95-beta-0.02 中了：
+ * Alistair Crooks 做的 NetBSD 接口
+ * Mike Tung 做的 AIX 接口
+ * Jon Forrest 做的 Windows NT 接口（更多东西但是还未完成）
+ * Brian Gallew 做的 Linux ELF 接口
+
+ 下列bug在 postgres95-beta-0.02 中已经被修复了：
+ * 新行在 COPY OUT 中不转义和第一个属性是一个 '.' 时的 COPY OUT 的问题
+ * 在 createuser 中不能返回使用缺省的用户 id
+ * SELECT DISTINCT 在大表上时崩溃
+ * Linux 安装问题
+ * 监控器不允许 'localhost' 作为 PGHOST 使用
+ * 当进行 \c 或 \l 时 psql 内核转储
+ * "pgtclsh" 目标从 src/bin/pgtclsh/Makefile 中丢失
+ * libpgtcl 有一个硬链接的缺省端口号
+ * SELECT DISTINCT INTO TABLE 挂起
+ * CREATE TYPE 不接受 'variable' 作为 internallength
+ * 在一个 SELECT 中错误的结果使用多于 1 的聚集</PRE><P></P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-0-03.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-0-01.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><SPAN CLASS="PRODUCTNAME">Postgres95</SPAN> 版本 0.03</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><SPAN CLASS="PRODUCTNAME">Postgres95</SPAN> 版本 0.01</TD></TR></TABLE></DIV></BODY></HTML>

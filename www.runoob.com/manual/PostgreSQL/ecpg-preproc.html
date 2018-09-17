@@ -1,0 +1,110 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>预处理器指令</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="ECPG - 在C中嵌入SQL" HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html"><LINK REL="PREVIOUS" TITLE="错误处理" HREF="ecpg-errors.html"><LINK REL="NEXT" TITLE="处理嵌入的SQL程序" HREF="ecpg-process.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ecpg.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="错误处理" HREF="ecpg-errors.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 33. <SPAN CLASS="APPLICATION">ECPG</SPAN> - 在C中嵌入<ACRONYM CLASS="ACRONYM">SQL</ACRONYM></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="处理嵌入的SQL程序" HREF="ecpg-process.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="ECPG-PREPROC">33.9. 预处理器指令</A></H1><P> 可用的几种预处理器指令，
+它修改<TT CLASS="COMMAND">ecpg</TT>预处理器分析方式以及处理文件方式。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="ECPG-INCLUDE">33.9.1. 包含文件</A></H2><P>
+为了包含一个外部文件到你的嵌入SQL程序中，使用：
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL INCLUDE <TT
+CLASS="REPLACEABLE"
+><I
+>filename</I
+></TT
+>;
+EXEC SQL INCLUDE &lt;<TT
+CLASS="REPLACEABLE"
+><I
+>filename</I
+></TT
+>&gt;;
+EXEC SQL INCLUDE "<TT
+CLASS="REPLACEABLE"
+><I
+>filename</I
+></TT
+>";</PRE><P>
+嵌入的SQL预处理器将寻找名为<TT CLASS="LITERAL"><TT CLASS="REPLACEABLE"><I>filename</I></TT>.h</TT>的文件，
+处理它，并且将它包含在产生的C输出中。因此，正确处理包含文件中的嵌入SQL语句。
+</P><P>
+<TT CLASS="COMMAND">ecpg</TT>预处理器将按照下面顺序在几个目录中
+搜索文件：
+<P></P></P><UL><LI><P>当前目录</P></LI><LI><P><TT CLASS="FILENAME">/usr/local/include</TT></P></LI><LI><P>PostgreSQL包含目录，在编译时定义 (比如<TT CLASS="FILENAME">/usr/local/pgsql/include</TT>)</P></LI><LI><P><TT CLASS="FILENAME">/usr/include</TT></P></LI></UL><P>
+但是当使用<TT CLASS="LITERAL">EXEC SQL INCLUDE
+"<TT CLASS="REPLACEABLE"><I>filename</I></TT>"</TT>时，仅仅搜索当前目录。
+</P><P> 在每个目录中，预处理器将首先寻找给定的文件名，如果没有找到将追加
+<TT CLASS="LITERAL">.h</TT>到文件名然后再次尝试（除非指定文件名已经有这种后缀）。</P><P>
+注意<TT CLASS="COMMAND">EXEC SQL INCLUDE</TT>是<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">不</I></SPAN>一样的：
+</P><PRE CLASS="PROGRAMLISTING">#include &lt;<TT
+CLASS="REPLACEABLE"
+><I
+>filename</I
+></TT
+>.h&gt;</PRE><P>
+因为这个文件不受SQL命令预处理的影响。当然，你可以继续使用
+包含其他头文件的C <TT CLASS="LITERAL">#include</TT>
+指令。
+</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B> 包含文件名大小写敏感，即使其余的<TT CLASS="LITERAL">EXEC SQL INCLUDE</TT>
+命令遵循正常的SQL大小写敏感规则。</P></BLOCKQUOTE></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="ECPG-DEFINE">33.9.2. define和undef指令</A></H2><P>
+类似于C中<TT CLASS="LITERAL">#define</TT>指令，嵌入的SQL有一个类似概念：
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL DEFINE <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+>;
+EXEC SQL DEFINE <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+> <TT
+CLASS="REPLACEABLE"
+><I
+>value</I
+></TT
+>;</PRE><P>
+所以你可以定义一个名字：
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL DEFINE HAVE_FEATURE;</PRE><P>
+你也可以定义常数：
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL DEFINE MYNUMBER 12;
+EXEC SQL DEFINE MYSTRING 'abc';</PRE><P>
+使用<TT CLASS="LITERAL">undef</TT>删除以前的定义：
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL UNDEF MYNUMBER;</PRE><P>
+</P><P>
+当然你可以继续在你的嵌入SQL程序中使用C版本<TT CLASS="LITERAL">#define</TT>
+和<TT CLASS="LITERAL">#undef</TT>。不同的是你定义值的评估不同。如果
+你使用<TT CLASS="LITERAL">EXEC SQL DEFINE</TT>，
+那么<TT CLASS="COMMAND">ecpg</TT>预处理器评估定义且替换该值。比如如果你写：
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL DEFINE MYNUMBER 12;
+...
+EXEC SQL UPDATE Tbl SET col = MYNUMBER;</PRE><P>
+那么<TT CLASS="COMMAND">ecpg</TT>将执行替换，
+而且你的C编译器不会看到任何名字或者标示符<TT CLASS="LITERAL">MYNUMBER</TT>。
+注意你不能为打算用在嵌入SQL查询中的常数使用<TT CLASS="LITERAL">#define</TT>，
+因为在这种情况下嵌入的SQL预编译器不能看到这个声明。
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="ECPG-IFDEF">33.9.3. ifdef，ifndef，else，elif和endif指令</A></H2><P>
+你可以使用下面指令有条件地编译代码段：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL">EXEC SQL ifdef <TT CLASS="REPLACEABLE"><I>name</I></TT>;</TT></DT><DD><P>
+如果<TT CLASS="REPLACEABLE"><I>name</I></TT>已经和<TT CLASS="LITERAL">EXEC SQL define
+<TT CLASS="REPLACEABLE"><I>name</I></TT></TT>被创建，那么检查<TT CLASS="REPLACEABLE"><I>name</I></TT>并处理
+随后行。
+</P></DD><DT><TT CLASS="LITERAL">EXEC SQL ifndef <TT CLASS="REPLACEABLE"><I>name</I></TT>;</TT></DT><DD><P> 如果<TT CLASS="REPLACEABLE"><I>name</I></TT>和<TT CLASS="LITERAL">EXEC SQL define
+<TT CLASS="REPLACEABLE"><I>name</I></TT></TT> <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">没有</I></SPAN>被创建，
+那么检查<TT CLASS="REPLACEABLE"><I>name</I></TT>并处理
+随后行。</P></DD><DT><TT CLASS="LITERAL">EXEC SQL else;</TT></DT><DD><P> 开始处理另一部分到
+<TT CLASS="LITERAL">EXEC SQL ifdef <TT CLASS="REPLACEABLE"><I>name</I></TT></TT>或者
+<TT CLASS="LITERAL">EXEC SQL ifndef <TT CLASS="REPLACEABLE"><I>name</I></TT></TT>介绍的部分。</P></DD><DT><TT CLASS="LITERAL">EXEC SQL elif <TT CLASS="REPLACEABLE"><I>name</I></TT>;</TT></DT><DD><P> 如果<TT CLASS="REPLACEABLE"><I>name</I></TT>和<TT CLASS="LITERAL">EXEC SQL define
+<TT CLASS="REPLACEABLE"><I>name</I></TT></TT>已经被创建，
+那么检查<TT CLASS="REPLACEABLE"><I>name</I></TT>并且开始另一部分。</P></DD><DT><TT CLASS="LITERAL">EXEC SQL endif;</TT></DT><DD><P> 结束另一部分。</P></DD></DL></DIV><P>
+</P><P>
+例子：
+</P><PRE CLASS="PROGRAMLISTING">EXEC SQL ifndef TZVAR;
+EXEC SQL SET TIMEZONE TO 'GMT';
+EXEC SQL elif TZNAME;
+EXEC SQL SET TIMEZONE TO TZNAME;
+EXEC SQL else;
+EXEC SQL SET TIMEZONE TO TZVAR;
+EXEC SQL endif;</PRE><P>
+</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="ecpg-errors.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="ecpg-process.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">错误处理</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">处理嵌入的SQL程序</TD></TR></TABLE></DIV></BODY></HTML>

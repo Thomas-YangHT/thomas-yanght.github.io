@@ -1,0 +1,89 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>Postgres95 版本 0.03</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="版本 1.0" HREF="release-1-0.html"><LINK REL="NEXT" TITLE="Postgres95 版本 0.02" HREF="release-0-02.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-old.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="版本 1.0" HREF="release-1-0.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="Postgres95 版本 0.02" HREF="release-0-02.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-0-03">E.242. <SPAN CLASS="PRODUCTNAME">Postgres95</SPAN> 版本 0.03</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>1995-07-21</P></BLOCKQUOTE></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN144109">E.242.1. 修改列表</A></H2><P></P><PRE CLASS="PROGRAMLISTING"> 
+不兼容的变化：
+ * BETA-0.3 与之前版本创建的数据库不兼容（由于系统目录和索引结构的改变）
+ * 双引号(")作为字符串文本的引用字符已经弃用了；你需要将它们转换为单引号(')。
+ * 聚集名（如 int4sum）为了与 SQL 标准（如 sum）一致已经重命名了
+ * CHANGE ACL 语法被 GRANT/REVOKE 语法替代了
+ * 浮点值（如 3.14）现在是 float4 类型（而不是在以前版本中的 float8）；
+   如果你确定是 float8，你可能必须类型转换。如果你忘记了做类型转换，
+   并且你分配一个 float 文本到一个 float8 类型的字段，你可能会得到不正确的存储值！
+ * LIBPQ 已经完全修补了，这样前端应用可以连接到多个后端
+ * pg_user 中的 usesysid 字段已经从 int2 改变成 int4，以允许 Unix 用户 id 有更广泛的范围。
+ * netbsd/freebsd/bsd o/s 端口已经合并到了一个单一的 BSD44_derived 端口。（感谢 Alistair Crooks）
+
+ SQL 标准兼容(下列详细的改变令 postgres95 与 SQL-92 标准更加兼容)∶
+   * 下列的 SQL 类型现在是内建的：smallint, int(eger), float, real,
+   char(N), varchar(N), date 和 time。
+
+   
+   下列是现存 postgres 类型的别名：
+                smallint -&gt; int2
+                integer, int -&gt; int4
+                float, real  -&gt; float4
+   
+   char(N) 和 varchar(N) 作为截断的文本类型实施。另外，char(N) 有空白填充。
+ 
+ * 单引号(')用于引用字符串字面值；'' （除了 \'）作为在一个字符串中插入一个单引号的含义来支持
+ * 使用 SQL 标准聚集名(MAX, MIN, AVG, SUM, COUNT)（还有，聚集现在可以重载，也就是，
+   你可以定义你自己的 MAX 聚集来接受一个用户定义的类型。）
+ * 删除了 CHANGE ACL。添加了 GRANT/REVOKE 语法。
+   - 权限可以通过使用 "GROUP" 关键字赋予一个组。 
+        
+例如：
+                GRANT SELECT ON foobar TO GROUP my_group;
+        
+关键字 'PUBLIC' 也支持意为所有用户。
+
+        
+权限一次只能赋予或撤销一个用户或组。
+
+        
+不支持 "WITH GRANT OPTION"。只有类的所有者可以改变访问控制。
+   
+   - 缺省的访问控制赋予用户只读访问。你必须明确授予用户 insert/update 访问。
+     要改变这个，在定义 ACL_WORLD_DEFAULT 中更改行：
+                src/backend/utils/acl.h
+     
+
+Bug 修复：
+ * 聚集在空表处不运行的bug已经修复了。现在，聚集在空表上运行时会返回聚集的初始状态。
+   因此，对一个空表 COUNT 现在可能会返回 0。对一个空表  MAX/MIN 将会返回一个值为 NULL 的行。
+ * 允许在监控器中使用 \;
+ * LISTEN/NOTIFY 异步通知机制现在可以工作了
+ * 规则动作体中的 NOTIFY 现在可以工作了
+ * 哈希索引现在可以工作了，访问方法一般来说应该执行的更好了。大的 btree 索引的创建应该更快了。
+   （感谢 Paul Aoki）
+
+其它修改和增强：
+ * 添加了用于解释查询执行规划的 EXPLAIN 语句（如 "EXPLAIN SELECT * FROM EMP"输出该查询的执行规划）。
+ * WARN 和 NOTICE 消息不在带有时间戳。要启用错误消息的时间戳，取消 src/backend/utils/elog.h 中下列行的注释：
+        /* define ELOG_TIMESTAMPS */  
+ 
+ * 在违反访问控制时，会给出 "Either no such class or insufficient privilege" 消息。
+   当没有找到类时给出同样的消息。这让没有权限的用户猜测有权限的用户的存在。
+ * 一些用户不可见的附加系统目录已经做出了改变。
+
+libpgtcl 修改：
+ * -oid 选项已经添加到了 "pg_result" tcl 命令中。pg_result -oid 返回最后插入的行的 oid。
+   如果最后的命令不是 INSERT，那么 pg_result -oid 返回 ""。
+ * 大对象接口可以作为 pg_lo* tcl 命令使用：pg_lo_open, pg_lo_close, pg_lo_creat, 等。
+
+可移植性增强和新的端口：
+ * flex/lex 问题已经清理了。现在，应该可以在任意平台上使用 flex 代替 lex。
+   不用再假设基于你使用的平台使用什么 lexer。
+ * 现在支持 Linux-ELF 端口了。已经检验了各种配置：下列的配置已知是通过了的：
+    kernel 1.2.10, gcc 2.6.3, libc 4.7.2, flex 2.5.2, bison 1.24
+   任何东西都是 ELF 格式
+
+新工具：
+ * ipcclean 添加到发布
+   ipcclean 通常不需要运行，但是如果你的后端崩溃了并且导致共享内存段原地停留，ipcclean将为你清理它们。
+
+新文档：
+ * 保留了用户手册并添加了 libpq 文档。</PRE><P></P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-1-0.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-0-02.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">版本 1.0</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><SPAN CLASS="PRODUCTNAME">Postgres95</SPAN> 版本 0.02</TD></TR></TABLE></DIV></BODY></HTML>
