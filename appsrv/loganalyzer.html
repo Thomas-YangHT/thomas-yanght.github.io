@@ -1,0 +1,524 @@
+<html>
+<head>
+  <title>Evernote Export</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/307027 (zh-CN, DDL); Windows/10.0.0 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+<a name="2824"/>
+
+<div>
+<span><div style="-evernote-webclip:true"><br/><div style="font-size: 16px; display: inline-block;"><div style="outline:currentcolor none 0px;box-sizing:border-box;"><div style="box-sizing:inherit;outline:currentcolor none 0px;font-family:&quot;SF Pro Display&quot;, Roboto, Noto, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, sans-serif;font-size:14px;line-height:1.57143;background-color:rgb(245, 246, 247);color:rgb(51, 51, 51);"><div style="outline:currentcolor none 0px;box-sizing:border-box;"><span style="box-sizing:inherit;outline:currentcolor none 0px;"><div style="box-sizing:inherit;outline:currentcolor none 0px;background:rgb(255, 255, 255) none repeat scroll 0% 0%;box-shadow:rgba(0, 0, 0, 0.05) 0px 2px 4px 0px;">
+	<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;margin-bottom:16px;">
+			<span style="box-sizing:inherit;outline:currentcolor none 0px;display:inline-block;width:26px;height:26px;line-height:26px;text-align:center;font-size:12px;border-radius:50%;color:rgb(202, 12, 22);border:1px solid rgb(244, 206, 208);margin-top:4px;margin-right:8px;float:left;">原</span>		<h1 style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;font-size:24px;word-break:break-all;">CentOS7下利用rsyslog+loganalyzer配置日志服务器及Linux和windows客户端配置</h1>
+	</div>
+	<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;padding-bottom:14px;border-bottom:1px solid rgb(227, 227, 227);">
+		<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;color:rgb(133, 133, 133);display:flex;">
+												<span style="box-sizing:inherit;outline:currentcolor none 0px;margin-right:14px;">2017年02月04日 11:16:12</span>
+			<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;margin-left:auto;float:right;">
+				<span style="box-sizing:inherit;outline:currentcolor none 0px;margin-right:14px;">阅读数：3708</span>
+											</div>
+		</div>
+	</div>
+	<div style="box-sizing:inherit;outline:currentcolor none 0px;display:block;position:relative;padding-top:16px;">
+		<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;word-break:break-all;">
+                    
+						<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;font-family:-apple-system, SF UI Text, Arial, PingFang SC, Hiragino Sans GB, Microsoft YaHei, WenQuanYi Micro Hei, sans-serif, SimHei, SimSun;word-break:break-all;">
+                
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+随着机房内的服务器和网络设备增加，日志管理和查询就成了让系统管理员头疼的事。</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<strong style="outline:currentcolor none 0px;box-sizing:border-box;font-weight:700;word-break:break-all;">系统管理员遇到的常见问题如下：</strong></p>
+<blockquote style="outline:currentcolor none 0px;box-sizing:border-box;padding:16px 16px 0px;margin:0px 0px 24px;display:block;border-left:8px solid rgb(221, 223, 228);background:rgb(238, 240, 244) none repeat scroll 0% 0%;overflow:auto;overflow-wrap:normal;word-break:break-all;margin-left:0px;color:rgb(102,102,102);font-family:'Microsoft YaHei', Verdana, sans-serif;font-size:14.7px;"><span style=""></span>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;text-align:justify;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;margin-bottom:16px;word-break:break-all;">
+1、日常维护过程中不可能登录到每一台服务器和设备上去查看日志； <br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+2、网络设备上的存储空间有限，不可能存储日期太长的日志，而系统出现问题又有可能是很久以前发生的某些操作造成的； <br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+3、在某些非法入侵的情况下，入侵者一般都会清除本地日志，清除入侵痕迹； <br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+4、zabbix等监控系统无法代替日志管理，无法监控如系统登录、计划任务执行等项目。</p>
+<span style=""></span></blockquote>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+基于上述原因，在当前的网络环境中搭建一台用于日志集中管理的Rsyslog日志服务器就显得十分有必要了。</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<strong style="outline:currentcolor none 0px;box-sizing:border-box;font-weight:700;word-break:break-all;">Rsyslog服务的优点如下：</strong></p>
+<blockquote style="outline:currentcolor none 0px;box-sizing:border-box;padding:16px 16px 0px;margin:0px 0px 24px;display:block;border-left:8px solid rgb(221, 223, 228);background:rgb(238, 240, 244) none repeat scroll 0% 0%;overflow:auto;overflow-wrap:normal;word-break:break-all;margin-left:0px;color:rgb(102,102,102);font-family:'Microsoft YaHei', Verdana, sans-serif;font-size:14.7px;"><span style=""></span>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;text-align:justify;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;margin-bottom:16px;word-break:break-all;">
+1、Rsyslog服务器可以大多数的网络设备支持，在网络设备的系统设备选项中大多都有远程日志服务的配置选项。只需要填写上IP地址和端口（大多数设备已经默认是514了），然后确定就可以了； <br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+2、Linux服务器只需要在本地的Rsyslog服务配置中加入简单的一行就可以将日志发送到日志服务器，布署和配置起来十分简单； <br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+3、通过软件（如evtsys）也可以支持Windows服务器，布署和配置也不是很难，但是有些软件是要收费的； <br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/>
+4、搭配前端的loganalyzer等软件，可以轻松实现图形化管理和查询日志。</p>
+<span style=""></span></blockquote>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<strong style="outline:currentcolor none 0px;box-sizing:border-box;font-weight:700;word-break:break-all;">二、系统环境及软件版本：</strong></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+    Rsyslog_server: CentOS7.2</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+    Rsyslog_server IP:192.168.253.160</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+    Rsyslog_client: CentOS7.2 + Windows7</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+    所用软件：</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+    Rsyslog Version: rsyslog-7.4.7-12.el7.x86_64</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+    LogAnalyzer Version: loganalyzer-3.6.5.tar.gz</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+    MySQL Version：MySQL5.7</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+    Httpd Version：httpd-2.4.6-40.el7.centos.x86_64</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+    PHP Version：php-5.4.16-36.el7_1.x86_64</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<strong style="outline:currentcolor none 0px;box-sizing:border-box;font-weight:700;word-break:break-all;">三、环境准备：</strong></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+3.1 关闭防火墙：</p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># systemctl stop firewalld
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+3.2 将SELINUX设置为disabled</p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># setenforce 0
+# sed -i 's#SELINUX=enforcing#SELINUX=disabled#g' /etc/selinux/config
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<strong style="outline:currentcolor none 0px;box-sizing:border-box;font-weight:700;word-break:break-all;">四、配置LAMP环境：</strong></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+4.1 安装MySQL，由于CentOS7默认会安装Mariadb，因此使用MySQL官方提供快速的安装方法，地址：http://dev.mysql.com/doc/mysql-yum-repo-quick-guide/en/</p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># mkdir /home/rsyslog_server/tools -p            #创建下载文件存放目录
+</pre>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># cd /home/rsyslog_server/tools
+</pre>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># yum install wget -y
+</pre>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># wget http://dev.mysql.com/get/mysql57-community-release-el7-8.noarch.rpm
+</pre>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># rpm -Uvh mysql57-community-release-el7-8.noarch.rpm        #安装MySQL官方yum仓库
+</pre>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># yum install mysql-community-server -y                                     #安装MySQL
+</pre>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># systemctl start mysqld.service
+</pre>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># systemctl status mysqld.service
+</pre>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># grep 'temporary password' /var/log/mysqld.log                        #查看初始密码
+</pre>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># mysql -u root -p
+</pre>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;">&gt;ALTER USER 'root'@'localhost' IDENTIFIED BY 'MyNewPass4!';    #更改密码，密码需要符合以下规则：至少一个大写字母，一个小写字母，一个数字，一个特殊字符，而且密码长度需要超过8位
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+4.2 安装Apache及PHP</p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># yum install httpd -y
+# yum install php php-gd php-xml php-mysql -y
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+4.3 启动服务并加入开机自启动：</p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># systemctl start httpd.service
+# systemctl enable httpd.service
+# systemctl start mysqld.service
+# systemctl enable mysqld.service
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+4.4 测试PHP环境</p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># vi index.php
+    &lt;?php
+    phpinfo()
+    ?&gt;
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+在浏览器中输入http://192.168.253.160/index.php，若显示以下内容，则配置成功。</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<img alt="itdadao-CentOS7下利用rsyslog+loganalyzer配置日志服务器及Linux和windows客户端配置" height="20" src="" style="outline:currentcolor none 0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;border:0px;" width="612"></img></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<strong style="outline:currentcolor none 0px;box-sizing:border-box;font-weight:700;word-break:break-all;">五、检查并安装服务端软件</strong></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+5.1 检查是否安装了rsyslog软件</p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># rpm -qa rsyslog                  #CentOS7默认会安装rsyslog
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+5.2 安装rsyslog 连接MySQL数据库的模块</p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># yum install rsyslog-mysql -y     #rsyslog使用此模块将数据传入MySQL数据库，必须安装
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<strong style="outline:currentcolor none 0px;box-sizing:border-box;font-weight:700;word-break:break-all;">六、配置服务器端</strong></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+6.1 导入rsyslog-mysql 数据库文件</p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># cd /usr/share/doc/rsyslog-7.4.7/
+# mysql -uroot -p&lt;mysql-createDB.sql
+# Enter password:
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+6.2 登录数据库查看：</p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;">mysql&gt; show databases;
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<img alt="itdadao-CentOS7下利用rsyslog+loganalyzer配置日志服务器及Linux和windows客户端配置" height="20" src="" style="outline:currentcolor none 0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;border:0px;" width="612"></img></p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;">mysql&gt; show tables;
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<img alt="itdadao-CentOS7下利用rsyslog+loganalyzer配置日志服务器及Linux和windows客户端配置" height="20" src="" style="outline:currentcolor none 0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;border:0px;" width="612"></img></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+导入数据库操作创建了Syslog 库并在该库中创建了两张空表SystemEvents 和SystemEventsProperties。</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+6.3 在MySQL下创建rsyslog用户并授权：</p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;">mysql&gt; grant all on Syslog.* to rsyslog@'localhost' identified by 'MyNewPass4!';
+mysql&gt; flush privileges;
+mysql&gt; exit
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+6.4 配置服务端支持rsyslog-mysql 模块，并开启UDP服务端口获取网内其他LINUX系统日志；</p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;">老版本rsyslog的配置</pre>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># vi /etc/rsyslog.conf                             #按如下进行更改
+    #### MODULES ####
+    $Modload ommysql
+    *.* :ommysql:localhost,Syslog,rsyslog,MyNewPass4!        #localhost 表示本地主机，Syslog 为数据库名，rsyslog 为数据库的用户，MyNewPass4!为该用户密码。    
+    $ModLoad immark                                # immark是模块名，支持日志标记
+    $ModLoad imudp                                 #imupd是模块名，支持udp协议
+    $UDPServerRun 514                              #允许514端口接收使用UDP和TCP协议转发过来的日志
+    #### RULES ####                                #在RULES下注释掉*.info;mail.none;authpriv.none;cron.none改为 *.info;mail.none;authpriv.none;cron.none       
+    #         :ommysql:localhost,Syslog,rsyslog,MyNewPass4!
+    #*.info;mail.none;authpriv.none;cron.none                /var/log/messages
+    *.info;mail.none;authpriv.none;cron.none                :ommysql:localhost,Syslog,rsyslog,MyNewPass4!
+</pre>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;">新版本rsyslog的配置</pre><pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># rsyslog configuration file
+
+
+# For more information see /usr/share/doc/rsyslog-*/rsyslog_conf.html
+# If you experience problems, see http://www.rsyslog.com/doc/troubleshoot.html
+
+
+#### MODULES ####
+
+
+# The imjournal module bellow is now used as a message source instead of imuxsock.
+$ModLoad imuxsock # provides support for local system logging (e.g. via logger command)
+$ModLoad imjournal # provides access to the systemd journal
+#$ModLoad imklog # reads kernel messages (the same are read from journald)
+$ModLoad immark  # provides --MARK-- message capability
+
+
+# Provides UDP syslog reception
+$ModLoad imudp
+$UDPServerRun 514
+
+
+# Provides TCP syslog reception
+#$ModLoad imtcp
+#$InputTCPServerRun 514
+$ModLoad ommysql
+*.*  ：ommysql:localhost,Syslog,rsyslog,MyNewPass4!
+
+
+#Standard Redhat syslog settings
+*.info;mail.none;authpriv.none;cron.none /var/log/messages
+authpriv.* /var/log/secure
+mail.* -/var/log/maillog
+cron.* /var/log/cron
+*.emerg *
+uucp,news.crit /var/log/spooler
+local7.* /var/log/boot.log
+
+
+$template tpl,&quot;insert into SystemEvents (Message, Facility, FromHost, Priority, DeviceReportedTime, ReceivedAt, InfoUnitID, SysLogTag) values ('%msg%', %syslogfacility%, '%FROMHOST-IP%', %syslogpriority%, '%timereported:::date-mysql%', '%timegenerated:::date-mysql%', %iut%, '%syslogtag%')&quot;,SQL
+
+
+#### GLOBAL DIRECTIVES ####
+
+
+# Where to place auxiliary files
+$WorkDirectory /var/lib/rsyslog
+
+
+# Use default timestamp format
+$ActionFileDefaultTemplate RSYSLOG_TraditionalFileFormat
+
+
+# File syncing capability is disabled by default. This feature is usually not required,
+# not useful and an extreme performance hit
+#$ActionFileEnableSync on
+
+
+# Include all config files in /etc/rsyslog.d/
+$IncludeConfig /etc/rsyslog.d/*.conf
+
+
+# Turn off message reception via local log socket;
+# local messages are retrieved through imjournal now.
+$OmitLocalLogging on
+
+
+# File to store the position in the journal
+$IMJournalStateFile imjournal.state
+
+
+
+
+#### RULES ####
+
+
+# Log all kernel messages to the console.
+# Logging much else clutters up the screen.
+#kern.*                                                 /dev/console
+
+
+# Log anything (except mail) of level info or higher.
+# Don't log private authentication messages!
+#*.info;mail.none;authpriv.none;cron.none                /var/log/messages
+*.info;mail.none;authpriv.none;cron.none                :ommysql:localhost,Syslog,rsyslog,MyNewPass4!
+# The authpriv file has restricted access.
+authpriv.*                                              /var/log/secure
+
+
+# Log all the mail messages in one place.
+mail.*                                                  -/var/log/maillog
+
+
+
+
+# Log cron stuff
+cron.*                                                  /var/log/cron
+
+
+# Everybody gets emergency messages
+*.emerg                                                 :omusrmsg:*
+
+
+# Save news errors of level crit and higher in a special file.
+uucp,news.crit                                          /var/log/spooler
+
+
+# Save boot messages also to boot.log
+local7.*                                                /var/log/boot.log
+
+
+
+
+# ### begin forwarding rule ###
+# The statement between the begin ... end define a SINGLE forwarding
+# rule. They belong together, do NOT split them. If you create multiple
+# forwarding rules, duplicate the whole block!
+# Remote Logging (we use TCP for reliable delivery)
+#
+# An on-disk queue is created for this action. If the remote host is
+# down, messages are spooled to disk and sent when it is up again.
+#$ActionQueueFileName fwdRule1 # unique name prefix for spool files
+#$ActionQueueMaxDiskSpace 1g   # 1gb space limit (use as much as possible)
+#$ActionQueueSaveOnShutdown on # save messages to disk on shutdown
+#$ActionQueueType LinkedList   # run asynchronously
+#$ActionResumeRetryCount -1    # infinite retries if host is down
+# remote host is: name/ip:port, e.g. 192.168.0.1:514, port optional
+#*.* @@remote-host:514
+# ### end of the forwarding rule ###
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+6.5 重启rsyslog服务</p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># systemctl restart rsyslog.service</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<strong style="outline:currentcolor none 0px;box-sizing:border-box;font-weight:700;word-break:break-all;">七、配置客户端</strong></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+7.1 检查客户端有没有安装rsyslog</p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># rpm -qa rsyslog
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+7.2 配置rsyslog客户端发送本地日志到服务端</p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># vi /etc/rsyslog.conf 
+    *.* @192.168.253.160:514        #在文件结尾处增加此内容
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+7.3 重启rsyslog服务</p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># systemctl restart rsyslog.service
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+7.4 编辑/etc/bashrc，将客户端执行的所有命令写入系统日志/var/log/messages中</p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># vi /etc/bashrc 
+    export PROMPT_COMMAND='{ msg=$(history 1 | { read x y; echo $y; });logger &quot;[euid=$(whoami)]&quot;:$(who am i):[`pwd`]&quot;$msg&quot;; }'                #在结尾处加上此内容
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+设置使其生效</p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># source /etc/bashrc
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<strong style="outline:currentcolor none 0px;box-sizing:border-box;font-weight:700;word-break:break-all;">八、测试rsyslog_server可否正常接收rsyslog_client的日志</strong></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<strong style="outline:currentcolor none 0px;box-sizing:border-box;font-weight:700;word-break:break-all;"></strong></p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;">​[root@syslog log]# mysql -uroot -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 207
+Server version: 5.7.17 MySQL Community Server (GPL)
+
+Copyright (c) 2000, 2016, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql&gt; show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| Syslog             |
+| mysql              |
+| performance_schema |
++--------------------+
+4 rows in set (0.00 sec)
+
+mysql&gt; use Syslog;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql&gt; show tables;
++------------------------+
+| Tables_in_Syslog       |
++------------------------+
+| SystemEvents           |
+| SystemEventsProperties |
+| logcon_charts          |
+| logcon_config          |
+| logcon_dbmappings      |
+| logcon_fields          |
+| logcon_groupmembers    |
+| logcon_groups          |
+| logcon_savedreports    |
+| logcon_searches        |
+| logcon_sources         |
+| logcon_users           |
+| logcon_views           |
++------------------------+
+13 rows in set (0.00 sec)
+
+mysql&gt;  select count(*) from SystemEvents;
++----------+
+| count(*) |
++----------+
+|       <span style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;color:rgb(255,0,0);">75</span> |               #####这里不为零 说明mysql已经和rsyslog连接正常并接受到数据
++----------+
+1 row in set (0.00 sec)
+
+mysql&gt; 
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/><strong style="outline:currentcolor none 0px;box-sizing:border-box;font-weight:700;word-break:break-all;"></strong></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<strong style="outline:currentcolor none 0px;box-sizing:border-box;font-weight:700;word-break:break-all;">九、安装LogAnalyzer</strong></p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># cd /home/rsyslog_server/tools/
+# wget http://download.adiscon.com/loganalyzer/loganalyzer-3.6.5.tar.gz
+# tar zxf loganalyzer-3.6.5.tar.gz
+# cd loganalyzer-3.6.5
+# mkdir -p /var/www/html/loganalyzer
+# cp -rf src/* /var/www/html/loganalyzer/</pre>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;">#cp  -rf contrib/* /var/www/html/loganalyzer</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<strong style="outline:currentcolor none 0px;box-sizing:border-box;font-weight:700;word-break:break-all;">十、在浏览器中进行安装LogAnalyzer</strong></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+10.1 打开浏览器，输入http://192.168.253.160/loganalyzer</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+提示无配置文件，点击here按钮生成；</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<img alt="itdadao-CentOS7下利用rsyslog+loganalyzer配置日志服务器及Linux和windows客户端配置" height="20" src="" style="outline:currentcolor none 0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;border:0px;" width="612"></img></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+10.2 点击next进行系统环境测试：</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<img alt="itdadao-CentOS7下利用rsyslog+loganalyzer配置日志服务器及Linux和windows客户端配置" height="20" src="" style="outline:currentcolor none 0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;border:0px;" width="612"></img></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+此处提示没有config.php文件，使用contrib中的configure.sh脚本可生成；</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<img alt="itdadao-CentOS7下利用rsyslog+loganalyzer配置日志服务器及Linux和windows客户端配置" height="20" src="" style="outline:currentcolor none 0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;border:0px;" width="612"></img></p>
+<pre style="outline:currentcolor none 0px;position:relative;box-sizing:border-box;padding:8px;margin:0px 0px 24px;white-space:pre-wrap;overflow-wrap:break-word;overflow-x:auto;word-break:break-all;font-family:'courier new';font-size:14px;line-height:20px;color:rgb(248,248,212);background:rgb(39,40,34);border:none;"># cd contrib/
+# cp configure.sh /var/www/html/loganalyzer/
+# cd /var/www/html/loganalyzer/
+# sh configure.sh
+</pre>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+此部分操作在/var/www/html/loganalyzer/目录下创建config.php文件并配置权限为666，也可以使用mkdir及chmod命令执行。</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<img alt="itdadao-CentOS7下利用rsyslog+loganalyzer配置日志服务器及Linux和windows客户端配置" height="20" src="" style="outline:currentcolor none 0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;border:0px;" width="612"></img></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+10.3 继续下一步，填写数据库信息</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<img alt="itdadao-CentOS7下利用rsyslog+loganalyzer配置日志服务器及Linux和windows客户端配置" height="20" src="" style="outline:currentcolor none 0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;border:0px;" width="612"></img></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+点击next生成数据库中的表；</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<img alt="itdadao-CentOS7下利用rsyslog+loganalyzer配置日志服务器及Linux和windows客户端配置" height="20" src="" style="outline:currentcolor none 0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;border:0px;" width="612"></img></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+10.4 设置管理员</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<img alt="itdadao-CentOS7下利用rsyslog+loganalyzer配置日志服务器及Linux和windows客户端配置" height="20" src="" style="outline:currentcolor none 0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;border:0px;" width="612"></img></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+10.5 创建第一个系统日志source</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<img alt="itdadao-CentOS7下利用rsyslog+loganalyzer配置日志服务器及Linux和windows客户端配置" height="20" src="" style="outline:currentcolor none 0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;border:0px;" width="612"></img></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<img alt="itdadao-CentOS7下利用rsyslog+loganalyzer配置日志服务器及Linux和windows客户端配置" height="20" src="" style="outline:currentcolor none 0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;border:0px;" width="612"></img></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+10.6 完成</p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+<img alt="itdadao-CentOS7下利用rsyslog+loganalyzer配置日志服务器及Linux和windows客户端配置" height="20" src="" style="outline:currentcolor none 0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;border:0px;" width="612"></img></p>
+<p style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;word-break:break-all;font-size:14.7px;color:rgb(51,51,51);font-weight:400;line-height:26px;text-align:justify;font-family:'Microsoft YaHei', Verdana, sans-serif;">
+Rsyslog + LogAnalyzer 日志服务器部署完毕，可根据需要进行设置。</p>
+<div style="outline:currentcolor none 0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;">最后的问题</div>
+<div style="outline:currentcolor none 0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;">帐号登出后 再登陆loganalyzer的web页面老是提示帐号密码错误</div>
+<div style="outline:currentcolor none 0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;">使用phpmyadmin在Syslog数据库里更改密码加密方式为MD5</div>
+<div style="outline:currentcolor none 0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;"><img alt="" height="16" src="" style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;max-width:100%;cursor:zoom-in;" width="0"></img><img src="rsyslog-anolyzer_files/20170204140530349.png" type="image/png" data-filename="20170204140530349.png" alt="" height="497" style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;max-width:100%;cursor:zoom-in;" width="852"/><br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/></div>
+<div style="outline:currentcolor none 0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;">点击执行 再次登陆后正常</div>
+<div style="outline:currentcolor none 0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;"><img alt="" height="16" src="" style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;max-width:100%;cursor:zoom-in;" width="0"></img><img src="rsyslog-anolyzer_files/20170204140648365.png" type="image/png" data-filename="20170204140648365.png" alt="" height="422" style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;max-width:100%;cursor:zoom-in;" width="852"/><br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/></div>
+<div style="outline:currentcolor none 0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;"><br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/></div>
+<div style="outline:currentcolor none 0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;"><br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/></div>
+<div style="outline:currentcolor none 0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;"><br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/></div>
+<div style="outline:currentcolor none 0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;">
+<h1 style="outline:currentcolor none 0px;padding:0px;box-sizing:border-box;margin:8px 0px 16px;word-break:break-all;font-size:14px;color:rgb(79, 79, 79);font-weight:700;line-height:36px;border-bottom:1px solid rgb(221,221,221);font-family:verdana, Arial, Helvetica, sans-serif;">
+CentOS 6.5下利用Rsyslog+LogAnalyzer+MySQL部署日志服务器可以参考下面的博客<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/></h1>
+</div>
+<div style="outline:currentcolor none 0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;">http://www.cnblogs.com/mchina/p/linux-centos-rsyslog-loganalyzer-mysql-log-server.html<br style="outline:currentcolor none 0px;box-sizing:border-box;word-break:break-all;"/></div>
+            </div>
+                <span style="display:block;clear:both;"></span></div>
+				
+        	</div>
+	
+		<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;padding-bottom:16px;margin-top:16px;border-bottom:1px solid rgb(227, 227, 227);">
+				<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;font-size:12px;color:rgb(153, 153, 153);">
+			版权声明：本文为博主原创文章，未经博主允许不得转载。			https://blog.csdn.net/Dexter_Wang/article/details/54861842		</div>
+						<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;margin-bottom:8px;font-size:12px;margin-top:8px;">
+			<span style="box-sizing:inherit;outline:currentcolor none 0px;color:rgb(77, 77, 77);">文章标签：</span>
+						<a href="http://so.csdn.net/so/search/s.do?q=rsyslog&amp;t=blog" style="box-sizing:inherit;outline:currentcolor none 0px;text-decoration:none;cursor:pointer;display:inline-block;word-break:break-all;margin-right:8px;padding:0px 8px;height:24px;min-width:24px;line-height:24px;border:1px solid rgb(204, 204, 204);border-radius:100px;color:rgb(77, 77, 77);text-align:center;" target="_blank">rsyslog						</a><a href="http://so.csdn.net/so/search/s.do?q=Linux%E6%97%A5%E5%BF%97%E6%9C%8D%E5%8A%A1%E5%99%A8&amp;t=blog" style="box-sizing:inherit;outline:currentcolor none 0px;text-decoration:none;cursor:pointer;display:inline-block;word-break:break-all;margin-right:8px;padding:0px 8px;height:24px;min-width:24px;line-height:24px;border:1px solid rgb(204, 204, 204);border-radius:100px;color:rgb(77, 77, 77);text-align:center;" target="_blank">Linux日志服务器						</a>
+		</div>
+						<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;margin-bottom:8px;font-size:12px;">
+			<span style="box-sizing:inherit;outline:currentcolor none 0px;color:rgb(77, 77, 77);">个人分类：</span>
+						<a href="https://blog.csdn.net/dexter_wang/article/category/6733689" style="box-sizing:inherit;outline:currentcolor none 0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(121, 165, 229);word-break:break-all;" target="_blank">Rsyslog						</a>
+		</div>
+								<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;font-size:12px;margin-bottom:0px;">
+			<span style="box-sizing:inherit;outline:currentcolor none 0px;color:rgb(77, 77, 77);">相关热词：</span>
+						<a href="https://blog.csdn.net/qianlilang20170128/article/details/55802917" style="box-sizing:inherit;outline:currentcolor none 0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(121, 165, 229);word-break:break-all;" target="_blank">
+			centos7库			</a>
+						<a href="https://blog.csdn.net/prophet10086/article/details/78370372" style="box-sizing:inherit;outline:currentcolor none 0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(121, 165, 229);word-break:break-all;" target="_blank">
+			centos7卸			</a>
+						<a href="https://blog.csdn.net/github_39069288/article/details/73306489" style="box-sizing:inherit;outline:currentcolor none 0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(121, 165, 229);word-break:break-all;" target="_blank">
+			centos7组			</a>
+						<a href="https://blog.csdn.net/qq_28334041/article/details/70130636" style="box-sizing:inherit;outline:currentcolor none 0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(121, 165, 229);word-break:break-all;" target="_blank">
+			centos7把			</a>
+						<a href="https://blog.csdn.net/cyuyan112233/article/details/50366203" style="box-sizing:inherit;outline:currentcolor none 0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(121, 165, 229);word-break:break-all;" target="_blank">
+			centos7吧			</a>
+					</div>
+			</div>
+	
+	
+			<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:18px;line-height:28px;width:48%;display:inline-block;margin-right:16px;">
+		<a href="https://blog.csdn.net/dexter_wang/article/details/54844755" style="box-sizing:inherit;outline:currentcolor none 0px;color:rgb(51, 51, 51);text-decoration:none;cursor:pointer;">
+			<span style="box-sizing:inherit;outline:currentcolor none 0px;margin-right:8px;padding:6px 8px;font-size:12px;border:1px solid rgb(227, 227, 227);color:rgb(77, 77, 77);">上一篇</span>Cisco路由技术：在路由器上配置Track，实现静态路由器的冗余1		</a>
+	</div>
+				<div style="box-sizing:inherit;outline:currentcolor none 0px;padding:0px;margin:0px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:28px;width:48%;display:inline-block;margin-bottom:0px;margin-top:0px;">
+		<a href="https://blog.csdn.net/dexter_wang/article/details/54862325" style="box-sizing:inherit;outline:currentcolor none 0px;color:rgb(51, 51, 51);text-decoration:none;cursor:pointer;">
+			<span style="box-sizing:inherit;outline:currentcolor none 0px;margin-right:8px;padding:6px 8px;font-size:12px;border:1px solid rgb(227, 227, 227);color:rgb(77, 77, 77);">下一篇</span>使用phpmyadmin出现The mbstring extension is missing. Please check your PHP configuration是什么原因？		</a>
+	</div>
+	</div></span></div></div></div></div><br/></div></span>
+</div></body></html> 
