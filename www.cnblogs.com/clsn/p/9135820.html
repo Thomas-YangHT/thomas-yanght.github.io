@@ -1,0 +1,589 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="referrer" content="origin" />
+<title>监控命令之tsar - 惨绿少年 - 博客园</title>
+<link type="text/css" rel="stylesheet" href="../../bundles/blog-common.css?v=PX31qVjOE47mNaZI9JUSFK-ajuzMnpXA9PeteRNR1Qw1"/>
+<link type="text/css" rel="stylesheet" href="../../blog/customcss/378562.css?v=lIOm0gDHbWAp5zNowF7Kt56uNiM="/>
+<link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="../../skins/LessIsMore/bundle-LessIsMore-mobile.css?v=d9LctKHRIQp9rreugMcQ1-UJuq_j1fo0GZXTXj8Bqrk1"/>
+<link title="RSS" type="application/rss+xml" rel="alternate" href="http://www.cnblogs.com/clsn/rss"/>
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="http://www.cnblogs.com/clsn/rsd.xml"/>
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="http://www.cnblogs.com/clsn/wlwmanifest.xml"/>
+<script src="https://common.cnblogs.com/scripts/jquery-2.2.0.min.js"></script>
+<script type="text/javascript">var currentBlogApp = 'clsn', cb_enable_mathjax=true;var isLogined=false;</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: { inlineMath: [['$','$'], ['\\(','\\)']], processClass: 'blogpost-body', processEscapes: true },
+        TeX: { 
+            equationNumbers: { autoNumber: ['AMS'], useLabelIds: true }, extensions: ['extpfeil.js'] },
+            'HTML-CSS': { linebreaks: { automatic: true } },
+            SVG: { linebreaks: { automatic: true } }
+        });
+    </script><script src="https://mathjax.cnblogs.com/2_7_2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="../../bundles/blog-common.js?v=ZYVeaIjo61MQ6cAGfOdV2UtOT1EphFo-_1mZgz9bJWA1" type="text/javascript"></script>
+</head>
+<body>
+<a name="top"></a>
+<!--PageBeginHtml Block Begin-->
+<!-- 打赏
+<script>
+window.tctipConfig = {
+staticPrefix: "http://static.tctip.com",
+cssPrefix: "http://static.tctip.com",
+buttonImageId: 1,
+buttonTip: "dashang",
+list:{
+alipay: {qrimg: "https://files.cnblogs.com/files/clsn/zfb_skm.gif"},
+weixin:{qrimg: "https://files.cnblogs.com/files/clsn/weixin_skm.gif"},
+}
+};
+</script>
+<script src="http://static.tctip.com/js/tctip.min.js"></script>
+ -->
+
+
+<!-- 以下是新样式 -->
+<script type="text/javascript">$("#mobile-style").remove();</script>
+<link href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+<link href="https://files.cnblogs.com/files/clsn/lnh.cnblogs6.css" rel="stylesheet"/>
+<script type="text/javascript" src="https://files.cnblogs.com/files/clsn/canvas-nest.min.js"></script>
+<!--PageBeginHtml Block End-->
+
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+		
+<!--done-->
+<div class="title"><a id="Header1_HeaderTitle" class="headermaintitle" href="http://www.cnblogs.com/clsn/">惨绿少年</a></div>
+<div class="subtitle">——Linux运维之路</div>
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li id="nav_sitehome"></li>
+<li id="nav_myhome"><a id="blog_nav_myhome" class="menu" href="http://www.cnblogs.com/clsn/">首页</a></li>
+<li id="nav_newpost"><a id="blog_nav_newpost" class="menu" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a></li>
+<li id="nav_contact"><a id="blog_nav_contact" class="menu" rel="nofollow" href="https://msg.cnblogs.com/send/%E6%83%A8%E7%BB%BF%E5%B0%91%E5%B9%B4">联系</a></li>
+<li id="nav_rss"><a id="blog_nav_rss" class="menu" href="http://www.cnblogs.com/clsn/rss">订阅</a>
+<!--<a id="blog_nav_rss_image" class="aHeaderXML" href="http://www.cnblogs.com/clsn/rss"><img src="//www.cnblogs.com/images/xml.gif" alt="订阅" /></a>--></li>
+<li id="nav_admin"><a id="blog_nav_admin" class="menu" rel="nofollow" href="https://i.cnblogs.com/">管理</a></li>
+</ul>
+
+		<div class="blogStats">
+			
+			
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		
+<div id="post_detail">
+<!--done-->
+<div id="topics">
+	<div class = "post">
+		<h1 class = "postTitle">
+			<a id="cb_post_title_url" class="postTitle2" href="9135820.html">监控命令之tsar</a>
+		</h1>
+		<div class="clear"></div>
+		<div class="postBody">
+			<div id="cnblogs_post_body" class="blogpost-body"><h2>1.1 tsar是什么？</h2>
+<p>　　tsar是淘宝自己开发的一个采集工具（类似于sar工具），主要用来收集服务器的系统信息（如cpu，io，mem，tcp等），以及应用数据（如squid haproxy nginx等）。</p>
+<p>　　收集到的数据存储在磁盘上，可以随时查询历史信息，输出方式灵活多样，另外支持将数据存储到mysql中，也可以将数据发送到nagios报警服务器。</p>
+<p>　　tsar在展示数据时，可以指定模块，并且可以对多条信息的数据进行<em>merge</em>输出，带<em>--live</em>参数可以输出秒级的实时信息。</p>
+<p>　　tsar可以通过编写模块轻松扩展，这使得它成为一个功能强大且多功能的报告工具。</p>
+<p>&nbsp;&nbsp; 官方网址：<a href="http://tsar.taobao.org/">http://tsar.taobao.org</a></p>
+<p>github地址：<a href="https://github.com/alibaba/tsar">https://github.com/alibaba/tsar</a></p>
+<h3>1.1.1 总体架构</h3>
+<p>tsar是基于模块化设计的程序，程序有两部分组成：框架和模块。</p>
+<p>框架程序源代码主要在src目录，而模块源代码主要在modules目录中。</p>
+<p>框架提供对配置文件的解析，模块的加载，命令行参数的解析，应用模块的接口对模块原始数据的解析与输出。 模块提供接口给框架调用。</p>
+<p>tsar依赖与cron每分钟执行采集数据，因此它需要系统安装并启用crond，安装后，tsar每分钟会执行tsar --cron来定时采集信息，并且记录到原始日志文件。</p>
+<h3>1.1.2 tsar的运行流程图</h3>
+<p align="center">&nbsp;<img src="https://images2018.cnblogs.com/blog/1190037/201806/1190037-20180604214121023-576776588.png" alt="" /></p>
+<p>主要执行流程有：</p>
+<p>(1)解析输入</p>
+<p>　　根据用户的输入，初始化一些全局信息，如间隔时间，是否merge，是否指定模块，运行模式</p>
+<p>(2)读取配置文件信息</p>
+<p>　　主要解析tsar的配置文件，如果include生效，则会解析include的配置文件</p>
+<p>　　配置文件用来获得tsar需要加载的模块，输出方式，每一类输出方式包含的模块，和此输出方式的接收信息，如mod_cpu on代表采集cpu的信息</p>
+<p>　　output_interface file,nagios表示向文件和nagios服务器发送采集信息和报警信息</p>
+<p>(3)加载相应模块</p>
+<p>　　根据配置文件的模块开启关闭情况，将模块的动态库load到系统</p>
+<p>(4)tsar的三种运行模式</p>
+<p>　　tsar在运行的时候有三种模式：</p>
+<p><strong>　　　　print</strong><strong>模式,</strong>仅仅输出指定的模块信息，默认显示最近一天的；</p>
+<p><strong>　　　　live</strong><strong>模式,</strong>是输出当前信息，可以精确到秒级</p>
+<p><strong>　　　　cron</strong><strong>模式，</strong>此一般是crontab定时执行，每一分钟采集一次所有配置的模块信息，并将数据写入原始文件，在cron运行的时候 会判断是否配置输出到db或者nagios，如果配置则将相应格式的数据输出到对应接口。</p>
+<p>(5)释放资源</p>
+<p>　　程序最后，释放动态库，程序结束</p>
+<h2>1.2 tsar的安装</h2>
+<h3>1.2.1 使用git下载源码包</h3>
+<p>　　可以访问alibaba的github找到tsar进行下载</p>
+<div>
+<div class="cnblogs_code">
+<pre>$ git clone git://github.com/kongjian/<span style="color: #000000;">tsar.git
+$ cd tsar
+$ make
+</span><span style="color: #008000;">#</span><span style="color: #008000;"> make install</span></pre>
+</div>
+</div>
+<h3>1.2.2 下载zip文件并安装</h3>
+<p>访问连接地址，获取源码包，进行编译安装</p>
+<div>
+<div class="cnblogs_code">
+<pre>$ wget -O tsar.zip https://github.com/alibaba/tsar/archive/master.zip --no-check-<span style="color: #000000;">certificate
+$ unzip tsar.zip
+$ cd tsar
+$ make
+</span><span style="color: #008000;">#</span><span style="color: #008000;"> make install</span></pre>
+</div>
+</div>
+<h3>1.2.3 目录文件说明</h3>
+<p>安装后，您可能会看到这些文件：</p>
+<div>
+<div class="cnblogs_code">
+<pre>/etc/tsar/<span style="color: #000000;">tsar.conf，这是tsar的主要配置文件;
+</span>/etc/cron.d/<span style="color: #000000;">tsar，用于每分钟运行tsar收集信息;
+</span>/etc/logrotate.d/<span style="color: #000000;">tsar 将每个月轮询tsar的日志文件;
+</span>/usr/local/tsar/modules 是所有模块库（*<span style="color: #000000;"> .so）所在的目录;
+</span>/usr/local/man/man8/ 帮助文件</pre>
+</div>
+</div>
+<h3>1.2.4 tsar配置文件说明</h3>
+<div>
+<div class="cnblogs_code">
+<pre>[root@clsn6 tsar]<span style="color: #008000;">#</span><span style="color: #008000;"> cat /etc/tsar/tsar.conf</span><span style="color: #008000;">
+#</span><span style="color: #008000;">###debug_level(INFO DEBUG WARN ERROR FATAL)</span>
+debug_level ERROR  <span style="color: #008000;">#</span><span style="color: #008000;">指定tsar的运行级别，主要用来调试使用</span><span style="color: #008000;">
+#</span><span style="color: #008000;">###[module]  ##on/off to enable mod</span>
+<span style="color: #000000;">mod_cpu on
+mod_mem on
+mod_swap on
+mod_tcp on
+mod_udp on
+mod_traffic on
+mod_io on
+mod_pcsw on
+mod_partition on
+mod_tcpx on
+mod_load on
+mod_apache off
+mod_lvs off
+mod_haproxy off
+mod_squid off
+mod_nginx off
+mod_nginx_multiport off
+mod_nginx_live off
+</span><span style="color: #008000;">#</span><span style="color: #008000;">mod_nginx_sys_mport on 80 8080</span>
+<span style="color: #000000;">mod_swift off
+mod_swift_code off
+mod_swift_domain off
+mod_swift_esi off
+mod_swift_fwd off
+mod_swift_store off
+mod_swift_swapdir off
+mod_swift_purge off
+mod_swift_sys off
+mod_swift_tcmalloc off
+mod_tmd off
+mod_percpu off
+mod_tcprt off
+mod_proc off pidname
+mod_pharos off
+mod_tmd4 off
+mod_keyserver off
+</span><span style="color: #008000;">#</span><span style="color: #008000;">mod_erpc on /etc/tsar/erpc.conf</span><span style="color: #008000;">
+#</span><span style="color: #008000;">mod_search on</span>
+
+<span style="color: #008000;">#</span><span style="color: #008000;">###output_interface file,db,nagios</span>
+output_interface file   <span style="color: #008000;">#</span><span style="color: #008000;">设置输出类型，支持file，nagios，db</span>
+
+<span style="color: #008000;">#</span><span style="color: #008000;">###[output_file] original data to store</span>
+output_file_path /var/log/<span style="color: #000000;">tsar.data
+
+</span><span style="color: #008000;">#</span><span style="color: #008000;">###[output_stdio] these mod will be show as using tsar command  #设置用户终端默认显示的模块</span>
+<span style="color: #000000;">output_stdio_mod mod_swap,mod_partition,mod_cpu,mod_mem,mod_lvs,mod_haproxy,mod_traffic,mod_squid,mod_load,mod_tcp,mod_udp,mod_tcpx,mod_apache,mod_pcsw,mod_io,mod_percpu
+
+</span><span style="color: #008000;">#</span><span style="color: #008000;">###[output_db]  #设置哪些模块输出到数据库</span><span style="color: #008000;">
+#</span><span style="color: #008000;">output_db_mod mod_swap,mod_partition,mod_cpu,mod_mem,mod_traffic,mod_load,mod_tcp,mod_udp,mod_pcsw,mod_io</span><span style="color: #008000;">
+#</span><span style="color: #008000;">output_db_addr console2:56677  #数据库的ip和端口</span>
+
+<span style="color: #008000;">#</span><span style="color: #008000;">###[output_tcp]</span><span style="color: #008000;">
+#</span><span style="color: #008000;">output_tcp_mod mod_swap,mod_cpu</span><span style="color: #008000;">
+#</span><span style="color: #008000;">output_tcp_addr localhost:9666</span><span style="color: #008000;">
+#</span><span style="color: #008000;">output_tcp_merge on</span>
+
+<span style="color: #008000;">#</span><span style="color: #008000;">###support include other mod conf</span>
+include /etc/tsar/conf.d/*<span style="color: #000000;">.conf
+
+</span><span style="color: #008000;">#</span><span style="color: #008000;">###The IP address or the host running the NSCA daemon</span><span style="color: #008000;">
+#</span><span style="color: #008000;">server_addr nagios.server.com</span><span style="color: #008000;">
+#</span><span style="color: #008000;">###The port on which the daemon is running - default is 5667</span><span style="color: #008000;">
+#</span><span style="color: #008000;">server_port 8086</span><span style="color: #008000;">
+#</span><span style="color: #008000;">###The cycle of send alert to nagios</span><span style="color: #008000;">
+#</span><span style="color: #008000;">cycle_time 300  #指定上报的间隔时间，由于tsar每一分钟采集一次，上报时会判断是否符合时间间隔，如设置300的话，则在0，5等整点分钟会上报</span><span style="color: #008000;">
+#</span><span style="color: #008000;">###nsca client program</span><span style="color: #008000;">
+#</span><span style="color: #008000;">send_nsca_cmd /usr/bin/send_nsca</span><span style="color: #008000;">
+#</span><span style="color: #008000;">send_nsca_conf /home/a/conf/amon/send_nsca.conf</span>
+
+<span style="color: #008000;">#</span><span style="color: #008000;">###tsar mod alert config file</span><span style="color: #008000;">
+#</span><span style="color: #008000;">###threshold servicename.key;w-min;w-max;c-min;cmax;</span><span style="color: #008000;">
+#</span><span style="color: #008000;">threshold cpu.util;N;N;N;N;</span><span style="color: #008000;">
+#</span><span style="color: #008000;">设置某个要报警项的阀值,前面是模块和要监控的具体名称，后面的四个数据代表报警的范围，warn和critical的范围。</span></pre>
+</div>
+</div>
+<h2>1.3 tsar的使用</h2>
+<p>查看使用帮助</p>
+<div>
+<div class="cnblogs_code">
+<pre>[root@clsn6 tsar]<span style="color: #008000;">#</span><span style="color: #008000;"> tsar --help </span>
+<span style="color: #000000;">Usage: tsar [options]
+Options:
+    </span>-check         display last record <span style="color: #0000ff;">for</span> alert <span style="color: #008000;">#</span><span style="color: #008000;">检查显示警报的最后记录</span>
+    --check/-C     display last record <span style="color: #0000ff;">for</span> alert.example:tsar --check / tsar --check --cpu --<span style="color: #000000;">io
+    </span>--watch/-w     display last records <span style="color: #0000ff;">in</span> N mimutes. example:tsar --watch 30 / tsar --watch 30 --cpu --<span style="color: #000000;">io
+    </span>--cron/-c      run <span style="color: #0000ff;">in</span><span style="color: #000000;"> cron mode, output data to file
+    </span>--interval/-i  specify intervals numbers, <span style="color: #0000ff;">in</span> minutes <span style="color: #0000ff;">if</span> with --live, it <span style="color: #0000ff;">is</span> <span style="color: #0000ff;">in</span> seconds  <span style="color: #008000;">#</span><span style="color: #008000;">指定间隔数字，如果使用--live，则以分钟为单位，以秒为单位</span>
+    --list/-<span style="color: #000000;">L      list enabled modules
+    </span>--live/-l      running <span style="color: #0000ff;">print</span> live mode, which module will <span style="color: #0000ff;">print</span>
+    --file/-<span style="color: #000000;">f      specify a filepath as input
+    </span>--ndays/-n     show the value <span style="color: #0000ff;">for</span> the past days (default: 1<span style="color: #000000;">)
+    </span>--date/-d      show the value <span style="color: #0000ff;">for</span> the specify day(n <span style="color: #0000ff;">or</span><span style="color: #000000;"> YYYYMMDD)
+    </span>--merge/-<span style="color: #000000;">m     merge multiply item to one
+    </span>--detail/-D    do <span style="color: #0000ff;">not</span> conver data to K/M/G  <span style="color: #008000;">#</span><span style="color: #008000;">不会将数据转换为K / M / G</span>
+    --spec/-s      show spec field data, tsar --cpu -<span style="color: #000000;">s sys,util
+    </span>--item/-I      show spec item data, tsar --io -<span style="color: #000000;">I sda
+    </span>--help/-<span style="color: #000000;">h      help
+Modules Enabled:
+    </span>--cpu               CPU share (user, system, interrupt, nice, &amp;<span style="color: #000000;"> idle)
+    </span>--<span style="color: #000000;">mem               Physical memory share (active, inactive, cached, free, wired)
+    </span>--<span style="color: #000000;">swap              swap usage
+    </span>--<span style="color: #000000;">tcp               TCP traffic     (v4)
+    </span>--<span style="color: #000000;">udp               UDP traffic     (v4)
+    </span>--<span style="color: #000000;">traffic           Net traffic statistics
+    </span>--io                Linux I/<span style="color: #000000;">O performance
+    </span>--pcsw              Process (task) creation <span style="color: #0000ff;">and</span><span style="color: #000000;"> context switch
+    </span>--partition         Disk <span style="color: #0000ff;">and</span><span style="color: #000000;"> partition usage
+    </span>--<span style="color: #000000;">tcpx              TCP connection data
+    </span>--load              System Run Queue <span style="color: #0000ff;">and</span> load average</pre>
+</div>
+</div>
+<h3>1.3.1 常用命令</h3>
+<p>&nbsp; #以1秒钟为间隔，实时打印tsar的概述数据</p>
+<div>
+<div class="cnblogs_code">
+<pre>[root@clsn6 tsar]<span style="color: #008000;">#</span><span style="color: #008000;">  tsar -i 1 -l </span>
+Time              ---cpu-- ---mem-- ---tcp-- -----traffic---- --sda---  ---load-<span style="color: #000000;"> 
+Time                util     util   retran    bytin  bytout     util     load1   
+</span>04/06/18-21:09:22   0.00    18.48     0.00    60.00  278.00     0.00     0.00   
+04/06/18-21:09:23   1.96    18.48     0.00    60.00  198.00     0.00     0.00   
+04/06/18-21:09:24   0.00    18.48     0.00    60.00  198.00     0.00     0.00   
+04/06/18-21:09:25   0.00    18.48     0.00    60.00  198.00     0.00     0.00   </pre>
+</div>
+</div>
+<p># 检查磁盘io情况</p>
+<div>
+<div class="cnblogs_code">
+<pre>[root@clsn6 tsar]<span style="color: #008000;">#</span><span style="color: #008000;"> tsar --io  --check </span>
+clsn6    tsar    io:sda:rrqms=0.0 io:sda:wrqms=0.0 io:sda:rs=0.0 io:sda:ws=0.1 io:sda:rsecs=0.0 io:sda:wsecs=0.7 io:sda:rqsize=4.9 io:sda:qusize=0.0 io:sda:await=0.7 io:sda:svctm=0.6 io:sda:util=0.0</pre>
+</div>
+</div>
+<p># tsar 显示1天内的历史汇总（summury）信息，以默认5分钟为间隔</p>
+<div>
+<div class="cnblogs_code">
+<pre>[root@clsn6 tsar]<span style="color: #008000;">#</span><span style="color: #008000;"> tsar --swap   --check </span>
+clsn6    tsar    swap:swpin=0.0 swap:swpout=0.0 swap:total=805302272.0 swap:util=0.0<span style="color: #000000;"> 
+[root@clsn6 tsar]</span><span style="color: #008000;">#</span><span style="color: #008000;"> tsar</span>
+Time           ---cpu-- ---mem-- ---tcp-- -----traffic---- --sda---  ---load-<span style="color: #000000;"> 
+Time             util     util   retran    bytin  bytout     util     load1   
+</span>04/06/18-20:45   0.16    18.39     0.00    72.00   89.00     0.15     0.00   
+04/06/18-20:50   0.16    18.41     0.00     5.00    3.00     0.03     0.00   
+04/06/18-20:55   0.15    18.39     0.00     4.00    3.00     0.01     0.00   
+04/06/18-21:00   0.15    18.54     0.00     4.00    3.00     0.02     0.00   
+04/06/18-21:05   0.16    18.24     0.00    21.00   32.00     0.10     0.00   
+04/06/18-21:10   0.18    18.27     0.00    19.00   24.00     0.01     0.00<span style="color: #000000;">   
+
+MAX              </span>0.16    18.54     0.00    72.00   89.00     0.15     0.00<span style="color: #000000;">   
+MEAN             </span>0.16    18.37     0.00    10.60   13.00     0.03     0.00<span style="color: #000000;">   
+MIN              </span>0.16    18.24     0.00     4.00    3.00     0.03     0.00   </pre>
+</div>
+</div>
+<p># tsar --cpu -i 1 显示一天内cpu的历史信息，以1分钟为间隔</p>
+<div>
+<div class="cnblogs_code">
+<pre>[root@clsn6 tsar]<span style="color: #008000;">#</span><span style="color: #008000;"> tsar --cpu -i 1</span>
+Time           -----------------------cpu----------------------<span style="color: #000000;"> 
+Time             user     sys    wait    hirq    sirq    util   
+</span>04/06/18-20:37   0.01    0.10    0.02    0.00    0.03    0.14   
+04/06/18-20:38   0.00    0.13    0.30    0.00    0.02    0.15   
+04/06/18-20:39   0.02    0.12    0.00    0.00    0.05    0.18   
+04/06/18-20:40   0.02    0.13    0.00    0.00    0.03    0.18   
+04/06/18-20:41   0.00    0.08    0.00    0.00    0.03    0.12   
+04/06/18-20:42   0.02    0.10    0.00    0.00    0.03    0.15<span style="color: #000000;">   
+&middot;&middot;&middot;</span></pre>
+</div>
+</div>
+<p># tsar --live --mem -i 2 以2秒钟为间隔，实时打印mem的数据。</p>
+<div>
+<div class="cnblogs_code">
+<pre>[root@clsn6 tsar]<span style="color: #008000;">#</span><span style="color: #008000;"> tsar --live --mem -i 2</span>
+Time              -----------------------mem----------------------<span style="color: #000000;"> 
+Time                free    used    buff    cach   total    util   
+</span>04/06/18-21:14:47 142.1M   87.5M   51.2M  193.8M  474.6M   18.44   
+04/06/18-21:14:49 142.1M   87.5M   51.2M  193.8M  474.6M   18.44   
+04/06/18-21:14:51 142.1M   87.5M   51.2M  193.8M  474.6M   18.44<span style="color: #000000;">   
+&middot;&middot;&middot;</span></pre>
+</div>
+</div>
+<p># tsar --cpu --mem -i 1 显示一天内的cpu和内存历史数据，以1分钟为间隔。</p>
+<div>
+<div class="cnblogs_code">
+<pre>[root@clsn6 tsar]<span style="color: #008000;">#</span><span style="color: #008000;"> tsar --cpu --mem -i 1 </span>
+Time           -----------------------cpu---------------------- -----------------------<span style="color: #000000;">
+mem</span>----------------------<span style="color: #000000;"> 
+Time             user     sys    wait    hirq    sirq    util     free    used    buff 
+   cach   total    util   
+</span>04/06/18-20:37   0.01    0.10    0.02    0.00    0.03    0.14   148.0M   84.7M   50<span style="color: #000000;">.3M 
+ </span>191.6M  474.6M   17.85   
+04/06/18-20:38   0.00    0.13    0.30    0.00    0.02    0.15   147.6M   84.8M   50<span style="color: #000000;">.4M 
+ </span>191.8M  474.6M   17.87   
+04/06/18-20:39   0.02    0.12    0.00    0.00    0.05    0.18   147.6M   84.8M   50<span style="color: #000000;">.4M 
+ </span>191.8M  474.6M   17.88   
+04/06/18-20:40   0.02    0.13    0.00    0.00    0.03    0.18   146.3M   86.1M   50<span style="color: #000000;">.4M 
+ </span>191.8M  474.6M   18.15   
+04/06/18-20:41   0.00    0.08    0.00    0.00    0.03    0.12   147.5M   84.9M   50<span style="color: #000000;">.4M 
+ </span>191.8M  474.6M   17.89<span style="color: #000000;">   
+&middot;&middot;&middot;</span></pre>
+</div>
+</div>
+<h2>1.4 tsar添加模块</h2>
+<h3>1.4.1 模块开发</h3>
+<p>tsar编译安装后即可以进行自定义模块的开发</p>
+<p>步骤如下</p>
+<p>1.执行tsardevel mymod会在当前目录生成一个mymod文件夹</p>
+<div>
+<div class="cnblogs_code">
+<pre>[root@clsn6 tsar]<span style="color: #008000;">#</span><span style="color: #008000;">  tsardevel mymod </span>
+<span style="color: #000000;">build:make
+install:make install
+uninstall:make uninstall
+test:tsar </span>--list <span style="color: #0000ff;">or</span> tsar --mymod --live -i 1<span style="color: #000000;">
+[root@clsn6 tsar]</span><span style="color: #008000;">#</span><span style="color: #008000;">  tsardevel mymod </span>
+<span style="color: #000000;">build:make
+install:make install
+uninstall:make uninstall
+test:tsar </span>--list <span style="color: #0000ff;">or</span> tsar --mymod --live -i 1</pre>
+</div>
+</div>
+<p>2.<strong>修改里面的mod_mymod.c</strong><strong>成自己想要的采集程序开发手册</strong>，make make install即可以安装到系统</p>
+<div>
+<div class="cnblogs_code">
+<pre>[root@clsn6 mymod]<span style="color: #008000;">#</span><span style="color: #008000;"> make </span>
+gcc -I/usr/local/tsar/devel -Wall -fPIC --shared -g  mod_mymod.c -<span style="color: #000000;">o mod_mymod.so
+[root@clsn6 mymod]</span><span style="color: #008000;">#</span><span style="color: #008000;"> make install </span>
+cp ./mod_mymod.so /usr/local/tsar/modules/<span style="color: #000000;">
+cp .</span>/mod_mymod.conf /etc/tsar/conf.d/mymod.conf</pre>
+</div>
+</div>
+<p>3.这时系统即可以使用mymod的采集：</p>
+<div>
+<div class="cnblogs_code">
+<pre>[root@clsn6 mymod]<span style="color: #008000;">#</span><span style="color: #008000;"> tsar -i 1 -l --mymod</span>
+Time        ----------mymod---------<span style="color: #000000;"> 
+Time                  value1  value2  value3   
+</span>04/06/18-21:32:19    1.0     1.0     1.0   
+04/06/18-21:32:20    1.0     1.0     1.0   
+04/06/18-21:32:21    1.0     1.0     1.0   </pre>
+</div>
+</div>
+<p>4.自定义的模块配置：/etc/tsar/conf.d/mymod.conf 可以在这个文件配置模块开启关闭，是否输出到db/nagios，以及nagios的报警阀值 mod_mymod on</p>
+<div>
+<div class="cnblogs_code">
+<pre><span style="color: #008000;">#</span><span style="color: #008000;">add it to tsar default output</span>
+<span style="color: #000000;">output_stdio_mod mod_mymod
+</span><span style="color: #008000;">#</span><span style="color: #008000;">add it to center db</span><span style="color: #008000;">
+#</span><span style="color: #008000;">output_db_mod mod_mymod</span><span style="color: #008000;">
+#</span><span style="color: #008000;">add it to nagios send</span><span style="color: #008000;">
+#</span><span style="color: #008000;">set nagios threshold for alert</span>
+<span style="color: #000000;">output_nagios_mod mod_mymod
+threshold mymod.value1;N;N;N;N;</span>&nbsp;</pre>
+</div>
+</div>
+<h3>1.4.2 安装nginx模块</h3>
+<p>tsar中可以添加很多的监控模块，这次添加nginx监控模块。</p>
+<p>&nbsp;&nbsp; tsar的nginx扩展模块项目主页为：https://github.com/taobao/tsar-mod_nginx ，点击下载zip包。</p>
+<div>
+<div class="cnblogs_code">
+<pre>[root@clsn6 tsar]<span style="color: #008000;">#</span><span style="color: #008000;">   unzip tsar-mod_nginx-master.zip </span>
+[root@clsn6 tsar]<span style="color: #008000;">#</span><span style="color: #008000;">   tsardevel nginx</span>
+<span style="color: #000000;">build:make
+install:make install
+uninstall:make uninstall
+test:tsar </span>--list <span style="color: #0000ff;">or</span> tsar --nginx --live -i 1<span style="color: #000000;">
+[root@clsn6 tsar]</span><span style="color: #008000;">#</span><span style="color: #008000;">   cp tsar-mod_nginx-master/mod_nginx.c nginx/</span>
+cp：是否覆盖<span style="color: #800000;">"</span><span style="color: #800000;">nginx/mod_nginx.c</span><span style="color: #800000;">"</span><span style="color: #000000;">？ y
+[root@clsn6 tsar]</span><span style="color: #008000;">#</span><span style="color: #008000;">   cd nginx/</span>
+[root@clsn6 nginx]<span style="color: #008000;">#</span><span style="color: #008000;"> ls</span>
+<span style="color: #000000;">Makefile  mod_nginx.c  mod_nginx.conf
+[root@clsn6 nginx]</span><span style="color: #008000;">#</span><span style="color: #008000;"> make &amp;&amp; make install</span></pre>
+</div>
+</div>
+<p><strong>测试</strong></p>
+<div>
+<div class="cnblogs_code">
+<pre>[root@clsn6 nginx]<span style="color: #008000;">#</span><span style="color: #008000;"> service nginx start</span>
+<span style="color: #000000;">正在启动 nginx：                                           [确定]
+[root@clsn6 nginx]</span><span style="color: #008000;">#</span><span style="color: #008000;"> tsar --nginx --live -i 1</span></pre>
+</div>
+</div>
+<h3>1.4.3 nginx模块不能用问题的处理</h3>
+<p>此时通过使用tsar --nginx --live -i 1 命令查看，若出现都是横线。是因为nginx没有开启status统计页面 。</p>
+<p>因为该工具统计的原理是通过获取status页面的输出结果，并对输出内容进行统计和计算得出的结果。而且其获取状态页的url默认是http://127.0.0.1/nginx_status ，所以在nginx上你必须有如下的配置：</p>
+<div>
+<div class="cnblogs_code">
+<pre>location /<span style="color: #000000;">nginx_status {
+          stub_status on;
+          access_log   off;
+          allow </span>127.0.0.1<span style="color: #000000;">;
+          deny all;
+        }</span></pre>
+</div>
+</div>
+<p>注：以上的url并非不能更改，可以修改环境变量实现。其自带的几个环境变量如下。</p>
+<div>
+<div class="cnblogs_code">
+<pre>export NGX_TSAR_HOST=192.168.0.1<span style="color: #000000;">
+export NGX_TSAR_PORT</span>=8080<span style="color: #000000;">
+export NGX_TSAR_SERVER_NAME</span>=<span style="color: #000000;">status.taobao.com
+export NGX_TSAR_URI</span>=/nginx_status</pre>
+</div>
+</div>
+<h2>1.5 参考文献</h2>
+<div>
+<blockquote>
+<div>
+<p class="a">[1]&nbsp;&nbsp;<a href="http://code.taobao.org/p/tsar/wiki/intro/">http://code.taobao.org/p/tsar/wiki/intro/</a></p>
+<p class="a">[2]&nbsp;&nbsp;<a href="https://blog.csdn.net/tanga842428/article/details/52913883">https://blog.csdn.net/tanga842428/article/details/52913883</a></p>
+<p class="a">[3]&nbsp;&nbsp;<a href="http://blog.51cto.com/cuchadanfan/1738568">http://blog.51cto.com/cuchadanfan/1738568</a></p>
+<p class="a">[4]&nbsp;&nbsp;<a href="https://github.com/taobao/tsar-mod_nginx">https://github.com/taobao/tsar-mod_nginx</a></p>
+<p class="a">[5]&nbsp;&nbsp;<a href="https://github.com/alibaba/tsar">https://github.com/alibaba/tsar</a></p>
+</div>
+<p>[6]&nbsp;&nbsp;<a href="https://github.com/taobao/tsar-mod_nginx">https://github.com/taobao/tsar-mod_nginx</a></p>
+</blockquote>
+</div></div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory"></div>
+<div id="EntryTag"></div>
+<div id="blog_post_info">
+</div>
+<div class="clear"></div>
+<div id="post_next_prev"></div>
+</div>
+
+
+		</div>
+		<div class = "postDesc">posted @ <span id="post-date">2018-06-04 21:49</span> <a href='http://www.cnblogs.com/clsn/'>惨绿少年</a> 阅读(<span id="post_view_count">...</span>) 评论(<span id="post_comment_count">...</span>)  <a href ="https://i.cnblogs.com/EditPosts.aspx?postid=9135820" rel="nofollow">编辑</a> <a href="9135820.html#" onclick="AddToWz(9135820);return false;">收藏</a></div>
+	</div>
+	<script type="text/javascript">var allowComments=true,cb_blogId=378562,cb_entryId=9135820,cb_blogApp=currentBlogApp,cb_blogUserGuid='703f2914-e8f1-45a1-f927-08d49c352df2',cb_entryCreatedDate='2018/6/4 21:49:00';loadViewCount(cb_entryId);var cb_postType=1;</script>
+	
+</div><!--end: topics 文章、评论容器-->
+</div><a name="!comments"></a><div id="blog-comments-placeholder"></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id='comment_form' class='commentform'>
+<a name='commentform'></a>
+<div id='divCommentShow'></div>
+<div id='comment_nav'><span id='span_refresh_tips'></span><a href='javascript:void(0);' onclick='return RefreshCommentList();' id='lnk_RefreshComments' runat='server' clientidmode='Static'>刷新评论</a><a href='9135820.html#' onclick='return RefreshPage();'>刷新页面</a><a href='9135820.html#top'>返回顶部</a></div>
+<div id='comment_form_container'></div>
+<div class='ad_text_commentbox' id='ad_text_under_commentbox'></div>
+<div id='ad_t2'></div>
+<div id='opt_under_post'></div>
+<div id='cnblogs_c1' class='c_ad_block'></div>
+<div id='under_post_news'></div>
+<div id='cnblogs_c2' class='c_ad_block'></div>
+<div id='under_post_kb'></div>
+<div id='HistoryToday' class='c_ad_block'></div>
+<script type='text/javascript'>
+    fixPostBody();
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 50);
+    deliverAdT2();
+    deliverAdC1();
+    deliverAdC2();    
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);   
+</script>
+</div>
+
+
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<!--done-->
+<div class="newsItem">
+<h3 class="catListTitle">公告</h3>
+	<div id="blog-news"></div><script type="text/javascript">loadBlogNews();</script>
+</div>
+
+			<div id="calendar"><div id="blog-calendar" style="display:none"></div><script type="text/javascript">loadBlogDefaultCalendar();</script></div>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"></div><script type="text/javascript">loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		
+<!--done-->
+Copyright &copy;2018 惨绿少年
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+<!--PageEndHtml Block Begin-->
+<!--图标-->
+<script type="text/javascript" language="javascript">
+　　//Setting ico for cnblogs
+　　var linkObject = document.createElement('link');
+　　linkObject.rel = "shortcut icon";
+　　linkObject.href = "https://files.cnblogs.com/files/clsn/clsn_favicon.ico";
+　　document.getElementsByTagName("head")[0].appendChild(linkObject);
+</script>
+<!--统计
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1271332834'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s22.cnzz.com/z_stat.php%3Fid%3D1271332834' type='text/javascript'%3E%3C/script%3E"));</script>
+-->
+
+<script type="text/javascript">
+window.onload=function(){
+	document.getElementsByClassName("itnews c_ad_block")[0].parentNode.removeChild(document.getElementsByClassName("itnews c_ad_block")[0]);
+};
+</script>
+
+<script type="text/javascript" language="javascript"> 
+    <!--为右下角推荐推荐区域添加关注按钮-->
+window.onload = function () {
+    $('#div_digg').prepend('<div style="padding-bottom: 5px"><span class="icon_favorite" style="padding-top: 2px"></span><a onclick="follow(\'703f2914-e8f1-45a1-f927-08d49c352df2\');" href="javascript:void(0);"  style="font-weight: bold; padding-left:5px;">🌵关注一下我呗～</a> </div>');
+}
+</script>
+<!-- 以下是新样式 -->
+<script type="text/javascript" src="https://files.cnblogs.com/files/clsn/clsn.cnblogs.js"></script>
+<!--PageEndHtml Block End-->
+</body>
+</html>
