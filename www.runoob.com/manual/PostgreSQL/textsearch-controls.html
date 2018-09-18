@@ -1,0 +1,297 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>控制文本搜索</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="全文检索" HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html"><LINK REL="PREVIOUS" TITLE="表和索引" HREF="textsearch-tables.html"><LINK REL="NEXT" TITLE="附加功能" HREF="textsearch-features.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/textsearch.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="表和索引" HREF="textsearch-tables.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 12. 全文检索</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="附加功能" HREF="textsearch-features.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="TEXTSEARCH-CONTROLS">12.3. 控制文本搜索</A></H1><P> 为了执行全文搜索，这必须有个函数创建来自文档的<TT CLASS="TYPE">tsvector</TT>和来自用户查询的<TT CLASS="TYPE">tsquery</TT>。
+同时，我们需要以有效的顺序返回结果，因此我们需要一个函数比较关于查询相关性的文档。
+可以很好的显示结果也是很重要的。<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>为所有这些函数提供支持。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TEXTSEARCH-PARSING-DOCUMENTS">12.3.1. 解析文档</A></H2><P> <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>中提供了<CODE CLASS="FUNCTION">to_tsvector</CODE>函数把文档处理成<TT CLASS="TYPE">tsvector</TT>数据类型。</P><PRE CLASS="SYNOPSIS">to_tsvector([<SPAN
+CLASS="OPTIONAL"
+> <TT
+CLASS="REPLACEABLE"
+><I
+>config</I
+></TT
+> <TT
+CLASS="TYPE"
+>regconfig</TT
+>, </SPAN
+>] <TT
+CLASS="REPLACEABLE"
+><I
+>document</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>) returns <TT
+CLASS="TYPE"
+>tsvector</TT
+></PRE><P>
+<CODE CLASS="FUNCTION">to_tsvector</CODE>解析文本文档为记号，减少标记到词条，并返回一个<TT CLASS="TYPE">tsvector</TT>，
+其罗列出词条并连同它们文档中的位置。该文档是根据指定的或默认的文本搜索配置处理的。
+这里有一个简单的例子：
+</P><PRE CLASS="SCREEN">SELECT to_tsvector('english', 'a fat  cat sat on a mat - it ate a fat rats');
+                  to_tsvector
+-----------------------------------------------------
+ 'ate':9 'cat':3 'fat':2,11 'mat':7 'rat':12 'sat':4</PRE><P>&#13;</P><P> 在上面的例子中我们看到结果<TT CLASS="TYPE">tsvector</TT>不包含词 <TT CLASS="LITERAL">a</TT>, <TT CLASS="LITERAL">on</TT>或者
+<TT CLASS="LITERAL">it</TT>。 <TT CLASS="LITERAL">rats</TT>变成<TT CLASS="LITERAL">rat</TT>,并且忽略标点符号-。</P><P> 该<CODE CLASS="FUNCTION">to_tsvector</CODE>函数内部调用一个分析器，将文档文本分解成记号并指定每个标记的类型。
+为每个标记，参阅词典列表（节<A HREF="textsearch-dictionaries.html">第 12.6 &#33410;</A>），列表因不同的标记类型而不同。
+第一本词典<I CLASS="FIRSTTERM">识别</I>标记发出一个或多个标准<I CLASS="FIRSTTERM">词汇</I> 表示标记。例如，<TT CLASS="LITERAL">rats</TT>变成<TT CLASS="LITERAL">rat</TT>
+因为字典认为词<TT CLASS="LITERAL">rats</TT>是<TT CLASS="LITERAL">rat</TT>的复数形式。有些词被作为<I CLASS="FIRSTTERM">屏蔽词</I>（节<A HREF="textsearch-dictionaries.html#TEXTSEARCH-STOPWORDS">第 12.6.1 &#33410;</A>），
+这样它们就会被忽略，因为它们出现得太过频繁以致于搜索中没有用处。在我们的例子中，它们是<TT CLASS="LITERAL">a</TT>, <TT CLASS="LITERAL">on</TT>和<TT CLASS="LITERAL">it</TT>。
+如果列表中没有词典识别标记，那么它也被忽略。在这个例子中，发生在标点符号处<TT CLASS="LITERAL">-</TT>因为事实上没有词典分配给它的标记类型（<TT CLASS="LITERAL">空间符号</TT>），
+意味着空间记号永远不会被索引。语法分析器的选择，词典和索引类型的标记是由选定的文本搜索配置决定（节<A HREF="textsearch-configuration.html">第 12.7 &#33410;</A>）。
+可以在同一个数据库中有多种不同的配置，与提供各种语言的预定义的配置。在我们的例子中，我们使用缺省配置<TT CLASS="LITERAL">english</TT>为英语。</P><P> 函数<CODE CLASS="FUNCTION">setweight</CODE>可以用于标识一个给定<I CLASS="FIRSTTERM">权重</I>的<TT CLASS="TYPE">tsvector</TT>的词条，权重是字母<TT CLASS="LITERAL">A</TT>, <TT CLASS="LITERAL">B</TT>,
+<TT CLASS="LITERAL">C</TT>或者<TT CLASS="LITERAL">D</TT>之一。通常标记来自文档不同部分的词条，比如标题正文。之后，这些信息可以用于搜索结果的排序。</P><P> 因为<CODE CLASS="FUNCTION">to_tsvector</CODE>(<TT CLASS="LITERAL">NULL</TT>)将要返回<TT CLASS="LITERAL">空</TT>，当字段可能是空的时候，建议使用<CODE CLASS="FUNCTION">coalesce</CODE>。
+这是体系文档中创建<TT CLASS="TYPE">tsvector</TT>推荐的方法：
+</P><PRE CLASS="PROGRAMLISTING">UPDATE tt SET ti =
+    setweight(to_tsvector(coalesce(title,'')), 'A')    ||
+    setweight(to_tsvector(coalesce(keyword,'')), 'B')  ||
+    setweight(to_tsvector(coalesce(abstract,'')), 'C') ||
+    setweight(to_tsvector(coalesce(body,'')), 'D');</PRE><P>
+我们使用<CODE CLASS="FUNCTION">setweight</CODE>标记已完成的<TT CLASS="TYPE">tsvector</TT>中的每个词的来源，并且使用<TT CLASS="TYPE">tsvector</TT>连接操作符<TT CLASS="LITERAL">||</TT>合并标签化<TT CLASS="TYPE">tsvector</TT>的值。
+（节<A HREF="textsearch-features.html#TEXTSEARCH-MANIPULATE-TSVECTOR">第 12.4.1 &#33410;</A>详细介绍了这些操作）。 </P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TEXTSEARCH-PARSING-QUERIES">12.3.2. 解析查询</A></H2><P> <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>提供了函数<CODE CLASS="FUNCTION">to_tsquery</CODE>和
+<CODE CLASS="FUNCTION">plainto_tsquery</CODE>将查询转换为<TT CLASS="TYPE">tsquery</TT>数据类型。
+<CODE CLASS="FUNCTION">to_tsquery</CODE>提供比<CODE CLASS="FUNCTION">plainto_tsquery</CODE>更多的功能，但对其输入不宽容。</P><PRE CLASS="SYNOPSIS">to_tsquery([<SPAN
+CLASS="OPTIONAL"
+> <TT
+CLASS="REPLACEABLE"
+><I
+>config</I
+></TT
+> <TT
+CLASS="TYPE"
+>regconfig</TT
+>, </SPAN
+>] <TT
+CLASS="REPLACEABLE"
+><I
+>querytext</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>) returns <TT
+CLASS="TYPE"
+>tsquery</TT
+></PRE><P>
+<CODE CLASS="FUNCTION">to_tsquery</CODE>从<TT CLASS="REPLACEABLE"><I>querytext</I></TT>中创建一个<TT CLASS="TYPE">tsquery</TT>，它必须由布尔运算符<TT CLASS="LITERAL">&amp;</TT> (AND),
+<TT CLASS="LITERAL">|</TT> (OR)和<TT CLASS="LITERAL">!</TT> (NOT)分离的单个标记组成。这些运算符可以用圆括弧分组。换句话说，<CODE CLASS="FUNCTION">to_tsquery</CODE>输入必须遵循<TT CLASS="TYPE">tsquery</TT>输入的一般规律，如节<A HREF="datatype-textsearch.html">第 8.11 &#33410;</A>所描述的。不同的是当基本<TT CLASS="TYPE">tsquery</TT>输入以标记表面值的时候，<CODE CLASS="FUNCTION">to_tsquery</CODE>使用指定或默认配置规范每个标记到一个词，
+并丢弃所有标记依据配置的屏蔽词。比如：
+</P><PRE CLASS="SCREEN">SELECT to_tsquery('english', 'The &amp; Fat &amp; Rats');
+  to_tsquery   
+---------------
+ 'fat' &amp; 'rat'</PRE><P>
+作为基本<TT CLASS="TYPE">tsquery</TT>输入，权重（s）可以附属于每个词来限制它只匹配那些权重(s)的<TT CLASS="TYPE">tsvector</TT>词。比如：
+</P><PRE CLASS="SCREEN">SELECT to_tsquery('english', 'Fat | Rats:AB');
+    to_tsquery    
+------------------
+ 'fat' | 'rat':AB</PRE><P>
+<TT CLASS="LITERAL">*</TT>也可以附属于一个词来指定前缀匹配：
+</P><PRE CLASS="SCREEN">SELECT to_tsquery('supern:*A &amp; star:A*B');
+        to_tsquery        
+--------------------------
+ 'supern':*A &amp; 'star':*AB</PRE><P>
+这样的词将匹配以给定字符串开头的<TT CLASS="TYPE">tsvector</TT>中的任何词。
+</P><P>
+<CODE CLASS="FUNCTION">to_tsquery</CODE>也可以接受单引用的短语。当配置包括一个可能触发这类短语的同义词词典库的时候是很有用的。
+在下面的例子中，一个词库包含规则<TT CLASS="LITERAL">supernovae stars : sn</TT>：
+</P><PRE CLASS="SCREEN">SELECT to_tsquery('''supernovae stars'' &amp; !crab');
+  to_tsquery
+---------------
+ 'sn' &amp; !'crab'</PRE><P>
+没有引号，<CODE CLASS="FUNCTION">to_tsquery</CODE>会生成标记语法错误，这个标记不是通过AND 或者OR操作符分离的。
+</P><PRE CLASS="SYNOPSIS">plainto_tsquery([<SPAN
+CLASS="OPTIONAL"
+> <TT
+CLASS="REPLACEABLE"
+><I
+>config</I
+></TT
+> <TT
+CLASS="TYPE"
+>regconfig</TT
+>, </SPAN
+>] <TT
+CLASS="REPLACEABLE"
+><I
+>querytext</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>) returns <TT
+CLASS="TYPE"
+>tsquery</TT
+></PRE><P> <CODE CLASS="FUNCTION">plainto_tsquery</CODE>变换未格式化的文本<TT CLASS="REPLACEABLE"><I>querytext</I></TT>到<TT CLASS="TYPE">tsquery</TT>。
+分析文本并且归一化为<CODE CLASS="FUNCTION">to_tsvector</CODE>，然后在存在的词之间插入<TT CLASS="LITERAL">&amp;</TT>(AND)布尔算子。</P><P> 比如：
+</P><PRE CLASS="SCREEN">SELECT plainto_tsquery('english', 'The Fat Rats');
+ plainto_tsquery 
+-----------------
+ 'fat' &amp; 'rat'</PRE><P>
+请注意，<CODE CLASS="FUNCTION">plainto_tsquery</CODE>无法识别布尔运算符，权重标签，或在其输入中的前缀匹配标签：
+</P><PRE CLASS="SCREEN">SELECT plainto_tsquery('english', 'The Fat &amp; Rats:C');
+   plainto_tsquery   
+---------------------
+ 'fat' &amp; 'rat' &amp; 'c'</PRE><P>
+在这里，所有的输入标点符号作为空格符号丢弃。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TEXTSEARCH-RANKING">12.3.3. 查询结果关注度</A></H2><P> 相关度试图衡量哪一个文档是检索中最关注的，所以当有很多匹配时，最相关的一个则最先显示。
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>提供了两个预定义的相关函数，其中考虑了词法，距离，和结构信息；也就是，
+他们考虑查询词在文档中出现的频率，术语在文档中的紧密程度，以及它们在文档中的部分的重要性。
+然而，相关性的概念是模糊的，并且是特定应用程序。不同的应用程序可能需要额外的相关信息，
+例如，文档的修改时间。内置的相关函数是唯一的例子。为了以满足您的特定需求，你可以写你自己的相关函数和/或与其他因素相结合的结果。</P><P>
+当前可用的两个相关函数：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL">ts_rank([<SPAN CLASS="OPTIONAL"> <TT CLASS="REPLACEABLE"><I>weights</I></TT> <TT CLASS="TYPE">float4[]</TT>, </SPAN>] <TT CLASS="REPLACEABLE"><I>vector</I></TT> <TT CLASS="TYPE">tsvector</TT>, <TT CLASS="REPLACEABLE"><I>query</I></TT> <TT CLASS="TYPE">tsquery</TT> [<SPAN CLASS="OPTIONAL">, <TT CLASS="REPLACEABLE"><I>normalization</I></TT> <TT CLASS="TYPE">integer</TT> </SPAN>]) returns <TT CLASS="TYPE">float4</TT></TT></DT><DD><P>
+基于匹配词汇频率的列向量。
+</P></DD><DT><TT CLASS="LITERAL">ts_rank_cd([<SPAN CLASS="OPTIONAL"> <TT CLASS="REPLACEABLE"><I>weights</I></TT> <TT CLASS="TYPE">float4[]</TT>, </SPAN>] <TT CLASS="REPLACEABLE"><I>vector</I></TT> <TT CLASS="TYPE">tsvector</TT>, <TT CLASS="REPLACEABLE"><I>query</I></TT> <TT CLASS="TYPE">tsquery</TT> [<SPAN CLASS="OPTIONAL">, <TT CLASS="REPLACEABLE"><I>normalization</I></TT> <TT CLASS="TYPE">integer</TT> </SPAN>]) returns <TT CLASS="TYPE">float4</TT></TT></DT><DD><P> 这个函数计算给定文档向量和查询的<I CLASS="FIRSTTERM">覆盖密度</I>相关性，正如1999年在
+杂志“信息处理与管理”中Clarke，Cormack和Tudhope的“一至三项查询相关性排序”描述的一样。</P><P> 这些函数需要位置信息的输入。因此它不能在<SPAN CLASS="QUOTE">"剥离"</SPAN><TT CLASS="TYPE">tsvector</TT>值的情况下运行&mdash;它将总是返回零。</P></DD></DL></DIV><P>
+</P><P>
+对于这些函数，可选的<TT CLASS="REPLACEABLE"><I>weights</I></TT>参数提供权衡词的情况能力或多或少地取决于它们是如何被标记的。
+权重阵列指定顺序权重每类词的频率。
+</P><PRE CLASS="SYNOPSIS">{D-weight, C-weight, B-weight, A-weight}</PRE><P>
+如果没有提供<TT CLASS="REPLACEABLE"><I>weights</I></TT>，则利用这些缺省值：
+</P><PRE CLASS="PROGRAMLISTING">{0.1, 0.2, 0.4, 1.0}</PRE><P>
+通常的权重是用来标记文档特殊区域的词，如标题或最初的摘要，
+所以他们有着比文档主体中的词或多或少的重要性。
+</P><P>
+由于较长的文档有包含查询词的机会，它合理的考虑文档的大小，例如，
+带有搜索词的五个实例的百字文档可能比千字文档有更多的相关性。
+相关接受一个整数<TT CLASS="REPLACEABLE"><I>normalization</I></TT>选项，指定文档长度是否以及如何影响它的排序。
+整数选项控制一些行为，所以它是一位掩码：您可以使用<TT CLASS="LITERAL">|</TT>（例如，<TT CLASS="LITERAL">2|4</TT>）指定一个或多个行为。
+<P></P></P><UL COMPACT="COMPACT"><LI STYLE="list-style-type: disc"><P>
+0（缺省）表示跟长度大小没有关系
+</P></LI><LI STYLE="list-style-type: disc"><P> 1 表示关注度（rank）除以文档长度的对数+1</P></LI><LI STYLE="list-style-type: disc"><P> 2表示关注度除以文档的长度</P></LI><LI STYLE="list-style-type: disc"><P> 4表示关注度除以范围内的平均谐波距离，只能使用<CODE CLASS="FUNCTION">ts_rank_cd</CODE>实现。</P></LI><LI STYLE="list-style-type: disc"><P> 8表示关注度除以文档中唯一分词的数量</P></LI><LI STYLE="list-style-type: disc"><P> 16表示关注度除以唯一分词数量的对数+1</P></LI><LI STYLE="list-style-type: disc"><P> 32表示关注度除以本身+1</P></LI></UL><P>
+如果指定超过一个的标志位，则在列出顺序中应用转换。
+</P><P> 需要特别注意的是，相关函数不使用任何全局信息，所以不可能产生一个所需要的1%或100%的公平归一化。
+规范化选项32 (<TT CLASS="LITERAL">rank/(rank+1)</TT>)可用于所有规模排序到范围零到一之间，当然，这只是一个表面变化；
+它不会影响搜索结果的排序。</P><P>下面是一个例子，仅仅选择排名前十的匹配：
+</P><PRE CLASS="SCREEN">SELECT title, ts_rank_cd(textsearch, query) AS rank
+FROM apod, to_tsquery('neutrino|(dark &amp; matter)') query
+WHERE query @@ textsearch
+ORDER BY rank DESC
+LIMIT 10;
+                     title                     |   rank
+-----------------------------------------------+----------
+ Neutrinos in the Sun                          |      3.1
+ The Sudbury Neutrino Detector                 |      2.4
+ A MACHO View of Galactic Dark Matter          |  2.01317
+ Hot Gas and Dark Matter                       |  1.91171
+ The Virgo Cluster: Hot Plasma and Dark Matter |  1.90953
+ Rafting for Solar Neutrinos                   |      1.9
+ NGC 4650A: Strange Galaxy and Dark Matter     |  1.85774
+ Hot Gas and Dark Matter                       |   1.6123
+ Ice Fishing for Cosmic Neutrinos              |      1.6
+ Weak Lensing Distorts the Universe            | 0.818218</PRE><P>
+这是使用归一化排序的相同例子：
+</P><PRE CLASS="SCREEN">SELECT title, ts_rank_cd(textsearch, query, 32 /* rank/(rank+1) */ ) AS rank
+FROM apod, to_tsquery('neutrino|(dark &amp; matter)') query
+WHERE  query @@ textsearch
+ORDER BY rank DESC
+LIMIT 10;
+                     title                     |        rank
+-----------------------------------------------+-------------------
+ Neutrinos in the Sun                          | 0.756097569485493
+ The Sudbury Neutrino Detector                 | 0.705882361190954
+ A MACHO View of Galactic Dark Matter          | 0.668123210574724
+ Hot Gas and Dark Matter                       |  0.65655958650282
+ The Virgo Cluster: Hot Plasma and Dark Matter | 0.656301290640973
+ Rafting for Solar Neutrinos                   | 0.655172410958162
+ NGC 4650A: Strange Galaxy and Dark Matter     | 0.650072921219637
+ Hot Gas and Dark Matter                       | 0.617195790024749
+ Ice Fishing for Cosmic Neutrinos              | 0.615384618911517
+ Weak Lensing Distorts the Universe            | 0.450010798361481</PRE><P>
+</P><P> 排序花费比较多，因为它需要查找每个匹配文档的<TT CLASS="TYPE">tsvector</TT>，这与I/O绑定，因此慢。
+不幸的是，它几乎是不可能避免因实际的查询往往导致的大量匹配。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TEXTSEARCH-HEADLINE">12.3.4. 强调结果</A></H2><P> 为显示搜索结果，合理显示每个文档的一部分以及查询相关性。通常，搜索引擎显示标记搜索条件的文档片段。
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>提供了一个函数<CODE CLASS="FUNCTION">ts_headline</CODE>实现此功能。</P><PRE CLASS="SYNOPSIS">ts_headline([<SPAN
+CLASS="OPTIONAL"
+> <TT
+CLASS="REPLACEABLE"
+><I
+>config</I
+></TT
+> <TT
+CLASS="TYPE"
+>regconfig</TT
+>, </SPAN
+>] <TT
+CLASS="REPLACEABLE"
+><I
+>document</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>query</I
+></TT
+> <TT
+CLASS="TYPE"
+>tsquery</TT
+> [<SPAN
+CLASS="OPTIONAL"
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>options</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+> </SPAN
+>]) returns <TT
+CLASS="TYPE"
+>text</TT
+></PRE><P> <CODE CLASS="FUNCTION">ts_headline</CODE>接受查询文档，并从突显的查询条件的文档中返回一个摘录。配置用来解析<TT CLASS="REPLACEABLE"><I>config</I></TT>指定的文档；
+如果省略<TT CLASS="REPLACEABLE"><I>config</I></TT>，则使用<TT CLASS="VARNAME">default_text_search_config</TT>配置。</P><P>
+如果指定一个<TT CLASS="REPLACEABLE"><I>options</I></TT>字符串，它必须由一个逗号分隔的一个或多个<TT CLASS="REPLACEABLE"><I>option</I></TT><TT CLASS="LITERAL">=</TT><TT CLASS="REPLACEABLE"><I>value</I></TT>对组成。可用选项是：
+<P></P></P><UL COMPACT="COMPACT"><LI STYLE="list-style-type: disc"><P>
+<TT CLASS="LITERAL">StartSel</TT>, <TT CLASS="LITERAL">StopSel</TT>:该字符串分隔文档中出现的查询词，以区别于其他摘录词。
+如果它们含有空格或逗号，你必须用双引号字符串。
+</P></LI><LI STYLE="list-style-type: disc"><P> <TT CLASS="LITERAL">MaxWords</TT>, <TT CLASS="LITERAL">MinWords</TT>:这些数字决定最长和最短的标题输出。</P></LI><LI STYLE="list-style-type: disc"><P> <TT CLASS="LITERAL">ShortWord</TT>:这个长度或更短的词在标题的开始和结束被丢弃。三个默认值消除了常见英语文章。</P></LI><LI STYLE="list-style-type: disc"><P> <TT CLASS="LITERAL">HighlightAll</TT>:布尔标志；如果为<TT CLASS="LITERAL">真</TT>，整个文档将作为标题，忽略了前面的三个参数。</P></LI><LI STYLE="list-style-type: disc"><P> <TT CLASS="LITERAL">MaxFragments</TT>:要显示的文本摘录或片段的最大数量。默认值零选择非片段标题的生成方法。
+一个大于零的值选择基于片段的标题生成。此方法查找文本片段与尽可能多的查询词并在查询词周围延伸这些片段。
+作为查询词的结果接近每一片段中间，每边都有词。每个片段至多是<TT CLASS="LITERAL">MaxWords</TT> ，并且长度为<TT CLASS="LITERAL">ShortWord</TT>或更短的词在每一个片段开始和结束被丢弃。
+如果不是所有的查询词在文档中找到，则文档中开头的<TT CLASS="LITERAL">MinWords</TT>单片段将被显示。</P></LI><LI STYLE="list-style-type: disc"><P> <TT CLASS="LITERAL">FragmentDelimiter</TT>:当一个以上的片段显示时，通过字符串分隔这些片段。</P></LI></UL><P>
+任何未声明的选项接受这些缺省：
+</P><PRE CLASS="PROGRAMLISTING">StartSel=&lt;b&gt;, StopSel=&lt;/b&gt;,
+MaxWords=35, MinWords=15, ShortWord=3, HighlightAll=FALSE,
+MaxFragments=0, FragmentDelimiter=" ... "</PRE><P>
+</P><P>
+比如:
+</P><PRE CLASS="SCREEN">SELECT ts_headline('english',
+  'The most common type of search
+is to find all documents containing given query terms
+and return them in order of their similarity to the
+query.',
+  to_tsquery('query &amp; similarity'));
+                        ts_headline                         
+------------------------------------------------------------
+ containing given &lt;b&gt;query&lt;/b&gt; terms
+ and return them in order of their &lt;b&gt;similarity&lt;/b&gt; to the
+ &lt;b&gt;query&lt;/b&gt;.
+
+SELECT ts_headline('english',
+  'The most common type of search
+is to find all documents containing given query terms
+and return them in order of their similarity to the
+query.',
+  to_tsquery('query &amp; similarity'),
+  'StartSel = &lt;, StopSel = &gt;');
+                      ts_headline                      
+-------------------------------------------------------
+ containing given &lt;query&gt; terms
+ and return them in order of their &lt;similarity&gt; to the
+ &lt;query&gt;.</PRE><P>
+</P><P>
+<CODE CLASS="FUNCTION">ts_headline</CODE>使用原始文档，而不是一个<TT CLASS="TYPE">tsvector</TT>摘要，因此它很慢，应小心使用。
+一个典型的错误是，当只显示10个文档时，为<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">每个</I></SPAN>匹配文档调用<CODE CLASS="FUNCTION">ts_headline</CODE>。<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>子查询可以帮忙，
+这是一个例子：
+</P><PRE CLASS="PROGRAMLISTING">SELECT id, ts_headline(body, q), rank
+FROM (SELECT id, body, q, ts_rank_cd(ti, q) AS rank
+      FROM apod, to_tsquery('stars') q
+      WHERE ti @@ q
+      ORDER BY rank DESC
+      LIMIT 10) AS foo;</PRE><P>
+</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="textsearch-tables.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="textsearch-features.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">表和索引</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">附加功能</TD></TR></TABLE></DIV></BODY></HTML>

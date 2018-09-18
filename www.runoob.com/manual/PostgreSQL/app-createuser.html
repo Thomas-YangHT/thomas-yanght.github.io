@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>createuser</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="PostgreSQL 客户端应用程序" HREF="http://school.yunwei.edu/manual/PostgreSQL/reference-client.html"><LINK REL="PREVIOUS" TITLE="createlang" HREF="app-createlang.html"><LINK REL="NEXT" TITLE="dropdb" HREF="app-dropdb.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/createuser.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="createlang" HREF="app-createlang.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/reference-client.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="dropdb" HREF="app-dropdb.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="APP-CREATEUSER"></A><SPAN CLASS="APPLICATION">createuser</SPAN></H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN82784"></A><H2>&#21517;&#31216;</H2>createuser&nbsp;--&nbsp;创建一个新的<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>用户帐户</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN82790"></A><H2>&#22823;&#32434;</H2><P><TT CLASS="COMMAND">createuser</TT> [<TT CLASS="REPLACEABLE"><I>connection-option</I></TT>...] [<TT CLASS="REPLACEABLE"><I>option</I></TT>...] [<TT CLASS="REPLACEABLE"><I>username</I></TT>]</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN82799"></A><H2>描述</H2><P> <SPAN CLASS="APPLICATION">createuser</SPAN>创建一个新的<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+用户（更准确地说是一个角色）。
+只有超级用户和具有<TT CLASS="LITERAL">CREATEROLE</TT>权限的用户可以创建新的用户。
+因此<SPAN CLASS="APPLICATION">createuser</SPAN>必须由超级用户或者是具有
+<TT CLASS="LITERAL">CREATEROLE</TT>权限的用户执行。
+</P><P> 如果你想创建一个新的超级用户，你必须以超级用户身份连接，
+而不仅仅是一个有<TT CLASS="LITERAL">CREATEROLE</TT>权限的用户。
+成为超级用户就意味着将在数据库里绕开所有访问权限检查，因此，不要轻易授予超级用户权限。
+</P><P> <SPAN CLASS="APPLICATION">createuser</SPAN>是对
+<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>命令<A HREF="sql-createrole.html">CREATE ROLE</A>的封装。
+因此，用哪种方法创建的用户都一样。
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN82813"></A><H2>选项</H2><P> <SPAN CLASS="APPLICATION">createuser</SPAN>接受下列命令行参数：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="REPLACEABLE"><I>username</I></TT></DT><DD><P> 指定要创建的<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>用户名称。
+此名称必须与本
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>安装的所有现有角色不同。
+</P></DD><DT><TT CLASS="OPTION">-c <TT CLASS="REPLACEABLE"><I>number</I></TT></TT><BR><TT CLASS="OPTION">--connection-limit=<TT CLASS="REPLACEABLE"><I>number</I></TT></TT></DT><DD><P> 为新用户设置最大数目的连接限制。缺省为无限制。
+</P></DD><DT><TT CLASS="OPTION">-d</TT><BR><TT CLASS="OPTION">--createdb</TT></DT><DD><P> 允许该新用户创建数据库。
+</P></DD><DT><TT CLASS="OPTION">-D</TT><BR><TT CLASS="OPTION">--no-createdb</TT></DT><DD><P> 禁止该新用户创建数据库。这是缺省（设置）。
+</P></DD><DT><TT CLASS="OPTION">-e</TT><BR><TT CLASS="OPTION">--echo</TT></DT><DD><P> 回显<SPAN CLASS="APPLICATION">createuser</SPAN>生成并发送到服务端的命令。
+</P></DD><DT><TT CLASS="OPTION">-E</TT><BR><TT CLASS="OPTION">--encrypted</TT></DT><DD><P> 加密存储在数据库中的用户的密码。
+如果没有指定，使用缺省设置。
+</P></DD><DT><TT CLASS="OPTION">-i</TT><BR><TT CLASS="OPTION">--inherit</TT></DT><DD><P> 该新角色将自动继承其所属角色组的权限。这是缺省（设置）。
+</P></DD><DT><TT CLASS="OPTION">-I</TT><BR><TT CLASS="OPTION">--no-inherit</TT></DT><DD><P> 该新角色将不会自动继承他所属角色组的权限。
+</P></DD><DT><TT CLASS="OPTION">--interactive</TT></DT><DD><P> 若没有在命令行上指定用户名，提示缺少用户名。并且
+<TT CLASS="OPTION">-d</TT>/<TT CLASS="OPTION">-D</TT>,
+<TT CLASS="OPTION">-r</TT>/<TT CLASS="OPTION">-R</TT>,
+<TT CLASS="OPTION">-s</TT>/<TT CLASS="OPTION">-S</TT>选项任何属性没有在命令行指定，也会提示缺少属性（而不会使用缺省值）。
+（PostgreSQL 9.1以前这是缺省的设置。）
+</P></DD><DT><TT CLASS="OPTION">-l</TT><BR><TT CLASS="OPTION">--login</TT></DT><DD><P> 该新用户将允许登录（也就是说，用户名可以作为初始会话的用户标识符）。这是缺省（设置）。
+</P></DD><DT><TT CLASS="OPTION">-L</TT><BR><TT CLASS="OPTION">--no-login</TT></DT><DD><P> 该新用户将不允许登录。
+（作为管理数据库权限的手段，（设置）没有登录权限的角色仍然是有必要的。）
+</P></DD><DT><TT CLASS="OPTION">-N</TT><BR><TT CLASS="OPTION">--unencrypted</TT></DT><DD><P> 不加密存储在数据库中的用户的密码。
+如果没有指定，使用缺省设置
+</P></DD><DT><TT CLASS="OPTION">-P</TT><BR><TT CLASS="OPTION">--pwprompt</TT></DT><DD><P> 如果给出（此选项），<SPAN CLASS="APPLICATION">createuser</SPAN>将提示输入新用户的密码。
+如果不准备使用密码认证方式，那么没必要这么做。
+</P></DD><DT><TT CLASS="OPTION">-r</TT><BR><TT CLASS="OPTION">--createrole</TT></DT><DD><P> 该新用户将允许创建新角色
+（即，该用户将拥有<TT CLASS="LITERAL">CREATEROLE</TT>权限）。
+</P></DD><DT><TT CLASS="OPTION">-R</TT><BR><TT CLASS="OPTION">--no-createrole</TT></DT><DD><P> 该新用户将不能创建新角色。这是缺省（设置）。
+</P></DD><DT><TT CLASS="OPTION">-s</TT><BR><TT CLASS="OPTION">--superuser</TT></DT><DD><P> 该新用户将是一个超级用户。
+</P></DD><DT><TT CLASS="OPTION">-S</TT><BR><TT CLASS="OPTION">--no-superuser</TT></DT><DD><P> 该新用户将不是一个超级用户。这是缺省（设置）。
+</P></DD><DT><TT CLASS="OPTION">-V</TT><BR><TT CLASS="OPTION">--version</TT></DT><DD><P> 输出<SPAN CLASS="APPLICATION">createuser</SPAN>命令的版本信息，然后退出。
+</P></DD><DT><TT CLASS="OPTION">--replication</TT></DT><DD><P> 该新用户将拥有<TT CLASS="LITERAL">REPLICATION</TT>权限（即角色能启动复制），
+完整的描述见文档<A HREF="sql-createrole.html">CREATE ROLE</A>。
+</P></DD><DT><TT CLASS="OPTION">--no-replication</TT></DT><DD><P> 该新用户将没有<TT CLASS="LITERAL">REPLICATION</TT>权限（即角色不能启动复制），
+完整的描述见文档<A HREF="sql-createrole.html">CREATE ROLE</A>。
+</P></DD><DT><TT CLASS="OPTION">-?</TT><BR><TT CLASS="OPTION">--help</TT></DT><DD><P> 显示<SPAN CLASS="APPLICATION">createuser</SPAN>命令的帮助信息，然后退出。
+</P></DD></DL></DIV><P>
+</P><P> <SPAN CLASS="APPLICATION">createuser</SPAN>还接受以下命令行选项用于连接参数：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="OPTION">-h <TT CLASS="REPLACEABLE"><I>host</I></TT></TT><BR><TT CLASS="OPTION">--host=<TT CLASS="REPLACEABLE"><I>host</I></TT></TT></DT><DD><P> 指定运行服务端的主机名。如果数值以斜杠开头则被用作到Unix域套接字的路径。
+</P></DD><DT><TT CLASS="OPTION">-p <TT CLASS="REPLACEABLE"><I>port</I></TT></TT><BR><TT CLASS="OPTION">--port=<TT CLASS="REPLACEABLE"><I>port</I></TT></TT></DT><DD><P> 指定服务端侦听的TCP端口或一个本地Unix域套接字文件的扩展(描述符)。
+</P></DD><DT><TT CLASS="OPTION">-U <TT CLASS="REPLACEABLE"><I>username</I></TT></TT><BR><TT CLASS="OPTION">--username=<TT CLASS="REPLACEABLE"><I>username</I></TT></TT></DT><DD><P> 进行联接的用户名（不是要创建的用户名）。
+</P></DD><DT><TT CLASS="OPTION">-w</TT><BR><TT CLASS="OPTION">--no-password</TT></DT><DD><P> 永远不提示输入密码。 如果服务器要求密码验证和密码
+（并且）通过其他方式如 <TT CLASS="FILENAME">.pgpass</TT>文件（验证）不可用，
+则联接尝试将失败。 此选项在不需要用户输入密码的批处理作业和脚本中非常有用。
+</P></DD><DT><TT CLASS="OPTION">-W</TT><BR><TT CLASS="OPTION">--password</TT></DT><DD><P> 强制<SPAN CLASS="APPLICATION">createuser</SPAN>提示输入密码
+（用于联接到服务端，而不是新用户的密码）。
+</P><P> 这个选项不是必须的，如果服务器要求认证密码
+<SPAN CLASS="APPLICATION">createuser</SPAN>会自动提示需输入密码。
+然而，<SPAN CLASS="APPLICATION">createuser</SPAN>会浪费一个联接尝试判断出该服务器需要密码。
+在某些情况下，这是值得键入<TT CLASS="OPTION">-W</TT>以避免多余的联接尝试。
+</P></DD></DL></DIV><P>
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN83026"></A><H2>环境变量</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="ENVAR">PGHOST</TT><BR><TT CLASS="ENVAR">PGPORT</TT><BR><TT CLASS="ENVAR">PGUSER</TT></DT><DD><P> 缺省的联接参数
+</P></DD></DL></DIV><P> 此实用工具，像大多其他的<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>实用工具，
+还使用<SPAN CLASS="APPLICATION">libpq</SPAN>支持的环境变量(见 <A HREF="libpq-envars.html">第 31.14 &#33410;</A>)。
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN83042"></A><H2>诊断</H2><P> 如果有问题，将会显示后端错误信息。参阅<A HREF="sql-createrole.html">CREATE ROLE</A>
+和<A HREF="app-psql.html"><SPAN CLASS="APPLICATION">psql</SPAN></A>获取可能的问题和错误消息的描述。
+数据库服务端必须运行在目标主机。此外，前端库
+<SPAN CLASS="APPLICATION">libpq</SPAN>中的所有缺省连接设置和环境变量都将适用。
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN83048"></A><H2>示例</H2><P> 在缺省数据库服务器上创建一个<TT CLASS="LITERAL">joe</TT>用户：
+</P><PRE CLASS="SCREEN"><SAMP
+CLASS="PROMPT"
+>$ </SAMP
+><KBD
+CLASS="USERINPUT"
+>createuser joe</KBD
+></PRE><P>
+</P><P> To create a user <TT CLASS="LITERAL">joe</TT> on the default database
+server with prompting for some additional attributes:
+</P><PRE CLASS="SCREEN"><SAMP
+CLASS="PROMPT"
+>$ </SAMP
+><KBD
+CLASS="USERINPUT"
+>createuser --interactive joe</KBD
+>
+<SAMP
+CLASS="COMPUTEROUTPUT"
+>Shall the new role be a superuser? (y/n) </SAMP
+><KBD
+CLASS="USERINPUT"
+>n</KBD
+>
+<SAMP
+CLASS="COMPUTEROUTPUT"
+>Shall the new role be allowed to create databases? (y/n) </SAMP
+><KBD
+CLASS="USERINPUT"
+>n</KBD
+>
+<SAMP
+CLASS="COMPUTEROUTPUT"
+>Shall the new role be allowed to create more new roles? (y/n) </SAMP
+><KBD
+CLASS="USERINPUT"
+>n</KBD
+></PRE><P>
+</P><P> 在主机<TT CLASS="LITERAL">eden</TT>端口5000的服务端里创建（跟上例）一样<TT CLASS="LITERAL">joe</TT>用户，
+明确指定属性，请看下列命令：
+</P><PRE CLASS="SCREEN"><SAMP
+CLASS="PROMPT"
+>$ </SAMP
+><KBD
+CLASS="USERINPUT"
+>createuser -h eden -p 5000 -S -D -R -e joe</KBD
+>
+<SAMP
+CLASS="COMPUTEROUTPUT"
+>CREATE ROLE joe NOSUPERUSER NOCREATEDB NOCREATEROLE INHERIT LOGIN;</SAMP
+></PRE><P>
+</P><P> 创建超级用户<TT CLASS="LITERAL">joe</TT>，并立即指定一个密码：
+</P><PRE CLASS="SCREEN"><SAMP
+CLASS="PROMPT"
+>$ </SAMP
+><KBD
+CLASS="USERINPUT"
+>createuser -P -s -e joe</KBD
+>
+<SAMP
+CLASS="COMPUTEROUTPUT"
+>Enter password for new role: </SAMP
+><KBD
+CLASS="USERINPUT"
+>xyzzy</KBD
+>
+<SAMP
+CLASS="COMPUTEROUTPUT"
+>Enter it again: </SAMP
+><KBD
+CLASS="USERINPUT"
+>xyzzy</KBD
+>
+<SAMP
+CLASS="COMPUTEROUTPUT"
+>CREATE ROLE joe PASSWORD 'md5b5f5ba1a423792b526f799ae4eb3d59e' SUPERUSER CREATEDB CREATEROLE INHERIT LOGIN;</SAMP
+></PRE><P>
+在上面例子中，虽然新密码在输入的时候实际上并不会回显出来，但是我们还是明确的把它显示出来了。
+正如你看到的，密码是加密后发送到客户端。
+如果使用选项<TT CLASS="OPTION">--unencrypted</TT>密码将会回显出来
+（也可能在服务器日志和其他地方），
+所以在其他人能看到你的屏幕的时候不要使用<TT CLASS="OPTION">-e</TT>选项。
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN83085"></A><H2>另请参阅</H2><A HREF="app-dropuser.html"><SPAN CLASS="APPLICATION">dropuser</SPAN></A>, <A HREF="sql-createrole.html">CREATE ROLE</A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="app-createlang.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="app-dropdb.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><SPAN CLASS="APPLICATION">createlang</SPAN></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/reference-client.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><SPAN CLASS="APPLICATION">dropdb</SPAN></TD></TR></TABLE></DIV></BODY></HTML>

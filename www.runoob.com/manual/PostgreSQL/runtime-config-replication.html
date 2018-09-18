@@ -1,0 +1,99 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>复制</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="服务器配置" HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime-config.html"><LINK REL="PREVIOUS" TITLE="预写式日志" HREF="runtime-config-wal.html"><LINK REL="NEXT" TITLE="查询规划" HREF="runtime-config-query.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/config.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="预写式日志" HREF="runtime-config-wal.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime-config.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 18. 服务器配置</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="查询规划" HREF="runtime-config-query.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RUNTIME-CONFIG-REPLICATION">18.6. 复制</A></H1><P> 这些设置控制<I CLASS="FIRSTTERM">流复制</I>特性(参见
+<A HREF="warm-standby.html#STREAMING-REPLICATION">第 25.2.5 &#33410;</A>)。
+服务器将是任何一个主或备用服务器。主服务器可以发送数据，
+而备用(s)总是拷贝数据的接收器。当使用级联复制时(参见<A HREF="warm-standby.html#CASCADING-REPLICATION">第 25.2.6 &#33410;</A>)，
+备用服务器(s)也可以是发送者，也可以是接收器。
+参数主要用于发送和备用服务器，虽然有些参数仅在主服务器上。
+如果是必需的，那么通过集群设置可能会有所不同。 </P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="RUNTIME-CONFIG-REPLICATION-SENDER">18.6.1. 发送服务器</A></H2><P> 这些参数可以在发送复制的数据给一个或多个备用服务器的任何服务器上进行设置。
+主服务器总是发送服务器，所以这些参数必须总是在主服务器上设置。
+备用成为主之后这些参数的作用和意义不会改变。</P><P></P><DIV CLASS="VARIABLELIST"><DL><DT><A NAME="GUC-MAX-WAL-SENDERS"></A><TT CLASS="VARNAME">max_wal_senders</TT> (<TT CLASS="TYPE">integer</TT>)</DT><DD><P> 指定来自备用服务器或流基础备份客户端的并发连接的最大数目
+（即同时运行WAL发送者进程的最大数目）。
+默认值是零，这意味着禁用复制。
+WAL发送者进程计算连接总数，
+因此参数不能高于<A HREF="runtime-config-connection.html#GUC-MAX-CONNECTIONS">max_connections</A>。
+这个参数只能在服务器启动时设置。<TT CLASS="VARNAME">wal_level</TT>必须设置
+为<TT CLASS="LITERAL">archive</TT>或者<TT CLASS="LITERAL">hot_standby</TT>允许来自备用服务器的连接。</P></DD><DT><A NAME="GUC-WAL-KEEP-SEGMENTS"></A><TT CLASS="VARNAME">wal_keep_segments</TT> (<TT CLASS="TYPE">integer</TT>)</DT><DD><P> 指定在<TT CLASS="FILENAME">pg_xlog</TT>目录下的以往日志文件段的最小数量，
+如果备用服务器为了流复制需要获取它们。
+那么每个段通常是16兆字节。
+如果备用服务器连接到发送服务器落后于<TT CLASS="VARNAME">wal_keep_segments</TT>段，那么发送服务器可能会删除WAL段仍需要待机状态，在这种情况下，
+复制连接将被终止。下游连接也将最终失败，因为其结果。（但是，备用服务器可以从归档文件读取的段进行恢复，如果WAL归档在使用中。）</P><P> 设置保留在<TT CLASS="FILENAME">pg_xlog</TT>中的段最小数量;
+该系统可能需要为WAL归档或从检查点恢复保留更多段。
+如果<TT CLASS="VARNAME">wal_keep_segments</TT>为0（默认），
+系统不保留备用目的的任何额外段，
+所以提供给备用服务器的旧WAL段数是以前检查点定位函数和WAL归档状态信息。
+这个参数只能在<TT CLASS="FILENAME">postgresql.conf</TT>文件或服务器命令行上设置。</P></DD><DT><A NAME="GUC-WAL-SENDER-TIMEOUT"></A><TT CLASS="VARNAME">wal_sender_timeout</TT> (<TT CLASS="TYPE">integer</TT>)</DT><DD><P> 终止比指定毫秒数闲置更长时间的复制连接。
+这对于发送服务器检测待机死机或网络中断是很有帮助的。
+零值将禁用超时机制。
+此参数只能在<TT CLASS="FILENAME">postgresql.conf</TT>文件或服务器命令行上设置。
+默认值是60秒。</P></DD></DL></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="RUNTIME-CONFIG-REPLICATION-MASTER">18.6.2. 主服务器</A></H2><P> 这些参数可以在主/首要的服务器上设置，它将复制的数据发送给一个或多个备用服务器。
+需要注意的是，除了这些参数，<A HREF="runtime-config-wal.html#GUC-WAL-LEVEL">wal_level</A>必须在主服务器上适当地设定，
+并且启用任选的WAL归档（参见<A HREF="runtime-config-wal.html#RUNTIME-CONFIG-WAL-ARCHIVING">第 18.5.3 &#33410;</A>）。
+备用服务器上这些参数值是不相关的，虽然你可能希望设置它们，为了备用的成为主服务器可能性做准备。</P><P></P><DIV CLASS="VARIABLELIST"><DL><DT><A NAME="GUC-SYNCHRONOUS-STANDBY-NAMES"></A><TT CLASS="VARNAME">synchronous_standby_names</TT> (<TT CLASS="TYPE">string</TT>)</DT><DD><P> 指定用逗号分隔的备用名称列表，可以支持<I CLASS="FIRSTTERM">同步复制</I>，
+如<A HREF="warm-standby.html#SYNCHRONOUS-REPLICATION">第 25.2.7 &#33410;</A>描述的。
+任何一个时间将至多有一个活跃同步备用;
+这个备用服务器确认收到他们的数据后，等待提交事务将被允许进行。
+同步待机是此列表中第一个备用。列表是当前连接和实时数据流（如通过
+<A HREF="monitoring-stats.html#MONITORING-STATS-VIEWS-TABLE"> <TT CLASS="LITERAL">pg_stat_replication</TT></A>视图中的<TT CLASS="LITERAL">streaming</TT>状态显示）。
+之后出现在此列表中的其它备用服务器带来潜在的同步备用。
+如果无论出于何种原因当前同步待机断开，那么它会立即被下一个最高优先级的替换。
+指定多个备用名可以有非常高的可用性。</P><P> 备用服务器用于此目的的名称是备用<TT CLASS="VARNAME">application_name</TT>的设定，
+正如备用walreceiver中<TT CLASS="VARNAME">primary_conninfo</TT>的设置。
+没有任何机制来保证唯一性。重复匹配备用记录中的一个的情况下将被选作同步待机，
+虽然哪一个是不确定的。 特殊项<TT CLASS="LITERAL">*</TT>匹配任何的
+<TT CLASS="VARNAME">application_name</TT>，包括<TT CLASS="LITERAL">walreceiver</TT>的默认应用程序名称。</P><P> 如果没有在这里指定同步备用名，那么不启用同步复制并且事务提交将不会等待复制。这是默认配置。
+即使当已经启用同步复制，个别事务可以配置而不等待复制，它通过设置
+<A HREF="runtime-config-wal.html#GUC-SYNCHRONOUS-COMMIT">synchronous_commit</A>参数到
+<TT CLASS="LITERAL">local</TT>或者<TT CLASS="LITERAL">off</TT>。</P><P> 这个参数只能在<TT CLASS="FILENAME">postgresql.conf</TT>文件或者服务器命令行设置。</P></DD><DT><A NAME="GUC-VACUUM-DEFER-CLEANUP-AGE"></A><TT CLASS="VARNAME">vacuum_defer_cleanup_age</TT> (<TT CLASS="TYPE">integer</TT>)</DT><DD><P> 指定由<TT CLASS="COMMAND">VACUUM</TT>和
+<ACRONYM CLASS="ACRONYM">HOT</ACRONYM>更新的事务数将延迟死行版本的清理。
+该默认值是零事务，这意味着死行版本可以尽快删除，
+也就是说，只要他们不再可见于任何打开的事务。
+你不妨将它设置为一个支持双机热备的主服务器上的非零值，
+正如<A HREF="hot-standby.html">第 25.5 &#33410;</A>所描述的。
+这需要更多的时间完成待机状态的查询，由于行早期清除而不会产生冲突。
+然而，因为该值是依据发生在主服务器上的写入事务数量进行计算，
+它是很难预测到底有多少额外的宽限时间将提供给备用查询。
+这个参数只能在<TT CLASS="FILENAME">postgresql.conf</TT>
+文件或服务器命令行上设置。</P><P> 你也应该考虑在备用服务器(s)设置<TT CLASS="VARNAME">hot_standby_feedback</TT>，作为使用该参数的另外一种选择。</P></DD></DL></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="RUNTIME-CONFIG-REPLICATION-STANDBY">18.6.3. 备用服务器</A></H2><P> 这些设置控制备用服务器的行为以接收复制数据。
+在主服务器上的值是不相关的。</P><P></P><DIV CLASS="VARIABLELIST"><DL><DT><A NAME="GUC-HOT-STANDBY"></A><TT CLASS="VARNAME">hot_standby</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> 指定恢复期间是否可以连接并运行查询，如在<A HREF="hot-standby.html">第 25.5 &#33410;</A>中所描述的。
+默认值是<TT CLASS="LITERAL">off</TT>。
+这个参数只能在服务器启动时设置。它在存档恢复或处于待机模式时见效。</P></DD><DT><A NAME="GUC-MAX-STANDBY-ARCHIVE-DELAY"></A><TT CLASS="VARNAME">max_standby_archive_delay</TT> (<TT CLASS="TYPE">integer</TT>)</DT><DD><P>
+当热备是活跃时，这个参数决定取消与应用的WAL项冲突的备用查询之前，备用服务器应等待多久。
+如<A HREF="hot-standby.html#HOT-STANDBY-CONFLICT">第 25.5.2 &#33410;</A>所描述的。
+<TT CLASS="VARNAME">max_standby_archive_delay</TT>适用于WAL数据从WAL归档读取（因此不是现在）。
+默认值是30秒。如果不指定，则单位是毫秒。
+值为-1允许待机永远等待完成查询冲突。
+这个参数只能在<TT CLASS="FILENAME">postgresql.conf</TT>文件或服务器命令行上设置。</P><P> 注意，<TT CLASS="VARNAME">max_standby_archive_delay</TT>和
+运行查询取消之前的时间最大长度不一样;
+而是可以申请任何一个WAL段数据的最大总时间。
+因此，如果一个查询导致WAL段中早期显著延迟，
+随后的冲突查询将有少得多的时间。 </P></DD><DT><A NAME="GUC-MAX-STANDBY-STREAMING-DELAY"></A><TT CLASS="VARNAME">max_standby_streaming_delay</TT> (<TT CLASS="TYPE">integer</TT>)</DT><DD><P> 当热备是活跃时，这个参数决定取消与应用的WAL项冲突的备用查询之前，备用服务器应等待多久。
+如<A HREF="hot-standby.html#HOT-STANDBY-CONFLICT">第 25.5.2 &#33410;</A>所描述的。
+<TT CLASS="VARNAME">max_standby_streaming_delay</TT>适用于WAL数据从流复制接收到。
+默认值是30秒。如果不指定，则单位是毫秒。
+值为-1允许待机永远等待完成查询冲突。
+这个参数只能在<TT CLASS="FILENAME">postgresql.conf</TT>文件或服务器命令行上设置。</P><P>注意，<TT CLASS="VARNAME">max_standby_streaming_delay</TT>和
+运行查询取消之前的时间最大长度不一样;
+一旦已经从主服务器接收，则是可以申请任何一个WAL段数据的最大总时间。
+因此，如果一个查询导致显著延迟，
+随后的冲突查询将有少得多的时间直到备用服务器再次追赶上。 </P></DD><DT><A NAME="GUC-WAL-RECEIVER-STATUS-INTERVAL"></A><TT CLASS="VARNAME">wal_receiver_status_interval</TT> (<TT CLASS="TYPE">integer</TT>)</DT><DD><P> 指定WAL接收的最小频率，处理备库上发送有关复制进程信息到主或上游待机状态，
+在那里可以使用可见的 <A HREF="monitoring-stats.html#MONITORING-STATS-VIEWS-TABLE"> <TT CLASS="LITERAL">pg_stat_replication</TT></A>视图。
+待机会报告它已写入的最后一个事务日志的位置，
+最后一个位置已经刷新到磁盘中，并已申请最后位置。
+此参数值的最大时间间隔，以秒为单位。
+更新每次写或刷新的位置变化，或者至少往往由这个参数所指定。因此，
+应用位置可能稍微落后于真实的位置。此参数设置为零完全禁用状态更新。这个参数只能在
+<TT CLASS="FILENAME">postgresql.conf</TT>文件或服务器命令行上设置。默认值是10秒。</P></DD><DT><A NAME="GUC-HOT-STANDBY-FEEDBACK"></A><TT CLASS="VARNAME">hot_standby_feedback</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> 指定热备是否将发送反馈到主或有关查询当前正在备机上执行的上游备机。此参数可以
+用于消除查询取消引起清除的记录，但可能会导致主机某些工作负载的数据库膨胀。
+反馈信息将不会被更频繁地发送超过一次<TT CLASS="VARNAME">wal_receiver_status_interval</TT>。缺省值是
+<TT CLASS="LITERAL">关闭的</TT>。这个参数只能在设置<TT CLASS="FILENAME">postgresql.conf</TT>文件或服务器命令行上。</P><P> 如果级联复制是使用中的反馈通过上游直到它最终到达主机。备用不作任何其他用途
+反馈他们收到以外的其他上游传递。</P></DD><DT><A NAME="GUC-WAL-RECEIVER-TIMEOUT"></A><TT CLASS="VARNAME">wal_receiver_timeout</TT> (<TT CLASS="TYPE">integer</TT>)</DT><DD><P> 终止比指定毫秒数闲置更长时间的复制连接。
+这对于发送服务器检测待机死机或网络中断是很有帮助的。
+零值将禁用超时机制。
+此参数只能在<TT CLASS="FILENAME">postgresql.conf</TT>文件或服务器命令行上设置。
+默认值是60秒。</P></DD></DL></DIV></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="runtime-config-wal.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="runtime-config-query.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">预写式日志</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime-config.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">查询规划</TD></TR></TABLE></DIV></BODY></HTML>

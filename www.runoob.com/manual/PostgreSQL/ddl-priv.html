@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>权限</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="数据定义" HREF="http://school.yunwei.edu/manual/PostgreSQL/ddl.html"><LINK REL="PREVIOUS" TITLE="修改表" HREF="ddl-alter.html"><LINK REL="NEXT" TITLE="模式" HREF="ddl-schemas.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ddl.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="修改表" HREF="ddl-alter.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/ddl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 5. 数据定义</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="模式" HREF="ddl-schemas.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="DDL-PRIV">5.6. 权限</A></H1><P>当创建一个数据库对象时，它就被赋予了所有者。这个所有者通常是执行创建语句的角色。
+对大多数类型的对象，初始状态只有其所有者（或者超级管理员）可以对它做任何事情。
+要允许其他角色使用它，必须要经过<I CLASS="FIRSTTERM">权限</I>授予。</P><P>有好多种不同的权限：<TT CLASS="LITERAL">SELECT</TT>, <TT CLASS="LITERAL">INSERT</TT>, <TT CLASS="LITERAL">UPDATE</TT>,
+<TT CLASS="LITERAL">DELETE</TT>, <TT CLASS="LITERAL">TRUNCATE</TT>, <TT CLASS="LITERAL">REFERENCES</TT>, <TT CLASS="LITERAL">TRIGGER</TT>,
+<TT CLASS="LITERAL">CREATE</TT>, <TT CLASS="LITERAL">CONNECT</TT>, <TT CLASS="LITERAL">TEMPORARY</TT>, <TT CLASS="LITERAL">EXECUTE</TT>,
+和 <TT CLASS="LITERAL">USAGE</TT> 。适用于特定对象的权限因对象类型(表/函数等)不同而不同。
+有关<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>所支持的不同类型的权限的完整信息，
+请参考<A HREF="sql-grant.html">GRANT</A>的手册页。下面的章节将为你展示如何利用这些权限。</P><P>修改或者删除一个对象的权限永远是所有者独有的权限。</P><P>一个对象可以用<TT CLASS="COMMAND">ALTER</TT>命令以适当的对象类型赋予新的所有者，
+例如<A HREF="sql-altertable.html">ALTER TABLE</A>。超级用户总是可以这么做；
+普通用户只有在他同时是当前对象的所有者（或者所有角色的一个成员）
+和新所有者角色的成员时可以这样做。</P><P>使用<TT CLASS="COMMAND">GRANT</TT>命令赋予权限。例如，如果<TT CLASS="LITERAL">joe</TT>是一个已经存在的用户，
+而<TT CLASS="LITERAL">accounts</TT>是一个已经存在的表，更新表的权限可以用下面的命令赋予：
+</P><PRE CLASS="PROGRAMLISTING">GRANT UPDATE ON accounts TO joe;</PRE><P>
+在权限的位置写上<TT CLASS="LITERAL">ALL</TT>则赋予所有与该对象类型相关的权限。</P><P>名为<TT CLASS="LITERAL">PUBLIC</TT>的特殊<SPAN CLASS="QUOTE">"用户"</SPAN>可以用于将权限赋予系统中的所有用户。
+另外，还可以使用<SPAN CLASS="QUOTE">"组"</SPAN>角色来帮助管理一群用户的权限，细节可参见<A HREF="http://school.yunwei.edu/manual/PostgreSQL/user-manag.html">第 20 &#31456;</A>。</P><P>可以使用<TT CLASS="COMMAND">REVOKE</TT>命令撤销权限：
+</P><PRE CLASS="PROGRAMLISTING">REVOKE ALL ON accounts FROM PUBLIC;</PRE><P>
+对象所有者的特殊权限(也就是<TT CLASS="COMMAND">DROP</TT>, <TT CLASS="COMMAND">GRANT</TT>, <TT CLASS="COMMAND">REVOKE</TT>
+等权限)总是隐含地属于所有者，并且不能赋予或者撤销。
+但是对象所有者可以选择撤销自己的普通权限，比如把一个表做成对自己和别人都是只读的。</P><P>最初，只有对象所有者(或者超级用户)可以赋予或者撤销对象的权限。但是，
+我们可以赋予一个<SPAN CLASS="QUOTE">"with grant option"</SPAN>权限，这样就允许接受权限的人将该权限转授他人。
+如果授权选项后来被撤销，那么所有那些从这个接受者接受了权限的用户(直接或间级)都将失去该权限。
+细节详见<A HREF="sql-grant.html">GRANT</A>和<A HREF="sql-revoke.html">REVOKE</A>手册页。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="ddl-alter.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="ddl-schemas.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">修改表</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/ddl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">模式</TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>恢复目标设置</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="恢复配置" HREF="http://school.yunwei.edu/manual/PostgreSQL/recovery-config.html"><LINK REL="PREVIOUS" TITLE="归档恢复设置" HREF="archive-recovery-settings.html"><LINK REL="NEXT" TITLE="备用服务器设置" HREF="standby-settings.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/recovery-config.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="归档恢复设置" HREF="archive-recovery-settings.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/recovery-config.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 26. 恢复配置</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="备用服务器设置" HREF="standby-settings.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RECOVERY-TARGET-SETTINGS">26.2. 恢复目标设置</A></H1><P></P><DIV CLASS="VARIABLELIST"><DL><DT><A NAME="RECOVERY-TARGET-NAME"></A><TT CLASS="VARNAME">recovery_target_name</TT>
+(<TT CLASS="TYPE">string</TT>)</DT><DD><P> 此参数声明命名的还原点，
+使用<CODE CLASS="FUNCTION">pg_create_restore_point()</CODE>创建命名的还原点进行恢复。
+<TT CLASS="VARNAME">recovery_target_name</TT>,
+<A HREF="recovery-target-settings.html#RECOVERY-TARGET-TIME">recovery_target_time</A>或者
+<A HREF="recovery-target-settings.html#RECOVERY-TARGET-XID">recovery_target_xid</A>中最多指定其中之一。
+默认是恢复到WAL日志的结尾。</P></DD><DT><A NAME="RECOVERY-TARGET-TIME"></A><TT CLASS="VARNAME">recovery_target_time</TT>
+(<TT CLASS="TYPE">timestamp</TT>)</DT><DD><P> 这个参数设置一个时间戳进行恢复。
+<TT CLASS="VARNAME">recovery_target_time</TT>,
+<A HREF="recovery-target-settings.html#RECOVERY-TARGET-NAME">recovery_target_name</A>或者
+<A HREF="recovery-target-settings.html#RECOVERY-TARGET-XID">recovery_target_xid</A>中最多指定其中之一。
+缺省是恢复到WAL日志的结尾。精确的停止点也受到<A HREF="recovery-target-settings.html#RECOVERY-TARGET-INCLUSIVE">recovery_target_inclusive</A>的影响。</P></DD><DT><A NAME="RECOVERY-TARGET-XID"></A><TT CLASS="VARNAME">recovery_target_xid</TT> (<TT CLASS="TYPE">string</TT>)</DT><DD><P> 这个参数声明一个事务ID，恢复达到这个ID号。
+需要注意的是，当在事务开始时，会被顺序分配事务ID，事务会以不同数字顺序结束。
+将被恢复的事务是那些在指定的事务之前提交事务（或包含该事务）。
+<TT CLASS="VARNAME">recovery_target_xid</TT>,
+<A HREF="recovery-target-settings.html#RECOVERY-TARGET-NAME">recovery_target_name</A>或者
+<A HREF="recovery-target-settings.html#RECOVERY-TARGET-TIME">recovery_target_time</A>中最多指定其中之一。
+缺省是恢复到WAL日志尾。精确的停止时间也受<A HREF="recovery-target-settings.html#RECOVERY-TARGET-INCLUSIVE">recovery_target_inclusive</A>的影响。</P></DD><DT><A NAME="RECOVERY-TARGET-INCLUSIVE"></A><TT CLASS="VARNAME">recovery_target_inclusive</TT>
+(<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> 声明是否在指定恢复目标(<TT CLASS="LITERAL">true</TT>)之后停止，或在这(<TT CLASS="LITERAL">false</TT>)之前停止。
+应用于为恢复声明的<A HREF="recovery-target-settings.html#RECOVERY-TARGET-TIME">recovery_target_time</A>
+和<A HREF="recovery-target-settings.html#RECOVERY-TARGET-XID">recovery_target_xid</A>中。这表示事务明确的提交时间或ID是否会分别被包含在恢复中。
+缺省是<TT CLASS="LITERAL">true</TT>。</P></DD><DT><A NAME="RECOVERY-TARGET-TIMELINE"></A><TT CLASS="VARNAME">recovery_target_timeline</TT>
+(<TT CLASS="TYPE">string</TT>)</DT><DD><P> 声明在一个指定时间线进行恢复。缺省是当前正在进行基础备份的时间线。
+设置它为<TT CLASS="LITERAL">latest</TT>用来恢复到归档中发现的最新时间线，这在备用服务器中是有用的。
+除非你需要在复杂的不断重新恢复的情况下设置这个参数。在这种情况下，需要返回一个在PITR
+之后需要达到的状态。
+参阅<A HREF="continuous-archiving.html#BACKUP-TIMELINES">第 24.3.5 &#33410;</A>获取更多详细信息。</P></DD><DT><A NAME="PAUSE-AT-RECOVERY-TARGET"></A><TT CLASS="VARNAME">pause_at_recovery_target</TT>
+(<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> 当达到恢复目标时，指定是否恢复应该暂停。默认是真。
+如果恢复目标是恢复最理想的点，这是为了允许查询被执行反对
+检查数据库。暂停状态可以使用<CODE CLASS="FUNCTION">pg_xlog_replay_resume()</CODE>（参见
+<A HREF="functions-admin.html#FUNCTIONS-RECOVERY-CONTROL-TABLE">&#34920; 9-62</A>）恢复，然后
+使恢复结束。如果恢复目标不是所需的停止点，那么关闭服务器，更改
+恢复目标设置为以后的目标并重新启动继续恢复。 </P><P> 如果不启用<A HREF="runtime-config-replication.html#GUC-HOT-STANDBY">hot_standby</A>，或者没有设置恢复目标，那么这个设置
+不起作用。</P></DD></DL></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="archive-recovery-settings.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="standby-settings.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">归档恢复设置</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/recovery-config.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">备用服务器设置</TD></TR></TABLE></DIV></BODY></HTML>

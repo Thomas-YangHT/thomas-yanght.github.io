@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>版本 8.1.11</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="版本 8.1.12" HREF="release-8-1-12.html"><LINK REL="NEXT" TITLE="版本 8.1.10" HREF="release-8-1-10.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-8.1.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="版本 8.1.12" HREF="release-8-1-12.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="版本 8.1.10" HREF="release-8-1-10.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-8-1-11">E.114. 版本 8.1.11</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>2008-01-07</P></BLOCKQUOTE></DIV><P>这个版本包含各种自8.1.10以来的修复，包括对重要安全问题的修复。
+关于8.1主版本的新特性信息，请查看<A HREF="release-8-1.html">第 E.125 &#33410;</A>。</P><P>这是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>社区为<SPAN CLASS="PRODUCTNAME">Windows</SPAN>
+生成二进制包的最后一个8.1.X版本。鼓励Windows用户迁移到8.2.X或更高的版本，
+因为在8.2.X中有Windows特定的不可移植的修复。8.1.X将继续支持其他平台。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN134126">E.114.1. 迁移到版本 8.1.11</A></H2><P>运行8.1.X的用户不需要转储/恢复。不过，如果你是从一个早于8.1.2的版本升级而来，
+那么请查看8.1.2的版本声明。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN134129">E.114.2. 修改列表</A></H2><P></P><UL><LI><P>阻止索引中的函数用用户运行<TT CLASS="COMMAND">VACUUM</TT>、<TT CLASS="COMMAND">ANALYZE</TT>等的权限执行 (Tom)</P><P>在索引表达式和部分索引谓词中使用的函数在制作一个新的表条目时评估。
+很早我们就知道，如果一个人修改了一个属于不可信用户的表，那么会引起特洛伊木马执行的风险。
+（请注意，触发器、缺省、检查约束等也会引起相同类型的风险。）
+但是索引中的函数还会引起额外的危险，因为它们将被日常维护操作执行，比如
+<TT CLASS="COMMAND">VACUUM FULL</TT>，它通常是在超级用户账户下自动执行的。例如，
+一个邪恶的用户可以通过设置一个特洛伊木马索引定义并且等待下一个日常清理，
+使用超级用户的权限执行代码。该修复安排标准的维护操作（包括<TT CLASS="COMMAND">VACUUM</TT>、
+<TT CLASS="COMMAND">ANALYZE</TT>、<TT CLASS="COMMAND">REINDEX</TT>和<TT CLASS="COMMAND">CLUSTER</TT>）
+作为表所有者而不是调用的用户执行，使用和早已为<TT CLASS="LITERAL">SECURITY DEFINER</TT>
+函数使用的一样的权限转换机制。为了阻止绕开这个安全机制，
+<TT CLASS="COMMAND">SET SESSION AUTHORIZATION</TT>和<TT CLASS="COMMAND">SET ROLE</TT>
+的执行现在禁止在一个<TT CLASS="LITERAL">SECURITY DEFINER</TT>内容中。 (CVE-2007-6600)</P></LI><LI><P>修复正则表达式包中的各种bug (Tom, Will Drewry)</P><P>适当配置的正则表达式模式可能会引起崩溃，无限的或接近无限的循环，
+和/或大量的内存消耗，所有这些都造成服务拒绝从不可信的源接受正则搜索模式的应用的危害。
+(CVE-2007-4769, CVE-2007-4772, CVE-2007-6067)</P></LI><LI><P>要求使用<TT CLASS="FILENAME">/contrib/dblink</TT>的非超级用户只使用密码认证作为一个安全机制 (Joe)</P><P>在8.1.10中出现的该修复是不完整的，因为它只堵住了一些<TT CLASS="FILENAME">dblink</TT>
+函数的漏洞。 (CVE-2007-6601, CVE-2007-3278)</P></LI><LI><P>更新时区数据文件到<SPAN CLASS="APPLICATION">tzdata</SPAN>版本2007k
+（特别的，最近的Argentina的改变） (Tom)</P></LI><LI><P>改善非C环境中规划器对LIKE/正则估计的处理 (Tom)</P></LI><LI><P>修复一些<TT CLASS="LITERAL">WHERE false AND var IN (SELECT ...)</TT>的情况下规划器的失败 (Tom)</P></LI><LI><P>保留通过<TT CLASS="COMMAND">ALTER TABLE ... ALTER COLUMN TYPE</TT>重建的索引的表空间 (Tom)</P></LI><LI><P>让归档恢复总是启动一个新的WAL时间线，而不是只在使用恢复停止时间时启动 (Simon)</P><P>这避免了尝试重写最后WAL段的一个现有归档拷贝的极端情况的风险，
+并且看起来比原先的定义更加简单和干净。</P></LI><LI><P>让<TT CLASS="COMMAND">VACUUM</TT>在表太小而没什么用处时不要使用所有的<TT CLASS="VARNAME">maintenance_work_mem</TT> (Alvaro)</P></LI><LI><P>修复使用一个多字节数据库编码时<CODE CLASS="FUNCTION">translate()</CODE>中潜在的崩溃 (Tom)</P></LI><LI><P>为超过68年的间隔修复<TT CLASS="LITERAL">extract(epoch from interval)</TT>中的溢出 (Tom)</P></LI><LI><P>修复PL/Perl，以在UTF-8正则表达式在一个受信任的函数中使用时不失败 (Andrew)</P></LI><LI><P>修复PL/Perl处理何时平台的Perl定义类型<TT CLASS="LITERAL">bool</TT>为<TT CLASS="LITERAL">int</TT>，
+而不是<TT CLASS="LITERAL">char</TT> (Tom)</P><P>理论上这会在任何地方发生，非标准的Perl建立是这样的……直到<SPAN CLASS="PRODUCTNAME">Mac OS X</SPAN> 10.5。</P></LI><LI><P>修复PL/Python在长的异常消息上不会崩溃 (Alvaro)</P></LI><LI><P>修复<SPAN CLASS="APPLICATION">pg_dump</SPAN>以正确的处理拥有与它们的父表不同的缺省表达式的继承子表 (Tom)</P></LI><LI><P>修复<TT CLASS="VARNAME">PGPASSFILE</TT>引用一个不是普通文件的文件时
+<SPAN CLASS="APPLICATION">libpq</SPAN>的崩溃 (Martin Pitt)</P></LI><LI><P><SPAN CLASS="APPLICATION">ecpg</SPAN>解析器修复 (Michael)</P></LI><LI><P>让<TT CLASS="FILENAME">contrib/pgcrypto</TT>防止<SPAN CLASS="APPLICATION">OpenSSL</SPAN>库在键长于128位时失败；
+这至少是在一些Solaris版本上的情况 (Marko Kreen)</P></LI><LI><P>让<TT CLASS="FILENAME">contrib/tablefunc</TT>的<CODE CLASS="FUNCTION">crosstab()</CODE>
+处理NULL行id为它本身的一个类别，而不是崩溃 (Joe)</P></LI><LI><P>修复<TT CLASS="TYPE">tsvector</TT>和<TT CLASS="TYPE">tsquery</TT>输出例程，以正确的转义反斜杠 (Teodor, Bruce)</P></LI><LI><P>修复<CODE CLASS="FUNCTION">to_tsvector()</CODE>在大的输入字符串上的崩溃 (Teodor)</P></LI><LI><P>当重新生成<TT CLASS="COMMAND">configure</TT>脚本时，要求使用<SPAN CLASS="PRODUCTNAME">Autoconf</SPAN>
+的一个特定版本 (Peter)</P><P>这只影响开发者和打包者。该修改是为了阻止意外的使用未测试的
+<SPAN CLASS="PRODUCTNAME">Autoconf</SPAN>和<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>版本的组合。
+如果你真的想要使用一个不同的<SPAN CLASS="PRODUCTNAME">Autoconf</SPAN>版本，
+你可以删除版本校验，但是结果如何就是你自己的责任了。</P></LI></UL></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-8-1-12.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-8-1-10.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">版本 8.1.12</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">版本 8.1.10</TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>用户名映射</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="用户认证" HREF="http://school.yunwei.edu/manual/PostgreSQL/client-authentication.html"><LINK REL="PREVIOUS" TITLE="pg_hba.conf文件" HREF="auth-pg-hba-conf.html"><LINK REL="NEXT" TITLE="认证方法" HREF="auth-methods.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/client-auth.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="pg_hba.conf文件" HREF="auth-pg-hba-conf.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/client-authentication.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 19. 用户认证</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="认证方法" HREF="auth-methods.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="AUTH-USERNAME-MAPS">19.2. 用户名映射</A></H1><P>当使用像Ident 或 GSSAPI这样的外部认证系统时，发起连接的操作系统用户名可能与他需要连接的数据库用户是不同的。
+在这种情况下，用户名映射可用于映射操作系统用户名到数据库用户。要使用用户名映射，在<TT CLASS="FILENAME">pg_hba.conf</TT>
+中的选项中指定<TT CLASS="LITERAL">map</TT>=<TT CLASS="REPLACEABLE"><I>map-name</I></TT>。这个选项支持所有接受外部用户名的认证方法。
+因为不同的映射可能需要不同的连接，使用的映射名在<TT CLASS="FILENAME">pg_hba.conf</TT>中的<TT CLASS="REPLACEABLE"><I>map-name</I></TT>
+参数中指定，表示为每个独立的连接使用哪个映射。</P><P>用户名映射在身份映射文件中定义，缺省名为<TT CLASS="FILENAME">pg_ident.conf</TT>
+并且缺省存储在集群的数据目录中。（不过，我们也可以把映射文件放在其它地方；参阅<A HREF="runtime-config-file-locations.html#GUC-IDENT-FILE">ident_file</A>配置参数。）
+身份映射文件包含的下面通用的格式：
+</P><PRE CLASS="SYNOPSIS"><TT
+CLASS="REPLACEABLE"
+><I
+>map-name</I
+></TT
+> <TT
+CLASS="REPLACEABLE"
+><I
+>system-username</I
+></TT
+> <TT
+CLASS="REPLACEABLE"
+><I
+>database-username</I
+></TT
+></PRE><P>
+注释和空白与<TT CLASS="FILENAME">pg_hba.conf</TT>文件里的一样处理。<TT CLASS="REPLACEABLE"><I>map-name</I></TT>
+是将要用于在<TT CLASS="FILENAME">pg_hba.conf</TT>中引用这个映射的任意名称。
+另外两个字段声明操作系统用户名和匹配的数据库用户名。同一个<TT CLASS="REPLACEABLE"><I>map-name</I></TT>
+可以在一个映射中多次使用来声明多个用户映射。
+对一个操作系统用户可以映射为多少个数据库用户没有限制，反之亦然。
+</P><P>对一个给定的操作系统用户可以映射为多少个数据库用户没有限制，反之亦然。
+因此，映射中的记录应该被认为是意为<SPAN CLASS="QUOTE">"这个操作系统用户被允许作为这个数据库用户连接"</SPAN>，
+而不是意味着他们是相等的。如果有那对用户名的任意映射记录从带有那个用户请求连接的数据库用户名的外部认证系统获得，
+那么这个连接将被允许。</P><P>如果<TT CLASS="REPLACEABLE"><I>system-username</I></TT>字段以一个反斜杠(<TT CLASS="LITERAL">/</TT>)开始，
+那么该字段的剩余部分被作为一个规则表达式对待。（参阅<A HREF="functions-matching.html#POSIX-SYNTAX-DETAILS">第 9.7.3.1 &#33410;</A>
+获取关于<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>规则表达式语法的细节。）规则表达式可以包含一个捕获，
+或括号的子表达式，然后可以在<TT CLASS="REPLACEABLE"><I>database-username</I></TT>字段中作为<TT CLASS="LITERAL">\1</TT> (backslash-one)引用。
+这允许多用户名的映射在一行中，这对于简单的语法替换特别有用。例如，这些记录：
+</P><PRE CLASS="PROGRAMLISTING">mymap   /^(.*)@mydomain\.com$      \1
+mymap   /^(.*)@otherdomain\.com$   guest</PRE><P>
+将为带有系统用户名的以<TT CLASS="LITERAL">@mydomain.com</TT>结尾的用户删除域部分，
+并且允许系统名以<TT CLASS="LITERAL">@otherdomain.com</TT>结尾的任意用户作为<TT CLASS="LITERAL">guest</TT>登录。
+</P><DIV CLASS="TIP"><BLOCKQUOTE CLASS="TIP"><P><B>&#25552;&#31034;: </B>记住，缺省的，一个规则表达式只可以匹配字符串的一部分。使用<TT CLASS="LITERAL">^</TT>和<TT CLASS="LITERAL">$</TT>通常是明智的，
+就像上面例子所示，来迫使匹配成为整个系统用户名。</P></BLOCKQUOTE></DIV><P>在系统启动和主服务器收到一个<SPAN CLASS="SYSTEMITEM">SIGHUP</SPAN>
+信号的时候会读取<TT CLASS="FILENAME">pg_ident.conf</TT>文件。如果你在一台活跃的系统上编辑该文件，
+那么你需要给主服务器发信号(使用<TT CLASS="LITERAL">pg_ctl reload</TT>或<TT CLASS="LITERAL">kill -HUP</TT>)令其重新读取该文件。</P><P><A HREF="auth-username-maps.html#EXAMPLE-PG-IDENT.CONF">&#20363; 19-2</A>里是一个可以和在<A HREF="auth-pg-hba-conf.html#EXAMPLE-PG-HBA.CONF">&#20363; 19-1</A>
+里面演示的<TT CLASS="FILENAME">pg_hba.conf</TT>文件配合使用的<TT CLASS="FILENAME">pg_ident.conf</TT>文件。
+在这个例子的设置里，任何登录到 192.168 网络里的机器的用户，如果用户名不是<TT CLASS="LITERAL">bryanh</TT>,
+<TT CLASS="LITERAL">ann</TT>, <TT CLASS="LITERAL">robert</TT> 就不能获准访问。Unix 用户<TT CLASS="LITERAL">robert</TT>只有在试图以
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>用户<TT CLASS="LITERAL">bob</TT>身份连接时才允许访问，而不能是<TT CLASS="LITERAL">robert</TT>
+或其它什么身份。<TT CLASS="LITERAL">ann</TT>将只允许以<TT CLASS="LITERAL">ann</TT>的身份连接。用户<TT CLASS="LITERAL">bryanh</TT>
+允许以他自己的<TT CLASS="LITERAL">bryanh</TT>身份或者作为<TT CLASS="LITERAL">guest1</TT>进行连接。</P><DIV CLASS="EXAMPLE"><A NAME="EXAMPLE-PG-IDENT.CONF"></A><P><B>&#20363; 19-2. 一个<TT CLASS="FILENAME">pg_ident.conf</TT>文件例子</B></P><PRE CLASS="PROGRAMLISTING"># MAPNAME       SYSTEM-USERNAME         PG-USERNAME
+
+omicron         bryanh                  bryanh
+omicron         ann                     ann
+# bob 在这台机器上的用户名是 robert
+omicron         robert                  bob
+# bryanh也可以以 guest1 身份连接
+omicron         bryanh                  guest1</PRE></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="auth-pg-hba-conf.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="auth-methods.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><TT CLASS="FILENAME">pg_hba.conf</TT>文件</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/client-authentication.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">认证方法</TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>失效切换</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="高可用性与负载均衡，复制" HREF="http://school.yunwei.edu/manual/PostgreSQL/high-availability.html"><LINK REL="PREVIOUS" TITLE="日志传送备份服务器" HREF="warm-standby.html"><LINK REL="NEXT" TITLE="日志传送的替代方法" HREF="log-shipping-alternative.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/high-availability.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="日志传送备份服务器" HREF="warm-standby.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/high-availability.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 25. 高可用性与负载均衡，复制</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="日志传送的替代方法" HREF="log-shipping-alternative.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="WARM-STANDBY-FAILOVER">25.3. 失效切换</A></H1><P> 如果主服务器失败，则备服务器应该开始失效切换处理。</P><P> 如果备服务器失败，则没有失效切换需要考虑。如果可以重启备用服务器，
+甚至一段时间后，也可以立即重启恢复进程，发挥重启恢复的优势。
+如果不能重启备服务器，则应该创建一个全新的备服务器实例。</P><P> 如果主服务器失败，并且备服务器成为新主服务器，然后旧主服务器重启，
+你必须有一个通知旧主服务器，其不再是主服务器的机制。
+这有时被称为<ACRONYM CLASS="ACRONYM">STONITH</ACRONYM>（在头去掉其它节点），
+这是必要的，以避免系统都认为它们是主服务器的情况下，
+这将导致混乱和最终数据丢失。</P><P> 许多失效切换系统只使用两个系统，主备服务器，通过某种心跳机制，
+不断验证两者连接和主服务器的活力。 也可以使用一个第三方的系统
+（称为“证人服务器”），以防止某些情况下不适当的失效切换，
+但额外的复杂性可能是不值得的，除非设置它为充分仔细和严格的测试。</P><P> <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>不提供所需的用来确定主服务器失败，
+并通知备用数据库服务器的系统软件。
+存在许多这样的工具和成功失效切换所需的集成操作系统的工具，如IP地址迁移。</P><P> 一旦发生失效切换到备服务器，仅有一台服务器运行。这就是所谓的退化状态。
+前者备服务器现在是主服务器，但前者主服务器是可能会停留下来。
+要返回正常运行，必须重建一个备服务器，无论是在以前的服务器，
+或在第三，可能是新的系统。一旦完成主备服务器，可以考虑转换角色。
+有些人选择使用第三方服务器，提供新主服务器的备份直到新备服务器重建，
+尽管清楚这个复杂的系统配置和操作流程。</P><P> 所以从主到备服务器可以快速切换，但需要一些时间重新准备失败切换集群。
+定期主备服务器切换是有用的,因为它允许定期停机进行每个系统的维修。
+这也是作为一个测试，以确保故失效切换机制，当你需要时会真的工作。
+建议写管理操作流程。</P><P> 要触发日志传送备服务器的失效切换，运行<TT CLASS="COMMAND">pg_ctl promote</TT>或者创建一个触发文件,
+这个文件是通过在<TT CLASS="FILENAME">recovery.conf</TT>文件中<TT CLASS="VARNAME">trigger_file</TT>设置指定的文件名和路径。
+如果你计划使用<TT CLASS="COMMAND">pg_ctl promote</TT>进行失效切换，则不需要<TT CLASS="VARNAME">trigger_file</TT>。
+如果你设置报告服务器仅仅用于卸载主服务器的只读查询，
+而不是针对高可用性的目的，那么你不需要推动它。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="warm-standby.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="log-shipping-alternative.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">日志传送备份服务器</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/high-availability.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">日志传送的替代方法</TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>注意信息处理</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="libpq - C 库" HREF="http://school.yunwei.edu/manual/PostgreSQL/libpq.html"><LINK REL="PREVIOUS" TITLE="各种函数" HREF="libpq-misc.html"><LINK REL="NEXT" TITLE="事件系统" HREF="libpq-events.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/libpq.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="各种函数" HREF="libpq-misc.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/libpq.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 31. <SPAN CLASS="APPLICATION">libpq</SPAN> - C 库</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="事件系统" HREF="libpq-events.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="LIBPQ-NOTICE-PROCESSING">31.12. 注意信息处理</A></H1><P>服务器生成的注意信息和警告信息都不会由查询执行函数返回，因为他们并不蕴涵着查询的失败。
+它们会被传递给一个注意信息处理函数，然后在该处理返回之后继续正常执行。
+缺省的注意信息处理函数在<TT CLASS="FILENAME">stderr</TT>上打印该信息，
+但是应用可以通过提供自己的处理函数来覆盖这个行为。</P><P>由于历史原因，系统里存在两个级别的注意信息处理，分别叫做注意信息接收器和注意信息处理器。
+缺省的行为是注意信息接收器格式化注意信息然后传递给注意信息处理器一个字串进行打印。
+不过，对于自行处理这些事情的应用而言，通常是忽略注意信息处理器层，而只是在注意信息接收器里完成所有动作。</P><P>函数<CODE CLASS="FUNCTION">PQsetNoticeReceiver</CODE>
+为一个连接对象设置或者检查当前的注意信息接收器。
+类似的是<CODE CLASS="FUNCTION">PQsetNoticeProcessor</CODE>
+设置或者检查当前的注意信息处理器。
+</P><PRE CLASS="SYNOPSIS">typedef void (*PQnoticeReceiver) (void *arg, const PGresult *res);
+
+PQnoticeReceiver
+PQsetNoticeReceiver(PGconn *conn,
+                    PQnoticeReceiver proc,
+                    void *arg);
+
+typedef void (*PQnoticeProcessor) (void *arg, const char *message);
+
+PQnoticeProcessor
+PQsetNoticeProcessor(PGconn *conn,
+                     PQnoticeProcessor proc,
+                     void *arg);</PRE><P>
+这些函数都返回前一个注意信息接收器或者处理器函数指针，然后设置新的数值。
+如果你提供一个空函数指针，那么就不会执行任何动作，但是返回当前指针。
+</P><P>当我们从服务器获取一个注意或者警告信息的时候，或者是收到<SPAN CLASS="APPLICATION">libpq</SPAN>
+内部生成的类似信息时，注意信息接收器函数将被调用。消息会以一个<TT CLASS="SYMBOL">PGRES_NONFATAL_ERROR</TT>
+的<TT CLASS="STRUCTNAME">PGresult</TT>的形式传递。（这就允许接收器用 <CODE CLASS="FUNCTION">PQresultErrorField</CODE>
+抽取独立的字段，或者用<CODE CLASS="FUNCTION">PQresultErrorMessage</CODE>完成预先格式化好的信息。）
+传递给<CODE CLASS="FUNCTION">PQsetNoticeReceiver</CODE>的同一个 void 指针也同样传递给该函数。
+（必要时，这个指针可以用来访问应用相关的状态。）</P><P>缺省的注意信息接收器只是简单的抽取信息（使用<CODE CLASS="FUNCTION">PQresultErrorMessage</CODE>）
+然后传递给注意信息处理器。</P><P>注意信息处理器负责处理一个以文本形式给出的注意或者警告信息。系统传递给他消息的字串文本
+（包括结尾的新行符），加上一个和传递给<CODE CLASS="FUNCTION">PQsetNoticeProcessor</CODE>
+一样的 void （无类型）指针。（必要时，这个指针可以用来访问应用相关的状态。）</P><P>缺省的注意信息处理器就是：
+</P><PRE CLASS="PROGRAMLISTING">static void
+defaultNoticeProcessor(void *arg, const char *message)
+{
+    fprintf(stderr, "%s", message);
+}</PRE><P>
+</P><P>一旦你设置了注意消息接收器或者处理器，那么你就应该准备好在<TT CLASS="STRUCTNAME">PGconn</TT>
+对象或者<TT CLASS="STRUCTNAME">PGresult</TT>对象开始存在的时候起就有人调用它们。在创建
+<TT CLASS="STRUCTNAME">PGresult</TT>的时候，<TT CLASS="STRUCTNAME">PGconn</TT>的当前注意信息处理指针被拷贝到
+<TT CLASS="STRUCTNAME">PGresult</TT>，以便被类似<CODE CLASS="FUNCTION">PQgetvalue</CODE>这样的函数使用。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="libpq-misc.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="libpq-events.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">各种函数</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/libpq.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">事件系统</TD></TR></TABLE></DIV></BODY></HTML>

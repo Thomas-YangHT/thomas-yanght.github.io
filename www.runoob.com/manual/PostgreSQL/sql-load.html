@@ -1,0 +1,20 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>LOAD</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="LISTEN" HREF="sql-listen.html"><LINK REL="NEXT" TITLE="LOCK" HREF="sql-lock.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/load.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="LISTEN" HREF="sql-listen.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="LOCK" HREF="sql-lock.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-LOAD"></A>LOAD</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN78284"></A><H2>&#21517;&#31216;</H2>LOAD&nbsp;--&nbsp;加载一个共享库文件</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN78289"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">LOAD '<TT
+CLASS="REPLACEABLE"
+><I
+>filename</I
+></TT
+>'</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-LOAD-DESCRIPTION"></A><H2>描述</H2><P>这个命令加载一个共享库文件到<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>服务器的地址空间。
+如果该文件已经被加载，那么这条命令什么也不做。包含C函数的共享库文件在其中之一的函数被调用时自动加载。
+因此，一个明确的<TT CLASS="COMMAND">LOAD</TT>通常只需要加载一个修改服务器行为的库，通过<SPAN CLASS="QUOTE">"hooks"</SPAN>
+而不是提供一组函数来修改服务器行为。</P><P>文件名是用和<A HREF="sql-createfunction.html">CREATE FUNCTION</A>里描写的共享库的名字相同方法声明的；
+特别要注意等是可以依赖搜索路径和自动附加系统标准共享库扩展名的特点。
+参阅<A HREF="xfunc-c.html">第 35.9 &#33410;</A>获取更多细节。</P><P>非超级用户仅可以将<TT CLASS="COMMAND">LOAD</TT>用于<TT CLASS="FILENAME">$libdir/plugins/</TT>中的库文件，
+也就是说指定的<TT CLASS="REPLACEABLE"><I>filename</I></TT>必须精确的以该字符串开头。
+数据库管理员有责任确保仅将<SPAN CLASS="QUOTE">"安全"</SPAN>的库文件安装在那里。</P></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-LOAD-COMPAT"></A><H2>兼容性</H2><P><TT CLASS="COMMAND">LOAD</TT>是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>扩展。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN78314"></A><H2>又见</H2><P> <A HREF="sql-createfunction.html">CREATE FUNCTION</A>
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-listen.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-lock.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">LISTEN</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">LOCK</TD></TR></TABLE></DIV></BODY></HTML>

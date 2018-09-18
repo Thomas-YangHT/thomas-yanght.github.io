@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>lo</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="额外提供的模块" HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html"><LINK REL="PREVIOUS" TITLE="isn" HREF="isn.html"><LINK REL="NEXT" TITLE="ltree" HREF="ltree.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/lo.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="isn" HREF="isn.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; F. 额外提供的模块</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="ltree" HREF="ltree.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="LO">F.20. lo</A></H1><P><TT CLASS="FILENAME">lo</TT>模块为管理大对象（也叫做LO或BLOB）提供支持。
+包括数据类型<TT CLASS="TYPE">lo</TT>和触发器<CODE CLASS="FUNCTION">lo_manage</CODE>。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN147192">F.20.1. 原理</A></H2><P>JDBC驱动的问题之一（也影响ODBC驱动），是规范假设BLOB（二进制大对象）的参数是存储在一个表内的，
+并且如果该项改变了，那么相关的BLOB会从数据库中删除。</P><P>作为<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>标准，这个不会发生。大对象被视为对象；
+一个表项可以通过OID引用一个大对象，不过可能多个表项引用同一个大对象OID，
+所以系统不会因为你改变或删除一个表项就删除大对象。</P><P>这对<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>专有应用来说很好，但是使用JDBC或ODBC的标准代码不会删除大对象，
+导致孤独的对象&mdash;对象不被任何东西引用，只是简单的占用磁盘空间。</P><P><TT CLASS="FILENAME">lo</TT>模块允许通过在包含LO引用字段的表上附加一个触发器修复这个问题。
+该触发器本质上只是在你删除或修改一个引用大对象的值时做<CODE CLASS="FUNCTION">lo_unlink</CODE>。
+当使用这个触发器时，假设只有一个数据库引用被触发器控制字段引用的任意的大对象。</P><P>该模块也支持数据类型<TT CLASS="TYPE">lo</TT>，该类型实际上只是一个<TT CLASS="TYPE">oid</TT>类型的域。
+这对于区别持有大对象引用的数据库字段和那些其他事情的OID有帮助。
+你不必使用<TT CLASS="TYPE">lo</TT>类型来使用该触发器，
+但是使用它会很方便的记录你的数据库中的哪个字段代表管理该触发器的大对象，
+如果你不为BLOB字段使用<TT CLASS="TYPE">lo</TT>，据说ODBC驱动器也会感到迷惑。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN147207">F.20.2. 怎样使用</A></H2><P>这是一个使用的简单的例子：</P><PRE CLASS="PROGRAMLISTING">CREATE TABLE image (title TEXT, raster lo);
+
+CREATE TRIGGER t_raster BEFORE UPDATE OR DELETE ON image
+    FOR EACH ROW EXECUTE PROCEDURE lo_manage(raster);</PRE><P>对于每个将要包含大对象的唯一引用的字段，创建一个<TT CLASS="LITERAL">BEFORE UPDATE OR DELETE</TT>
+触发器，并将字段名作为触发器唯一的参数。你也可以通过使用<TT CLASS="LITERAL">BEFORE UPDATE
+OF</TT> <TT CLASS="REPLACEABLE"><I>column_name</I></TT>
+限制触发器只在该字段更新时执行。如果你在相同的表中需要多个<TT CLASS="TYPE">lo</TT>字段，
+那么为每个字段创建一个单独的触发器，记得给相同表上的每个触发器以不同的名字。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN147216">F.20.3. 限制</A></H2><P></P><UL><LI><P>删除一个表仍然将孤立它包含的任意对象，因为触发器没有执行。你可以通过在<TT CLASS="COMMAND">DROP
+TABLE</TT>之前<TT CLASS="COMMAND">DELETE FROM <TT CLASS="REPLACEABLE"><I>table</I></TT></TT>来避免这个问题。</P><P><TT CLASS="COMMAND">TRUNCATE</TT>有同样的危险。</P><P>如果你已经有或者怀疑你有孤立的大对象，参阅<A HREF="vacuumlo.html"><SPAN CLASS="APPLICATION">vacuumlo</SPAN></A>
+模块帮助你清除它们。偶尔运行<A HREF="vacuumlo.html"><SPAN CLASS="APPLICATION">vacuumlo</SPAN></A>
+作为<CODE CLASS="FUNCTION">lo_manage</CODE>触发器的后备是一个好主意。</P></LI><LI><P>一些前端可能创建他们自己的表，并且不创建相关的触发器。还有，用户可能不记得（或知道）
+创建触发器。</P></LI></UL></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN147232">F.20.4. 作者</A></H2><P> Peter Mount <CODE CLASS="EMAIL">&#60;<A HREF="mailto:peter@retep.org.uk">peter@retep.org.uk</A>&#62;</CODE>
+</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="isn.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="ltree.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">isn</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">ltree</TD></TR></TABLE></DIV></BODY></HTML>

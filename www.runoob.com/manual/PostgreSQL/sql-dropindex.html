@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>DROP INDEX</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="DROP GROUP" HREF="sql-dropgroup.html"><LINK REL="NEXT" TITLE="DROP LANGUAGE" HREF="sql-droplanguage.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/drop_index.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="DROP GROUP" HREF="sql-dropgroup.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="DROP LANGUAGE" HREF="sql-droplanguage.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-DROPINDEX"></A>DROP INDEX</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN75849"></A><H2>&#21517;&#31216;</H2>DROP INDEX&nbsp;--&nbsp;删除索引</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN75854"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">DROP INDEX [ CONCURRENTLY ] [ IF EXISTS ] <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+> [, ...] [ CASCADE | RESTRICT ]</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN75857"></A><H2>描述</H2><P> <TT CLASS="COMMAND">DROP INDEX</TT> 从数据库中删除一个现存的索引。要执行这个命令，你必须是索引的所有者
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN75861"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL">CONCURRENTLY</TT></DT><DD><P> 在表上删除索引的同时不对查询，插入，更新，删除加锁。
+普通的 <TT CLASS="COMMAND">DROP INDEX</TT>会使表获得独占锁，阻塞其他的访问，直到索引删除完成。使用此选项, 会由阻塞变为等待，直到其他冲突事物结束。
+</P><P> 使用此选项时有几个注意事项。
+只能指定一个索引的名称， 并且 <TT CLASS="LITERAL">CASCADE</TT> 选项不支持。
+(同时, 一个索引是 <TT CLASS="LITERAL">UNIQUE</TT> or
+<TT CLASS="LITERAL">PRIMARY KEY</TT> 约束的时候，不能以此方式删除。)
+同时，正规的 <TT CLASS="COMMAND">DROP INDEX</TT> 命令可以在事物内执行, 但是
+<TT CLASS="COMMAND">DROP INDEX CONCURRENTLY</TT> 不可以在事物内执行.
+</P></DD><DT><TT CLASS="LITERAL">IF EXISTS</TT></DT><DD><P> 如果指定的索引不存在，那么发出一个 notice 而不是抛出一个错误
+</P></DD><DT><TT CLASS="REPLACEABLE"><I>name</I></TT></DT><DD><P> 要删除的索引名(可以有模式名字)。
+</P></DD><DT><TT CLASS="LITERAL">CASCADE</TT></DT><DD><P> 级联删除依赖于该索引的对象。
+</P></DD><DT><TT CLASS="LITERAL">RESTRICT</TT></DT><DD><P> 如果有依赖对象存在，则拒绝删除该索引。这个是缺省。
+</P></DD></DL></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="AEN75896"></A><H2>Examples</H2><P> 此命令将删除 <TT CLASS="LITERAL">title_idx</TT>索引:
+</P><PRE CLASS="PROGRAMLISTING">DROP INDEX title_idx;</PRE><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN75901"></A><H2>兼容性</H2><P> <TT CLASS="COMMAND">DROP INDEX</TT> 是
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 语言扩展。在 SQL 标准里没有索引的规定。
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN75906"></A><H2>请参阅</H2><A HREF="sql-createindex.html">CREATE INDEX</A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-dropgroup.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-droplanguage.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">DROP GROUP</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">DROP LANGUAGE</TD></TR></TABLE></DIV></BODY></HTML>

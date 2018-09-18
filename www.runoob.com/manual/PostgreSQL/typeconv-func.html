@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>函数</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="类型转换" HREF="http://school.yunwei.edu/manual/PostgreSQL/typeconv.html"><LINK REL="PREVIOUS" TITLE="操作符" HREF="typeconv-oper.html"><LINK REL="NEXT" TITLE="值存储" HREF="typeconv-query.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/typeconv.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="操作符" HREF="typeconv-oper.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/typeconv.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 10. 类型转换</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="值存储" HREF="typeconv-query.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="TYPECONV-FUNC">10.3. 函数</A></H1><P>下面讲解的过程解释了如何在一次函数调用中确定所使用的究竟是哪个函数。</P><DIV CLASS="PROCEDURE"><P><B>函数类型解析</B></P><OL TYPE="1"><LI CLASS="STEP"><P>从系统表<CODE CLASS="CLASSNAME">pg_proc</CODE>中选择要考虑的函数。如果使用了一个不带模式修饰的函数名字，
+那么认为该函数是那些在当前搜索路径中名字和参数个数都匹配的函数(参阅<A HREF="ddl-schemas.html#DDL-SCHEMAS-PATH">第 5.7.3 &#33410;</A>)。
+如果给出一个带修饰的函数名，那么只考虑指定模式中的函数。</P><OL CLASS="SUBSTEPS" TYPE="a"><LI CLASS="STEP"><P>如果搜索路径中找到了多个相同参数类型的函数，那么只考虑最早出现在路径中的那一个。
+但是不同参数类型的函数将被平等看待，而不管它们在路径中的位置如何。</P></LI><LI CLASS="STEP"><P>如果使用一个<TT CLASS="LITERAL">VARIADIC</TT>数组参数声明一个函数，并且调用时不使用关键字<TT CLASS="LITERAL">VARIADIC</TT>，
+那么该函被认为数组参数被一个或更多它的元素类型的实体代替，并且需要去匹配调用。
+经过这样的扩展，这个函数可能有和非可变函数相同的有效参数类型。在这种情况下，
+使用在搜索路径中出现比较早的函数，或者如果两个函数在相同的模式中，那么首选非可变的一个。</P></LI><LI CLASS="STEP"><P>考虑使用有默认参数值的函数来匹配任何省略了零或者多个默认表参数位置的调用。
+如果多个这样的函数匹配一个调用，那么使用最早出现在搜索路径中的那个。
+如果在非默认位置有两个或者更多带有相同模式相同参数类型这样的函数
+（他们的默认参数设置可能有不同），系统将不能确定去选择哪个，
+并且如果不能找到更好的函数匹配调用，那么将会产生一个<SPAN CLASS="QUOTE">"ambiguous function call"</SPAN>错误。</P></LI></OL></LI><LI CLASS="STEP"><P>查找精确接受输入参数类型的函数。如果找到一个(在一组被考虑的函数中，
+可能只存在一个精确匹配的)，则用之。包含<TT CLASS="TYPE">unknown</TT>类型的函数调用绝不会在此处找到匹配。</P></LI><LI CLASS="STEP"><P>如果没有找到精确的匹配，则看看函数调用是否需要一个特殊的类型转换。
+如果函数调用只有一个参数并且函数名与某些数据类型的内部名称相同，那么就会出现这种情况。
+另外，该函数的参数必须是一个未知类型的文本，或者与某个已命名数据类型二进制兼容，
+或者是一个可以通过请求那种类型的I/O函数转换为已命名数据类型。（也就是，
+要么可以转换成标准字符串类型，要么可以从标准字符串类型转换而来。）如果符合这些条件，
+那么该函数调用被认为是一种<TT CLASS="LITERAL">CAST</TT>声明。
+<A NAME="AEN21296" HREF="typeconv-func.html#FTN.AEN21296"><SPAN CLASS="footnote">[1]</SPAN></A></P></LI><LI CLASS="STEP"><P>寻找最优匹配。</P><OL CLASS="SUBSTEPS" TYPE="a"><LI CLASS="STEP"><P>抛弃那些输入类型不匹配并且也不能隐式转换成匹配的候选函数。<TT CLASS="TYPE">unknown</TT>
+文本在这种情况下可以转换成任何东西。如果只剩下一个候选项，则用之，否则继续下一步。</P></LI><LI CLASS="STEP"><P>遍历所有候选函数，保留那些输入类型匹配最准确的。此时，
+域被看作和他们的基本类型相同。如果没有一个函数能准确匹配，则保留所有候选。
+如果只剩下一个候选项，则用之，否则继续下一步。</P></LI><LI CLASS="STEP"><P>遍历所有候选函数，保留那些需要类型转换时接受(属于输入数据类型的类型范畴的)
+首选类型位置最多的函数。如果没有接受首选类型的函数，则保留所有候选。
+如果只剩下一个候选项，则用之，否则继续下一步。</P></LI><LI CLASS="STEP"><P>如果有任何输入参数是<TT CLASS="TYPE">unknown</TT>类型，检查剩余的候选函数对应参数位置的类型范畴。
+在每一个能够接受字符串类型范畴的位置使用<TT CLASS="TYPE">string</TT>类型(这种对字符串的偏爱是合适的，
+因为 unknown 文本确实像字符串)。另外，如果所有剩下的候选函数都接受相同的类型范畴，
+则选择该类型范畴，否则抛出一个错误(因为在没有更多线索的条件下无法作出正确的选择)。
+现在抛弃不接受选定的类型范畴的候选函数，然后，如果任意候选函数在那个范畴接受一个首选类型，
+则抛弃那些在该参数位置接受非首选类型的候选函数。如果没有一个候选符合这些测试则保留所有候选。
+如果只有一个候选函数符合，则使用它；否则，继续下一步。</P></LI><LI CLASS="STEP"><P>如果同时有<TT CLASS="TYPE">unknown</TT>和已知类型的参数，并且所有已知类型的参数有相同的类型，
+假设<TT CLASS="TYPE">unknown</TT>参数也是这种类型，检查哪个候选函数可以在<TT CLASS="TYPE">unknown</TT>
+参数位置接受这种类型。如果正好一个候选符合，那么使用它。否则，产生一个错误。</P></LI></OL></LI></OL></DIV><P>请注意，<SPAN CLASS="QUOTE">"最佳匹配"</SPAN>规则对操作符和对函数的类型分析都是一样的。下面是一些例子。</P><DIV CLASS="EXAMPLE"><A NAME="AEN21320"></A><P><B>&#20363; 10-5. 圆整函数参数类型解析</B></P><P>只有一个<CODE CLASS="FUNCTION">round</CODE>函数有两个参数(第一个是<TT CLASS="TYPE">numeric</TT>，
+第二个是<TT CLASS="TYPE">integer</TT>)。所以下面的查询自动把第一个类型为<TT CLASS="TYPE">integer</TT>
+的参数转换成<TT CLASS="TYPE">numeric</TT>类型：
+</P><PRE CLASS="SCREEN">SELECT round(4, 4);
+
+ round
+--------
+ 4.0000
+(1 row)</PRE><P>
+实际上它被分析器转换成：
+</P><PRE CLASS="SCREEN">SELECT round(CAST (4 AS numeric), 4);</PRE><P></P><P>因为带小数点的数值常量初始时被赋予<TT CLASS="TYPE">numeric</TT>类型，
+因此下面的查询将不需要类型转换，并且可能会略微高效一些：
+</P><PRE CLASS="SCREEN">SELECT round(4.0, 4);</PRE><P></P></DIV><DIV CLASS="EXAMPLE"><A NAME="AEN21333"></A><P><B>&#20363; 10-6. 子字符串函数类型解析</B></P><P>有好几个<CODE CLASS="FUNCTION">substr</CODE>函数，其中一个接受<TT CLASS="TYPE">text</TT>
+和<TT CLASS="TYPE">integer</TT>类型。如果用一个未声明类型的字符串常量调用它，
+系统将选择接受<TT CLASS="LITERAL">string</TT>类型范畴的首选类型
+(也就是<TT CLASS="TYPE">text</TT>类型)的候选函数。
+</P><PRE CLASS="SCREEN">SELECT substr('1234', 3);
+
+ substr
+--------
+     34
+(1 row)</PRE><P></P><P>如果该字符串声明为<TT CLASS="TYPE">varchar</TT>类型，就像从表中取出来的数据一样，
+分析器将试着将其转换成<TT CLASS="TYPE">text</TT>类型：
+</P><PRE CLASS="SCREEN">SELECT substr(varchar '1234', 3);
+
+ substr
+--------
+     34
+(1 row)</PRE><P>
+被分析器转换后实际上变成：
+</P><PRE CLASS="SCREEN">SELECT substr(CAST (varchar '1234' AS text), 3);</PRE><P></P><P></P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>分析器从<TT CLASS="STRUCTNAME">pg_cast</TT>表中了解到<TT CLASS="TYPE">text</TT>和<TT CLASS="TYPE">varchar</TT>
+是二进制兼容的，意思是说一个可以传递给接受另一个的函数而不需要做任何物理转换。
+因此，在这种情况下，实际上没有做任何类型转换。</P></BLOCKQUOTE></DIV><P></P><P>而且，如果以<TT CLASS="TYPE">integer</TT>为参数调用函数，分析器将试图将其转换成<TT CLASS="TYPE">text</TT>类型：
+</P><PRE CLASS="SCREEN">SELECT substr(1234, 3);
+ERROR:  function substr(integer, integer) does not exist
+HINT:  No function matches the given name and argument types. You might need
+to add explicit type casts.</PRE><P>
+这样是不行的，因为<TT CLASS="TYPE">integer</TT>不能隐式的转换为<TT CLASS="TYPE">text</TT>。
+需要一个明确的转换才行：
+</P><PRE CLASS="SCREEN">SELECT substr(CAST (1234 AS text), 3);
+
+ substr
+--------
+     34
+(1 row)</PRE><P></P></DIV></DIV><H3 CLASS="FOOTNOTES">&#22791;&#27880;</H3><TABLE BORDER="0" CLASS="FOOTNOTES" WIDTH="100%"><TR><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="5%"><A NAME="FTN.AEN21296" HREF="typeconv-func.html#AEN21296"><SPAN CLASS="footnote">[1]</SPAN></A></TD><TD ALIGN="LEFT" VALIGN="TOP" WIDTH="95%"><P>这一步骤的原因是为了支持函数风格的转换声明，防止没有实际转换函数的情况。
+如果有一个转换函数，它是按照惯例以它的输出类型命名的，这样就不需要一个特例。
+参阅<A HREF="sql-createcast.html">CREATE CAST</A>获取额外的说明。</P></TD></TR></TABLE><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="typeconv-oper.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="typeconv-query.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">操作符</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/typeconv.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">值存储</TD></TR></TABLE></DIV></BODY></HTML>

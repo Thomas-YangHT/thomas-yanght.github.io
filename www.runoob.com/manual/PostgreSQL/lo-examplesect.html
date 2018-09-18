@@ -1,0 +1,256 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>例子程序</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="大对象" HREF="http://school.yunwei.edu/manual/PostgreSQL/largeobjects.html"><LINK REL="PREVIOUS" TITLE="服务器端函数" HREF="lo-funcs.html"><LINK REL="NEXT" TITLE="ECPG - 在C中嵌入SQL" HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/lobj.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="服务器端函数" HREF="lo-funcs.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/largeobjects.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 32. 大对象</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="ECPG - 在C中嵌入SQL" HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="LO-EXAMPLESECT">32.5. 例子程序</A></H1><P> <A HREF="lo-examplesect.html#LO-EXAMPLE">&#20363; 32-1</A>是一个例子程序，显示如何使用<SPAN CLASS="APPLICATION">libpq</SPAN>里面的大对象接口。
+程序的一部分是注释掉的，但仍然保留在源码里面供读者参考。
+这个程序可以在源码发布的<TT CLASS="FILENAME">src/test/examples/testlo.c</TT>里找到。</P><DIV CLASS="EXAMPLE"><A NAME="LO-EXAMPLE"></A><P><B>&#20363; 32-1. <SPAN CLASS="APPLICATION">libpq</SPAN>的大对象例子程序</B></P><PRE CLASS="PROGRAMLISTING">/*--------------------------------------------------------------
+ *
+ * testlo.c--
+ *    test using large objects with libpq
+ *
+ * Copyright (c) 1994, Regents of the University of California
+ *
+ *--------------------------------------------------------------
+ */
+#include &#60;stdio.h&#62;
+#include "libpq-fe.h"
+#include "libpq/libpq-fs.h"
+
+#define BUFSIZE          1024
+
+/*
+ * importFile
+ *    import file "in_filename" into database as large object "lobjOid"
+ *
+ */
+Oid
+importFile(PGconn *conn, char *filename)
+{
+    Oid         lobjId;
+    int         lobj_fd;
+    char        buf[BUFSIZE];
+    int         nbytes,
+                tmp;
+    int         fd;
+
+    /*
+     * open the file to be read in
+     */
+    fd = open(filename, O_RDONLY, 0666);
+    if (fd &#60; 0)
+    {                           /* error */
+        fprintf(stderr, "cannot open unix file %s\n", filename);
+    }
+
+    /*
+     * create the large object
+     */
+    lobjId = lo_creat(conn, INV_READ | INV_WRITE);
+    if (lobjId == 0)
+        fprintf(stderr, "cannot create large object\n");
+
+    lobj_fd = lo_open(conn, lobjId, INV_WRITE);
+
+    /*
+     * read in from the Unix file and write to the inversion file
+     */
+    while ((nbytes = read(fd, buf, BUFSIZE)) &#62; 0)
+    {
+        tmp = lo_write(conn, lobj_fd, buf, nbytes);
+        if (tmp &#60; nbytes)
+            fprintf(stderr, "error while reading large object\n");
+    }
+
+    (void) close(fd);
+    (void) lo_close(conn, lobj_fd);
+
+    return lobjId;
+}
+
+void
+pickout(PGconn *conn, Oid lobjId, int start, int len)
+{
+    int         lobj_fd;
+    char       *buf;
+    int         nbytes;
+    int         nread;
+
+    lobj_fd = lo_open(conn, lobjId, INV_READ);
+    if (lobj_fd &#60; 0)
+    {
+        fprintf(stderr, "cannot open large object %d\n",
+                lobjId);
+    }
+
+    lo_lseek(conn, lobj_fd, start, SEEK_SET);
+    buf = malloc(len + 1);
+
+    nread = 0;
+    while (len - nread &#62; 0)
+    {
+        nbytes = lo_read(conn, lobj_fd, buf, len - nread);
+        buf[nbytes] = ' ';
+        fprintf(stderr, "&#62;&#62;&#62; %s", buf);
+        nread += nbytes;
+    }
+    free(buf);
+    fprintf(stderr, "\n");
+    lo_close(conn, lobj_fd);
+}
+
+void
+overwrite(PGconn *conn, Oid lobjId, int start, int len)
+{
+    int         lobj_fd;
+    char       *buf;
+    int         nbytes;
+    int         nwritten;
+    int         i;
+
+    lobj_fd = lo_open(conn, lobjId, INV_WRITE);
+    if (lobj_fd &#60; 0)
+    {
+        fprintf(stderr, "cannot open large object %d\n",
+                lobjId);
+    }
+
+    lo_lseek(conn, lobj_fd, start, SEEK_SET);
+    buf = malloc(len + 1);
+
+    for (i = 0; i &#60; len; i++)
+        buf[i] = 'X';
+    buf[i] = ' ';
+
+    nwritten = 0;
+    while (len - nwritten &#62; 0)
+    {
+        nbytes = lo_write(conn, lobj_fd, buf + nwritten, len - nwritten);
+        nwritten += nbytes;
+    }
+    free(buf);
+    fprintf(stderr, "\n");
+    lo_close(conn, lobj_fd);
+}
+
+/*
+ * exportFile
+ *    export large object "lobjOid" to file "out_filename"
+ *
+ */
+void
+exportFile(PGconn *conn, Oid lobjId, char *filename)
+{
+    int         lobj_fd;
+    char        buf[BUFSIZE];
+    int         nbytes,
+                tmp;
+    int         fd;
+
+    /*
+     * open the large object
+     */
+    lobj_fd = lo_open(conn, lobjId, INV_READ);
+    if (lobj_fd &#60; 0)
+    {
+        fprintf(stderr, "cannot open large object %d\n",
+                lobjId);
+    }
+
+    /*
+     * open the file to be written to
+     */
+    fd = open(filename, O_CREAT | O_WRONLY, 0666);
+    if (fd &#60; 0)
+    {                           /* error */
+        fprintf(stderr, "cannot open unix file %s\n",
+                filename);
+    }
+
+    /*
+     * read in from the inversion file and write to the Unix file
+     */
+    while ((nbytes = lo_read(conn, lobj_fd, buf, BUFSIZE)) &#62; 0)
+    {
+        tmp = write(fd, buf, nbytes);
+        if (tmp &#60; nbytes)
+        {
+            fprintf(stderr, "error while writing %s\n",
+                    filename);
+        }
+    }
+
+    (void) lo_close(conn, lobj_fd);
+    (void) close(fd);
+
+    return;
+}
+
+void
+exit_nicely(PGconn *conn)
+{
+    PQfinish(conn);
+    exit(1);
+}
+
+int
+main(int argc, char **argv)
+{
+    char       *in_filename,
+               *out_filename;
+    char       *database;
+    Oid         lobjOid;
+    PGconn     *conn;
+    PGresult   *res;
+
+    if (argc != 4)
+    {
+        fprintf(stderr, "Usage: %s database_name in_filename out_filename\n",
+                argv[0]);
+        exit(1);
+    }
+
+    database = argv[1];
+    in_filename = argv[2];
+    out_filename = argv[3];
+
+    /*
+     * set up the connection
+     */
+    conn = PQsetdb(NULL, NULL, NULL, NULL, database);
+
+    /* check to see that the backend connection was successfully made */
+    if (PQstatus(conn) == CONNECTION_BAD)
+    {
+        fprintf(stderr, "Connection to database '%s' failed.\n", database);
+        fprintf(stderr, "%s", PQerrorMessage(conn));
+        exit_nicely(conn);
+    }
+
+    res = PQexec(conn, "begin");
+    PQclear(res);
+
+    printf("importing file %s\n", in_filename);
+/*  lobjOid = importFile(conn, in_filename); */
+    lobjOid = lo_import(conn, in_filename);
+/*
+    printf("as large object %d.\n", lobjOid);
+
+    printf("picking out bytes 1000-2000 of the large object\n");
+    pickout(conn, lobjOid, 1000, 1000);
+
+    printf("overwriting bytes 1000-2000 of the large object with X's\n");
+    overwrite(conn, lobjOid, 1000, 1000);
+*/
+
+    printf("exporting large object to file %s\n", out_filename);
+/*    exportFile(conn, lobjOid, out_filename); */
+    lo_export(conn, lobjOid, out_filename);
+
+    res = PQexec(conn, "end");
+    PQclear(res);
+    PQfinish(conn);
+    exit(0);
+}</PRE></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="lo-funcs.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">服务器端函数</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/largeobjects.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><SPAN CLASS="APPLICATION">ECPG</SPAN> - 在C中嵌入<ACRONYM CLASS="ACRONYM">SQL</ACRONYM></TD></TR></TABLE></DIV></BODY></HTML>

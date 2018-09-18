@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>版本 6.3</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="版本 6.3.1" HREF="release-6-3-1.html"><LINK REL="NEXT" TITLE="版本 6.2.1" HREF="release-6-2-1.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-old.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="版本 6.3.1" HREF="release-6-3-1.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="版本 6.2.1" HREF="release-6-2-1.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-6-3">E.232. 版本 6.3</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>1998-03-01</P></BLOCKQUOTE></DIV><P>在这个版本中有<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">许多</I></SPAN>新的特性和改进。下面是一个简短的不完整的概要：
+<P></P></P><UL><LI><P>增加了许多新的 SQL 特性，包括完整的 <ACRONYM CLASS="ACRONYM">SQL92</ACRONYM> 子查询功能
+（除目标列子查询外所有的东西都实现了）。</P></LI><LI><P>支持客户端环境变量声明时区和日期风格。</P></LI><LI><P>用于 客户端/服务器 联接的套接字（Socket）接口。现在这个是缺省的值，
+所以你可能需要带 <TT CLASS="OPTION">-i</TT> 参数运行 <SPAN CLASS="APPLICATION">postmaster</SPAN>。</P></LI><LI><P>更完善的口令认证机制。修改了缺省的表权限。</P></LI><LI><P>删除了老式的<I CLASS="FIRSTTERM">时间跟踪（time travel）</I>特性。改善了性能。</P></LI></UL><P>
+</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>Bruce Momjian 写下了下面的介绍新版本的文字。</P></BLOCKQUOTE></DIV><P>我在这里想提一些关于 6.3 的事情。这些都是一些无法在一句话中描述的比较大的课题。
+所以仍需要你回过头去看看修改的详细列表。</P><P>首先，我们现在有了子查询。既然我们已经拥有子查询了，我要很客观的说，
+如果没有子查询，SQL 就是一种作用非常有限的语言。子查询是一种很重要的特性，
+你应该复查一下你的代码，以便找出子查询能给你提供更好解决方法的地方。
+我相信你会发现子查询可以应用在比你想象得到多得多的地方。
+Vadim 把我们放在了一个拥有完整功能的带子查询功能的巨大的 SQL前景上面。
+你不能应用子查询的唯一方面是目标列。</P><P>第二，6.3 使用 unix 域套接字作为缺省而不是 TCP/IP。要允许从其他机器来的连接，
+你必须使用新的 postmaster 的 -i 选项，当然你还要编辑 <TT CLASS="FILENAME">pg_hba.conf</TT>。
+同样，<TT CLASS="FILENAME">pg_hba.conf</TT> 的格式也因此而改变了。</P><P>第三，现在使用 <TT CLASS="TYPE">char()</TT> 字段将比使用 <TT CLASS="TYPE">varchar()</TT> 或 <TT CLASS="TYPE">text</TT> 时访问的更快。
+具体地说，在对第一次 <TT CLASS="TYPE">text</TT> 和 <TT CLASS="TYPE">varchar()</TT>
+的字段进行访问之后再对同类型字段访问将有一些访问延迟。<TT CLASS="TYPE">char()</TT> 原先也有这种访问延迟，
+但现在已经没有了。这或许意味着你重新设计你的一些表，尤其是那些你已经定义为 <TT CLASS="TYPE">varchar()</TT>
+或 <TT CLASS="TYPE">text</TT> 的短的字符型字段。这个和其他的一些修改使 6.3 比早期的版本有更快的速度。</P><P>我们现在有了独立于任何 Unix 文件的可定义的口令。现在有了新的 SQL USER 命令。
+参阅<I CLASS="CITETITLE">管理员手册</I>获取更多信息。同时我们还有了一个新的表，pg_shadow，
+用来存放用户信息和用户口令，并且缺省时只有 <SPAN CLASS="SYSTEMITEM">postgres</SPAN> 超级用户对其有
+（SELECT）查询权限。pg_user 现在是 pg_shadow 的一个视图，并且可以被公众（PUBLIC）读取（SELECT）。
+你可以在你的应用里继续使用 pg_user 而不需做任何更改。</P><P>用户创建的表缺省时不再被公众（PUBLIC）拥有读取（SELECT）权限。这么做是因为 ANSI 标准要求这样做。
+你当然可以在创建表后用 GRANT 赋予他人任何你希望的权限。系统表仍然可以被公众（PUBLIC）读取（SELECT）。</P><P>我们仍然有实时的死锁检测代码。超时时间不超过60秒。并且新的锁定代码实现了更好的<ACRONYM CLASS="ACRONYM">FIFO</ACRONYM>
+（先入先出），所以在重负荷时对资源的需求会轻一些。</P><P>在以前的版本中我们听到了许多关于缺乏文档的抱怨。Thomas 在这个版本中努力增加了许多新的手册。
+请查阅 doc/ 目录．</P><P>出于性能考虑，时间跟踪特性取消了，但是可以使用触发器实现（参阅<TT CLASS="FILENAME">pgsql/contrib/spi/README</TT>）。
+请使用新的 \d 命令查询关于类型，操作符等的信息。同时，视图拥有了他们自己的权限，而不是以它们依赖的表为基础。
+所以它们的权限应该独立的设置。请检查 <TT CLASS="FILENAME">/pgsql/interfaces</TT>
+文件获取更多与 <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 对话的方法。</P><P>这是第一个需要向已有的用户进行说明的版本。不管从哪个角度来说，我们都需要做这样的说明，
+因为新版本取消了许多限制，因而许多原先人们需要做的许多防范性工作都不再需要了．</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN143866">E.232.1. 迁移到版本 6.3</A></H2><P>任何希望从以前的 <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 版本移植到新版本的数据库都需要用
+<SPAN CLASS="APPLICATION">pg_dump</SPAN> 或 <SPAN CLASS="APPLICATION">pg_dumpall</SPAN> 进行一次转储/恢复工作。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN143872">E.232.2. 修改列表</A></H2><P></P><PRE CLASS="PROGRAMLISTING">Bug 修复
+---------
+修复 MOVE 实现毁坏的二进制游标 (Vadim)
+修复 tcl 库崩溃 (Jan)
+修复数组处理，来自 Gerhard Hintermayer
+修复 acl 错误，删除重复的 pqtrace (Bruce)
+为空文件修复 psql \e (Bruce)
+修复 varchar() 字段上的 textcat (Bruce)
+修复 DBT Sendproc (Zeugswetter Andres)
+修复 vacuum 分析语法问题 (Bruce)
+修复国际标识符 (Tatsuo)
+修复在继承表上的聚集 (Bruce) 
+为超出范围的数据修复 substr()
+修复 select 1=1 or 2=2, select 1=1 and 2=2, 和 select sum(2+2) (Bruce)
+修复 notty 输出显示状态的结果。-q 选项仍然是将它关闭 (Bruce)
+修复带有视图和多行表和 sum(3) 的 count(*), aggs (Bruce)
+修复群集 (Bruce)
+几次修复了 PQtrace start/stop (Bruce)
+修复各种各样的锁问题，像较新的锁等待在较旧的锁等待之前得到锁，
+       如果一个写入正在等待一个锁使不可读的人员不共享锁，
+   等待写入的没有获得比等待读取的更高的优先权 (Bruce) 
+修复了从外部文件执行查询时 psql 中的崩溃 (James)
+修复了有多个命令列切第一个是 NULL 值的问题 (Jeroen)
+为 float8 和 int4 使用正确的哈希表支持函数 (Thomas)
+重新在 CREATE OPERATOR 语句中启用 JOIN= 选项 (Thomas)
+改变布尔操作符的优先级以匹配预期行为 (Thomas)
+在超大的整数上产生 elog(ERROR) (Bruce)
+在约束子句中允许多个参数的函数 (Thomas)
+检查布尔输入文本 'true','false','yes','no','1','0' 并在不能识别时抛出 elog(ERROR) (Thomas)
+主要的大对象修复
+修复 GROUP BY 显示重复的问题 (Vadim)
+修复 MergeJoin 中的索引扫描 (Vadim) 
+
+增强
+------------
+带有 EXISTS, IN, ALL, ANY 关键字的子查询 (Vadim, Bruce, Thomas)
+新增用户手册 (Thomas, others)
+通过嵌入一些频繁调用的函数加速
+真实的死锁检测，不再超时 (Bruce)
+添加 SQL92 "constants" CURRENT_DATE, CURRENT_TIME, CURRENT_TIMESTAMP, CURRENT_USER (Thomas)
+修改约束语法使其 SQL92 兼容 (Thomas)
+使用索引实现 SQL92 PRIMARY KEY 和 UNIQUE 子句 (Thomas)
+为 FOREIGN KEY 识别出 SQL92 语法。抛出 elog 通知 (Thomas)
+允许 NOT NULL UNIQUE 子句(每个语句在之前单独的被允许)(Thomas)  
+允许非常量 PostgreSQ 风格的转换 ("::") (Thomas)
+添加对 SQL3 TRUE 和 FALSE 布尔常量的支持 (Thomas)
+支持 SQL92 语法 IS TRUE/IS FALSE/IS NOT TRUE/IS NOT FALSE (Thomas)
+允许布尔字面值是较短的字符串 (如 "t", "tr", "tru") (Thomas)
+允许 SQL92 分隔标识符 (Thomas)
+实现 SQL92 二进制和十六进制字符串编码 (b'10' 和 x'1F') (Thomas)
+支持 SQL92 语法文字字符串的类型强制转换(如 "DATETIME 'now'") (Thomas) 
+添加 int2, int4, 和 OID 类型和文本类型之间的转换 (Thomas)
+在建立索引时使用共享锁 (Vadim)
+在一个用户查询完成之后，在一个事务块内部给该查询分配空闲存储，截断为 &lt;= 6.2.1 (Vadim)
+新增 SQL 语句 CREATE PROCEDURAL LANGUAGE (Jan)
+新增 <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 过程语言 (PL) 后端接口 (Jan)
+重命名 pg_dump -H 选项为 -h (Bruce)
+添加 Java 支持口令，European 日期 (Peter)
+使用索引 LIKE 和 ~, !~ 操作符 (Bruce)
+为 datetime 和 timespan 添加哈希函数 (Thomas)
+删除了 Time Travel (Vadim, Bruce)
+为 \d 和 \z 添加分页，并且修复了 \i (Bruce) 
+添加 Unix 域套接字支持到后端和前端库 (Goran)
+实现了 CREATE DATABASE/WITH LOCATION 和 initlocation 工具 (Thomas)
+允许更多 SQL92 和/或 <SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+> 保留字作为字段标识符 (Thomas)
+增大对 SQL92 SET TIME ZONE... 的支持 (Thomas)
+SET/SHOW/RESET TIME ZONE 使用 TZ 后端环境变量 (Thomas)
+实现了 SET keyword = DEFAULT 和 SET TIME ZONE DEFAULT (Thomas)
+启用 SET TIME ZONE 使用 TZ 环境变量 (Thomas)
+添加 PGDATESTYLE 环境变量到前端和后端初始化 (Thomas)
+添加 PGTZ, PGCOSTHEAP, PGCOSTINDEX, PGRPLANS, PGGEQO 前端库初始化环境变量 (Thomas)
+回归测试时区自动设置 "setenv PGTZ PST8PDT" (Thomas)
+为表、字段、操作符、类型和聚集的信息添加 pg_description 表 (Bruce)
+增加系统表/索引名上的 16 字符限制到 32 个字符 (Bruce)
+重命名系统索引 (Bruce)
+添加 'GERMAN' 选项到 SET DATESTYLE (Thomas)
+定义一个带有 "hh:mm:ss" 字段的  "ISO-style" 时间间隔输出格式 (Thomas)
+允许时间增量的小数值 (如 '2.5 days') (Thomas)
+为时间增量更细心的验证数值输入 (Thomas)
+实现了一年中的天数作为 date_part() 的可能输入 (Thomas) 
+定义 timespan_finite() 和 text_timespan() 函数 (Thomas)
+删除存档的东西 (Bruce)
+允许 pg_password 认证数据库从系统口令文件中分离出来 (Todd)
+转储 ACLs, GRANT, REVOKE 权限 (Matt)
+定义 text, varchar, 和 bpchar 字符串长度函数 (Thomas)
+修复继承的查询处理，和开销计算 (Bruce)
+实现了 CREATE TABLE/AS SELECT (作为 SELECT/INTO 的替换)(Thomas)
+在约束中允许 NOT, IS NULL, IS NOT NULL (Thomas)
+为 SELECT 实现了 UNION (Bruce) 
+添加 UNION, GROUP, DISTINCT 到 INSERT (Bruce)
+varchar() 存储只需要磁盘上的字节 (Bruce)
+修复了 BLOBs (Peter)
+JDBC... 的 Mega-Patch 参阅 README_6.3 的修改列表 (Peter)
+删除了 PQconnectdb() 中不使用的 "option" 
+新增 LOCK 命令和描述死锁的锁手册页(Bruce)
+添加了新的 psql \da, \dd, \df, \do, \dS, 和 \dT 命令(Bruce)
+增强了 psql \z 以显示序列 (Bruce)
+在 psql \d 的表中显示 NOT NULL 和 DEFAULT (Bruce)
+新增 psql .psqlrc 文件启动 (Andrew) 
+在 contrib/linux 中修改样本启动脚本以显示系统日志 (Thomas)
+在 contrib/ip_and_mac 中为 IP 和 MAC 地址新增类型 (TomH)
+contrib/unixdate 中 Unix 系统时间和 日期/时间 类型的转换 (Thomas)
+贡献版的更新 (Massimo)
+添加 Unix 套接字支持到 DBD::Pg (Goran) 
+新增 python 接口 (PyGreSQL 2.0)(D'Arcy)
+新的前端/后端控制有一个版本号，网络字节顺序 (Phil)
+pg_hba.conf 中的安全特征加强了也记录了，还有许多清理 (Phil)
+CHAR() 现在比 VARCHAR() 或 TEXT 访问更快
+ecpg 嵌入了 SQL 预处理器
+减少系统字段开销 (Vadmin)
+删除 pg_time 表 (Vadim)
+添加 pg_type 属性以确定需要长度的类型 (bpchar, varchar)
+当 COPY 命令失败时添加违规行的报告
+允许 VIEW 权限与基础表的设置分离开来。为了安全，根据情况在视图上使用 GRANT/REVOKE (Jan)
+表现在没有缺省的 GRANT SELECT TO PUBLIC。你必须明确的赋予这样的权限。
+清理 教程示例 (Darren)
+
+源代码树的变化
+-------------------
+添加新的 html 开发工具，和在 /tools/backend 中添加流程图
+修复 SCO 编译
+Robert Gillies 层云计算机接口
+为 BSD44_derived shlib 添加支持  &amp; i386_solaris
+使配置更加自动化 (Brook)
+添加检查回归测试结果的脚本 
+分解解析器函数为更小的文件，集合到一起 (Bruce)
+重命名 heap_create 为 heap_create_and_catalog，重命名 heap_creatr 为 heap_create() (Bruce)
+为锁定修补 Sparc/Linux (TomS) 
+删除 PORTNAME 并整理端口特定的东西 (Marc)
+添加优化器 README 文件 (Bruce)
+删除优化器中的一些递归并清理此处的一些代码 (Bruce)
+修复 NetBSD 锁定 (Henry)
+修复 libptcl 制造 (Tatsuo)
+AIX 修补 (Darren)
+更改 IS TRUE, IS FALSE, ... 到表达式，使用 "=" 然不是函数调用 istrue() 或 isfalse() 来允许优化 (Thomas)
+修复各种 NetBSD/Sparc 相关 (TomH)
+Alpha linux 锁定 (Travis,Ryan) 
+更改 elog(WARN) 为 elog(ERROR) (Bruce)
+FreeBSD 的 FAQ (Marc)
+引入 PostODBC 源代码树作为我们的标准发布的一部分 (Marc)
+HP/UX 10 vs 9 的小幅度修补(Stan)
+为 type-specific 信息新增 pg_attribute.atttypmod，就像 varchar 长度 (Bruce)
+UnixWare 补丁 (Billy)
+为自旋锁 asm 新增 i386 'lock' (Billy)
+多路复用后端的支持已经删除了
+开启一个 OpenBSD 端口
+开启一个 AUX 端口 
+开启一个 Cygnus 端口
+添加字符串函数到回归套件 (Thomas)
+扩展一些以前被截断为 16 个字符的函数名 (Thomas)
+删除不需要的 malloc() 调用并用 palloc() 替换 (Bruce) </PRE><P></P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-6-3-1.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-6-2-1.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">版本 6.3.1</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">版本 6.2.1</TD></TR></TABLE></DIV></BODY></HTML>

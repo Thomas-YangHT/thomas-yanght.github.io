@@ -1,0 +1,218 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>附加功能</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="全文检索" HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html"><LINK REL="PREVIOUS" TITLE="控制文本搜索" HREF="textsearch-controls.html"><LINK REL="NEXT" TITLE="解析器" HREF="textsearch-parsers.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/textsearch.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="控制文本搜索" HREF="textsearch-controls.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 12. 全文检索</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="解析器" HREF="textsearch-parsers.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="TEXTSEARCH-FEATURES">12.4. 附加功能</A></H1><P> 本节描述了连接文本搜索中有用的附加功能和操作符。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TEXTSEARCH-MANIPULATE-TSVECTOR">12.4.1. 操作文档</A></H2><P> 节<A HREF="textsearch-controls.html#TEXTSEARCH-PARSING-DOCUMENTS">第 12.3.1 &#33410;</A>显示了原始文本文档如何转换成<TT CLASS="TYPE">tsvector</TT>值。
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>也提供用于操作已经在<TT CLASS="TYPE">tsvector</TT>形式中的文档的函数和操作符。</P><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL"><TT CLASS="TYPE">tsvector</TT> || <TT CLASS="TYPE">tsvector</TT></TT></DT><DD><P> <TT CLASS="TYPE">tsvector</TT>连接操作符返回一个连接词的向量，以及作为参数给定的2个向量的位置信息。
+在连接期间重新获得位置和权重标签。出现在右边向量位置通过左边向量提到的最大位置相抵消，
+因此这个结果几乎等同于2个原始文档字符串连接中执行<CODE CLASS="FUNCTION">to_tsvector</CODE>的结果。（这个等价是不准确的，
+因为任何从左边参数中删除的屏蔽词不会影响结果，然而，如果使用文本连接，它们影响右边参数词的位置）。</P><P> 使用级联中的向量形式而不是在应用<CODE CLASS="FUNCTION">to_tsvector</CODE>之前连接文本的一个优势是，
+你可以使用不同的配置解析文档的不同部分。同时，由于<CODE CLASS="FUNCTION">setweight</CODE>函数标记所有相同方式给定向量的词汇，
+解析文本是必要的，并且如果你想用不同的权重标记文档不同部分，连接前做<CODE CLASS="FUNCTION">setweight</CODE>。</P></DD><DT><TT CLASS="LITERAL">setweight(<TT CLASS="REPLACEABLE"><I>vector</I></TT> <TT CLASS="TYPE">tsvector</TT>, <TT CLASS="REPLACEABLE"><I>weight</I></TT> <TT CLASS="TYPE">"char"</TT>) returns <TT CLASS="TYPE">tsvector</TT></TT></DT><DD><P> <CODE CLASS="FUNCTION">setweight</CODE> 返回一个输入向量的拷贝，其中每一个位置用给定的<TT CLASS="REPLACEABLE"><I>weight</I></TT>,
+<TT CLASS="LITERAL">A</TT>, <TT CLASS="LITERAL">B</TT>, <TT CLASS="LITERAL">C</TT>或者
+<TT CLASS="LITERAL">D</TT>之一进行标记。（<TT CLASS="LITERAL">D</TT>是缺省新向量，因此不显示在输出上。）当向量连接时，保留这些标签，
+允许一个文档的不同部分的词通过不同相关函数加权。</P><P> 注意权重标签适用于<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">位置</I></SPAN>，不是<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">词汇</I></SPAN>。如果输入向量已经被剥夺了位置，则<CODE CLASS="FUNCTION">setweight</CODE>不做任何事情。</P></DD><DT><TT CLASS="LITERAL">length(<TT CLASS="REPLACEABLE"><I>vector</I></TT> <TT CLASS="TYPE">tsvector</TT>) returns <TT CLASS="TYPE">integer</TT></TT></DT><DD><P> 返回存储在向量中的词的数量。</P></DD><DT><TT CLASS="LITERAL">strip(<TT CLASS="REPLACEABLE"><I>vector</I></TT> <TT CLASS="TYPE">tsvector</TT>) returns <TT CLASS="TYPE">tsvector</TT></TT></DT><DD><P> 返回一个向量，其中列出了给定向量的同一词，但它缺乏任何位置和权重信息。
+虽然为相关性排序返回的向量比一个未拆分向量用处少，它通常会小得多。</P></DD></DL></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TEXTSEARCH-MANIPULATE-TSQUERY">12.4.2. 处理查询</A></H2><P> 节<A HREF="textsearch-controls.html#TEXTSEARCH-PARSING-QUERIES">第 12.3.2 &#33410;</A>显示了原始文本查询如何转换成<TT CLASS="TYPE">tsquery</TT>值。
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>也提供了函数和操作符用于处理已存在<TT CLASS="TYPE">tsquery</TT>形式中的查询 </P><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL"><TT CLASS="TYPE">tsquery</TT> &amp;&amp; <TT CLASS="TYPE">tsquery</TT></TT></DT><DD><P> 返回两个给定查询的与组合。</P></DD><DT><TT CLASS="LITERAL"><TT CLASS="TYPE">tsquery</TT> || <TT CLASS="TYPE">tsquery</TT></TT></DT><DD><P> 返回两个给定查询的或组合。</P></DD><DT><TT CLASS="LITERAL">!! <TT CLASS="TYPE">tsquery</TT></TT></DT><DD><P> 返回给定查询的反面（非）。</P></DD><DT><TT CLASS="LITERAL">numnode(<TT CLASS="REPLACEABLE"><I>query</I></TT> <TT CLASS="TYPE">tsquery</TT>) returns <TT CLASS="TYPE">integer</TT></TT></DT><DD><P>
+返回在一个<TT CLASS="TYPE">tsquery</TT>中节点的数目（词加操作符）。决定<TT CLASS="REPLACEABLE"><I>query</I></TT>是否有意义（返回&gt; 0），
+或只包含屏蔽词（返回0），这个函数是很有用的。例子：
+</P><PRE CLASS="SCREEN">SELECT numnode(plainto_tsquery('the any'));
+NOTICE:  query contains only stopword(s) or doesn't contain lexeme(s), ignored
+ numnode
+---------
+       0
+
+SELECT numnode('foo &amp; bar'::tsquery);
+ numnode
+---------
+       3</PRE><P>
+</P></DD><DT><TT CLASS="LITERAL">querytree(<TT CLASS="REPLACEABLE"><I>query</I></TT> <TT CLASS="TYPE">tsquery</TT>) returns <TT CLASS="TYPE">text</TT></TT></DT><DD><P>
+返回可用于搜索索引的<TT CLASS="TYPE">tsquery</TT>部分。此函数对检测未索引查询是有帮助的，例如那些只包含屏蔽词或否定术语。比如:
+</P><PRE CLASS="SCREEN">SELECT querytree(to_tsquery('!defined'));
+ querytree
+-----------&#13;</PRE><P>
+</P></DD></DL></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="TEXTSEARCH-QUERY-REWRITING">12.4.2.1. 查询重写</A></H3><P> 函数族<CODE CLASS="FUNCTION">ts_rewrite</CODE>搜索一个特定的目标查询事件<TT CLASS="TYPE">tsquery</TT>，和替换每个替代子查询。
+实际上这个操作是一个子字符串替换的<TT CLASS="TYPE">tsquery</TT>-特定版本。目标和替换组合可以被认为是一个<I CLASS="FIRSTTERM">查询重写规则</I>。
+一组这样的重写规则可以是一个强大的搜索帮助。例如，你可以使用同义词扩大搜索（例如，<TT CLASS="LITERAL">new york</TT>, <TT CLASS="LITERAL">big apple</TT>, <TT CLASS="LITERAL">nyc</TT>,
+<TT CLASS="LITERAL">gotham</TT>）或缩小搜索一些热点问题的直接用户。在这些特性和同义词词典之间功能上有一些重叠（节<A HREF="textsearch-dictionaries.html#TEXTSEARCH-THESAURUS">第 12.6.4 &#33410;</A>）。然而，
+你可以在不重建索引情况下即时修改重写规则，而更新词库需要重建索引才能有效。</P><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL">ts_rewrite (<TT CLASS="REPLACEABLE"><I>query</I></TT> <TT CLASS="TYPE">tsquery</TT>, <TT CLASS="REPLACEABLE"><I>target</I></TT> <TT CLASS="TYPE">tsquery</TT>, <TT CLASS="REPLACEABLE"><I>substitute</I></TT> <TT CLASS="TYPE">tsquery</TT>) returns <TT CLASS="TYPE">tsquery</TT></TT></DT><DD><P> <CODE CLASS="FUNCTION">ts_rewrite</CODE>的这种形式只适用于一个单一的重写规则：无论出现在<TT CLASS="REPLACEABLE"><I>query</I></TT>的什么地方，<TT CLASS="REPLACEABLE"><I>target</I></TT>通过<TT CLASS="REPLACEABLE"><I>substitute</I></TT>替换。比如：
+</P><PRE CLASS="SCREEN">SELECT ts_rewrite('a &amp; b'::tsquery, 'a'::tsquery, 'c'::tsquery);
+ ts_rewrite
+------------
+ 'b' &amp; 'c'</PRE><P>&#13;</P></DD><DT><TT CLASS="LITERAL">ts_rewrite (<TT CLASS="REPLACEABLE"><I>query</I></TT> <TT CLASS="TYPE">tsquery</TT>, <TT CLASS="REPLACEABLE"><I>select</I></TT> <TT CLASS="TYPE">text</TT>) returns <TT CLASS="TYPE">tsquery</TT></TT></DT><DD><P> <CODE CLASS="FUNCTION">ts_rewrite</CODE>的这种形式接受起始<TT CLASS="REPLACEABLE"><I>查询</I></TT>和SQL <TT CLASS="REPLACEABLE"><I>select</I></TT>命令，这是作为一个文本字符串。
+<TT CLASS="REPLACEABLE"><I>select</I></TT>必须产生两列<TT CLASS="TYPE">tsquery</TT>类型。<TT CLASS="REPLACEABLE"><I>select</I></TT>结果的每一行，出现的第一个字段的值（目标）
+都被当前的<TT CLASS="REPLACEABLE"><I>query</I></TT>值中的第二个字段值（替代）。比如：</P><P> 注意，当多个重写规则适用于这种方式时，应用的顺序非常重要；
+因此在实践中你将需要源查询为<TT CLASS="LITERAL">ORDER BY</TT>一些排序关键字。</P></DD></DL></DIV><P> 让我们考虑下现实生活中天文的例子。我们将使用表驱动的重写规则扩大查询<TT CLASS="LITERAL">supernovae</TT>：
+</P><PRE CLASS="SCREEN">CREATE TABLE aliases (t tsquery primary key, s tsquery);
+INSERT INTO aliases VALUES(to_tsquery('supernovae'), to_tsquery('supernovae|sn'));
+
+SELECT ts_rewrite(to_tsquery('supernovae &amp; crab'), 'SELECT * FROM aliases');
+           ts_rewrite            
+---------------------------------
+ 'crab' &amp; ( 'supernova' | 'sn' )</PRE><P>
+我们可以通过更新表改变重写规则：
+</P><PRE CLASS="SCREEN">UPDATE aliases
+SET s = to_tsquery('supernovae|sn &amp; !nebulae')
+WHERE t = to_tsquery('supernovae');
+
+SELECT ts_rewrite(to_tsquery('supernovae &amp; crab'), 'SELECT * FROM aliases');
+                 ts_rewrite                  
+---------------------------------------------
+ 'crab' &amp; ( 'supernova' | 'sn' &amp; !'nebula' )</PRE><P>
+&#13;</P><P> 当有许多的重写规则的时候，重写比较缓慢，因为它检查可能匹配的每一个规则。
+为过滤掉明显非候选规则，我们可以使用<TT CLASS="TYPE">tsquery</TT>类型的包含操作符。在下面的例子中，
+我们只选择那些可能与原始查询匹配的规则：
+</P><PRE CLASS="SCREEN">SELECT ts_rewrite('a &amp; b'::tsquery,
+                  'SELECT t,s FROM aliases WHERE ''a &amp; b''::tsquery @&gt; t');
+ ts_rewrite
+------------
+ 'b' &amp; 'c'</PRE><P>
+</P></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TEXTSEARCH-UPDATE-TRIGGERS">12.4.3. 自动更新的触发器</A></H2><P> 当使用单独的列存储文档的<TT CLASS="TYPE">tsvector</TT>形式，当文档内容列变化时，
+有必要建立一个触发器更新<TT CLASS="TYPE">tsvector</TT>列。两个内置的触发器功能可用于此，
+或者你可以自定义触发器。</P><PRE CLASS="SYNOPSIS">tsvector_update_trigger(<TT
+CLASS="REPLACEABLE"
+><I
+>tsvector_column_name</I
+></TT
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>config_name</I
+></TT
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>text_column_name</I
+></TT
+> [<SPAN
+CLASS="OPTIONAL"
+>, ... </SPAN
+>])
+tsvector_update_trigger_column(<TT
+CLASS="REPLACEABLE"
+><I
+>tsvector_column_name</I
+></TT
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>config_column_name</I
+></TT
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>text_column_name</I
+></TT
+> [<SPAN
+CLASS="OPTIONAL"
+>, ... </SPAN
+>])</PRE><P>&#13;
+这些触发器函数自动计算来自一个或多个文本字段的<TT CLASS="TYPE">tsvector</TT>列，在<TT CLASS="COMMAND">CREATE TRIGGER</TT>命令指定的参数控制下。
+使用的例子是：
+</P><PRE CLASS="SCREEN">CREATE TABLE messages (
+    title       text,
+    body        text,
+    tsv         tsvector
+);
+
+CREATE TRIGGER tsvectorupdate BEFORE INSERT OR UPDATE
+ON messages FOR EACH ROW EXECUTE PROCEDURE
+tsvector_update_trigger(tsv, 'pg_catalog.english', title, body);
+
+INSERT INTO messages VALUES('title here', 'the body text is here');
+
+SELECT * FROM messages;
+   title    |         body          |            tsv             
+------------+-----------------------+----------------------------
+ title here | the body text is here | 'bodi':4 'text':5 'titl':1
+
+SELECT title, body FROM messages WHERE tsv @@ to_tsquery('title &amp; body');
+   title    |         body          
+------------+-----------------------
+ title here | the body text is here</PRE><P>
+创建触发器，在<TT CLASS="STRUCTFIELD">title</TT>或者<TT CLASS="STRUCTFIELD">body</TT>中的任何改变都会自动反映到<TT CLASS="STRUCTFIELD">tsv</TT>中，而不必担心它的应用。
+</P><P> 第一个触发器参数必须是被更新的<TT CLASS="TYPE">tsvector</TT>字段名。第二个参数指定要进行转换的文本搜索配置。
+为<CODE CLASS="FUNCTION">tsvector_update_trigger</CODE>，配置的名称仅仅是作为第二个触发器参数。它必须是如上所示的模式匹配，
+因此触发器的行为在<TT CLASS="VARNAME">search_path</TT>中不会改变。为<CODE CLASS="FUNCTION">tsvector_update_trigger_column</CODE>，
+第二个触发器参数是另一个表列的名称，它的类型必须是<TT CLASS="TYPE">regconfig</TT>。这允许每行选择进行配置。
+剩余的参数（s）是文本列的名称（键入<TT CLASS="TYPE">text</TT>, <TT CLASS="TYPE">varchar</TT>或者<TT CLASS="TYPE">char</TT>）。这些将在给定的顺序中提供文档。
+空值将被忽略（但其他列仍将被索引）。</P><P> 这些内置触发器的限制是它们一致对待所有输入列。为了处理不同列&mdash;比如，
+为权重不同主体的标题&mdash;它有必要编写一个自定义触发器。
+这是使用<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN> 作为触发器语言的一个例子：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION messages_trigger() RETURNS trigger AS $$
+begin
+  new.tsv :=
+     setweight(to_tsvector('pg_catalog.english', coalesce(new.title,'')), 'A') ||
+     setweight(to_tsvector('pg_catalog.english', coalesce(new.body,'')), 'D');
+  return new;
+end
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tsvectorupdate BEFORE INSERT OR UPDATE
+    ON messages FOR EACH ROW EXECUTE PROCEDURE messages_trigger();</PRE><P>&#13;</P><P> 记住当在触发器内部创造<TT CLASS="TYPE">tsvector</TT>值时，明确指定配置的名称是很重要的，
+所以，该列的内容将通过改变<TT CLASS="VARNAME">default_text_search_config</TT>而不会受到影响。
+如果不这样做可能会导致诸如重载转储之后搜索结果改变的问题。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TEXTSEARCH-STATISTICS">12.4.4. 收集文献统计</A></H2><P> 函数<CODE CLASS="FUNCTION">ts_stat</CODE>可用于检查你的配置和查找屏蔽候选词。</P><PRE CLASS="SYNOPSIS">ts_stat(<TT
+CLASS="REPLACEABLE"
+><I
+>sqlquery</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>, [<SPAN
+CLASS="OPTIONAL"
+> <TT
+CLASS="REPLACEABLE"
+><I
+>weights</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>, </SPAN
+>]
+        OUT <TT
+CLASS="REPLACEABLE"
+><I
+>word</I
+></TT
+> <TT
+CLASS="TYPE"
+>text</TT
+>, OUT <TT
+CLASS="REPLACEABLE"
+><I
+>ndoc</I
+></TT
+> <TT
+CLASS="TYPE"
+>integer</TT
+>,
+        OUT <TT
+CLASS="REPLACEABLE"
+><I
+>nentry</I
+></TT
+> <TT
+CLASS="TYPE"
+>integer</TT
+>) returns <TT
+CLASS="TYPE"
+>setof record</TT
+></PRE><P>
+<TT CLASS="REPLACEABLE"><I>sqlquery</I></TT>是一个包含返回单独<TT CLASS="TYPE">tsvector</TT>列的SQL查询的文本值。
+<CODE CLASS="FUNCTION">ts_stat</CODE>执行查询并返回包含<TT CLASS="TYPE">tsvector</TT>数据的各个不同的语义（词）的统计。返回的列：
+<P></P></P><UL COMPACT="COMPACT"><LI STYLE="list-style-type: disc"><P>
+<TT CLASS="REPLACEABLE"><I>word</I></TT> <TT CLASS="TYPE">text</TT> &mdash; 一个词的值
+</P></LI><LI STYLE="list-style-type: disc"><P> <TT CLASS="REPLACEABLE"><I>ndoc</I></TT> <TT CLASS="TYPE">integer</TT> &mdash;这个词出现的文档编号（<TT CLASS="TYPE">tsvector</TT>s）</P></LI><LI STYLE="list-style-type: disc"><P> <TT CLASS="REPLACEABLE"><I>nentry</I></TT> <TT CLASS="TYPE">integer</TT> &mdash;这个词出现的总数</P></LI></UL><P>
+如果提供<TT CLASS="REPLACEABLE"><I>weights</I></TT> ，仅仅计算这些权重之一。
+</P><P> 例如，在一个文档集合中查找十个最常用的单词：
+</P><PRE CLASS="PROGRAMLISTING">SELECT * FROM ts_stat('SELECT vector FROM apod')
+ORDER BY nentry DESC, ndoc DESC, word
+LIMIT 10;</PRE><P>
+同样的，但是只计算权重weight <TT CLASS="LITERAL">A</TT>或者<TT CLASS="LITERAL">B</TT>的单词：
+</P><PRE CLASS="PROGRAMLISTING">SELECT * FROM ts_stat('SELECT vector FROM apod', 'ab')
+ORDER BY nentry DESC, ndoc DESC, word
+LIMIT 10;</PRE><P>&#13;</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="textsearch-controls.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="textsearch-parsers.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">控制文本搜索</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">解析器</TD></TR></TABLE></DIV></BODY></HTML>

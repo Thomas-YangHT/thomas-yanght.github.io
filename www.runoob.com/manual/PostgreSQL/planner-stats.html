@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>规划器使用的统计信息</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="性能提升技巧" HREF="http://school.yunwei.edu/manual/PostgreSQL/performance-tips.html"><LINK REL="PREVIOUS" TITLE="使用EXPLAIN" HREF="using-explain.html"><LINK REL="NEXT" TITLE="用明确的JOIN控制规划器" HREF="explicit-joins.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/perform.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="使用EXPLAIN" HREF="using-explain.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/performance-tips.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 14. 性能提升技巧</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="用明确的JOIN控制规划器" HREF="explicit-joins.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="PLANNER-STATS">14.2. 规划器使用的统计信息</A></H1><P> 就像我们在上一节里展示的那样，查询规划器需要估计一个查询检索的行数，
+这样才能选择正确的查询规划。本节就系统用于这些估计的统计进行一些描述。</P><P>
+统计的一个部分就是每个表和索引中的记录总数，以及每个表和索引占据的磁盘块数。
+这个信息保存在<A HREF="catalog-pg-class.html"><TT CLASS="STRUCTNAME">pg_class</TT></A>表的
+<TT CLASS="STRUCTFIELD">reltuples</TT>和<TT CLASS="STRUCTFIELD">relpages</TT>字段中。
+我们可以用类似下面的查询检索这些信息：
+</P><PRE CLASS="SCREEN">SELECT relname, relkind, reltuples, relpages
+FROM pg_class
+WHERE relname LIKE 'tenk1%';
+
+       relname        | relkind | reltuples | relpages
+----------------------+---------+-----------+----------
+ tenk1                | r       |     10000 |      358
+ tenk1_hundred        | i       |     10000 |       30
+ tenk1_thous_tenthous | i       |     10000 |       30
+ tenk1_unique1        | i       |     10000 |       30
+ tenk1_unique2        | i       |     10000 |       30
+(5 rows)</PRE><P>
+我们在这里可以看到<TT CLASS="STRUCTNAME">tenk1</TT>有10000行，它的索引也有这么多行，但是索引远比表小得多(很正常)。
+</P><P> 出于效率考虑，<TT CLASS="STRUCTFIELD">reltuples</TT>和<TT CLASS="STRUCTFIELD">relpages</TT> 不是实时更新的，
+因此它们通常包含可能有些过时的数值。它们被<TT CLASS="COMMAND">VACUUM</TT>, <TT CLASS="COMMAND">ANALYZE</TT>和几个DDL命令
+(比如<TT CLASS="COMMAND">CREATE INDEX</TT>)更新。
+<TT CLASS="COMMAND">VACUUM</TT>或者<TT CLASS="COMMAND">ANALYZE</TT>操作不扫描整个表（这是常见的情况），
+将逐步基于扫描表的部分更新<TT CLASS="STRUCTFIELD">reltuples</TT>数，从而产生一个近似值。
+在任何情况下，规划器将把<TT CLASS="STRUCTNAME">pg_class</TT>表里面的数值调整为和当前的物理表尺寸匹配，
+以此获取一个更接近的近似值。</P><P> 大多数查询只是检索表中行的一部分，因为它们有限制待查行的<TT CLASS="LITERAL">WHERE</TT>子句。
+因此规划器需要对<TT CLASS="LITERAL">WHERE</TT>子句的<I CLASS="FIRSTTERM">选择性</I>进行评估，
+选择性也就是符合<TT CLASS="LITERAL">WHERE</TT>子句中每个条件的部分。
+用于这个目的的信息存储在<A HREF="catalog-pg-statistic.html"><TT CLASS="STRUCTNAME">pg_statistic</TT></A>系统表中。
+在<TT CLASS="STRUCTNAME">pg_statistic</TT>中的记录是由<TT CLASS="COMMAND">ANALYZE</TT>和<TT CLASS="COMMAND">VACUUM ANALYZE</TT>命令更新的，
+并且总是近似值，即使刚刚更新完也不例外。</P><P>
+除了直接查看<TT CLASS="STRUCTNAME">pg_statistic</TT>之外，
+我们手工检查统计的时候最好查看<A HREF="view-pg-stats.html"><TT CLASS="STRUCTNAME">pg_stats</TT></A>的视图。
+<TT CLASS="STRUCTNAME">pg_stats</TT>被设计成更容易可读的。
+而且，<TT CLASS="STRUCTNAME">pg_stats</TT>是所有人都可以读取的，而<TT CLASS="STRUCTNAME">pg_statistic</TT>只能由超级用户读取。
+这样就可以避免非特权用户从统计信息中获取一些和其他人的表内容相关的信息。<TT CLASS="STRUCTNAME">pg_stats</TT>视图是受约束的，
+只显示当前用户可读的表。比如，我们可以：
+</P><PRE CLASS="SCREEN">SELECT attname, inherited, n_distinct,
+       array_to_string(most_common_vals, E'\n') as most_common_vals
+FROM pg_stats
+WHERE tablename = 'road';
+
+ attname | inherited | n_distinct |          most_common_vals
+---------+-----------+------------+------------------------------------
+ name    | f         |  -0.363388 | I- 580                        Ramp+
+         |           |            | I- 880                        Ramp+
+         |           |            | Sp Railroad                       +
+         |           |            | I- 580                            +
+         |           |            | I- 680                        Ramp
+ name    | t         |  -0.284859 | I- 880                        Ramp+
+         |           |            | I- 580                        Ramp+
+         |           |            | I- 680                        Ramp+
+         |           |            | I- 580                            +
+         |           |            | State Hwy 13                  Ramp
+(2 rows)</PRE><P>
+需要注意的是两行显示为同一列，1对应在<TT CLASS="LITERAL">road</TT>表(<TT CLASS="LITERAL">inherited</TT>=<TT CLASS="LITERAL">t</TT>)开头的完整继承层次结构。
+而另一个只包含<TT CLASS="LITERAL">road</TT>表本身(<TT CLASS="LITERAL">inherited</TT>=<TT CLASS="LITERAL">f</TT>)。
+</P><P> 在<TT CLASS="STRUCTNAME">pg_statistic</TT>中通过<TT CLASS="COMMAND">ANALYZE</TT>存储的信息的数量，
+特别是给每个字段用的<TT CLASS="STRUCTFIELD">most_common_vals</TT>和<TT CLASS="STRUCTFIELD">histogram_bounds</TT>数组上的最大记录数目
+可以用<TT CLASS="COMMAND">ALTER TABLE SET STATISTICS</TT>命令设置，
+或者是用运行时参数<A HREF="runtime-config-query.html#GUC-DEFAULT-STATISTICS-TARGET">default_statistics_target</A>进行全局设置。
+目前缺省的限制是 100个记录。
+提升该限制应该可以做出更准确的规划器估计，特别是对那些有不规则数据分布的字段而言，
+代价是在<TT CLASS="STRUCTNAME">pg_statistic</TT>里使用了更多空间，并且需要略微多一些的时间计算估计数值。相比之下，
+比较低的限制可能更适合那些数据分布比较简单的字段。</P><P> 有关规划器使用统计信息的进一步详情可参阅<A HREF="http://school.yunwei.edu/manual/PostgreSQL/planner-stats-details.html">第 60 &#31456;</A>。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="using-explain.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="explicit-joins.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">使用<TT CLASS="COMMAND">EXPLAIN</TT></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/performance-tips.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">用明确的<TT CLASS="LITERAL">JOIN</TT>控制规划器</TD></TR></TABLE></DIV></BODY></HTML>

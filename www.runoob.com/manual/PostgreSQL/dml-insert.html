@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>插入数据</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="数据操作" HREF="http://school.yunwei.edu/manual/PostgreSQL/dml.html"><LINK REL="PREVIOUS" TITLE="数据操作" HREF="http://school.yunwei.edu/manual/PostgreSQL/dml.html"><LINK REL="NEXT" TITLE="更新数据" HREF="dml-update.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/dml.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="数据操作" HREF="http://school.yunwei.edu/manual/PostgreSQL/dml.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/dml.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 6. 数据操作</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="更新数据" HREF="dml-update.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="DML-INSERT">6.1. 插入数据</A></H1><P>在创建完一个表的时候，它里面没有数据。
+在数据库可以有点用处之前要做的第一件事就是向里面插入数据。
+数据在概念上是每次插入一行。我们当然可以每次插入多行，
+但是确实没有办法插入少于一行的数据。即使你只知道几个字段的数值，
+那么你也必须创建一个完整的行。</P><P>使用<A HREF="sql-insert.html">INSERT</A>命令创建一个新行。
+这条命令要求提供表名字以及字段值。比如，
+考虑来自<A HREF="http://school.yunwei.edu/manual/PostgreSQL/ddl.html">第 5 &#31456;</A>的产品表：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TABLE products (
+    product_no integer,
+    name text,
+    price numeric
+);</PRE><P>
+下面是一个向表中插入一行的例子：
+</P><PRE CLASS="PROGRAMLISTING">INSERT INTO products VALUES (1, 'Cheese', 9.99);</PRE><P>
+数据值是按照这些字段在表中出现的顺序列出的，并且用逗号分隔。通常，
+数据值是文本(常量)，但也允许使用标量表达式。
+</P><P>上述语法的缺点是你必须知道表中字段的顺序。
+你也可以明确地列出字段以避免这个问题。比如，
+下面的两条命令都和上面的那条命令效果相同：
+</P><PRE CLASS="PROGRAMLISTING">INSERT INTO products (product_no, name, price) VALUES (1, 'Cheese', 9.99);
+INSERT INTO products (name, price, product_no) VALUES ('Cheese', 9.99, 1);</PRE><P>
+许多用户认为明确列出字段名是个好习惯。
+</P><P>如果你不知道所有字段的数值，那么可以省略其中的一些。这时候，
+这些未知字段将被填充为它们的缺省值。比如：
+</P><PRE CLASS="PROGRAMLISTING">INSERT INTO products (product_no, name) VALUES (1, 'Cheese');
+INSERT INTO products VALUES (1, 'Cheese');</PRE><P>
+第二种形式是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的一个扩展。
+它从左向右用给定的值尽可能多的填充字段，剩余的填充缺省值。</P><P>为了保持清晰，你也可以对独立的字段或者整个行明确使用缺省值：
+</P><PRE CLASS="PROGRAMLISTING">INSERT INTO products (product_no, name, price) VALUES (1, 'Cheese', DEFAULT);
+INSERT INTO products DEFAULT VALUES;</PRE><P></P><P>你可以在一条命令中插入多行：
+</P><PRE CLASS="PROGRAMLISTING">INSERT INTO products (product_no, name, price) VALUES
+    (1, 'Cheese', 9.99),
+    (2, 'Bread', 1.99),
+    (3, 'Milk', 2.99);</PRE><P></P><DIV CLASS="TIP"><BLOCKQUOTE CLASS="TIP"><P><B>&#25552;&#31034;: </B>要一次插入大量数据，可以看看<A HREF="sql-copy.html">COPY</A>命令。
+它不像<A HREF="sql-insert.html">INSERT</A>命令那么灵活，但是更高效。
+参考<A HREF="populate.html">第 14.4 &#33410;</A>获取更多有关提高海量数据载入性能的信息。</P></BLOCKQUOTE></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/dml.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="dml-update.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">数据操作</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/dml.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">更新数据</TD></TR></TABLE></DIV></BODY></HTML>

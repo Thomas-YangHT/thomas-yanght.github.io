@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>索引开销估计函数</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="索引访问方法接口定义" HREF="http://school.yunwei.edu/manual/PostgreSQL/indexam.html"><LINK REL="PREVIOUS" TITLE="索引唯一性检查" HREF="index-unique-checks.html"><LINK REL="NEXT" TITLE="GiST索引" HREF="http://school.yunwei.edu/manual/PostgreSQL/gist.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/indexam.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="索引唯一性检查" HREF="index-unique-checks.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/indexam.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 54. 索引访问方法接口定义</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="GiST索引" HREF="http://school.yunwei.edu/manual/PostgreSQL/gist.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="INDEX-COST-ESTIMATION">54.6. 索引开销估计函数</A></H1><P>系统给<CODE CLASS="FUNCTION">amcostestimate</CODE> 一些描述可能的索引扫描的信息，包括一个 WHERE 子句和 ORDER BY 子句的列表，这个子句列表是系统认为可以被索引使用的东西。
+它必须返回访问该索引的开销估计值以及 WHERE 子句的选择性(也就是说，在索引扫描期间检索的将被返回的数据行在父表中所占据的比例)。
+对于简单的场合，几乎开销估计器的所有工作都可以通过调用优化器里面的标准过程完成；
+有<CODE CLASS="FUNCTION">amcostestimate</CODE>这个函数的目的是允许索引访问方法提供和索引类型相关的知识，这样也许可以改进标准的开销估计。
+</P><P>每个<CODE CLASS="FUNCTION">amcostestimate</CODE>函数都必须有下面这样的签名：
+</P><PRE CLASS="PROGRAMLISTING">void
+amcostestimate (PlannerInfo *root,
+                IndexPath *path,
+                double loop_count,
+                Cost *indexStartupCost,
+                Cost *indexTotalCost,
+                Selectivity *indexSelectivity,
+                double *indexCorrelation);</PRE><P>
+头3个参数是输入：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="PARAMETER">root</TT></DT><DD><P>规划器的有关正在被处理的查询的信息。
+</P></DD><DT><TT CLASS="PARAMETER">path</TT></DT><DD><P>被考虑的索引访问路径。除了开销和选择性其他所有的域都是有效的。
+</P></DD><DT><TT CLASS="PARAMETER">loop_count</TT></DT><DD><P>索引扫描的重复次数，这个应该被考虑到开销估算中。
+当考虑到用于嵌套循环内部的参数化扫描时，通常它大于1。
+注意开销估算仍然只是为了一次扫描；一个大的<TT CLASS="PARAMETER">loop_count</TT>的意思在多次扫描间进行某些缓存可能是合适的。
+</P></DD></DL></DIV><P>
+</P><P>后面四个参数是传递引用的输出：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="PARAMETER">*indexStartupCost</TT></DT><DD><P>设置为索引启动处理的开销
+</P></DD><DT><TT CLASS="PARAMETER">*indexTotalCost</TT></DT><DD><P>设置为索引处理的总开销
+</P></DD><DT><TT CLASS="PARAMETER">*indexSelectivity</TT></DT><DD><P>设置为索引的选择性
+</P></DD><DT><TT CLASS="PARAMETER">*indexCorrelation</TT></DT><DD><P>
+设置为索引扫描顺序和下层的表的顺序之间的相关有效性
+</P></DD></DL></DIV><P>
+</P><P>请注意开销估计函数必须用 C 写，而不能用 SQL 或者任何可用的存储过程语言，因为它们必须访问规划器/优化器的内部数据结构。
+</P><P>索引访问开销应该以<TT CLASS="FILENAME">src/backend/optimizer/path/costsize.c</TT>
+使用的单位进行计算：一个顺序磁盘块抓取开销是<TT CLASS="VARNAME">seq_page_cost</TT>，
+一个非顺序抓取开销是<TT CLASS="VARNAME">random_page_cost</TT>，
+而处理一个索引行的开销通常应该是<TT CLASS="VARNAME">cpu_index_tuple_cost</TT>。
+另外，在任何索引处理期间调用的比较操作符，都应该增加一个数量为<TT CLASS="VARNAME">cpu_operator_cost</TT>
+倍数的开销(特别是计算索引条件 indexquals 自己的时候)。
+</P><P>访问开销应该包括所有与扫描索引本身相关的磁盘和 CPU 开销，但是<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">不包括</I></SPAN>检索或者处理索引标识出来的父表的行的开销。
+</P><P><SPAN CLASS="QUOTE">"启动开销"</SPAN>是总扫描开销中的这样一部分：在开始抓取第一行之前，必须花掉的开销。
+对于大多数索引，这个可以是零，但是那些启动开销很大的索引类型可能不能把它设置为零。
+</P><P><TT CLASS="PARAMETER">indexSelectivity</TT>应该设置成在索引扫描期间，父表中的行被选出来的部分的百分比。
+在有损耗的查询的情况下，这个值通常比实际通过给出的查询条件的行所占的百分比要高。
+</P><P><TT CLASS="PARAMETER">indexCorrelation</TT>应该设置成索引顺序和表顺序之间的相关性(范围在 -1.0 到 1.0 之间)。
+这个数值用于调整从父表中抓取行的开销估计。
+</P><P>当<TT CLASS="PARAMETER">loop_count</TT>大于1，返回的数值应当在每一次索引扫描之间平均。
+</P><DIV CLASS="PROCEDURE"><P><B>开销估计</B></P><P>一个典型的开销估计器会像下面这样进行处理：
+</P><OL TYPE="1"><LI CLASS="STEP"><P>基于给出的查询条件，估计并返回父表中将被访问的行的百分比。
+如果缺乏索引类型相关的知识，那么使用标准的优化器函数<CODE CLASS="FUNCTION">clauselist_selectivity()</CODE>:
+</P><PRE CLASS="PROGRAMLISTING">*indexSelectivity = clauselist_selectivity(root, path-&gt;indexquals,
+                                           path-&gt;indexinfo-&gt;rel-&gt;relid,
+                                           JOIN_INNER, NULL);</PRE><P>
+</P></LI><LI CLASS="STEP"><P>估计在扫描过程中将被访问的索引行数。对于许多索引类型，这个等于<TT CLASS="PARAMETER">indexSelectivity</TT>乘以索引中的行数，但是可能更多。
+（请注意，索引的总页面数和行数可以从<TT CLASS="LITERAL">path-&gt;indexinfo</TT>结构中获得。）
+</P></LI><LI CLASS="STEP"><P>估计在扫描中将取出的索引页面数量。这个可能就是<TT CLASS="PARAMETER">indexSelectivity</TT>乘以索引的总页面数。
+</P></LI><LI CLASS="STEP"><P>计算索引访问开销。一个通用的估计器可以这么干：
+</P><PRE CLASS="PROGRAMLISTING">/*
+ * Our generic assumption is that the index pages will be read
+ * sequentially, so they cost seq_page_cost each, not random_page_cost.
+ * Also, we charge for evaluation of the indexquals at each index row.
+ * All the costs are assumed to be paid incrementally during the scan.
+ */
+cost_qual_eval(&amp;index_qual_cost, path-&gt;indexquals, root);
+*indexStartupCost = index_qual_cost.startup;
+*indexTotalCost = seq_page_cost * numIndexPages +
+    (cpu_index_tuple_cost + index_qual_cost.per_tuple) * numIndexTuples;</PRE><P>
+不过，上面没有考虑多次重复索引扫描中索引读取的开销分摊。
+</P></LI><LI CLASS="STEP"><P>估计索引的相关性。对于简单的在单个字段上的有序索引，这个值可以从 pg_statistic 中检索。
+如果相关性是未知，那么保守的估计是零(没有相关性)。
+</P></LI></OL></DIV><P>开销估计器函数的例子可以在<TT CLASS="FILENAME">src/backend/utils/adt/selfuncs.c</TT>里面找到。
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="index-unique-checks.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/gist.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">索引唯一性检查</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/indexam.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">GiST索引</TD></TR></TABLE></DIV></BODY></HTML>

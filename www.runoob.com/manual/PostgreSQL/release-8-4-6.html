@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>发布8.4.6</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="发布8.4.7" HREF="release-8-4-7.html"><LINK REL="NEXT" TITLE="发布8.4.5" HREF="release-8-4-5.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-8.4.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="发布8.4.7" HREF="release-8-4-7.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="发布8.4.5" HREF="release-8-4-5.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-8-4-6">E.47. 发布8.4.6</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>2010-12-16</P></BLOCKQUOTE></DIV><P> 该发布包含8.4.5的各种修复。
+关于8.4主要发布的新功能的信息，
+参阅<A HREF="release-8-4.html">第 E.53 &#33410;</A>。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN124444">E.47.1. 迁移到版本8.4.6</A></H2><P> 运行8.4.X不需要备份/恢复。
+然而，如果你从8.4.2更早版本更新，
+参阅8.4.2发布说明。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN124447">E.47.2. 变化</A></H2><P></P><UL><LI><P> 强迫缺省
+<A HREF="runtime-config-wal.html#GUC-WAL-SYNC-METHOD"><TT CLASS="VARNAME">wal_sync_method</TT></A>
+为Linux上<TT CLASS="LITERAL">fdatasync</TT> (Tom Lane, Marti Raudsepp)</P><P> Linux上缺省实际上是多年的<TT CLASS="LITERAL">fdatasync</TT>，但是最近内核变化导致
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>选择<TT CLASS="LITERAL">open_datasync</TT>。
+这种选择在任何性能改进中不产生结果，并且导致某些文件系统的彻底失败，
+尤其是带有<TT CLASS="LITERAL">data=journal</TT>挂载选项的<TT CLASS="LITERAL">ext4</TT>。
+&#13;</P></LI><LI><P> 修复GIN索引WAL回放逻辑相关错误(Tom Lane)</P><P> 这可能导致<SPAN CLASS="QUOTE">"坏缓冲区id: 0"</SPAN>失败
+或者复制过程中索引内容的损坏。
+</P></LI><LI><P> 当开启检查点WAL记录不在同一WAL段作为重做点时，
+修复基础备份恢复(Jeff Davis) </P></LI><LI><P> 当多个执行者保持活跃很长时间的时候，修复autovacuum的持续放缓(Tom Lane)</P><P> 为autovacuum工作者有效的<TT CLASS="VARNAME">vacuum_cost_limit</TT>可能下降到几乎为零，
+如果它处理足够多的表，使其运行极其缓慢。</P></LI><LI><P> 添加支持<TT CLASS="LITERAL">IA64</TT>上的检测寄存器栈溢出(Tom Lane)</P><P> <TT CLASS="LITERAL">IA64</TT>结构有两个硬件堆栈。堆栈溢出错误的充分预防需要检查这两个。</P></LI><LI><P> 添加<CODE CLASS="FUNCTION">copyObject()</CODE>中栈溢出检查(Tom Lane)</P><P> 某些代码路径可能导致崩溃，由于堆栈溢出产生了一个足够复杂的查询。</P></LI><LI><P> 修复临时GiST索引中页分离的检测(Heikki Linnakangas)</P><P> 当执行插入时，如果比如有一个打开游标扫描索引的时候，在临时索引中可能
+有<SPAN CLASS="QUOTE">"并发"</SPAN>的页面分离。当继续执行游标时，
+GiST未能检测到这种情况，因此可以提供错误结果。&#13;</P></LI><LI><P> 在早期连接处理过程中修复错误检查(Tom Lane)</P><P> 在一些情况下忽略太多子进程检查，当尝试添加新的子进程到固定大小数组中时，
+可能导致postmaster崩溃。</P></LI><LI><P> 提升window函数的效率(Tom Lane)</P><P> 某些情况中大量元组需要提前被读取，但是<TT CLASS="VARNAME">work_mem</TT>大到足以允许它们
+全部保存在内存中，竟意外地慢。<CODE CLASS="FUNCTION">percent_rank()</CODE>, <CODE CLASS="FUNCTION">cume_dist()</CODE>和
+<CODE CLASS="FUNCTION">ntile()</CODE>尤其受到这个问题的影响。
+</P></LI><LI><P> 当<TT CLASS="COMMAND">ANALYZE</TT>复杂索引表达式的时候，避免内存泄露(Tom Lane)</P></LI><LI><P> 确保使用整行Var的索引依赖于它的表(Tom Lane)</P><P> 当删除表的时候，像<TT CLASS="LITERAL">create index i on t (foo(t.*))</TT>声明的索引
+可能不会自动被删除。</P></LI><LI><P> 不要<SPAN CLASS="QUOTE">"内联"</SPAN>SQL函数与多个<TT CLASS="LITERAL">OUT</TT>参数(Tom Lane) </P><P> 由于关于预期结果rowtype信息丢失，这避免了可能的崩溃。</P></LI><LI><P> 如果<TT CLASS="LITERAL">ORDER BY</TT>, <TT CLASS="LITERAL">LIMIT</TT>,
+<TT CLASS="LITERAL">FOR UPDATE</TT>, or <TT CLASS="LITERAL">WITH</TT>附属于
+<TT CLASS="LITERAL">INSERT ... VALUES</TT>的<TT CLASS="LITERAL">VALUES</TT>部分，那么操作正确(Tom Lane) </P></LI><LI><P> 修复<TT CLASS="LITERAL">COALESCE()</TT>表达式的常数合并(Tom Lane)</P><P> 规划器有时会试图评估事实上不可能达到的可能会导致意外错误的子表达式。 </P></LI><LI><P> 当连接接受失败时（<CODE CLASS="FUNCTION">accept()</CODE>或者在它之后立即调用），并且postmaster和GSSAPI支持一起编译，
+修复postmaster崩溃。(Alexander Chernikov)</P></LI><LI><P> 当<TT CLASS="VARNAME">log_temp_files</TT>是活跃的，则修复临时文件忽略的取消操作(Tom Lane)</P><P> 当试图发出日志信息时，如果发生错误，那么取消不执行，
+导致临时文件积累。</P></LI><LI><P> 为<TT CLASS="STRUCTNAME">InhRelation</TT>节点添加输出功能(Tom Lane)</P><P> 当启用<TT CLASS="VARNAME">debug_print_parse</TT>并且执行某些类型查询时，
+这避免失败。</P></LI><LI><P> 修复从一个点到水平线段距离的错误计算(Tom Lane)</P><P> 这个漏洞影响了若干个不同的几何距离测量操作符。</P></LI><LI><P> 修复<SPAN CLASS="APPLICATION">ecpg</SPAN>中事务状态的错误计算(Itagaki Takahiro) </P></LI><LI><P> 在递归或者错误恢复的情况中修复<SPAN CLASS="QUOTE">"simple"</SPAN>表达式的<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>处理而不失败(Tom Lane)</P></LI><LI><P> 修复设置返回函数的<SPAN CLASS="APPLICATION">PL/Python</SPAN>的处理(Jan Urbanski)</P><P> 在迭代器生成一组结果中尝试调用SPI函数可能失败。</P></LI><LI><P> 修复<TT CLASS="FILENAME">contrib/cube</TT>的GiST picksplit算法中的错误(Alexander Korotkov)</P><P> 这可能会导致相当大的无效率，但在<TT CLASS="TYPE">cube</TT>列上的GiST索引中，并不是真的错误结论，
+如果你有这样一个索引，考虑在安装这个更新之后<TT CLASS="COMMAND">REINDEX</TT>它。</P></LI><LI><P> 不要发出<TT CLASS="FILENAME">contrib/dblink</TT>中<SPAN CLASS="QUOTE">"标识符将被截断"</SPAN>的信息除了
+创建新的连接(Itagaki Takahiro)</P></LI><LI><P> 修复<TT CLASS="FILENAME">contrib/pgcrypto</TT>中对失踪公钥的潜在信息转储(Marti Raudsepp)</P></LI><LI><P> 修复<TT CLASS="FILENAME">contrib/xml2</TT>的XPath查询函数中的内存泄露(Tom Lane)</P></LI><LI><P> 为Fiji和Samoa中的DST变化规律更新时区数据文件到<SPAN CLASS="APPLICATION">tzdata</SPAN>发布2010o；
+也为了香港历史修正。</P></LI></UL></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-8-4-7.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-8-4-5.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">发布8.4.7</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">发布8.4.5</TD></TR></TABLE></DIV></BODY></HTML>

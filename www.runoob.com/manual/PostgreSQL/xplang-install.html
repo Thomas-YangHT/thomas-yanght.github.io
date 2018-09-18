@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>安装过程语言</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/xplang.html"><LINK REL="PREVIOUS" TITLE="过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/xplang.html"><LINK REL="NEXT" TITLE="PL/pgSQL - SQL过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/plpgsql.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/xplang.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/xplang.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/xplang.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 39. 过程语言</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="PL/pgSQL - SQL过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/plpgsql.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="XPLANG-INSTALL">39.1. 安装过程语言</A></H1><P> 如果你要使用某种过程语言，那么你必须把它<SPAN CLASS="QUOTE">"安装"</SPAN>到要使用它的数据库里。
+不过那些安装到数据库<TT CLASS="LITERAL">template1</TT>里的过程语言会自动在随后创建的数据库中安装。
+因为<TT CLASS="LITERAL">template1</TT>中的目录通过<TT CLASS="COMMAND">CREATE DATABASE</TT>进行拷贝，
+因此数据库管理员可以决定哪个数据库可以使用哪种语言，
+以及决定缺省时可以使用哪些语言。</P><P>
+对于那些随着标准版本发布的语言，
+只需要使用<TT CLASS="COMMAND">CREATE EXTENSION</TT>
+<TT CLASS="REPLACEABLE"><I>language_name</I></TT>把语言安装到当前数据库中即可。
+另外，也可以使用<A HREF="app-createlang.html"><SPAN CLASS="APPLICATION">createlang</SPAN></A>程序在shell命令行上安装语言。
+比如，要将<SPAN CLASS="APPLICATION">PL/Perl</SPAN>安装到<TT CLASS="LITERAL">template1</TT>数据库中，可以使用：
+</P><PRE CLASS="PROGRAMLISTING">createlang plperl template1</PRE><P>
+推荐下面描述的手工程序来安装没有作为扩展包装的定制语言。
+</P><DIV CLASS="PROCEDURE"><P><B> 手工安装过程语言
+</B></P><P> 一个过程语言是按五个步骤安装到数据库里面去的，
+这些任务必须由数据库超级用户执行。
+在大多数情况下所需的SQL命令应该被打包成<SPAN CLASS="QUOTE">"扩展"</SPAN>的安装脚本，
+因此<TT CLASS="COMMAND">CREATE EXTENSION</TT>可以用于执行它们。</P><OL TYPE="1"><LI CLASS="STEP"><A NAME="XPLANG-INSTALL-CR1"></A><P> 必须编译和安装该语言处理器的共享对象并安装到一个合适的库目录中。
+方法和安装用户定义的 C 函数的方法(<A HREF="xfunc-c.html#DFUNC">第 35.9.6 &#33410;</A>)一样。通常，
+语言处理器需要外部库提供实际的引擎；如果是这样，
+那么这些库也必须安装。</P></LI><LI CLASS="STEP"><A NAME="XPLANG-INSTALL-CR2"></A><P>
+处理器必须使用下面的命令声明
+</P><PRE CLASS="SYNOPSIS">CREATE FUNCTION <TT
+CLASS="REPLACEABLE"
+><I
+>handler_function_name</I
+></TT
+>()
+    RETURNS language_handler
+    AS '<TT
+CLASS="REPLACEABLE"
+><I
+>path-to-shared-object</I
+></TT
+>'
+    LANGUAGE C;</PRE><P>
+<TT CLASS="TYPE">language_handler</TT>的返回类型告诉数据库系统该函数并不返回任何已定义的<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>数据类型，
+并且不能在<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>语句中被直接使用。
+</P></LI><LI CLASS="STEP"><A NAME="XPLANG-INSTALL-CR3"></A><P>
+可选步骤，语言处理器可以提供一个<SPAN CLASS="QUOTE">"内置"</SPAN>函数，
+这个函数执行使用这种语言编写的匿名代码块（<A HREF="sql-do.html">DO</A>命令）。
+如果通过该语言提供一个内置处理函数，那么用下面的命令声明：
+</P><PRE CLASS="SYNOPSIS">CREATE FUNCTION <TT
+CLASS="REPLACEABLE"
+><I
+>inline_function_name</I
+></TT
+>(internal)
+    RETURNS void
+    AS '<TT
+CLASS="REPLACEABLE"
+><I
+>path-to-shared-object</I
+></TT
+>'
+    LANGUAGE C;</PRE><P>
+</P></LI><LI CLASS="STEP"><A NAME="XPLANG-INSTALL-CR4"></A><P>
+可选步骤，语言处理器可以提供一个<SPAN CLASS="QUOTE">"验证器"</SPAN>函数，
+这个函数为没有实际执行它的正确性而检查函数定义。
+如果存在的话，通过<TT CLASS="COMMAND">CREATE FUNCTION</TT>调用验证函数。
+如果通过这种语言提供了验证函数，那么用下面的命令声明
+</P><PRE CLASS="SYNOPSIS">CREATE FUNCTION <TT
+CLASS="REPLACEABLE"
+><I
+>validator_function_name</I
+></TT
+>(oid)
+    RETURNS void
+    AS '<TT
+CLASS="REPLACEABLE"
+><I
+>path-to-shared-object</I
+></TT
+>'
+    LANGUAGE C STRICT;</PRE><P>
+</P></LI><LI CLASS="STEP"><A NAME="XPLANG-INSTALL-CR5"></A><P>
+最后，PL必须通过下面的命令声明
+</P><PRE CLASS="SYNOPSIS">CREATE [<SPAN
+CLASS="OPTIONAL"
+>TRUSTED</SPAN
+>] [<SPAN
+CLASS="OPTIONAL"
+>PROCEDURAL</SPAN
+>] LANGUAGE <TT
+CLASS="REPLACEABLE"
+><I
+>language-name</I
+></TT
+>
+    HANDLER <TT
+CLASS="REPLACEABLE"
+><I
+>handler_function_name</I
+></TT
+>
+    [<SPAN
+CLASS="OPTIONAL"
+>INLINE <TT
+CLASS="REPLACEABLE"
+><I
+>inline_function_name</I
+></TT
+></SPAN
+>]
+    [<SPAN
+CLASS="OPTIONAL"
+>VALIDATOR <TT
+CLASS="REPLACEABLE"
+><I
+>validator_function_name</I
+></TT
+></SPAN
+>] ;</PRE><P>
+可选关键字<TT CLASS="LITERAL">TRUSTED</TT>指明该语言不授予访问用户不拥有的数据的权限，
+为一个没有超级用户权限的普通数据库用户设计可信任语言，
+并且允许他们安全地使用这种语言创建函数和触发器过程。
+因为 PL 函数在数据库服务器中执行，
+所以<TT CLASS="LITERAL">TRUSTED</TT>标志应该只是用于那些不允许访问数据库服务器内部或文件系统的语言。
+<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>,
+<SPAN CLASS="APPLICATION">PL/Tcl</SPAN>和
+<SPAN CLASS="APPLICATION">PL/Perl</SPAN>语言都是可信的。<SPAN CLASS="APPLICATION">PL/TclU</SPAN>,
+<SPAN CLASS="APPLICATION">PL/PerlU</SPAN>和
+<SPAN CLASS="APPLICATION">PL/PythonU</SPAN>
+都被设计成提供无限的功能，因此<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">不应该</I></SPAN>标记为可信。
+</P></LI></OL></DIV><P> <A HREF="xplang-install.html#XPLANG-INSTALL-EXAMPLE">&#20363; 39-1</A>显示了如何手工安装<SPAN CLASS="APPLICATION">PL/Perl</SPAN>语言。</P><DIV CLASS="EXAMPLE"><A NAME="XPLANG-INSTALL-EXAMPLE"></A><P><B>&#20363; 39-1. 手工安装<SPAN CLASS="APPLICATION">PL/Perl</SPAN></B></P><P>
+下面的命令告诉数据库服务器哪里才能找到用于<SPAN CLASS="APPLICATION">PL/Perl</SPAN>语言的调用处理器函数的共享对象。
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION plperl_call_handler() RETURNS language_handler AS
+    '$libdir/plperl' LANGUAGE C;</PRE><P>
+</P><P>
+<SPAN CLASS="APPLICATION">PL/Perl</SPAN>有一个内置处理函数和验证函数，因此我们也要声明它们:
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION plperl_inline_handler(internal) RETURNS void AS
+    '$libdir/plperl' LANGUAGE C;
+
+CREATE FUNCTION plperl_validator(oid) RETURNS void AS
+    '$libdir/plperl' LANGUAGE C STRICT;</PRE><P>
+</P><P>
+命令：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TRUSTED PROCEDURAL LANGUAGE plperl
+    HANDLER plperl_call_handler
+    INLINE plperl_inline_handler
+    VALIDATOR plperl_validator;</PRE><P>
+声明了前面所定义的函数应该被那些调用语言属性是<TT CLASS="LITERAL">plperl</TT>的
+函数或触发器过程使用。
+</P></DIV><P> 在缺省的<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>安装里，
+<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>语言的处理器是制作并安装到<SPAN CLASS="QUOTE">"library"</SPAN>目录中去的。
+进一步来说，<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>语言自身安装到所有数据库中，
+如果配置了<SPAN CLASS="APPLICATION">Tcl</SPAN>支持，那么<SPAN CLASS="APPLICATION">PL/Tcl</SPAN>和<SPAN CLASS="APPLICATION">PL/TclU</SPAN>
+的处理器也都被编译并安装到同一个库目录中。
+但是语言自身缺省不安装到任何数据库中，类似的，
+如果配置了Perl支持，则<SPAN CLASS="APPLICATION">PL/Perl</SPAN>和<SPAN CLASS="APPLICATION">PL/PerlU</SPAN>的处理器也都编译并且安装。
+并且如果配置了Python支持，则安装<SPAN CLASS="APPLICATION">PL/PythonU</SPAN>处理器。
+但是这些语言缺省不安装。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/xplang.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plpgsql.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">过程语言</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/xplang.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><SPAN CLASS="APPLICATION">PL/pgSQL</SPAN> - <ACRONYM CLASS="ACRONYM">SQL</ACRONYM>过程语言</TD></TR></TABLE></DIV></BODY></HTML>

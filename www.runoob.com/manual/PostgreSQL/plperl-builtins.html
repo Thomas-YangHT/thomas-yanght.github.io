@@ -1,0 +1,169 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>内置函数</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="PL/Perl - Perl 过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/plperl.html"><LINK REL="PREVIOUS" TITLE="PL/Perl里的数据值" HREF="plperl-data.html"><LINK REL="NEXT" TITLE="PL/Perl里的全局变量" HREF="plperl-global.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/plperl.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="PL/Perl里的数据值" HREF="plperl-data.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plperl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 42. PL/Perl - Perl 过程语言</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="PL/Perl里的全局变量" HREF="plperl-global.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="PLPERL-BUILTINS">42.3. 内置函数</A></H1><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="PLPERL-DATABASE">42.3.1. 从PL/Perl访问数据库</A></H2><P>从 Perl 函数里访问数据库本身可以通过下面的函数做到：</P><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">spi_exec_query</CODE>(<TT CLASS="REPLACEABLE"><I>query</I></TT> [, <TT CLASS="REPLACEABLE"><I>max-rows</I></TT>])</TT></DT><DD><P><TT CLASS="LITERAL">spi_exec_query</TT>执行一个 SQL 命令然后把整个结果集当作一个指向散列引用的引用返回。
+<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">只有在你知道结果集相对比较小的时候才能用这个命令。</I></SPAN>
+下面是一个带有额外的最大行数的查询(<TT CLASS="COMMAND">SELECT</TT>命令)的例子。
+</P><PRE CLASS="PROGRAMLISTING">$rv = spi_exec_query('SELECT * FROM my_table', 5);</PRE><P>
+它从<TT CLASS="LITERAL">my_table</TT>里返回最多 5 行。如果<TT CLASS="LITERAL">my_table</TT>
+有一个字段是<TT CLASS="LITERAL">my_column</TT>，那么可以用下面的方法从结果的第<TT CLASS="LITERAL">$i</TT>行获取其值：
+</P><PRE CLASS="PROGRAMLISTING">$foo = $rv-&gt;{rows}[$i]-&gt;{my_column};</PRE><P>
+从一个<TT CLASS="COMMAND">SELECT</TT>查询返回的总行数可以这样访问：
+</P><PRE CLASS="PROGRAMLISTING">$nrows = $rv-&gt;{processed}</PRE><P>
+</P><P>
+这里是一个使用其它命令的例子：
+</P><PRE CLASS="PROGRAMLISTING">$query = "INSERT INTO my_table VALUES (1, 'test')";
+$rv = spi_exec_query($query);</PRE><P>
+你可以用下面方法访问状态(如<TT CLASS="LITERAL">SPI_OK_INSERT</TT>)：
+</P><PRE CLASS="PROGRAMLISTING">$res = $rv-&gt;{status};</PRE><P>
+这样获取影响的行数：
+</P><PRE CLASS="PROGRAMLISTING">$nrows = $rv-&gt;{processed};</PRE><P>
+</P><P>
+下面是一个完整的例子：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TABLE test (
+    i int,
+    v varchar
+);
+
+INSERT INTO test (i, v) VALUES (1, 'first line');
+INSERT INTO test (i, v) VALUES (2, 'second line');
+INSERT INTO test (i, v) VALUES (3, 'third line');
+INSERT INTO test (i, v) VALUES (4, 'immortal');
+
+CREATE OR REPLACE FUNCTION test_munge() RETURNS SETOF test AS $$
+    my $rv = spi_exec_query('select i, v from test;');
+    my $status = $rv-&gt;{status};
+    my $nrows = $rv-&gt;{processed};
+    foreach my $rn (0 .. $nrows - 1) {
+        my $row = $rv-&gt;{rows}[$rn];
+        $row-&gt;{i} += 200 if defined($row-&gt;{i});
+        $row-&gt;{v} =~ tr/A-Za-z/a-zA-Z/ if (defined($row-&gt;{v}));
+        return_next($row);
+    }
+    return undef;
+$$ LANGUAGE plperl;
+
+SELECT * FROM test_munge();</PRE><P>
+</P></DD><DT><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">spi_query(<TT CLASS="REPLACEABLE"><I>command</I></TT>)</CODE></TT><BR><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">spi_fetchrow(<TT CLASS="REPLACEABLE"><I>cursor</I></TT>)</CODE></TT><BR><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">spi_cursor_close(<TT CLASS="REPLACEABLE"><I>cursor</I></TT>)</CODE></TT></DT><DD><P><TT CLASS="LITERAL">spi_query</TT>和<TT CLASS="LITERAL">spi_fetchrow</TT>一起用于处理那些行集可能比较大，
+或者是在你收到行的时候就返回的场合。<TT CLASS="LITERAL">spi_fetchrow</TT><SPAN CLASS="emphasis"><I CLASS="EMPHASIS">只能</I></SPAN>
+和<TT CLASS="LITERAL">spi_query</TT>一起使用。下面的例子演示了如何使用：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TYPE foo_type AS (the_num INTEGER, the_text TEXT);
+
+CREATE OR REPLACE FUNCTION lotsa_md5 (INTEGER) RETURNS SETOF foo_type AS $$
+    use Digest::MD5 qw(md5_hex);
+    my $file = '/usr/share/dict/words';
+    my $t = localtime;
+    elog(NOTICE, "opening file $file at $t" );
+    open my $fh, '&lt;', $file # 这是访问文件！
+        or elog(ERROR, "cannot open $file for reading: $!");
+    my @words = &lt;$fh&gt;;
+    close $fh;
+    $t = localtime;
+    elog(NOTICE, "closed file $file at $t");
+    chomp(@words);
+    my $row;
+    my $sth = spi_query("SELECT * FROM generate_series(1,$_[0]) AS b(a)");
+    while (defined ($row = spi_fetchrow($sth))) {
+        return_next({
+            the_num =&gt; $row-&gt;{a},
+            the_text =&gt; md5_hex($words[rand @words])
+        });
+    }
+    return;
+$$ LANGUAGE plperlu;
+
+SELECT * from lotsa_md5(500);</PRE><P>
+</P><P>通常，应当重复<CODE CLASS="FUNCTION">spi_fetchrow</CODE>直到其返回<TT CLASS="LITERAL">undef</TT>
+以表示没有行可以读取了，此时由<TT CLASS="LITERAL">spi_query</TT>返回的游标将被自动释放。
+如果你确实不想读取所有行，可以明确调用<CODE CLASS="FUNCTION">spi_cursor_close</CODE>来释放游标，
+否则将会导致内存泄漏。</P></DD><DT><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">spi_prepare(<TT CLASS="REPLACEABLE"><I>command</I></TT>, <TT CLASS="REPLACEABLE"><I>argument types</I></TT>)</CODE></TT><BR><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">spi_query_prepared(<TT CLASS="REPLACEABLE"><I>plan</I></TT>, <TT CLASS="REPLACEABLE"><I>arguments</I></TT>)</CODE></TT><BR><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">spi_exec_prepared(<TT CLASS="REPLACEABLE"><I>plan</I></TT> [, <TT CLASS="REPLACEABLE"><I>attributes</I></TT>], <TT CLASS="REPLACEABLE"><I>arguments</I></TT>)</CODE></TT><BR><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">spi_freeplan(<TT CLASS="REPLACEABLE"><I>plan</I></TT>)</CODE></TT></DT><DD><P><TT CLASS="LITERAL">spi_prepare</TT>, <TT CLASS="LITERAL">spi_query_prepared</TT>, <TT CLASS="LITERAL">spi_exec_prepared</TT>,
+<TT CLASS="LITERAL">spi_freeplan</TT>为预备查询实现同样的功能。<TT CLASS="LITERAL">spi_prepare</TT>
+接受一个带有编号的参数占位符的字符串和一个参数类型的字符串列表：
+</P><PRE CLASS="PROGRAMLISTING">$plan = spi_prepare('SELECT * FROM test WHERE id &gt; $1 AND name = $2',
+                                                     'INTEGER', 'TEXT');</PRE><P>
+一旦一个查询规划通过调用<TT CLASS="LITERAL">spi_prepare</TT>准备好，该规划就可以代替查询字符串，
+不管是在<TT CLASS="LITERAL">spi_exec_prepared</TT>中(与<TT CLASS="LITERAL">spi_exec_query</TT>返回的结果相同)
+还是在<TT CLASS="LITERAL">spi_query_prepared</TT>中(与<TT CLASS="LITERAL">spi_query</TT>返回的游标相同)，
+之后可以被传递给<TT CLASS="LITERAL">spi_query</TT>。<TT CLASS="LITERAL">spi_exec_prepared</TT>
+可选的第二个参数是一个属性的哈希引用；当前唯一支持的属性是<TT CLASS="LITERAL">limit</TT>，
+设置查询返回行的最小数量。
+</P><P>预备查询的好处是可以为多个查询的执行使用一个预备规划。在规划不再被需要之后，
+可以通过<TT CLASS="LITERAL">spi_freeplan</TT>释放：
+</P><PRE CLASS="PROGRAMLISTING">CREATE OR REPLACE FUNCTION init() RETURNS VOID AS $$
+        $_SHARED{my_plan} = spi_prepare('SELECT (now() + $1)::date AS now',
+                                        'INTERVAL');
+$$ LANGUAGE plperl;
+
+CREATE OR REPLACE FUNCTION add_time( INTERVAL ) RETURNS TEXT AS $$
+        return spi_exec_prepared(
+                $_SHARED{my_plan},
+                $_[0]
+        )-&#62;{rows}-&#62;[0]-&#62;{now};
+$$ LANGUAGE plperl;
+
+CREATE OR REPLACE FUNCTION done() RETURNS VOID AS $$
+        spi_freeplan( $_SHARED{my_plan});
+        undef $_SHARED{my_plan};
+$$ LANGUAGE plperl;
+
+SELECT init();
+SELECT add_time('1 day'), add_time('2 days'), add_time('3 days');
+SELECT done();
+
+  add_time  |  add_time  |  add_time
+------------+------------+------------
+ 2005-12-10 | 2005-12-11 | 2005-12-12</PRE><P>
+注意，<TT CLASS="LITERAL">spi_prepare</TT>中的参数是通过 $1, $2, $3 ... 表示的，
+因此避免在双引号中声明查询字符串，那样可能会导致难以发现的Bug。
+</P><P>另外一个说明<TT CLASS="LITERAL">spi_exec_prepared</TT>里的可选参数的使用的例子：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TABLE hosts AS SELECT id, ('192.168.1.'||id)::inet AS address
+                      FROM generate_series(1,3) AS id;
+
+CREATE OR REPLACE FUNCTION init_hosts_query() RETURNS VOID AS $$
+        $_SHARED{plan} = spi_prepare('SELECT * FROM hosts
+                                      WHERE address &lt;&lt; $1', 'inet');
+$$ LANGUAGE plperl;
+
+CREATE OR REPLACE FUNCTION query_hosts(inet) RETURNS SETOF hosts AS $$
+        return spi_exec_prepared(
+                $_SHARED{plan},
+                {limit =&gt; 2},
+                $_[0]
+        )-&#62;{rows};
+$$ LANGUAGE plperl;
+
+CREATE OR REPLACE FUNCTION release_hosts_query() RETURNS VOID AS $$
+        spi_freeplan($_SHARED{plan});
+        undef $_SHARED{plan};
+$$ LANGUAGE plperl;
+
+SELECT init_hosts_query();
+SELECT query_hosts('192.168.1.0/30');
+SELECT release_hosts_query();
+
+    query_hosts    
+-----------------
+ (1,192.168.1.1)
+ (2,192.168.1.2)
+(2 rows)</PRE><P>
+</P></DD></DL></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="PLPERL-UTILITY-FUNCTIONS">42.3.2. PL/Perl里的效用函数</A></H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">elog(<TT CLASS="REPLACEABLE"><I>level</I></TT>, <TT CLASS="REPLACEABLE"><I>msg</I></TT>)</CODE></TT></DT><DD><P>发出一条日志或者错误信息。可能的级别是<TT CLASS="LITERAL">DEBUG</TT>, <TT CLASS="LITERAL">LOG</TT>, <TT CLASS="LITERAL">INFO</TT>,
+<TT CLASS="LITERAL">NOTICE</TT>, <TT CLASS="LITERAL">WARNING</TT>, <TT CLASS="LITERAL">ERROR</TT>。<TT CLASS="LITERAL">ERROR</TT>抛出一个错误条件。
+如果这个错误没有被周围的 Perl 代码捕获，那么错误将传播到调用的查询里，
+导致当前事务或者子事务退出。这实际上相当于 Perl 的<TT CLASS="LITERAL">die</TT>命令。
+其它级别只是生成不同优先级的消息。特定优先级的消息是否报告给客户端、写到服务器日志、
+或者两个都做，是由配置参数<A HREF="runtime-config-logging.html#GUC-LOG-MIN-MESSAGES">log_min_messages</A>和<A HREF="runtime-config-logging.html#GUC-CLIENT-MIN-MESSAGES">client_min_messages</A>
+控制的。参阅<A HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime-config.html">第 18 &#31456;</A>获取更多信息。</P></DD><DT><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">quote_literal(<TT CLASS="REPLACEABLE"><I>string</I></TT>)</CODE></TT></DT><DD><P>适当的返回在一个SQL语句字符串中作为字符串文本引用的给定字符串。嵌入的单引号和反斜杠要加一倍。
+请注意，<CODE CLASS="FUNCTION">quote_literal</CODE>在未定义的输入上返回未定义；如果参数是未定义的，
+<CODE CLASS="FUNCTION">quote_nullable</CODE>往往是更合适的。</P></DD><DT><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">quote_nullable(<TT CLASS="REPLACEABLE"><I>string</I></TT>)</CODE></TT></DT><DD><P>适当的返回在一个SQL语句字符串中作为字符串文本引用的给定字符串。或者，如果参数是未定义的，
+返回不加引号的字符串"NULL"。嵌入的单引号和反斜杠要加一倍。</P></DD><DT><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">quote_ident(<TT CLASS="REPLACEABLE"><I>string</I></TT>)</CODE></TT></DT><DD><P>适当的返回在一个SQL语句字符串中作为一个标识符引用的给定字符串。只有在必要时添加引号
+（也就是，如果字符串包含非标识符字符或是case-folded）。嵌入的单引号和反斜杠要加一倍。</P></DD><DT><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">decode_bytea(<TT CLASS="REPLACEABLE"><I>string</I></TT>)</CODE></TT></DT><DD><P>返回通过给定字符串内容表示的非转义二进制数据，应该是<TT CLASS="TYPE">bytea</TT>编码。</P></DD><DT><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">encode_bytea(<TT CLASS="REPLACEABLE"><I>string</I></TT>)</CODE></TT></DT><DD><P>返回给定字符串的二进制数据内容的<TT CLASS="TYPE">bytea</TT>编码格式。</P></DD><DT><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">encode_array_literal(<TT CLASS="REPLACEABLE"><I>array</I></TT>)</CODE></TT><BR><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">encode_array_literal(<TT CLASS="REPLACEABLE"><I>array</I></TT>, <TT CLASS="REPLACEABLE"><I>delimiter</I></TT>)</CODE></TT></DT><DD><P>返回引用的数组的内容，以在数组里的字符串文本的格式(参阅<A HREF="arrays.html#ARRAYS-INPUT">第 8.15.2 &#33410;</A>)。
+如果不是一个数组的引用则返回未改变的参数值。如果分隔符没用指定或是未定义的，
+则数组文字元素之间的分隔符缺省是"<TT CLASS="LITERAL">, </TT>"。</P></DD><DT><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">encode_typed_literal(<TT CLASS="REPLACEABLE"><I>value</I></TT>, <TT CLASS="REPLACEABLE"><I>typename</I></TT>)</CODE></TT></DT><DD><P>转换一个Perl变量为作为第二个参数传递的数据类型的值和返回一个这个值的字符串表示。
+正确处理嵌套数组和复合类型的值。</P></DD><DT><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">encode_array_constructor(<TT CLASS="REPLACEABLE"><I>array</I></TT>)</CODE></TT></DT><DD><P>返回引用的数组的内容，以在数组构造器里的字符串的格式(参阅<A HREF="sql-expressions.html#SQL-SYNTAX-ARRAY-CONSTRUCTORS">第 4.2.12 &#33410;</A>)。
+个别的值用<CODE CLASS="FUNCTION">quote_nullable</CODE>引用。如果不是对数组的引用，那么返回参数值用
+<CODE CLASS="FUNCTION">quote_nullable</CODE>引用。</P></DD><DT><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">looks_like_number(<TT CLASS="REPLACEABLE"><I>string</I></TT>)</CODE></TT></DT><DD><P>根据Perl，如果给定字符串的内容看起来像一个数字则返回真，否则返回假。如果参数是未定义则返回未定义。
+忽略前置和后置的空格。<TT CLASS="LITERAL">Inf</TT>和<TT CLASS="LITERAL">Infinity</TT>被认为是数字。</P></DD><DT><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">is_array_ref(<TT CLASS="REPLACEABLE"><I>argument</I></TT>)</CODE></TT></DT><DD><P>如果给定参数可能被视为一个数组引用则返回真，也就是，如果参数的参考是<TT CLASS="LITERAL">ARRAY</TT>或
+<TT CLASS="LITERAL">PostgreSQL::InServer::ARRAY</TT>。否则返回假。</P></DD></DL></DIV></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="plperl-data.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="plperl-global.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">PL/Perl里的数据值</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plperl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">PL/Perl里的全局变量</TD></TR></TABLE></DIV></BODY></HTML>

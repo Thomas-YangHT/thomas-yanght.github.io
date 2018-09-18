@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>版本 7.4.29</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="版本 7.4.30" HREF="release-7-4-30.html"><LINK REL="NEXT" TITLE="版本 7.4.28" HREF="release-7-4-28.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-7.4.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="版本 7.4.30" HREF="release-7-4-30.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="版本 7.4.28" HREF="release-7-4-28.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-7-4-29">E.154. 版本 7.4.29</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>2010-05-17</P></BLOCKQUOTE></DIV><P>这个版本包含各种自7.4.28以来的修复。关于7.4主版本的新特性信息，
+请参阅<A HREF="release-7-4.html">第 E.183 &#33410;</A>。</P><P><SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>社区将在2010年7月份停止对7.4.X版本系列的更新。
+建议用户尽快更新到最新的版本。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN138360">E.154.1. 迁移到版本 7.4.29</A></H2><P>运行7.4.X的版本不需要转储/恢复。不过，如果你是从一个早于7.4.26的版本升级而来，
+那么请参阅7.4.26的版本声明。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN138363">E.154.2. 修改列表</A></H2><P></P><UL><LI><P>使用一个opmask应用到整个解释器，执行<TT CLASS="LITERAL">plperl</TT>中的限制条件，
+而不是使用<TT CLASS="FILENAME">Safe.pm</TT> (Tim Bunce, Andrew Dunstan)</P><P>最近的发展使我们相信<TT CLASS="FILENAME">Safe.pm</TT>太不安全了，不能依赖它来使得
+<TT CLASS="LITERAL">plperl</TT>可以信赖。这个修改完全删除了<TT CLASS="FILENAME">Safe.pm</TT>的使用，
+支持总是使用一个单独的带有操作码的解释器。这个修改令人愉快的副作用包括：
+现在在<TT CLASS="LITERAL">plperl</TT>中以自然的方式使用Perl的<TT CLASS="LITERAL">strict</TT>编译指示是可能的了，
+Perl的<TT CLASS="LITERAL">$a</TT>和<TT CLASS="LITERAL">$b</TT>变量在排序例程中像预期的那样工作了，
+并且函数编译更快了。 (CVE-2010-1169)</P></LI><LI><P>阻止PL/Tcl执行<TT CLASS="STRUCTNAME">pltcl_modules</TT>中不可靠的代码 (Tom)</P><P>PL/Tcl自动从数据库表中加载Tcl代码的特性可能会被特洛伊木马攻击利用，
+因为没有谁可以创建或插入到那个表的限制。这个修改使该特性失效，
+除非<TT CLASS="STRUCTNAME">pltcl_modules</TT>属于超级用户。（不过，在表上的权限是不检查的，
+所以实际上需要较少安全模块的表的安装仍然可以赋予合适的权限给受信任的非超级用户。）
+还有，阻止加载代码到不受限制的<SPAN CLASS="QUOTE">"正常"</SPAN>Tcl解释器，
+除非我们真正要执行一个<TT CLASS="LITERAL">pltclu</TT>函数。 (CVE-2010-1170)</P></LI><LI><P>不允许非特权的用户重置超级用户仅有的参数设置 (Alvaro)</P><P>以前，如果一个非特权用户为他自己运行<TT CLASS="LITERAL">ALTER USER ... RESET ALL</TT>，
+或者为他拥有的一个数据库运行<TT CLASS="LITERAL">ALTER DATABASE ... RESET ALL</TT>，
+都将为该用户或数据库删除所有的特殊参数设置，即使其中有只支持超级用户可以修改的设置。
+现在，<TT CLASS="COMMAND">ALTER</TT>将只删除用户有权限修改的参数。</P></LI><LI><P>如果关闭发生在<TT CLASS="LITERAL">CONTEXT</TT>添加来记录条目时，避免后端关闭期间可能的崩溃 (Tom)</P><P>在某些情况下，上下文打印功能可能会失败，因为当它要打印一个日志信息时，
+当前的事务早已回滚了。</P></LI><LI><P>为现在的Perl版本更新pl/perl的<TT CLASS="FILENAME">ppport.h</TT> (Andrew)</P></LI><LI><P>修复pl/python中的各种内存泄露 (Andreas Freund, Tom)</P></LI><LI><P>确保<TT CLASS="FILENAME">contrib/pgstattuple</TT>函数响应迅速的取消中断 (Tatsuhito Kasahara)</P></LI><LI><P>使服务器启动适当的处理<CODE CLASS="FUNCTION">shmget()</CODE>为一个已经存在的共享内存段返回
+<TT CLASS="LITERAL">EINVAL</TT>的情况 (Tom)</P><P>这个行为已经在BSD衍生的核心程序包括OS X上观察到。它导致一个完全误导的启动失败，
+抱怨共享内存请求大小太大。</P></LI></UL></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-7-4-30.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-7-4-28.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">版本 7.4.30</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">版本 7.4.28</TD></TR></TABLE></DIV></BODY></HTML>

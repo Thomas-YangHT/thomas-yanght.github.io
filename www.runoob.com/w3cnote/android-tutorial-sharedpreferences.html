@@ -1,0 +1,1184 @@
+<!Doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta property="qc:admins" content="465267610762567726375" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>6.2 数据存储与访问之——SharedPreferences保存用户偏好参数 | 菜鸟教程</title>
+<link rel='dns-prefetch' href='http://s.w.org/' />
+<link rel="canonical" href="android-tutorial-sharedpreferences.html" />
+<meta name="keywords" content="6.2 数据存储与访问之——SharedPreferences保存用户偏好参数">
+<meta name="description" content="本节引言：  本节给大家介绍的是第二种存储用户数据的方式，使用SharedPreferences(保存用户偏好参数)保存数据， 当我们的应用想要保存用户的一些偏好参数，比如是否自动登陆，是否记住账号密码,是否在Wifi下才能 联网等相关信息,如果使用数据库的话,显得有点大材小用了！我们把上面这些配置信息称为用户的偏好 设置，就是用户偏好的设置，而这些配置信息通常是保存在特定的文件中！比如windows使用ini文件， 而J2SE中使用p..">
+<link rel="shortcut icon" href="http://static.runoob.com/images/favicon.ico" mce_href="//static.runoob.com/images/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="http://school.yunwei.edu/wp-content/themes/runoob/style.css?v=1.147" type="text/css" media="all" />
+<link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />
+<!--[if gte IE 9]><!-->
+  <script src="http://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+  <!--<![endif]-->
+<!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+<link rel="apple-touch-icon" href="http://static.runoob.com/images/icon/mobile-icon.png"/>
+<meta name="apple-mobile-web-app-title" content="菜鸟教程">
+</head>
+<body>
+<div class="container logo-search">
+<div class="col search row-search-mobile">
+<form action="http://school.yunwei.edu/w3cnote/index.php">
+<input class="placeholder" placeholder="搜索……" name="s" autocomplete="off">
+</form>
+</div>
+<div class="row">
+<div class="col logo">
+<h1><a href="http://school.yunwei.edu/">菜鸟教程 -- 学的不仅是技术，更是梦想！</a></h1>
+</div>
+<div class="col right-list">
+<button class="btn btn-responsive-nav btn-inverse" data-toggle="collapse" data-target=".nav-main-collapse" id="pull" style=""> <i class="fa fa-navicon"></i> </button>
+</div>
+<div class="col search search-desktop last">
+<form action="http://school.yunwei.edu/" target="_blank">
+<input class="placeholder" id="s" name="s" placeholder="搜索……" autocomplete="off">
+</form>
+</div>
+</div>
+</div>
+<div class="container navigation">
+<div class="row">
+<div class="col nav">
+<ul class="pc-nav" id="note-nav">
+<li><a href="http://school.yunwei.edu/">首页</a></li>
+<li><a href="index.html">笔记首页</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/android" title="Android 基础入门教程">Android</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/net-2" title="互联网">互联网</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/coderlife" title="程序员人生">程序员人生</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/joke" title="程序员笑话">程序员笑话</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/code" title="编程技术">编程技术</a></li>
+</ul>
+<ul class="mobile-nav">
+<li><a href="index.html">首页</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/android" target="_blank" title="Android 基础入门教程">Android</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/coderlife" target="_blank" title="程序员人生">鸡汤</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/joke" target="_blank" title="程序员笑话">逗乐</a></li>
+<a href="javascript:void(0)" class="search-reveal">Search</a>
+</ul>
+</div>
+</div>
+</div>
+<div class="container main">
+<div class="row">
+<div class="col left-column" style="display:none;">
+<div class="tab">Android 基础入门教程</div>
+<div class="sidebar-box gallery-list">
+<div class="design" id="leftcolumn">
+</div>
+</div>
+</div>
+<div class="col middle-column big-middle-column">
+<div class="article">
+<div class="article-heading">
+<h2>6.2 数据存储与访问之——SharedPreferences保存用户偏好参数</h2> <h3><em>分类</em> <a href="http://school.yunwei.edu/w3cnote_genre/android" title="Android 基础入门教程">Android 基础入门教程</a> </h3>
+</div>
+<div class="article-body note-body">
+<div class="article-intro">
+<h2>本节引言：</h2>
+<blockquote><p>本节给大家介绍的是第二种存储用户数据的方式，使用SharedPreferences(保存用户偏好参数)保存数据，
+当我们的应用想要保存用户的一些偏好参数，比如是否自动登陆，是否记住账号密码,是否在Wifi下才能
+联网等相关信息,如果使用数据库的话,显得有点大材小用了！我们把上面这些配置信息称为用户的偏好
+设置，就是用户偏好的设置，而这些配置信息通常是保存在特定的文件中！比如windows使用ini文件，
+而J2SE中使用properties属性文件与xml文件来保存软件的配置信息;而在Android中我们通常使用
+一个轻量级的存储类——SharedPreferences来保存用户偏好的参数！SharedPreferences也是使用xml文件,
+然后类似于Map集合,使用键-值的形式来存储数据;我们只需要调用SharedPreferences的getXxx(name),
+就可以根据键获得对应的值！使用起来很方便！</p></blockquote>
+<hr />
+<h2>1.SharedPreferences使用示例：</h2>
+<p><strong>使用流程图</strong>：</p>
+<p><img src="../wp-content/uploads/2015/09/77015718.jpg" alt="" /></p>
+<p><strong>实现代码示例</strong>：</p>
+<p><strong>运行效果图</strong>：</p>
+<p>流程是输入账号密码后点击登录,将信息保存到SharedPreference文件中,
+然后重启app,看到数据已经显示在文本框中了</p>
+<p><img src="../wp-content/uploads/2015/09/56032594.jpg" alt="" /></p>
+<p>另外保存后，我们可以在File Expoler打开data/data/&lt;包名>可以看到在shared_prefs目录下
+生成了一个xml文件(因为N5没root，这里找了以前的效果图)：</p>
+<p><img src="../wp-content/uploads/2015/09/51008434.jpg" alt="" /></p>
+<p>点击导出到桌面可以看到里面的内容:</p>
+<p><img src="../wp-content/uploads/2015/09/95851258.jpg" alt="" /></p>
+<p><strong>代码实现</strong>：</p>
+<p>布局文件<strong>activity_main.xml</strong>的编写：</p>
+<pre>
+&lt;LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MyActivity"&gt;
+
+    &lt;TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="用户登陆" /&gt;
+
+    &lt;TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="请输入用户名" /&gt;
+
+    &lt;EditText
+        android:id="@+id/editname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="用户名" /&gt;
+
+    &lt;TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="请输入密码" /&gt;
+
+    &lt;EditText
+        android:id="@+id/editpasswd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="密码"
+        android:inputType="textPassword" /&gt;
+
+    &lt;Button
+        android:id="@+id/btnlogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="登录" /&gt;
+&lt;/LinearLayout&gt;
+</pre>
+<p>编写简单的SP工具类：<b>SharedHelper.java</b>：</p>
+<pre>
+/**
+ * Created by Jay on 2015/9/2 0002.
+ */
+public class SharedHelper {
+
+    private Context mContext;
+
+    public SharedHelper() {
+    }
+
+    public SharedHelper(Context mContext) {
+        this.mContext = mContext;
+    }
+
+
+    //定义一个保存数据的方法
+    public void save(String username, String passwd) {
+        SharedPreferences sp = mContext.getSharedPreferences("mysp", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("username", username);
+        editor.putString("passwd", passwd);
+        editor.commit();
+        Toast.makeText(mContext, "信息已写入SharedPreference中", Toast.LENGTH_SHORT).show();
+    }
+
+    //定义一个读取SP文件的方法
+    public Map&lt;String, String&gt; read() {
+        Map&lt;String, String&gt; data = new HashMap&lt;String, String&gt;();
+        SharedPreferences sp = mContext.getSharedPreferences("mysp", Context.MODE_PRIVATE);
+        data.put("username", sp.getString("username", ""));
+        data.put("passwd", sp.getString("passwd", ""));
+        return data;
+    }
+}
+</pre>
+<p>最后是<strong>MainActivity.java</strong>实现相关逻辑：</p>
+<pre>
+public class MainActivity extends AppCompatActivity {
+
+    private EditText editname;
+    private EditText editpasswd;
+    private Button btnlogin;
+    private String strname;
+    private String strpasswd;
+    private SharedHelper sh;
+    private Context mContext;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        mContext = getApplicationContext();
+        sh = new SharedHelper(mContext);
+        bindViews();
+    }
+
+    private void bindViews() {
+        editname = (EditText)findViewById(R.id.editname);
+        editpasswd = (EditText)findViewById(R.id.editpasswd);
+        btnlogin = (Button)findViewById(R.id.btnlogin);
+        btnlogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                strname = editname.getText().toString();
+                strpasswd = editpasswd.getText().toString();
+                sh.save(strname,strpasswd);
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Map&lt;String,String&gt; data = sh.read();
+        editname.setText(data.get("username"));
+        editpasswd.setText(data.get("passwd"));
+    }
+}
+</pre>
+<hr />
+<h2>2.读取其他应用的SharedPreferences</h2>
+<blockquote><p><strong>核心</strong>：
+获得其他app的Context,而这个Context代表访问该app的全局信息的接口,而决定应用的唯一标识
+是应用的包名,所以我们可以通过应用包名获得对应app的Context
+另外有一点要注意的是：其他应用的SP文件是否能被读写的前提就是SP文件是否指定了可读或者
+可写的权限，我们上面创建的是MODE_PRIVATE的就不可以了~所以说你像读别人的SP里的数据，
+很难，另外，一些关键的信息，比如密码保存到SP里，一般都是会做加密的，所以只能自己写自己玩~
+等下会讲下常用的MD5加密方法！</p></blockquote>
+<p><strong>实现流程图</strong>：</p>
+<p><img src="../wp-content/uploads/2015/09/54316471.jpg" alt="" /></p>
+<p><strong>代码示例：</strong></p>
+<p><strong>运行效果图</strong>：</p>
+<p><img src="../wp-content/uploads/2015/09/31896879.jpg" alt="" /></p>
+<p><strong>代码实现</strong>：</p>
+<p>我们读取SP的操作放在MainActivity.java中完成，点击按钮后读取SP，并通过Toast显示出来：</p>
+<pre>
+public class MainActivity extends AppCompatActivity {
+
+    private Context othercontext;
+    private SharedPreferences sp;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Button btnshow = (Button) findViewById(R.id.btnshow);
+        btnshow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //获得第一个应用的包名,从而获得对应的Context,需要对异常进行捕获
+                try {
+                    othercontext = createPackageContext("com.jay.sharedpreferencedemo", Context.CONTEXT_IGNORE_SECURITY);
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+                //根据Context取得对应的SharedPreferences
+                sp = othercontext.getSharedPreferences("mysp", Context.MODE_WORLD_READABLE);
+                String name = sp.getString("username", "");
+                String passwd = sp.getString("passwd", "");
+                Toast.makeText(getApplicationContext(), "Demo1的SharedPreference存的\n用户名为：" + name + "\n密码为：" + passwd, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+}
+</pre>
+<hr />
+<h2>3.使用MD5对SharedPreference的重要数据进行加密</h2>
+<blockquote><p>嘿嘿，上面我们这样直接把账号密码保存到sp里，如果没root的手机，别的应用倒无法访问手机，
+如果root了，然后数据给其他应用获取到，然后造成了一些后果，这...就不怪我们了，哈哈，
+谁叫你root了~，这锅我们不背，的确是这样！但是作为一名有责任心的APP开发人员，我们总不能
+这样是吧，我们可以使用一些加密算法对用户密码进行加密，另外我们一般加密的都是用户密码！
+下面我们简画个简单的图帮助大家理解下加密的处理的流程：</p></blockquote>
+<h3>1.简单的加密处理流程</h3>
+<p><strong>流程图如下</strong>：</p>
+<p><img src="../wp-content/uploads/2015/09/86646661.jpg" alt="" /></p>
+<p><strong>流程图解析</strong>：</p>
+<blockquote><ul>
+<li><strong>Step 1</strong>.用户注册账号密码，账号密码校验后(账号是否重复，密码位数 > 6位等)，
+即账号密码有效，注册成功后，我们提交给服务器的账号，以及本地加密过的密码！</li>
+<li><strong>Step 2</strong>.服务器端将用户提交的账号，加密过的密码保存到服务端的数据库中，也就是服务
+端并不会保存我们的明文密码(原始)密码！</li>
+<li><strong>Step 3</strong>.说回客户端，如果注册成功或者登陆成功，你想保存账号密码到SP中，保存的的密码
+也需要走一趟加密流程！即明文密码——>加密，再保存！如果不保存，每次请求的时候，明文密码
+也要走一趟家里流程，然后拿着加密后的密码来请求服务器！</li>
+<li><strong>Step 4</strong>.服务器验证账号以及加密密码，成功，分配客户端一个session标识，后续客户端可以拿着
+这个session来访问服务端提供的相关服务！</li>
+</ul>
+</blockquote>
+<p>嘿嘿，理解了吧，加密的方法有很多种，小猪也不是这方面的高玩，以前使用过的加密方法是MD5
+加密，本节也给大家简单介绍一下这个MD5加密，以及演示下用法~</p>
+<h3>2.MD5简单介绍：</h3>
+<p><strong>1）MD5是什么鬼？：</strong></p>
+<blockquote><p>答：Message Digest Algorithm MD5（中文名为消息摘要算法第五版）为计算机安全领域广泛
+使用的一种散列函数，用以提供消息的完整性保护——摘自《百度百科》
+简单点说就是一种加密算法，可以将一个字符串，或者文件，压缩包，执行MD5加密后，
+就可以生产一个固定长度为128bit的串！这个串基本唯一！另外我们都知道:一个十六进制
+需要用4个bit来表示，那么对应的MD5的字符串长度就为：128 / 4 = 32位了！另外可能
+你看到一些md5是16位的，只是将32位MD5码去掉了前八位以及后八位！不信么，我们来试试
+百度一下：md5在线解密，第一个：<a href="http://www.cmd5.com/">http://www.cmd5.com/</a></p>
+<p><img src="../wp-content/uploads/2015/09/62809654.jpg" alt="" /></p></blockquote>
+<p><strong>2）MD5能破解吗？</strong></p>
+<blockquote><p>答：MD5不可逆，就是说没有对应的算法，无法从生成的md5值逆向得到原始数据！
+当然暴力破解除外，简单的MD5加密后可以查MD5库~</p></blockquote>
+<p><strong>3）MD5值唯一吗？</strong></p>
+<blockquote><p>答：不唯一，一个原始数据只对应一个MD5值，但是一个MD5值可能对应多个原始数据！</p></blockquote>
+<hr />
+<h3>3.MD5加密实现例子：</h3>
+<p>其实网上有很多写好的MD5的例子，百度或者谷歌一搜一大堆，这里提供下小猪用的MD5加密工具类！</p>
+<p><strong>Md5Util.java</strong>：</p>
+<pre>
+/**
+ * Created by Jay on 2015/9/2 0002.
+ */
+public class MD5 {
+    public static String getMD5(String content) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            digest.update(content.getBytes());
+            return getHashString(digest);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static String getHashString(MessageDigest digest) {
+        StringBuilder builder = new StringBuilder();
+        for (byte b : digest.digest()) {
+            builder.append(Integer.toHexString((b &gt;&gt; 4) &amp; 0xf));
+            builder.append(Integer.toHexString(b &amp; 0xf));
+        }
+        return builder.toString();
+    }
+}
+
+</pre>
+<p><strong>MainActivity.java</strong>直接调用getMD5这个静态方法：</p>
+<pre>
+Log.e("HeHe", MD5.getMD5("呵呵"));
+</pre>
+我们可以看到Logcat上打印出：</p>
+<p><img src="../wp-content/uploads/2015/09/71453784.jpg" alt="" /></p>
+<p>这就是加密过后的呵呵了，我们可以把这串密文拷贝到上面这个md5的在线解密网站：</p>
+<p><img src="../wp-content/uploads/2015/09/52984536.jpg" alt="" /></p>
+<p>嘿嘿，果然，只是这样加密一次，就直接破解了，有点不安全的样子，那就加密100次咯，
+就是将加密后的字符串再加密，重复100次，我们在原先的基础上加个加密一百次的方法：</p>
+<pre>
+public static String getMD5x100(String content){
+    String s1 = content;
+    for(int i = 0;i &lt; 100;i++){
+        s1 = getMD5(s1);
+    }
+    return s1;
+}
+</pre>
+<p>
+然后调用下，发现打印这个的Log：</p>
+<p><img src="../wp-content/uploads/2015/09/12090032.jpg" alt="" /></p>
+<p>复制界面网站上：</p>
+<p><img src="../wp-content/uploads/2015/09/1147082.jpg" alt="" /></p>
+<p>好的，装B成功~</p>
+<hr />
+<h2>4.SharedPreference工具类：</h2>
+<blockquote><p>每次都要自行实例化SP相关的类，肯定很麻烦，这里贴个SP的工具类，大家可以贴到
+自己的项目中，工具类来源于鸿洋大神的blog~</p></blockquote>
+<p><strong>SPUtils.java</strong></p>
+<pre>
+package com.jay.sharedpreferencedemo3;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import java.util.Map;
+
+/**
+ * Created by Jay on 2015/9/2 0002.
+ */
+public class SPUtils {
+    /**
+     * 保存在手机里的SP文件名
+     */
+    public static final String FILE_NAME = "my_sp";
+
+    /**
+     * 保存数据
+     */
+    public static void put(Context context, String key, Object obj) {
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        if (obj instanceof Boolean) {
+            editor.putBoolean(key, (Boolean) obj);
+        } else if (obj instanceof Float) {
+            editor.putFloat(key, (Float) obj);
+        } else if (obj instanceof Integer) {
+            editor.putInt(key, (Integer) obj);
+        } else if (obj instanceof Long) {
+            editor.putLong(key, (Long) obj);
+        } else {
+            editor.putString(key, (String) obj);
+        }
+        editor.commit();
+    }
+
+
+    /**
+     * 获取指定数据
+     */
+    public static Object get(Context context, String key, Object defaultObj) {
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, context.MODE_PRIVATE);
+        if (defaultObj instanceof Boolean) {
+            return sp.getBoolean(key, (Boolean) defaultObj);
+        } else if (defaultObj instanceof Float) {
+            return sp.getFloat(key, (Float) defaultObj);
+        } else if (defaultObj instanceof Integer) {
+            return sp.getInt(key, (Integer) defaultObj);
+        } else if (defaultObj instanceof Long) {
+            return sp.getLong(key, (Long) defaultObj);
+        } else if (defaultObj instanceof String) {
+            return sp.getString(key, (String) defaultObj);
+        }
+        return null;
+    }
+
+    /**
+     * 删除指定数据
+     */
+    public static void remove(Context context, String key) {
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.remove(key);
+        editor.commit();
+    }
+
+
+    /**
+     * 返回所有键值对
+     */
+    public static Map&lt;String, ?&gt; getAll(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, context.MODE_PRIVATE);
+        Map&lt;String, ?&gt; map = sp.getAll();
+        return map;
+    }
+
+    /**
+     * 删除所有数据
+     */
+    public static void clear(Context context) {
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.clear();
+        editor.commit();
+    }
+
+    /**
+     * 检查key对应的数据是否存在
+     */
+    public static boolean contains(Context context, String key) {
+        SharedPreferences sp = context.getSharedPreferences(FILE_NAME, context.MODE_PRIVATE);
+        return sp.contains(key);
+    }
+
+}
+</pre>
+<hr />
+<h2>5.代码下载：</h2>
+<p><strong>SharedPreferenceDemo.zip</strong>：<a href="http://school.yunwei.edu/try/download/SharedPreferenceDemo.zip">下载 SharedPreferenceDemo.zip</a>
+<strong>SharedPreferenceDemo2.zip</strong>：<a href="http://school.yunwei.edu/try/download/SharedPreferenceDemo2.zip">下载 SharedPreferenceDemo2.zip</a>
+<strong>SharedPreferenceDemo3.zip</strong>：<a href="http://school.yunwei.edu/try/download/SharedPreferenceDemo3.zip">下载 SharedPreferenceDemo3.zip</a></p>
+<hr />
+<h2>本节小结：</h2>
+<blockquote><p>好的，关于Android存储数据的第二种方式：SharedPreference保存用户偏好参数的内容就这么多，
+应该可以满足你日常开发使用SP的需求，如果有什么遗漏，欢迎提出，谢谢~</p></blockquote> </div>
+</div>
+<div class="previous-next-links">
+<div class="previous-design-link">← <a href="android-tutorial-file.html" rel="prev"> 6.1 数据存储与访问之——文件存储读写</a> </div>
+<div class="next-design-link"><a href="android-tutorial-sqlite-intro.html" rel="next"> 6.3.1 数据存储与访问之——初见SQLite数据库</a> →</div>
+</div>
+<div class="article-heading-ad" id="w3cnote-ad728">
+<script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle" style="display:inline-block;min-width:300px;max-width:970px;width:100%;height:90px" data-ad-client="ca-pub-5751451760833794" data-ad-slot="1691338467" data-ad-format="horizontal"></ins>
+<script>
+			(adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
+</div>
+<style>
+@media screen and (max-width: 768px) {
+	#w3cnote-ad728 {
+		display: none;
+	}
+}
+p.note-author {
+    border-bottom: 1px solid #ddd;
+    font-size: 18px;
+    font-weight: bold;
+    color: #78a15a;
+    padding-bottom: 2px;
+    margin-bottom: 4px;
+}
+</style>
+<script>
+var aid = 13523;
+</script>
+</div>
+</div>
+<div class="listcol last right-column">
+<script type="text/javascript">
+jQuery(document).ready(function ($){
+	var total = $(".membership li").length;
+	var left_list = '';
+	href = window.location.href;
+	
+	$(".membership li").each(function(index, value){
+
+		left_list += $(this).html();
+
+		cur_href = $(this).find("a").attr("href");
+		cur_obj = $(this);
+		
+		if(href.match(cur_href) != null) {
+			if(index==0) {
+				$(".previous-design-link").hide();
+			}
+			if(index==(total-1)) {
+				$(".next-design-link").hide();
+			}
+			prev_href = cur_obj.prev("li").find("a").attr("href");
+			prev_title = cur_obj.prev("li").find("a").attr("title");
+
+			next_href = cur_obj.next("li").find("a").attr("href");
+			next_title = cur_obj.next("li").find("a").attr("title");
+			if(prev_title) {
+				$(".previous-design-link a").attr("href", prev_href);
+				$(".previous-design-link a").attr("title", prev_title);
+				$(".previous-design-link a").text(prev_title);
+			} else {
+				$(".previous-design-link").html("");
+			}
+
+			if(next_title) {
+				$(".next-design-link a").attr("href", next_href);
+				$(".next-design-link a").attr("title", next_title);
+				$(".next-design-link a").text(next_title);
+			} else {
+				$(".next-design-link").html("");
+			}
+		}
+	});
+
+	$("#leftcolumn").html(left_list);
+});
+	</script>
+<div class="sidebar-box cate-list">
+<div class="sidebar-box advertise-here list-link"">
+	<a href="javascript:void(0);">Android 基础入门教程(Q群号：153836263)</a>	</div>
+	
+	<ul class="membership">
+		
+	<li><a target="_top" title="1.0 Android基础入门教程" href="http://school.yunwei.edu/w3cnote/android-tutorial-intro.html" >1.0 Android基础入门教程</a></li>
+		
+	<li><a target="_top" title="1.0.1 2015年最新Android基础入门教程目录" href="android-tutorial-contents.html" >1.0.1 2015年最新Android基础入门教程目录</a></li>
+		
+	<li><a target="_top" title="1.1 背景相关与系统架构分析" href="android-tutorial-system-architecture-analysis.html" >1.1 背景相关与系统架构分析</a></li>
+		
+	<li><a target="_top" title="1.2 开发环境搭建" href="android-tutorial-development-environment-build.html" >1.2 开发环境搭建</a></li>
+		
+	<li><a target="_top" title="1.2.1 使用Eclipse + ADT + SDK开发Android APP" href="android-tutorial-eclipse-adt-sdk-app.html" >1.2.1 使用Eclipse + ADT + SDK开发Android APP</a></li>
+		
+	<li><a target="_top" title="1.2.2 使用Android Studio开发Android APP" href="android-tutorial-android-studio.html" >1.2.2 使用Android Studio开发Android APP</a></li>
+		
+	<li><a target="_top" title="1.3 SDK更新不了问题解决" href="android-tutorial-sdk-problem-solve.html" >1.3 SDK更新不了问题解决</a></li>
+		
+	<li><a target="_top" title="1.4 Genymotion模拟器安装" href="android-tutorial-genymotion-install.html" >1.4 Genymotion模拟器安装</a></li>
+		
+	<li><a target="_top" title="1.5.1 Git使用教程之本地仓库的基本操作" href="android-tutorial-git-repo-operate.html" >1.5.1 Git使用教程之本地仓库的基本操作</a></li>
+		
+	<li><a target="_top" title="1.5.2 Git之使用GitHub搭建远程仓库" href="android-tutorial-git-repo-create.html" >1.5.2 Git之使用GitHub搭建远程仓库</a></li>
+		
+	<li><a target="_top" title="1.6 .9(九妹)图片怎么玩" href="android-tutorial-9-image.html" >1.6 .9(九妹)图片怎么玩</a></li>
+		
+	<li><a target="_top" title="1.7 界面原型设计" href="android-tutorial-interface-design.html" >1.7 界面原型设计</a></li>
+		
+	<li><a target="_top" title="1.8 工程相关解析(各种文件，资源访问)" href="android-tutorial-project-src-analysis.html" >1.8 工程相关解析(各种文件，资源访问)</a></li>
+		
+	<li><a target="_top" title="1.9 Android程序签名打包" href="android-tutorial-sign-package.html" >1.9 Android程序签名打包</a></li>
+		
+	<li><a target="_top" title="1.11 反编译APK获取代码&资源" href="android-tutorial-decompile-apk-get-code-resources.html" >1.11 反编译APK获取代码&资源</a></li>
+		
+	<li><a target="_top" title="2.1 View与ViewGroup的概念" href="android-tutorial-view-viewgroup-intro.html" >2.1 View与ViewGroup的概念</a></li>
+		
+	<li><a target="_top" title="2.2.1 LinearLayout(线性布局)" href="android-tutorial-linearlayout.html" >2.2.1 LinearLayout(线性布局)</a></li>
+		
+	<li><a target="_top" title="2.2.2 RelativeLayout(相对布局)" href="android-tutorial-relativelayout.html" >2.2.2 RelativeLayout(相对布局)</a></li>
+		
+	<li><a target="_top" title="2.2.3 TableLayout(表格布局)" href="android-tutorial-tablelayout.html" >2.2.3 TableLayout(表格布局)</a></li>
+		
+	<li><a target="_top" title="2.2.4 FrameLayout(帧布局)" href="android-tutorial-framelayout.html" >2.2.4 FrameLayout(帧布局)</a></li>
+		
+	<li><a target="_top" title="2.2.5 GridLayout(网格布局)" href="android-tutorial-gridlayout.html" >2.2.5 GridLayout(网格布局)</a></li>
+		
+	<li><a target="_top" title="2.2.6 AbsoluteLayout(绝对布局)" href="android-tutorial-absolutelayout.html" >2.2.6 AbsoluteLayout(绝对布局)</a></li>
+		
+	<li><a target="_top" title="2.3.1 TextView(文本框)详解" href="android-tutorial-textview.html" >2.3.1 TextView(文本框)详解</a></li>
+		
+	<li><a target="_top" title="2.3.2 EditText(输入框)详解" href="android-tutorial-edittext.html" >2.3.2 EditText(输入框)详解</a></li>
+		
+	<li><a target="_top" title="2.3.3 Button(按钮)与ImageButton(图像按钮)" href="android-tutorial-button-imagebutton.html" >2.3.3 Button(按钮)与ImageButton(图像按钮)</a></li>
+		
+	<li><a target="_top" title="2.3.4 ImageView(图像视图)" href="android-tutorial-imageview.html" >2.3.4 ImageView(图像视图)</a></li>
+		
+	<li><a target="_top" title="2.3.5.RadioButton(单选按钮)&Checkbox(复选框)" href="android-tutorial-radiobutton-checkbox.html" >2.3.5.RadioButton(单选按钮)&Checkbox(复选框)</a></li>
+		
+	<li><a target="_top" title="2.3.6 开关按钮ToggleButton和开关Switch" href="android-tutorial-togglebutton-switch.html" >2.3.6 开关按钮ToggleButton和开关Switch</a></li>
+		
+	<li><a target="_top" title="2.3.7 ProgressBar(进度条)" href="android-tutorial-progressbar.html" >2.3.7 ProgressBar(进度条)</a></li>
+		
+	<li><a target="_top" title="2.3.8 SeekBar(拖动条)" href="android-tutorial-seekbar.html" >2.3.8 SeekBar(拖动条)</a></li>
+		
+	<li><a target="_top" title="2.3.9 RatingBar(星级评分条)" href="android-tutorial-ratingbar.html" >2.3.9 RatingBar(星级评分条)</a></li>
+		
+	<li><a target="_top" title="2.4.1 ScrollView(滚动条)" href="android-tutorial-scrollview.html" >2.4.1 ScrollView(滚动条)</a></li>
+		
+	<li><a target="_top" title="2.4.2 Date & Time组件(上)" href="android-tutorial-date-time-1.html" >2.4.2 Date & Time组件(上)</a></li>
+		
+	<li><a target="_top" title="2.4.3 Date & Time组件(下)" href="android-tutorial-date-time-2.html" >2.4.3 Date & Time组件(下)</a></li>
+		
+	<li><a target="_top" title="2.4.4 Adapter基础讲解" href="android-tutorial-adapter.html" >2.4.4 Adapter基础讲解</a></li>
+		
+	<li><a target="_top" title="2.4.5 ListView简单实用" href="android-tutorial-listview.html" >2.4.5 ListView简单实用</a></li>
+		
+	<li><a target="_top" title="2.4.6 BaseAdapter优化" href="android-tutorial-baseadapter.html" >2.4.6 BaseAdapter优化</a></li>
+		
+	<li><a target="_top" title="2.4.7ListView的焦点问题" href="android-tutorial-listview-focus.html" >2.4.7ListView的焦点问题</a></li>
+		
+	<li><a target="_top" title="2.4.8 ListView之checkbox错位问题解决" href="android-tutorial-listview-checkbox.html" >2.4.8 ListView之checkbox错位问题解决</a></li>
+		
+	<li><a target="_top" title="2.4.9 ListView的数据更新问题" href="android-tutorial-listview-update.html" >2.4.9 ListView的数据更新问题</a></li>
+		
+	<li><a target="_top" title="2.5.0 构建一个可复用的自定义BaseAdapter" href="android-tutorial-customer-baseadapter.html" >2.5.0 构建一个可复用的自定义BaseAdapter</a></li>
+		
+	<li><a target="_top" title="2.5.1 ListView Item多布局的实现" href="android-tutorial-listview-item.html" >2.5.1 ListView Item多布局的实现</a></li>
+		
+	<li><a target="_top" title="2.5.2 GridView(网格视图)的基本使用" href="android-tutorial-gridview.html" >2.5.2 GridView(网格视图)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.3 Spinner(列表选项框)的基本使用" href="android-tutorial-spinner.html" >2.5.3 Spinner(列表选项框)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.4 AutoCompleteTextView(自动完成文本框)的基本使用" href="android-tutorial-autocompletetextview.html" >2.5.4 AutoCompleteTextView(自动完成文本框)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.5 ExpandableListView(可折叠列表)的基本使用" href="android-tutorial-expandablelistview.html" >2.5.5 ExpandableListView(可折叠列表)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.6 ViewFlipper(翻转视图)的基本使用" href="android-tutorial-viewflipper.html" >2.5.6 ViewFlipper(翻转视图)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.7 Toast(吐司)的基本使用" href="android-tutorial-toast.html" >2.5.7 Toast(吐司)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.5.8 Notification(状态栏通知)详解" href="android-tutorial-notification.html" >2.5.8 Notification(状态栏通知)详解</a></li>
+		
+	<li><a target="_top" title="2.5.9 AlertDialog(对话框)详解" href="android-tutorial-alertdialog.html" >2.5.9 AlertDialog(对话框)详解</a></li>
+		
+	<li><a target="_top" title="2.6.0 其他几种常用对话框基本使用" href="android-tutorial-dialog.html" >2.6.0 其他几种常用对话框基本使用</a></li>
+		
+	<li><a target="_top" title="2.6.1 PopupWindow(悬浮框)的基本使用" href="android-tutorial-popupwindow.html" >2.6.1 PopupWindow(悬浮框)的基本使用</a></li>
+		
+	<li><a target="_top" title="2.6.2 菜单(Menu)" href="android-tutorial-menu.html" >2.6.2 菜单(Menu)</a></li>
+		
+	<li><a target="_top" title="2.6.3 ViewPager的简单使用" href="android-tutorial-viewpager.html" >2.6.3 ViewPager的简单使用</a></li>
+		
+	<li><a target="_top" title="2.6.4 DrawerLayout(官方侧滑菜单)的简单使用" href="android-tutorial-drawerlayout.html" >2.6.4 DrawerLayout(官方侧滑菜单)的简单使用</a></li>
+		
+	<li><a target="_top" title="3.1.1 基于监听的事件处理机制" href="android-tutorial-listen-event-handle.html" >3.1.1 基于监听的事件处理机制</a></li>
+		
+	<li><a target="_top" title="3.2 基于回调的事件处理机制" href="android-tutorial-callback-event-handle.html" >3.2 基于回调的事件处理机制</a></li>
+		
+	<li><a target="_top" title="3.3 Handler消息传递机制浅析" href="android-tutorial-handler-message.html" >3.3 Handler消息传递机制浅析</a></li>
+		
+	<li><a target="_top" title="3.4 TouchListener PK OnTouchEvent + 多点触碰" href="android-tutorial-touchlistener-ontouchevent.html" >3.4 TouchListener PK OnTouchEvent + 多点触碰</a></li>
+		
+	<li><a target="_top" title="3.5 监听EditText的内容变化" href="android-tutorial-listener-edittext-change.html" >3.5 监听EditText的内容变化</a></li>
+		
+	<li><a target="_top" title="3.6 响应系统设置的事件(Configuration类)" href="android-tutorial-configuration.html" >3.6 响应系统设置的事件(Configuration类)</a></li>
+		
+	<li><a target="_top" title="3.7 AnsyncTask异步任务" href="android-tutorial-ansynctask.html" >3.7 AnsyncTask异步任务</a></li>
+		
+	<li><a target="_top" title="3.8 Gestures(手势)" href="android-tutorial-gestures.html" >3.8 Gestures(手势)</a></li>
+		
+	<li><a target="_top" title="4.1.1 Activity初学乍练" href="android-tutorial-activity.html" >4.1.1 Activity初学乍练</a></li>
+		
+	<li><a target="_top" title="4.1.2 Activity初窥门径" href="android-tutorial-activity-start.html" >4.1.2 Activity初窥门径</a></li>
+		
+	<li><a target="_top" title="4.1.3 Activity登堂入室" href="android-tutorial-activity-intro.html" >4.1.3 Activity登堂入室</a></li>
+		
+	<li><a target="_top" title="4.2.1 Service初涉" href="android-tutorial-service-1.html" >4.2.1 Service初涉</a></li>
+		
+	<li><a target="_top" title="4.2.2 Service进阶" href="android-tutorial-service-2.html" >4.2.2 Service进阶</a></li>
+		
+	<li><a target="_top" title="4.2.3 Service精通" href="android-tutorial-service-3.html" >4.2.3 Service精通</a></li>
+		
+	<li><a target="_top" title="4.3.1 BroadcastReceiver牛刀小试" href="android-tutorial-broadcastreceiver.html" >4.3.1 BroadcastReceiver牛刀小试</a></li>
+		
+	<li><a target="_top" title="4.3.2 BroadcastReceiver庖丁解牛" href="android-tutorial-broadcastreceiver-2.html" >4.3.2 BroadcastReceiver庖丁解牛</a></li>
+		
+	<li><a target="_top" title="4.4.1 ContentProvider初探" href="android-tutorial-contentprovider.html" >4.4.1 ContentProvider初探</a></li>
+		
+	<li><a target="_top" title="4.4.2 ContentProvider再探——Document Provider" href="android-tutorial-contentprovider-2.html" >4.4.2 ContentProvider再探——Document Provider</a></li>
+		
+	<li><a target="_top" title="4.5.1 Intent的基本使用" href="android-tutorial-intent-base.html" >4.5.1 Intent的基本使用</a></li>
+		
+	<li><a target="_top" title="4.5.2 Intent之复杂数据的传递" href="android-tutorial-intent-pass-data.html" >4.5.2 Intent之复杂数据的传递</a></li>
+		
+	<li><a target="_top" title="5.1 Fragment基本概述" href="android-tutorial-fragment-base.html" >5.1 Fragment基本概述</a></li>
+		
+	<li><a target="_top" title="5.2.1 Fragment实例精讲——底部导航栏的实现(方法1)" href="android-tutorial-fragment-demo1.html" >5.2.1 Fragment实例精讲——底部导航栏的实现(方法1)</a></li>
+		
+	<li><a target="_top" title="5.2.2 Fragment实例精讲——底部导航栏的实现(方法2)" href="android-tutorial-fragment-demo2.html" >5.2.2 Fragment实例精讲——底部导航栏的实现(方法2)</a></li>
+		
+	<li><a target="_top" title="5.2.3 Fragment实例精讲——底部导航栏的实现(方法3)" href="android-tutorial-fragment-demo3.html" >5.2.3 Fragment实例精讲——底部导航栏的实现(方法3)</a></li>
+		
+	<li><a target="_top" title="5.2.4 Fragment实例精讲——底部导航栏+ViewPager滑动切换页面" href="android-tutorial-fragment-demo4.html" >5.2.4 Fragment实例精讲——底部导航栏+ViewPager滑动切换页面</a></li>
+		
+	<li><a target="_top" title="5.2.5 Fragment实例精讲——新闻(购物)类App列表Fragment的简单实现" href="android-tutorial-fragment-demo5.html" >5.2.5 Fragment实例精讲——新闻(购物)类App列表Fragment的简单实现</a></li>
+		
+	<li><a target="_top" title="6.1 数据存储与访问之——文件存储读写" href="android-tutorial-file.html" >6.1 数据存储与访问之——文件存储读写</a></li>
+		<li>
+	6.2 数据存储与访问之——SharedPreferences保存用户偏好参数	</li>
+	
+		
+	<li><a target="_top" title="6.3.1 数据存储与访问之——初见SQLite数据库" href="android-tutorial-sqlite-intro.html" >6.3.1 数据存储与访问之——初见SQLite数据库</a></li>
+		
+	<li><a target="_top" title="6.3.2 数据存储与访问之——又见SQLite数据库" href="android-tutorial-sqlite-2.html" >6.3.2 数据存储与访问之——又见SQLite数据库</a></li>
+		
+	<li><a target="_top" title="7.1.1 Android网络编程要学的东西与Http协议学习" href="android-tutorial-http.html" >7.1.1 Android网络编程要学的东西与Http协议学习</a></li>
+		
+	<li><a target="_top" title="7.1.2 Android Http请求头与响应头的学习" href="android-tutorial-http-response-header.html" >7.1.2 Android Http请求头与响应头的学习</a></li>
+		
+	<li><a target="_top" title="7.1.3 Android HTTP请求方式:HttpURLConnection" href="android-tutorial-httpurlconnection.html" >7.1.3 Android HTTP请求方式:HttpURLConnection</a></li>
+		
+	<li><a target="_top" title="7.1.4 Android HTTP请求方式:HttpClient" href="android-tutorial-httpclient.html" >7.1.4 Android HTTP请求方式:HttpClient</a></li>
+		
+	<li><a target="_top" title="7.2.1 Android XML数据解析" href="android-tutorial-xml.html" >7.2.1 Android XML数据解析</a></li>
+		
+	<li><a target="_top" title="7.2.2 Android JSON数据解析" href="android-tutorial-json.html" >7.2.2 Android JSON数据解析</a></li>
+		
+	<li><a target="_top" title="7.3.1 Android 文件上传" href="android-tutorial-upload-file.html" >7.3.1 Android 文件上传</a></li>
+		
+	<li><a target="_top" title="7.3.2 Android 文件下载（1）" href="android-tutorial-download1.html" >7.3.2 Android 文件下载（1）</a></li>
+		
+	<li><a target="_top" title="7.3.3 Android 文件下载（2）" href="android-tutorial-download2.html" >7.3.3 Android 文件下载（2）</a></li>
+		
+	<li><a target="_top" title="7.4 Android 调用 WebService" href="android-tutorial-webservice.html" >7.4 Android 调用 WebService</a></li>
+		
+	<li><a target="_top" title="7.5.1 WebView(网页视图)基本用法" href="android-tutorial-webview.html" >7.5.1 WebView(网页视图)基本用法</a></li>
+		
+	<li><a target="_top" title="7.5.2 WebView和JavaScrip交互基础" href="android-tutorial-webview-javascrip.html" >7.5.2 WebView和JavaScrip交互基础</a></li>
+		
+	<li><a target="_top" title="7.5.3 Android 4.4后WebView的一些注意事项" href="android-tutorial-webview-attention.html" >7.5.3 Android 4.4后WebView的一些注意事项</a></li>
+		
+	<li><a target="_top" title="7.5.4 WebView文件下载" href="android-tutorial-webview-download-file.html" >7.5.4 WebView文件下载</a></li>
+		
+	<li><a target="_top" title="7.5.5 WebView缓存问题" href="android-tutorial-webview-cache.html" >7.5.5 WebView缓存问题</a></li>
+		
+	<li><a target="_top" title="7.5.6 WebView处理网页返回的错误码信息" href="android-tutorial-webview-error-code.html" >7.5.6 WebView处理网页返回的错误码信息</a></li>
+		
+	<li><a target="_top" title="7.6.1 Socket学习网络基础准备" href="android-tutorial-socket-intro.html" >7.6.1 Socket学习网络基础准备</a></li>
+		
+	<li><a target="_top" title="7.6.2 基于TCP协议的Socket通信(1)" href="android-tutorial-socket1.html" >7.6.2 基于TCP协议的Socket通信(1)</a></li>
+		
+	<li><a target="_top" title="7.6.3 基于TCP协议的Socket通信(2)" href="android-tutorial-socket2.html" >7.6.3 基于TCP协议的Socket通信(2)</a></li>
+		
+	<li><a target="_top" title="7.6.4 基于UDP协议的Socket通信" href="android-tutorial-udp-socket.html" >7.6.4 基于UDP协议的Socket通信</a></li>
+		
+	<li><a target="_top" title="8.1.1 Android中的13种Drawable小结 Part 1" href="android-tutorial-drawable1.html" >8.1.1 Android中的13种Drawable小结 Part 1</a></li>
+		
+	<li><a target="_top" title="8.1.2 Android中的13种Drawable小结 Part 2" href="android-tutorial-drawable2.html" >8.1.2 Android中的13种Drawable小结 Part 2</a></li>
+		
+	<li><a target="_top" title="8.1.3 Android中的13种Drawable小结 Part 3" href="android-tutorial-drawable3.html" >8.1.3 Android中的13种Drawable小结 Part 3</a></li>
+		
+	<li><a target="_top" title="8.2.1 Bitmap(位图)全解析 Part 1" href="android-tutorial-bitmap1.html" >8.2.1 Bitmap(位图)全解析 Part 1</a></li>
+		
+	<li><a target="_top" title="8.2.2 Bitmap引起的OOM问题" href="android-tutorial-bitmap2.html" >8.2.2 Bitmap引起的OOM问题</a></li>
+		
+	<li><a target="_top" title="8.3.1 三个绘图工具类详解" href="android-tutorial-drawable-tool.html" >8.3.1 三个绘图工具类详解</a></li>
+		
+	<li><a target="_top" title="8.3.2 绘图类实战示例" href="android-tutorial-bitmap-demo.html" >8.3.2 绘图类实战示例</a></li>
+		
+	<li><a target="_top" title="8.3.3 Paint API之—— MaskFilter(面具)" href="android-tutorial-maskfilter.html" >8.3.3 Paint API之—— MaskFilter(面具)</a></li>
+		
+	<li><a target="_top" title="8.3.4 Paint API之—— Xfermode与PorterDuff详解(一)" href="android-tutorial-xfermode-porterduff.html" >8.3.4 Paint API之—— Xfermode与PorterDuff详解(一)</a></li>
+		
+	<li><a target="_top" title="8.3.5 Paint API之—— Xfermode与PorterDuff详解(二)" href="android-tutorial-xfermode-porterduff2.html" >8.3.5 Paint API之—— Xfermode与PorterDuff详解(二)</a></li>
+		
+	<li><a target="_top" title="8.3.6 Paint API之—— Xfermode与PorterDuff详解(三)" href="android-tutorial-xfermode-porterduff3.html" >8.3.6 Paint API之—— Xfermode与PorterDuff详解(三)</a></li>
+		
+	<li><a target="_top" title="8.3.7 Paint API之—— Xfermode与PorterDuff详解(四)" href="android-tutorial-xfermode-porterduff4.html" >8.3.7 Paint API之—— Xfermode与PorterDuff详解(四)</a></li>
+		
+	<li><a target="_top" title="8.3.8 Paint API之—— Xfermode与PorterDuff详解(五)" href="android-tutorial-xfermode-porterduff5.html" >8.3.8 Paint API之—— Xfermode与PorterDuff详解(五)</a></li>
+		
+	<li><a target="_top" title="8.3.9 Paint API之—— ColorFilter(颜色过滤器)(1/3)" href="android-tutorial-colorfilter1.html" >8.3.9 Paint API之—— ColorFilter(颜色过滤器)(1/3)</a></li>
+		
+	<li><a target="_top" title="8.3.10 Paint API之—— ColorFilter(颜色过滤器)(2-3)" href="android-tutorial-colorfilterl2.html" >8.3.10 Paint API之—— ColorFilter(颜色过滤器)(2-3)</a></li>
+		
+	<li><a target="_top" title="8.3.11 Paint API之—— ColorFilter(颜色过滤器)(3-3)" href="android-tutorial-colorfilter3.html" >8.3.11 Paint API之—— ColorFilter(颜色过滤器)(3-3)</a></li>
+		
+	<li><a target="_top" title="8.3.12 Paint API之—— PathEffect(路径效果)" href="android-tutorial-patheffect.html" >8.3.12 Paint API之—— PathEffect(路径效果)</a></li>
+		
+	<li><a target="_top" title="8.3.13 Paint API之—— Shader(图像渲染)" href="android-tutorial-shader.html" >8.3.13 Paint API之—— Shader(图像渲染)</a></li>
+		
+	<li><a target="_top" title="8.3.14 Paint几个枚举/常量值以及ShadowLayer阴影效果" href="android-tutorial-shadowlayer.html" >8.3.14 Paint几个枚举/常量值以及ShadowLayer阴影效果</a></li>
+		
+	<li><a target="_top" title="8.3.15 Paint API之——Typeface(字型)" href="android-tutorial-typeface.html" >8.3.15 Paint API之——Typeface(字型)</a></li>
+		
+	<li><a target="_top" title="8.3.16 Canvas API详解(Part 1)" href="android-tutorial-canvas-api1.html" >8.3.16 Canvas API详解(Part 1)</a></li>
+		
+	<li><a target="_top" title="8.3.17 Canvas API详解(Part 2)剪切方法合集" href="android-tutorial-canvas-api2.html" >8.3.17 Canvas API详解(Part 2)剪切方法合集</a></li>
+		
+	<li><a target="_top" title="8.3.18 Canvas API详解(Part 3)Matrix和drawBitmapMesh" href="android-tutorial-canvas-api3.html" >8.3.18 Canvas API详解(Part 3)Matrix和drawBitmapMesh</a></li>
+		
+	<li><a target="_top" title="8.4.1 Android动画合集之帧动画" href="android-tutorial-animation.html" >8.4.1 Android动画合集之帧动画</a></li>
+		
+	<li><a target="_top" title="8.4.2 Android动画合集之补间动画" href="android-tutorial-alphaanimation.html" >8.4.2 Android动画合集之补间动画</a></li>
+		
+	<li><a target="_top" title="8.4.3 Android动画合集之属性动画-初见" href="android-tutorial-valueanimator.html" >8.4.3 Android动画合集之属性动画-初见</a></li>
+		
+	<li><a target="_top" title="8.4.4 Android动画合集之属性动画-又见" href="android-tutorial-valueanimator2.html" >8.4.4 Android动画合集之属性动画-又见</a></li>
+		
+	<li><a target="_top" title="9.1 使用SoundPool播放音效(Duang~)" href="android-tutorial-soundpool.html" >9.1 使用SoundPool播放音效(Duang~)</a></li>
+		
+	<li><a target="_top" title="9.2 MediaPlayer播放音频与视频" href="android-tutorial-mediaplayer.html" >9.2 MediaPlayer播放音频与视频</a></li>
+		
+	<li><a target="_top" title="9.3 使用Camera拍照" href="android-tutorial-camera.html" >9.3 使用Camera拍照</a></li>
+		
+	<li><a target="_top" title="9.4 使用MediaRecord录音" href="android-tutorial-mediarecord.html" >9.4 使用MediaRecord录音</a></li>
+		
+	<li><a target="_top" title="10.1 TelephonyManager(电话管理器)" href="android-tutorial-telephonymanager.html" >10.1 TelephonyManager(电话管理器)</a></li>
+		
+	<li><a target="_top" title="10.2 SmsManager(短信管理器)" href="android-tutorial-smsmanager.html" >10.2 SmsManager(短信管理器)</a></li>
+		
+	<li><a target="_top" title="10.3 AudioManager(音频管理器)" href="android-tutorial-audiomanager.html" >10.3 AudioManager(音频管理器)</a></li>
+		
+	<li><a target="_top" title="10.4 Vibrator(振动器)" href="android-tutorial-vibrator.html" >10.4 Vibrator(振动器)</a></li>
+		
+	<li><a target="_top" title="10.5 AlarmManager(闹钟服务)" href="android-tutorial-alarmmanager.html" >10.5 AlarmManager(闹钟服务)</a></li>
+		
+	<li><a target="_top" title="10.6 PowerManager(电源服务)" href="android-tutorial-powermanager.html" >10.6 PowerManager(电源服务)</a></li>
+		
+	<li><a target="_top" title="10.7 WindowManager(窗口管理服务)" href="android-tutorial-windowmanager.html" >10.7 WindowManager(窗口管理服务)</a></li>
+		
+	<li><a target="_top" title="10.8 LayoutInflater(布局服务)" href="android-tutorial-layoutinflater.html" >10.8 LayoutInflater(布局服务)</a></li>
+		
+	<li><a target="_top" title="10.9 WallpaperManager(壁纸管理器)" href="android-tutorial-wallpapermanager.html" >10.9 WallpaperManager(壁纸管理器)</a></li>
+		
+	<li><a target="_top" title="10.10 传感器专题(1)——相关介绍" href="android-tutorial-sensor1.html" >10.10 传感器专题(1)——相关介绍</a></li>
+		
+	<li><a target="_top" title="10.11 传感器专题(2)——方向传感器" href="android-tutorial-sensor2.html" >10.11 传感器专题(2)——方向传感器</a></li>
+		
+	<li><a target="_top" title="10.12 传感器专题(3)——加速度/陀螺仪传感器" href="android-tutorial-sensor3.html" >10.12 传感器专题(3)——加速度/陀螺仪传感器</a></li>
+		
+	<li><a target="_top" title="10.12 传感器专题(4)——其他传感器了解" href="android-tutorial-sensor4.html" >10.12 传感器专题(4)——其他传感器了解</a></li>
+		
+	<li><a target="_top" title="10.14 Android GPS初涉" href="android-tutorial-gps.html" >10.14 Android GPS初涉</a></li>
+		
+	<li><a target="_top" title="11.0《2015最新Android基础入门教程》完结散花~" href="android-tutorial-end.html" >11.0《2015最新Android基础入门教程》完结散花~</a></li>
+		
+	<li><a target="_top" title="12.1Android 实战 ：DrySister看妹子应用(第一版) -- 项目搭建与简单实现" href="android-tutorial-exercise-1.html" >12.1Android 实战 ：DrySister看妹子应用(第一版) -- 项目搭建与简单实现</a></li>
+		
+	<li><a target="_top" title="12.2 DrySister看妹子应用(第一版)——2.解析后台数据" href="android-tutorial-exercise-2.html" >12.2 DrySister看妹子应用(第一版)——2.解析后台数据</a></li>
+		
+	<li><a target="_top" title="12.3 DrySister看妹子应用(第一版)——3.图片加载优化(写个图片缓存小框架)" href="android-tutorial-exercise-3.html" >12.3 DrySister看妹子应用(第一版)——3.图片加载优化(写个图片缓存小框架)</a></li>
+		
+	<li><a target="_top" title="12.4 DrySister看妹子应用(第一版)——4.添加数据缓存(加入SQLite)" href="android-tutorial-exercise-4.html" >12.4 DrySister看妹子应用(第一版)——4.添加数据缓存(加入SQLite)</a></li>
+		
+	<li><a target="_top" title="12.5 DrySister看妹子应用(第一版)——5.代码回顾，调整与日志类编写" href="android-tutorial-exercise-5.html" >12.5 DrySister看妹子应用(第一版)——5.代码回顾，调整与日志类编写</a></li>
+		
+	<li><a target="_top" title="12.6 DrySister看妹子应用(第一版)——6.图标制作，混淆，签名打包，APK瘦身，应用发布" href="android-tutorial-exercise-6-html.html" >12.6 DrySister看妹子应用(第一版)——6.图标制作，混淆，签名打包，APK瘦身，应用发布</a></li>
+	</ul></div>	</div>
+</div>
+
+
+<!-- 底部 -->
+
+
+<div id="footer" class="mar-t50">
+   <div class="runoob-block">
+    <div class="runoob cf">
+     <dl>
+      <dt>
+       在线实例
+      </dt>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/html/html-examples.html">HTML 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/css/css-examples.html">CSS 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/js/js-examples.html">JavaScript 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="../ajx/ajax-examples.html">Ajax 实例</a>
+      </dd>
+       <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/jquery/jquery-examples.html">jQuery 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="http://school.yunwei.edu/xml/xml-examples.html">XML 实例</a>
+      </dd>
+      <dd>
+       &middot;<a target="_blank" href="../html/java-examples.html">Java 实例</a>
+      </dd>
+     
+     </dl>
+     <dl>
+      <dt>
+      字符集&工具
+      </dt>
+      <dd>
+       &middot; <a target="_blank" href="../charsets.1">HTML 字符集设置</a>
+      </dd>
+      <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/html-ascii.html">HTML ASCII 字符集</a>
+      </dd>
+     <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/ref-entities.html">HTML ISO-8859-1</a>
+      </dd> 
+      <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/html-symbols.html">HTML 实体符号</a>
+      </dd>
+      <dd>
+       &middot; <a target="_blank" href="http://school.yunwei.edu/tags/html-colorpicker.html">HTML 拾色器</a>
+      </dd>
+      <dd>
+       &middot; <a target="_blank" href="http://c.runoob.com/front-end/53">JSON 格式化工具</a>
+      </dd>
+     </dl>
+     <dl>
+      <dt>
+       最新更新
+      </dt>
+                   <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/w3cnote/php-different-include-and-require.html" title="PHP 中 include 和 require 的区别详解">PHP 中 include ...</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/react/react-lists-and-keys.html" title="React 列表 &#038; Keys">React 列表 &#03...</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/react/react-conditional-rendering.html" title="React 条件渲染">React 条件渲染</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/react/react-event-handle.html" title="React 事件处理">React 事件处理</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/w3cnote/csharp-polymorphism2.html" title="C# 中的多态性">C# 中的多态性</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/react/react-rendering-elements.html" title="React 元素渲染">React 元素渲染</a>
+      </dd>
+              <dd>
+       &middot;
+      <a href="http://school.yunwei.edu/w3cnote/python-append-deepcopy.html" title="Python append() 与深拷贝、浅拷贝">Python append()...</a>
+      </dd>
+             </dl>
+     <dl>
+      <dt>
+       站点信息
+      </dt>
+      <dd>
+       &middot;
+       <a target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=ssbDyoOAgfLU3crf09venNHd3w" rel="external nofollow">意见反馈</a>
+      <!--<a class="wxpopup" onclick="popFunction()">合作联系
+       <span class="popuptext" id="myPopup">微信：<strong>centos5</strong></span>
+      </a>-->
+      </dd>
+      <dd>
+       &middot;
+      <a target="_blank" href="http://school.yunwei.edu/disclaimer">免责声明</a>
+       </dd>
+       <!--
+       <dd style="display: block;">
+       &middot;
+      <a href="javascript:void(0)" onclick="dashangToggle()" style="font-weight:bold;color:#f00;" title="打赏，支持一下">打赏一下</a>
+       </dd>
+      -->
+      <dd>
+       &middot;
+       <a target="_blank" href="http://school.yunwei.edu/aboutus">关于我们</a>
+       </dd>
+      <dd>
+       &middot;
+      <a target="_blank" href="http://school.yunwei.edu/archives">文章归档</a>
+      </dd>
+      <!--
+      <dd>
+       &middot;
+      <a href="https://www.xiaoyouxi100.com/?from=runoob" onclick="_hmt.push(['_trackEvent', '小游戏', 'click', 'xiaoyouxi100']);" target="_blank" title="小游戏">小游戏</a>
+      </dd>
+      -->
+     </dl>
+    
+     <div class="search-share">
+      <div class="app-download">
+        <div>
+         <strong>关注微信</strong>
+        </div>
+      </div>
+      <div class="share">
+            <img width="128" height="128" src="http://school.yunwei.edu/wp-content/themes/runoob/assets/images/qrcode.png" />
+       </div>
+     </div>
+     
+    </div>
+   </div>
+   <div class="w-1000 copyright">
+     Copyright &copy; 2013-2018    <strong><a href="http://school.yunwei.edu/" target="_blank">菜鸟教程</a></strong>&nbsp;
+    <strong><a href="http://school.yunwei.edu/" target="_blank">runoob.com</a></strong> All Rights Reserved. 备案号：闽ICP备15012807号-1
+   </div>
+  </div>
+  <div class="fixed-btn">
+    <a class="go-top" href="javascript:void(0)" title="返回顶部"> <i class="fa fa-angle-up"></i></a>
+    <a class="qrcode"  href="javascript:void(0)" title="关注我们"><i class="fa fa-qrcode"></i></a>
+    <a class="writer" style="display:none" href="javascript:void(0)"   title="标记/收藏"><i class="fa fa-star" aria-hidden="true"></i></a>
+    <!-- qrcode modal -->
+    <div id="bottom-qrcode" class="modal panel-modal hide fade in">
+      <h4>微信关注</h4>
+      <div class="panel-body"><img alt="微信关注" width="128" height="128" src="http://school.yunwei.edu/wp-content/themes/runoob/assets/images/qrcode.png"></div> 
+    </div>
+  </div>
+
+  <div class="hide_box"></div>
+    <div class="shang_box">
+      <a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="http://static.runoob.com/images/dashang/close.jpg" alt="取消" /></a>
+       
+      <div class="shang_tit">
+        <p>感谢您的支持，我会继续努力的!</p>
+      </div>
+      <div class="shang_payimg">
+        <img src="http://static.runoob.com/images/dashang/weipayimg.png" alt="扫码支持" title="扫一扫" />
+      </div>
+        <div class="pay_explain">扫码打赏，你说多少就多少</div>
+      <div class="shang_payselect">
+        <div class="pay_item checked" data-id="weipay">
+          <span class="radiobox"></span>
+          <span class="pay_logo"><img src="http://static.runoob.com/images/dashang/wechat.jpg" alt="微信" /></span>
+        </div>
+        <div class="pay_item" data-id="alipay">
+          <span class="radiobox"></span>
+          <span class="pay_logo"><img src="http://static.runoob.com/images/dashang/alipay.jpg" alt="支付宝" /></span>
+        </div>
+        
+      </div>
+      <div class="shang_info">
+        <p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+        <p><a href="http://c.runoob.com/codedemo/5348" target="_blank"><span style=" font-size: 14px;color: #000;font-weight: bold;">点我查看本站打赏源码！</span></a></p>
+      </div>
+    </div>
+  <div id="testClick"></div>
+ <div style="display:none;">
+ 
+ <script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3eec0b7da6548cf07db3bc477ea905ee";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-84264393-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-84264393-2');
+</script>
+</div>
+<script>
+window.jsui={
+    www: '//wschool.yunwei.edu',
+    uri: '//school.yunwei.edu/wp-content/themes/runoob'
+};
+</script>
+<style>
+ol,ul{list-style:none}.cd-switcher a{text-decoration:none;outline:0}.cd-switcher a:hover{text-decoration:underline}a:focus{outline:0;-moz-outline:0}.main_nav{width:300px;height:60px;margin:60px auto 10px auto}.main_nav li{float:left;width:60px;margin-right:10px;font-size:16px;padding:.6em 1em;border-radius:3em;background:#2f889a;text-align:center}.main_nav li a{color:#fff}.errtip{background-color:#fceaea;color:#db5353;padding:8px 15px;font-size:14px;border:1px solid #fc9797;border-radius:5px}.cd-user-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(52,54,66,0.9);z-index:3;overflow-y:auto;cursor:pointer;visibility:hidden;opacity:0;-webkit-transition:opacity .3s 0,visibility 0 .3s;-moz-transition:opacity .3s 0,visibility 0 .3s;transition:opacity .3s 0,visibility 0 .3s}.cd-user-modal.is-visible{visibility:visible;opacity:1;-webkit-transition:opacity .3s 0,visibility 0 0;-moz-transition:opacity .3s 0,visibility 0 0;transition:opacity .3s 0,visibility 0 0}.cd-user-modal.is-visible .cd-user-modal-container{-webkit-transform:translateY(0);-moz-transform:translateY(0);-ms-transform:translateY(0);-o-transform:translateY(0);transform:translateY(0)}.cd-user-modal-container{position:relative;width:90%;max-width:500px;background:#FFF;margin:3em auto 4em;cursor:auto;border-radius:.25em;-webkit-transform:translateY(-30px);-moz-transform:translateY(-30px);-ms-transform:translateY(-30px);-o-transform:translateY(-30px);transform:translateY(-30px);-webkit-transition-property:-webkit-transform;-moz-transition-property:-moz-transform;transition-property:transform;-webkit-transition-duration:.3s;-moz-transition-duration:.3s;transition-duration:.3s}.cd-user-modal-container .cd-switcher:after{content:"";display:table;clear:both}.cd-user-modal-container .cd-switcher li{width:50%;float:left;text-align:center}.cd-user-modal-container .cd-switcher li:first-child a{border-radius:.25em 0 0 0}.cd-user-modal-container .cd-switcher li:last-child a{border-radius:0 .25em 0 0}.cd-user-modal-container .cd-switcher a{font-size:1.2em;font-weight:bold;display:block;width:100%;height:50px;line-height:50px;background:#e8f1e2;color:#96b880}.cd-user-modal-container .cd-switcher a.selected{background:#FFF;color:#505260}@media only screen and (min-width:600px){.cd-user-modal-container{margin:4em auto}.cd-user-modal-container .cd-switcher a{height:70px;line-height:70px}}.cd-form{padding:1.4em}.cd-form .fieldset{position:relative;margin:1.4em 0}.cd-form .fieldset:first-child{margin-top:0}.cd-form .fieldset:last-child{margin-bottom:0}.cd-form label{font-size:16px;font-size:.875rem}.cd-form label.image-replace{display:inline-block;position:absolute;left:15px;top:50%;bottom:auto;-webkit-transform:translateY(-50%);-moz-transform:translateY(-50%);-ms-transform:translateY(-50%);-o-transform:translateY(-50%);transform:translateY(-50%);height:20px;width:20px;overflow:hidden;text-indent:100%;white-space:nowrap;color:transparent;text-shadow:none;background-repeat:no-repeat;background-position:50% 0}.cd-form label.cd-username{background-image:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-username.svg")}.cd-form label.cd-email{background-image:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-email.svg")}.cd-form label.cd-password{background-image:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-password.svg")}.cd-form input{margin:0;padding:0;border-radius:.25em}.cd-form input.full-width{width:80%}.cd-form input.full-width2{width:94%}.cd-form input.has-padding{padding:12px 20px 12px 50px}.cd-form input.has-border{border:1px solid #d2d8d8;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none;-o-appearance:none;appearance:none}.cd-form input.has-border:focus{border-color:#98b880;box-shadow:0 0 5px rgba(52,54,66,0.1);outline:0}.cd-form input.has-error{border:1px solid #d76666}.cd-form input[type=password]{padding-right:65px}.cd-form input[type=submit]{padding:16px 0;cursor:pointer;background:#96b97d;color:#FFF;font-weight:bold;border:0;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none;-o-appearance:none;appearance:none;font-size:1.2em;font-weight:bold}.no-touch .cd-form input[type=submit]:hover,.no-touch .cd-form input[type=submit]:focus{background:#3599ae;outline:0}@media only screen and (min-width:600px){.cd-form{padding:2em}.cd-form .fieldset{margin:2em 0}.cd-form .fieldset:first-child{margin-top:0}.cd-form .fieldset:last-child{margin-bottom:0}.cd-form input.has-padding{padding:16px 20px 16px 50px}.cd-form input[type=submit]{padding:16px 0}}.cd-close-form{display:block;position:absolute;width:40px;height:40px;right:0;top:-40px;background:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-close.svg") no-repeat center center;text-indent:100%;white-space:nowrap;overflow:hidden}@media only screen and (min-width:1170px){}#cd-login,#cd-signup,#cd-reset-password{display:none}#cd-login.is-selected,#cd-signup.is-selected,#cd-reset-password.is-selected{display:block}
+</style>
+<div class="cd-user-modal"> 
+	<div class="cd-user-modal-container">
+		<ul class="cd-switcher">
+			<li><a href="javascript:;">用户登录</a></li>
+			<li><a href="javascript:;">注册新用户</a></li>
+		</ul>
+
+		<div id="cd-login"> <!-- 登录表单 -->
+			<div class="cd-form">
+				<p class="fieldset">
+					<label class="image-replace cd-username" for="signin-username">用户名</label>
+					<input class="full-width has-padding has-border" id="signin-username" name=username type="text" placeholder="输入用户名">
+				</p>
+
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="signin-password">密码</label>
+					<input class="full-width has-padding has-border" id="signin-password" name="password" type="password"  placeholder="输入密码">
+				</p>
+				
+				<p class="fieldset">
+					<input type="checkbox" id="remember-me" checked>
+					<label for="remember-me">记住登录状态</label>
+          <a href="http://school.yunwei.edu/reset-password" style="float: right;padding-right: 20px;" target="_blank">忘记密码？</a>
+				</p>
+ 				<input type="hidden" name="action" value="signin">
+				<p class="fieldset">
+					<input class="full-width2" type="submit" value="登 录">
+				</p>
+        <div class="err-msg"></div>
+			</div>
+		</div>
+
+		<div id="cd-signup"> <!-- 注册表单 -->
+			<div class="cd-form">
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="verifycode">邀请码</label>
+					<input class="full-width has-padding has-border" id="signup-verifycode" name="verifycode" type="text"  placeholder="输入邀请码">
+				</p>
+				<p class="fieldset">
+					<label class="image-replace cd-username" for="signup-username">用户名</label>
+					<input class="full-width has-padding has-border" id="signup-username" name="name" type="text" placeholder="输入用户名">
+				</p>
+
+				<p class="fieldset">
+					<label class="image-replace cd-email" for="signup-email">邮箱</label>
+					<input class="full-width has-padding has-border" name="email" id="signup-email" type="email" placeholder="输入mail">
+				</p>
+
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="signup-password">密码</label>
+					<input class="full-width has-padding has-border" id="signup-password" name="password" type="password"  placeholder="输入密码">
+				</p>
+				<p class="fieldset">
+					<label class="image-replace cd-password" for="signup-password2">重复输入密码</label>
+					<input class="full-width has-padding has-border" id="signup-password2" name="password2" type="password"  placeholder="重复输入密码">
+				</p>
+				
+				<!-- 
+				<p class="fieldset">
+					<input type="checkbox" id="accept-terms">
+					<label for="accept-terms">我已阅读并同意 <a href="javascript:;">用户协议</a></label>
+				</p>
+				 -->
+				 
+				 <input type="hidden" name="action" value="signup">
+				<p class="fieldset">
+					<input class="full-width2" type="submit" value="注册新用户">
+				</p>
+				<p class="fieldset">
+				  <a href="http://school.yunwei.edu/w3cnote/runoob-user-test-intro.html#invite" target="_blank">如何获取邀请码？</a>
+				  </p>
+				<div class="err-msg"></div>
+			</div>
+
+		</div>
+
+		<a href="javascript:;" class="cd-close-form">关闭</a>
+	</div>
+</div> 
+<script src="http://school.yunwei.edu/wp-content/themes/runoob/assets/js/main.js?v=1.188"></script>
+<script src="http://static.runoob.com/assets/libs/hl/run_prettify.js"></script>
+</body>
+</html>

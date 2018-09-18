@@ -1,0 +1,140 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>设置参数</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="服务器配置" HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime-config.html"><LINK REL="PREVIOUS" TITLE="服务器配置" HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime-config.html"><LINK REL="NEXT" TITLE="文件位置" HREF="runtime-config-file-locations.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/config.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="服务器配置" HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime-config.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime-config.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 18. 服务器配置</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="文件位置" HREF="runtime-config-file-locations.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="CONFIG-SETTING">18.1. 设置参数</A></H1><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="CONFIG-SETTING-NAMES-VALUES">18.1.1. 参数名和值</A></H2><P> 所有参数名都是大小写不敏感的。每个参数都可以接受四种类型之一：
+布尔、整数、浮点数、字符串。布尔值可以是(都是大小写无关)
+<TT CLASS="LITERAL">on</TT>,
+<TT CLASS="LITERAL">off</TT>, <TT CLASS="LITERAL">true</TT>,
+<TT CLASS="LITERAL">false</TT>, <TT CLASS="LITERAL">yes</TT>,
+<TT CLASS="LITERAL">no</TT>, <TT CLASS="LITERAL">1</TT>, <TT CLASS="LITERAL">0</TT>
+或这些东西的任意清晰无歧义的前缀。</P><P> 一些设置指定内存或时间值，其隐含的单位可能是：
+kB(千字节)、块(通常是8KB)、毫秒、秒、分钟等等。
+隐含单位可以通过引用<TT CLASS="STRUCTNAME">pg_settings</TT>.<TT CLASS="STRUCTFIELD">unit</TT>获取。为了避免混淆，
+可以在指定数值的同时指定单位。可用内存单位：<TT CLASS="LITERAL">kB</TT>(千字节), <TT CLASS="LITERAL">MB</TT>(兆字节),
+<TT CLASS="LITERAL">GB</TT>(吉字节)；
+可用时间单位：<TT CLASS="LITERAL">ms</TT>(毫秒), <TT CLASS="LITERAL">s</TT>(秒),
+<TT CLASS="LITERAL">min</TT>(分钟), <TT CLASS="LITERAL">h</TT>(小时), <TT CLASS="LITERAL">d</TT>(天)。
+内存单位中的"千"等于1024，
+而不是1000。 </P><P> 作为字符串参数的同样方式指定<SPAN CLASS="QUOTE">"枚举"</SPAN>类型参数，但被限制在值的有限集合中。
+可以从<TT CLASS="STRUCTNAME">pg_settings</TT>.<TT CLASS="STRUCTFIELD">enumvals</TT>找到允许的值。
+枚举参数值是不区分大小写的。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="CONFIG-SETTING-CONFIGURATION-FILE">18.1.2. 通过配置文件设置参数</A></H2><P>
+设置这些参数的一个方法是编辑<TT CLASS="FILENAME">postgresql.conf</TT>文件，
+它通常在数据目录里(当数据库集群目录初始化的时候，会在那里安装一个缺省拷贝)。比如，
+下面是一个该文件的例子：
+</P><PRE CLASS="PROGRAMLISTING"># This is a comment
+log_connections = yes
+log_destination = 'syslog'
+search_path = '"$user", public'
+shared_buffers = 128MB</PRE><P>
+参数是每条一行。选项名和值之间的等号是可选的。
+空白和空行被忽略。井号(<TT CLASS="LITERAL">#</TT>)引入注释。
+非简单标识符或者数字必须用单引号包围。
+如果需要在参数值里嵌入单引号，要么写两个单引号(推荐方法)，要么用反斜扛包围。
+</P><P> 主服务器进程每次收到<SPAN CLASS="SYSTEMITEM">SIGHUP</SPAN>信号
+后都会重新读取这个配置文件，
+最简单的发送方法就是使用来自命令行的<TT CLASS="LITERAL">pg_ctl reload</TT>
+或者调用SQL函数<CODE CLASS="FUNCTION">pg_reload_conf()</CODE>。
+同时主服务器进程也将这个信号广播给所有正在运行的服务器进程，
+这样现有会话也能得到新值。另外，你可以只向一个服务器进程直接发送信号。
+有些参数只能在服务器启动的时候设置；对这些条目的修改将被忽略，
+直到下次服务器重启。配置文件中的无效参数设置在<SPAN CLASS="SYSTEMITEM">SIGHUP</SPAN>处理中也被忽略（但已登录）。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="CONFIG-SETTING-OTHER-METHODS">18.1.3. 设置参数其他的方法</A></H2><P>
+第二种设置这些配置参数的方法是把它们作为命令行参数传递给<TT CLASS="COMMAND">postgres</TT>，比如：
+</P><PRE CLASS="PROGRAMLISTING">postgres -c log_connections=yes -c log_destination='syslog'</PRE><P>
+命令行选项覆盖<TT CLASS="FILENAME">postgresql.conf</TT>中的矛盾设置。请注意，
+这意味着你不能通过编辑<TT CLASS="FILENAME">postgresql.conf</TT>在运行时改变其数值，因此，
+虽然命令行方法很方便，但会付出灵活性的代价。
+</P><P>
+有时候，给某一个特定会话一个命令行参数也是很有用的。
+可以在客户端使用环境变量<TT CLASS="ENVAR">PGOPTIONS</TT>
+来实现这个目的：
+</P><PRE CLASS="PROGRAMLISTING">env PGOPTIONS='-c geqo=off' psql</PRE><P>
+(可以用于任何基于<SPAN CLASS="APPLICATION">libpq</SPAN>的客户端应用，
+不光是<SPAN CLASS="APPLICATION">psql</SPAN>)：
+请注意，这个变量对那些需要在服务器启动后固定的选项或者
+必须在<TT CLASS="FILENAME">postgresql.conf</TT>里声明的选项是无效的。
+</P><P> 并且，我们可以给一个用户或者一个数据库赋予一套选项设置。
+在一个会话开始的时候，装载所涉及到的用户和数据库的缺省设置。
+命令<A HREF="sql-alterrole.html">ALTER ROLE</A>和<A HREF="sql-alterdatabase.html">ALTER DATABASE</A>
+分别用于配置这些设置。
+针对每个数据库的设置将覆盖任何从<TT CLASS="COMMAND">postgres</TT>命令行或者配置文件收到的设置，
+然后接着又被针对每个用户的设置覆盖；
+最后又会都被针对每个会话的设置覆盖。</P><P>
+一些选项可以在独立的<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>会话中修改，方法是使用<A HREF="sql-set.html">SET</A>命令，比如：
+</P><PRE CLASS="SCREEN">SET ENABLE_SEQSCAN TO OFF;</PRE><P>
+如果允许用<TT CLASS="COMMAND">SET</TT>设置，这种针对每个数据库的设置将覆盖任何来自其它方面的设置。
+有些参数不能通过<TT CLASS="COMMAND">SET</TT>改变：比如，如果这些选项不重启动<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>就无法合理控制其行为。
+同样，有些参数只能由超级用户通过<TT CLASS="COMMAND">SET</TT>或<TT CLASS="COMMAND">ALTER</TT>修改，而普通用户不能修改。
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="CONFIG-SETTING-EXAMINING">18.1.4. 检查参数设置</A></H2><P> <A HREF="sql-show.html">SHOW</A>命令检查所有参数的当前值。</P><P> 我们也可以用虚表<TT CLASS="STRUCTNAME">pg_settings</TT>
+来显示和更新当前会话的运行时参数。当它们改变时，参见<A HREF="view-pg-settings.html">第 47.66 &#33410;</A>获取详细信息，以及不同变量类型的描述。
+<TT CLASS="STRUCTNAME">pg_settings</TT>等效于<TT CLASS="COMMAND">SHOW</TT>
+和<TT CLASS="COMMAND">SET</TT>，但是用起来更方便，因为它可以和其它表连接起来使用，
+或者用任意用户需要的选择条件来查询。
+它还包含了来自<TT CLASS="COMMAND">SHOW</TT>的每个参数的更多详细信息。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="CONFIG-INCLUDES">18.1.5. 配置文件包含</A></H2><P>
+除了参数设置外，<TT CLASS="FILENAME">postgresql.conf</TT>文件还包含<I CLASS="FIRSTTERM">include指令</I>，
+它声明了另外一个文件的读取和处理，正如在这一点上插入到配置文件。
+这个特性允许配置文件被分成物理上独立部分。
+Include指令看起来像：
+</P><PRE CLASS="PROGRAMLISTING">include 'filename'</PRE><P>
+如果文件名不是绝对路径，那么它被看成包含引用配置文件目录的相对路径。
+可以进行嵌套。
+</P><P>
+此外，还有一个<TT CLASS="LITERAL">include_if_exists</TT>指令，它的作用和
+<TT CLASS="LITERAL">include</TT>指令是相同的，除了被引用的文件不存在或无法读取时的行为。
+规则的<TT CLASS="LITERAL">include</TT>会认为这是一个错误条件，但<TT CLASS="LITERAL">include_if_exists</TT>
+只是记录一条消息，并继续处理引用的配置文件。
+</P><P>
+<TT CLASS="FILENAME">postgresql.conf</TT>文件也包含<TT CLASS="LITERAL">include_dir</TT>指令，声明了配置文件的
+整个目录，它的类似用法：
+</P><PRE CLASS="PROGRAMLISTING"> include_dir 'directory'
+ </PRE><P>
+非绝对路径遵循和单个文件包括指令相同的规则，
+它们是相对于包含引用的配置文件目录。在该目录中，唯一一个非目录的文件，
+其名以后缀<TT CLASS="LITERAL">.conf</TT>的将被包括在内。
+文件名以<TT CLASS="LITERAL">.</TT>字符开头的被排除在外，
+为防止出错，它们都隐藏在一些平台上。在include目录中的多个文件
+按照文件名的顺序进行处理。
+文件名按照C语言环境的规则排序。字母前的数字和小写字母前大写字母。
+</P><P>
+包含文件或目录可用于数据库配置逻辑上独立的部分，
+而不是单一的<TT CLASS="FILENAME">postgresql.conf</TT>文件。
+考虑有两个数据库服务器公司，
+每一个有不同的内存量。
+有可能有配置都共享的元素，比如日志。
+但是服务器内存相关参数两者之间不同。
+也有可能是服务器特定的自定义。
+管理这种情况的方法是打破了自定义配置更改为你的网站的三个文件。
+你可以添加这些到你的<TT CLASS="FILENAME">postgresql.conf</TT>文件末尾，包括：
+</P><PRE CLASS="PROGRAMLISTING"> include 'shared.conf'
+ include 'memory.conf'
+ include 'server.conf'
+ </PRE><P>
+所有系统可能有同样的<TT CLASS="FILENAME">shared.conf</TT>文件。具有特定内存量的每个服务器可以共享
+相同的<TT CLASS="FILENAME">memory.conf</TT>；可能有8GB内存的服务器，另一个是16GB。
+最后<TT CLASS="FILENAME">server.conf</TT>可能真正有服务器特定配置文件信息。
+</P><P>
+另外一个可能是创建配置文件目录，并且将这些信息放入文件中。
+比如，<TT CLASS="FILENAME">conf.d</TT>目录可能在<TT CLASS="FILENAME">postgresql.conf</TT>末尾被引用：
+</P><PRE CLASS="SCREEN"> include_dir 'conf.d'
+ </PRE><P>
+那么你可以像这样在<TT CLASS="FILENAME">conf.d</TT>目录中命名文件：
+</P><PRE CLASS="SCREEN"> 00shared.conf
+ 01memory.conf
+ 02server.conf
+ </PRE><P>
+这显示了文件被加载的明确顺序。这是非常重要的，因为当服务器正在读取它使用的配置时，
+只读取最后的设置。
+这个例子中的<TT CLASS="FILENAME">conf.d/02server.conf</TT>的一些设置会覆盖
+<TT CLASS="FILENAME">conf.d/01memory.conf</TT>中设置的值。
+</P><P>
+你可能会使用这种配置目录的方法，当命名这些文件更加详细时：
+</P><PRE CLASS="SCREEN"> 00shared.conf
+ 01memory-8GB.conf
+ 02server-foo.conf
+ </PRE><P>
+这样的安排使每个配置文件的变化具有唯一名称。
+当一些服务器的配置都存储在一个地方的时候，这可以帮助消除歧义。比如版本
+控制存储（版本控制下存储数据库配置文件是另一种很好的做法）。
+</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime-config.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="runtime-config-file-locations.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">服务器配置</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime-config.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">文件位置</TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>操作符类和操作符族</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="索引" HREF="http://school.yunwei.edu/manual/PostgreSQL/indexes.html"><LINK REL="PREVIOUS" TITLE="部分索引" HREF="indexes-partial.html"><LINK REL="NEXT" TITLE="索引和排序" HREF="indexes-collations.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/indices.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="部分索引" HREF="indexes-partial.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/indexes.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 11. 索引</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="索引和排序" HREF="indexes-collations.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="INDEXES-OPCLASS">11.9. 操作符类和操作符族</A></H1><P>
+定义索引的同时可以为索引的每个字段声明一个<I CLASS="FIRSTTERM">操作符类</I>。
+</P><PRE CLASS="SYNOPSIS">CREATE INDEX <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+> ON <TT
+CLASS="REPLACEABLE"
+><I
+>table</I
+></TT
+> (<TT
+CLASS="REPLACEABLE"
+><I
+>column</I
+></TT
+> <TT
+CLASS="REPLACEABLE"
+><I
+>opclass</I
+></TT
+> [<SPAN
+CLASS="OPTIONAL"
+><TT
+CLASS="REPLACEABLE"
+><I
+>sort options</I
+></TT
+></SPAN
+>] [<SPAN
+CLASS="OPTIONAL"
+>, ...</SPAN
+>]);</PRE><P>
+这个操作符类指明该索引用于该字段时要使用的操作符。例如，一个在<TT CLASS="TYPE">int4</TT>
+上的 B-tree 索引将使用<TT CLASS="LITERAL">int4_ops</TT>类；这个操作符类包括用于<TT CLASS="TYPE">int4</TT>
+的比较函数。实际上，字段类型的缺省操作符通常就足够了。拥有操作符类的主要原因是：
+对于某些数据类型，可能存在多个有意义的索引行为。例如，我们可能想排序两个复数，
+既可能通过绝对值，也可能通过实部。我们可以通过为该数据类型定义两个操作符类，
+然后在建立索引时选择合适的那个。操作符类决定了基本的排序方式（这个方式可以通过添加排序选项来修改：
+<TT CLASS="LITERAL">COLLATE</TT>, <TT CLASS="LITERAL">ASC</TT>/<TT CLASS="LITERAL">DESC</TT> 和/或 <TT CLASS="LITERAL">NULLS FIRST</TT>/<TT CLASS="LITERAL">NULLS LAST</TT>）。
+</P><P>除了缺省的以外，还有一些有内置的操作符类：
+<P></P></P><UL><LI><P><TT CLASS="LITERAL">text_pattern_ops</TT>,<TT CLASS="LITERAL">varchar_pattern_ops</TT>和<TT CLASS="LITERAL">bpchar_pattern_ops</TT>
+操作符类分别支持在<TT CLASS="TYPE">text</TT>, <TT CLASS="TYPE">varchar</TT>和<TT CLASS="TYPE">char</TT>类型上的 B-tree 索引。
+他们与初始的操作符类的区别是数值是严格地逐个字节比较的，而不是根据区域相关的集合规则进行比较。
+这样，如果数据库不使用标准的<SPAN CLASS="QUOTE">"C"</SPAN>区域设置，那么这些操作符类适用于那些涉及模式匹配表达式
+(<TT CLASS="LITERAL">LIKE</TT>或者 POSIX 正则表达式)的查询。举一个例子，
+你可以像下面这样对一个<TT CLASS="TYPE">varchar</TT>字段进行索引：
+</P><PRE CLASS="PROGRAMLISTING">CREATE INDEX test_index ON test_table (col varchar_pattern_ops);</PRE><P>
+请注意，如果你希望包含普通<TT CLASS="LITERAL">&lt;</TT>,<TT CLASS="LITERAL">&lt;=</TT>, <TT CLASS="LITERAL">&gt;</TT>,或
+<TT CLASS="LITERAL">&gt;=</TT>比较的查询使用索引，那么你还应该创建一个使用缺省操作符类的索引。
+这样的查询不能使用<TT CLASS="LITERAL"><TT CLASS="REPLACEABLE"><I>xxx</I></TT>_pattern_ops</TT>操作符类。
+（不过普通相等比较可以使用这个操作符类。）在同一个字段上创建多个使用不同操作符类的索引是可能的。
+如果你确实使用了标准的"C"区域设置，那么你就不需要<TT CLASS="LITERAL"><TT CLASS="REPLACEABLE"><I>xxx</I></TT>_pattern_ops</TT>
+操作符类，因为使用缺省操作符类的索引可以用于 C 区域里面的模式匹配查询。
+</P></LI></UL><P>
+</P><P>下面的查询显示所有已定义的操作符类：
+</P><PRE CLASS="PROGRAMLISTING">SELECT am.amname AS index_method,
+       opc.opcname AS opclass_name
+    FROM pg_am am, pg_opclass opc
+    WHERE opc.opcmethod = am.oid
+    ORDER BY index_method, opclass_name;</PRE><P>
+</P><P>一个操作符类实际上只是一个名为<I CLASS="FIRSTTERM">操作符族</I>的大构造的子集。在这种情况下，
+一些数据类型有相同的行为，这对于定义跨数据类型的操作符通常是有用的，并且允许与索引一起使用。
+为了这样做，每种类型的操作符类必须分入相同的操作符族内。跨类型的操作符是这个族的成员，
+但是与族内的任何一个类都没有关系。</P><P>这个查询显示所有定义的操作符族和每个族内的所有操作符：
+</P><PRE CLASS="PROGRAMLISTING">SELECT am.amname AS index_method,
+       opf.opfname AS opfamily_name,
+       amop.amopopr::regoperator AS opfamily_operator
+    FROM pg_am am, pg_opfamily opf, pg_amop amop
+    WHERE opf.opfmethod = am.oid AND
+          amop.amopfamily = opf.oid
+    ORDER BY index_method, opfamily_name, opfamily_operator;</PRE><P>
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="indexes-partial.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="indexes-collations.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">部分索引</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/indexes.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">索引和排序</TD></TR></TABLE></DIV></BODY></HTML>

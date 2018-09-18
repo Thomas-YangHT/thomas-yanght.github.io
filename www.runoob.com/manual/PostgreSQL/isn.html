@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>isn</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="额外提供的模块" HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html"><LINK REL="PREVIOUS" TITLE="intarray" HREF="intarray.html"><LINK REL="NEXT" TITLE="lo" HREF="lo.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/isn.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="intarray" HREF="intarray.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; F. 额外提供的模块</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="lo" HREF="lo.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="ISN">F.19. isn</A></H1><P><TT CLASS="FILENAME">isn</TT>模块为下列的国际产品编号标准提供数据类型：EAN13, UPC, ISBN (books), ISMN
+(music), and ISSN (serials)。编号在输入时是经过确认的，根据一个前缀的硬编码列表；
+这个前缀列表也用于在输出时连接编号。因为不时地分配新的前缀，所以前缀列表可能过期。
+希望这个模块的将来版本可以根据需要，从一个或多个可以通过用户容易更新的表中获得前缀列表；
+不过，目前该列表只能通过修改源代码和重新编译来更新。或者，在这个模块的将来版本中，
+前缀确认或连接支持可能会被删除。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN146993">F.19.1. 数据类型</A></H2><P><A HREF="isn.html#ISN-DATATYPES">&#34920; F-10</A>显示了<TT CLASS="FILENAME">isn</TT>模块支持的数据类型。</P><DIV CLASS="TABLE"><A NAME="ISN-DATATYPES"></A><P><B>&#34920; F-10. <TT CLASS="FILENAME">isn</TT> 数据类型</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><THEAD><TR><TH>数据类型</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD><TT CLASS="TYPE">EAN13</TT></TD><TD>
+European Article Numbers（欧洲文章号）, 总是以 EAN13 显示格式显示
+</TD></TR><TR><TD><TT CLASS="TYPE">ISBN13</TT></TD><TD>
+International Standard Book Numbers（国际标准书号），以新EAN13显示格式显示
+</TD></TR><TR><TD><TT CLASS="TYPE">ISMN13</TT></TD><TD>
+International Standard Music Numbers（国际标准音乐号），以新EAN13显示格式显示
+</TD></TR><TR><TD><TT CLASS="TYPE">ISSN13</TT></TD><TD>
+International Standard Serial Numbers（国际标准序列号），以新EAN13显示格式显示
+</TD></TR><TR><TD><TT CLASS="TYPE">ISBN</TT></TD><TD>
+International Standard Book Numbers（国际标准书号），以旧的短显示格式显示
+</TD></TR><TR><TD><TT CLASS="TYPE">ISMN</TT></TD><TD>
+International Standard Music Numbers（国际标准音乐号），以旧的短显示格式显示
+</TD></TR><TR><TD><TT CLASS="TYPE">ISSN</TT></TD><TD>
+International Standard Serial Numbers（国际标准序列号），以旧的短显示格式显示
+</TD></TR><TR><TD><TT CLASS="TYPE">UPC</TT></TD><TD>
+Universal Product Codes（通用产品条码）
+</TD></TR></TBODY></TABLE></DIV><P>一些备注：</P><P></P><OL TYPE="1"><LI><P>ISBN13, ISMN13, ISSN13编号都是EAN13编号。</P></LI><LI><P>EAN13编号并不总是ISBN13, ISMN13 或 ISSN13（有些是）。</P></LI><LI><P>一些ISBN13编号可以以ISBN显示。</P></LI><LI><P>一些ISMN13编号可以以ISMN显示。</P></LI><LI><P>一些ISSN13编号可以以ISSN显示。</P></LI><LI><P>UPC编号是EAN13编号的一个子集（它们基本上是没有第一个<TT CLASS="LITERAL">0</TT>数字的EAN13）。</P></LI><LI><P>所有UPC, ISBN, ISMN 和 ISSN编号都可以用EAN13编号表示。</P></LI></OL><P>在内部，所有这些类型使用相同的表示（一个64位整数），并且所有类型相互之间可以转换。
+提供多种类型控制显示格式和允许对应该表示一个编号的特定类型的输入更严格的有效性检查。</P><P><TT CLASS="TYPE">ISBN</TT>, <TT CLASS="TYPE">ISMN</TT>, 和 <TT CLASS="TYPE">ISSN</TT>类型将在可能时显示编号的短版本(ISxN 10)，
+不适合端版本的编号显示ISxN 13格式。<TT CLASS="TYPE">EAN13</TT>, <TT CLASS="TYPE">ISBN13</TT>, <TT CLASS="TYPE">ISMN13</TT>
+和<TT CLASS="TYPE">ISSN13</TT>类型总是显示ISxN的长版本(EAN13)。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN147065">F.19.2. 转换</A></H2><P><TT CLASS="FILENAME">isn</TT>模块支持下列的类型转换对：</P><P></P><UL><LI><P> ISBN13 &lt;=&gt; EAN13
+</P></LI><LI><P> ISMN13 &lt;=&gt; EAN13
+</P></LI><LI><P> ISSN13 &lt;=&gt; EAN13
+</P></LI><LI><P> ISBN &lt;=&gt; EAN13
+</P></LI><LI><P> ISMN &lt;=&gt; EAN13
+</P></LI><LI><P> ISSN &lt;=&gt; EAN13
+</P></LI><LI><P> UPC &lt;=&gt; EAN13
+</P></LI><LI><P> ISBN &lt;=&gt; ISBN13
+</P></LI><LI><P> ISMN &lt;=&gt; ISMN13
+</P></LI><LI><P> ISSN &lt;=&gt; ISSN13
+</P></LI></UL><P>当从<TT CLASS="TYPE">EAN13</TT>转换到其他类型时，有一个运行时检查，值在其他类型的领域内，
+如果不在则抛出一个错误。其他转换只是简单的确认，总是会成功。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN147092">F.19.3. 函数和操作符</A></H2><P><TT CLASS="FILENAME">isn</TT>模块提供标准的比较运算符，加上B-tree和哈希索引支持所有的这些数据类型。
+另外，有几个专门的函数；显示在<A HREF="isn.html#ISN-FUNCTIONS">&#34920; F-11</A>中。在这个表中，
+<TT CLASS="TYPE">isn</TT>意为模块的数据类型之一。</P><DIV CLASS="TABLE"><A NAME="ISN-FUNCTIONS"></A><P><B>&#34920; F-11. <TT CLASS="FILENAME">isn</TT> 函数</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><THEAD><TR><TH>函数</TH><TH>返回</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD><CODE CLASS="FUNCTION">isn_weak(boolean)</CODE></TD><TD><TT CLASS="TYPE">boolean</TT></TD><TD>设置weak输入模式 (返回新的设置)</TD></TR><TR><TD><CODE CLASS="FUNCTION">isn_weak()</CODE></TD><TD><TT CLASS="TYPE">boolean</TT></TD><TD>获取当前 weak 模式的状态</TD></TR><TR><TD><CODE CLASS="FUNCTION">make_valid(isn)</CODE></TD><TD><TT CLASS="TYPE">isn</TT></TD><TD>确认一个无效数字(清除无效标识)</TD></TR><TR><TD><CODE CLASS="FUNCTION">is_valid(isn)</CODE></TD><TD><TT CLASS="TYPE">boolean</TT></TD><TD>检查无效标识的存在</TD></TR></TBODY></TABLE></DIV><P><I CLASS="FIRSTTERM">Weak</I>模式用于可以插入无效数据到表中。无效的意思是检查位为wrong，
+而不是说它们是丢失的数字。</P><P>为什么想要使用weak模式？很好，可能你有一个巨大的ISBN编号的采集，其中的一些因为怪异的原因有wrong检查位
+（可能编号是从打印列表扫描进来的，而OCR（光学字符识别）获取编号错误，也或许编号是手动捕获的……谁知道呢）。
+无论如何，关键是你可能想要清理这个烂摊子，但是你又想要在你的数据库中有所有的编号，
+或许使用一个额外的工具在数据库中定位无效编号，这样你就可以验证信息并使其更容易的生效；
+例如你想要在表中选择所有无效编号。</P><P>当你使用weak模式插入无效编号到一个表中时，该编号将带有修正的检查位插入，
+但是在显示时将在后面带有一个叹号标记(<TT CLASS="LITERAL">!</TT>)，例如<TT CLASS="LITERAL">0-11-000322-5!</TT>。
+这些无效标记可以用<CODE CLASS="FUNCTION">is_valid</CODE>函数检查然后用<CODE CLASS="FUNCTION">make_valid</CODE>函数清除。</P><P>即使不在weak模式下，你也可以强制插入无效编号，通过在编号后面附加<TT CLASS="LITERAL">!</TT>字符。</P><P>另一个特别特征是在输入期间，可以在检查位上写<TT CLASS="LITERAL">?</TT>，并且正确的检查位将自动插入。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN147150">F.19.4. 例子</A></H2><PRE CLASS="PROGRAMLISTING">--直接使用类型：
+SELECT isbn('978-0-393-04002-9');
+SELECT isbn13('0901690546');
+SELECT issn('1436-4522');
+
+--转换类型：
+-- 请注意，你只能从ean13转换到另外一个类型当
+-- 数字在目标类型的领域中将会是有效的；
+-- 因此下列将不会工作: select isbn(ean13('0220356483481'));
+-- 但是他们将：
+SELECT upc(ean13('0220356483481'));
+SELECT ean13(upc('220356483481'));
+
+--创建一个单个字段的表以保持ISBN编码：
+CREATE TABLE test (id isbn);
+INSERT INTO test VALUES('9780393040029');
+
+--自动计算校验数位（观察'?'):
+INSERT INTO test VALUES('220500896?');
+INSERT INTO test VALUES('978055215372?');
+
+SELECT issn('3251231?');
+SELECT ismn('979047213542?');
+
+--使用weak模式：
+SELECT isn_weak(true);
+INSERT INTO test VALUES('978-0-11-000533-4');
+INSERT INTO test VALUES('9780141219307');
+INSERT INTO test VALUES('2-205-00876-X');
+SELECT isn_weak(false);
+
+SELECT id FROM test WHERE NOT is_valid(id);
+UPDATE test SET id = make_valid(id) WHERE id = '2-205-00876-X!';
+
+SELECT * FROM test;
+
+SELECT isbn13(id) FROM test;</PRE></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN147153">F.19.5. 参考文献</A></H2><P> 实施这个模块的信息从几个站点收集而来，包括：
+<P></P></P><UL><LI><P><A HREF="http://www.isbn-international.org/" TARGET="_top">http://www.isbn-international.org/</A></P></LI><LI><P><A HREF="http://www.issn.org/" TARGET="_top">http://www.issn.org/</A></P></LI><LI><P><A HREF="http://www.ismn-international.org/" TARGET="_top">http://www.ismn-international.org/</A></P></LI><LI><P><A HREF="http://www.wikipedia.org/" TARGET="_top">http://www.wikipedia.org/</A></P></LI></UL><P>
+用于连字符的前缀也从下列编译而来：
+<P></P></P><UL><LI><P><A HREF="http://www.gs1.org/productssolutions/idkeys/support/prefix_list.html" TARGET="_top">http://www.gs1.org/productssolutions/idkeys/support/prefix_list.html</A></P></LI><LI><P><A HREF="http://www.isbn-international.org/en/identifiers.html" TARGET="_top">http://www.isbn-international.org/en/identifiers.html</A></P></LI><LI><P><A HREF="http://www.ismn-international.org/ranges.html" TARGET="_top">http://www.ismn-international.org/ranges.html</A></P></LI></UL><P>
+在算法创建期间要小心，并且他们对在官方 ISBN, ISMN, ISSN 用户手册中建议的算法进行仔细的验证。
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN147179">F.19.6. 作者</A></H2><P> Germ&aacute;n M&eacute;ndez Bravo (Kronuz), 2004 - 2006
+</P><P>这个模块的灵感来自Garrett A. Wollman的<TT CLASS="FILENAME">isbn_issn</TT>代码。</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="intarray.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="lo.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">intarray</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">lo</TD></TR></TABLE></DIV></BODY></HTML>

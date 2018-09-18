@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>查询规划</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="服务器配置" HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime-config.html"><LINK REL="PREVIOUS" TITLE="复制" HREF="runtime-config-replication.html"><LINK REL="NEXT" TITLE="错误报告和日志" HREF="runtime-config-logging.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/config.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="复制" HREF="runtime-config-replication.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime-config.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 18. 服务器配置</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="错误报告和日志" HREF="runtime-config-logging.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RUNTIME-CONFIG-QUERY">18.7. 查询规划</A></H1><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="RUNTIME-CONFIG-QUERY-ENABLE">18.7.1. 规划器方法配置</A></H2><P> 这些配置参数提供了影响查询优化器选择查询规划的原始方法。
+如果优化器为特定的查询选择的缺省规划并不是最优，
+那么我们就可以通过使用这些配置参数强制优化器选择一个不同的规划来<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">临时</I></SPAN>解决这个问题。
+更好的改善优化器选择规划的方法 包括调节规划器开销常量、
+手动运行<A HREF="sql-analyze.html">ANALYZE</A>、增大配置参数<A HREF="runtime-config-query.html#GUC-DEFAULT-STATISTICS-TARGET">default_statistics_target</A>的值、
+使用<TT CLASS="COMMAND">ALTER TABLE SET STATISTICS</TT>为某个字段增加收集的统计信息。</P><P></P><DIV CLASS="VARIABLELIST"><DL><DT><A NAME="GUC-ENABLE-BITMAPSCAN"></A><TT CLASS="VARNAME">enable_bitmapscan</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> 打开或者关闭规划器对位图扫描规划类型的使用。缺省是<TT CLASS="LITERAL">on</TT>。</P></DD><DT><A NAME="GUC-ENABLE-HASHAGG"></A><TT CLASS="VARNAME">enable_hashagg</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> 打开或者关闭规划器对Hash聚集规划类型的使用。缺省是<TT CLASS="LITERAL">on</TT>。</P></DD><DT><A NAME="GUC-ENABLE-HASHJOIN"></A><TT CLASS="VARNAME">enable_hashjoin</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> 打开或者关闭规划器对Hash连接规划类型的使用。缺省是<TT CLASS="LITERAL">on</TT>。</P></DD><DT><A NAME="GUC-ENABLE-INDEXSCAN"></A><TT CLASS="VARNAME">enable_indexscan</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> 打开或者关闭规划器对索引扫描规划类型的使用。缺省是<TT CLASS="LITERAL">on</TT>。</P></DD><DT><A NAME="GUC-ENABLE-INDEXONLYSCAN"></A><TT CLASS="VARNAME">enable_indexonlyscan</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> 打开或关闭规划器对唯一索引扫描规划类型的使用。缺省是<TT CLASS="LITERAL">on</TT>。</P></DD><DT><A NAME="GUC-ENABLE-MATERIAL"></A><TT CLASS="VARNAME">enable_material</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> 打开或关闭查询规划器使用物化。不可能完全抑制物化，但是
+关闭这个变量会阻止规划器插入物化节点，除非它是必需正确的情况。
+默认值是<TT CLASS="LITERAL">on</TT>。</P></DD><DT><A NAME="GUC-ENABLE-MERGEJOIN"></A><TT CLASS="VARNAME">enable_mergejoin</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> 打开或者关闭规划器对融合连接规划类型的使用。缺省是<TT CLASS="LITERAL">on</TT>。</P></DD><DT><A NAME="GUC-ENABLE-NESTLOOP"></A><TT CLASS="VARNAME">enable_nestloop</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> 打开或者关闭规划器对嵌套循环连接规划类型的使用。
+我们不可能完全消除嵌套循环连接，
+但是把这个变量关闭就会让规划器在存在其它方法的时候优先选择其它方法。
+缺省是<TT CLASS="LITERAL">on</TT>。</P></DD><DT><A NAME="GUC-ENABLE-SEQSCAN"></A><TT CLASS="VARNAME">enable_seqscan</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> 打开或者关闭规划器对顺序扫描规划类型的使用。我们不可能完全消除顺序扫描，
+但是把这个变量关闭会让规划器在存在其它方法的时候优先选择其它方法。
+缺省是<TT CLASS="LITERAL">on</TT>。</P></DD><DT><A NAME="GUC-ENABLE-SORT"></A><TT CLASS="VARNAME">enable_sort</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> 打开或者关闭规划器使用明确的排序步骤。我们不可能完全消除明确的排序，
+但是把这个变量关闭可以让规划器在存在其它方法的时候优先选择其它方法。
+缺省是<TT CLASS="LITERAL">on</TT>。</P></DD><DT><A NAME="GUC-ENABLE-TIDSCAN"></A><TT CLASS="VARNAME">enable_tidscan</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> 打开或者关闭规划器对<ACRONYM CLASS="ACRONYM">TID</ACRONYM>扫描规划类型的使用。缺省是<TT CLASS="LITERAL">on</TT>。</P></DD></DL></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="RUNTIME-CONFIG-QUERY-CONSTANTS">18.7.2. 规划器开销常量</A></H2><P> 本节中描述的<I CLASS="FIRSTTERM">开销</I>可以按照任意标准度量。我们只关心其相对值，
+因此以相同的系数缩放它们将不会对规划器产生任何影响。传统上，
+它们以抓取顺序页的开销作为基准单位。也就是说将<TT CLASS="VARNAME">seq_page_cost</TT>设为<TT CLASS="LITERAL">1.0</TT>，
+同时其它开销参数对照它来设置。当然你也可以使用其它基准，
+比如以毫秒计的实际执行时间。</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B> 糟糕的是，现在还没有定义得很合理的方法来判断下面出现的"开销"变量族的理想数值。
+它们最好按照某个特定安装的平均查询开销来衡量。
+这意味着仅仅根据很少量的试验结果来修改它们是很危险的。</P></BLOCKQUOTE></DIV><P></P><DIV CLASS="VARIABLELIST"><DL><DT><A NAME="GUC-SEQ-PAGE-COST"></A><TT CLASS="VARNAME">seq_page_cost</TT> (<TT CLASS="TYPE">floating point</TT>)</DT><DD><P> 设置规划器计算一次顺序磁盘页面抓取的开销。默认值是1.0。
+这个值可以通过设置同名表空间参数表的特定表和索引覆盖。
+（参阅<A HREF="sql-altertablespace.html">ALTER TABLESPACE</A>） </P></DD><DT><A NAME="GUC-RANDOM-PAGE-COST"></A><TT CLASS="VARNAME">random_page_cost</TT> (<TT CLASS="TYPE">floating point</TT>)</DT><DD><P> 设置规划器计算一次非顺序磁盘页面抓取的开销。默认值是4.0。
+这个值可以通过设置同名表空间参数表的特定表和索引覆盖。
+（参阅<A HREF="sql-altertablespace.html">ALTER TABLESPACE</A>）。</P><P> (相对于<TT CLASS="VARNAME">seq_page_cost</TT>)减少这个值将导致更倾向于使用索引扫描，
+而增加这个值将导致更倾向于使用顺序扫描。
+可以通过同时增加或减少这两个值来调整磁盘I/O相对于CPU的开销(在下面的参数中描述)。</P><P> 机械磁盘存储的随机访问比4次顺序访问往往更加昂贵。然而，下面使用缺省（4.0），
+因为大多数随机访问磁盘，比如索引读取是在缓存中。
+默认值可以作为模拟随机存取比顺序存取慢40倍，而预计90％随机读取到缓存中。</P><P> 如果您认为90％的缓存率是你的工作量的错误假设，
+你可以增加random_page_cost更好地
+反映随机存储读取的真实成本。相应地，
+如果你的数据很可能完全在高速缓存中，如当
+数据库比总的服务器内存较小的时候，可以适当减少
+random_page_cost。存储具有相对顺序的低随机读取成本，
+例如固态硬盘，可能还可以更好地与random_page_cost的低值建模。</P><DIV CLASS="TIP"><BLOCKQUOTE CLASS="TIP"><P><B>&#25552;&#31034;: </B> 虽然允许你将<TT CLASS="VARNAME">random_page_cost</TT>设置的比<TT CLASS="VARNAME">seq_page_cost</TT>小，
+但是物理上的实际情况并不受此影响。然而当所有数据库都位于内存中时，
+两者设置为相等是非常合理的，因为在此情况下，乱序抓取并不比顺序抓取开销更大。同样，
+在缓冲率很高的数据库上，你应当相对于CPU开销同时降低这两个值，
+因为获取内存中的页比通常情况下的开销小许多。</P></BLOCKQUOTE></DIV></DD><DT><A NAME="GUC-CPU-TUPLE-COST"></A><TT CLASS="VARNAME">cpu_tuple_cost</TT> (<TT CLASS="TYPE">floating point</TT>)</DT><DD><P> 设置规划器计算在一次查询中处理一个数据行的开销。缺省是0.01。</P></DD><DT><A NAME="GUC-CPU-INDEX-TUPLE-COST"></A><TT CLASS="VARNAME">cpu_index_tuple_cost</TT> (<TT CLASS="TYPE">floating point</TT>)</DT><DD><P> 设置规划器计算在一次索引扫描中处理每条索引行的开销。缺省是0.005。</P></DD><DT><A NAME="GUC-CPU-OPERATOR-COST"></A><TT CLASS="VARNAME">cpu_operator_cost</TT> (<TT CLASS="TYPE">floating point</TT>)</DT><DD><P> 设置规划器计算在一次查询中执行一个操作符或函数的开销。
+缺省是0.0025。</P></DD><DT><A NAME="GUC-EFFECTIVE-CACHE-SIZE"></A><TT CLASS="VARNAME">effective_cache_size</TT> (<TT CLASS="TYPE">integer</TT>)</DT><DD><P> 为规划器设置在一次索引扫描中可用的磁盘缓冲区的有效大小。
+这个参数会在计算一个索引的预计开销值的时候加以考虑。更高的数值会导致更可能使用索引扫描，
+更低的数值会导致更有可能选择顺序扫描。在设置这个参数的时候，
+你还应该考虑<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的数据文件会使用的共享缓冲区和内核的磁盘缓冲区。另外，
+还要考虑预计会使用不同索引的并发查询数目，因为它们必须共享可用的内存空间。
+这个参数对<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>分配的共享内存大小没有影响，它也不会使用内核磁盘缓冲，
+它只用于估算。该系统还并未假设数据仍保留在查询之间的磁盘缓存中。默认值是128兆字节(<TT CLASS="LITERAL">128MB</TT>)。 </P></DD></DL></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="RUNTIME-CONFIG-QUERY-GEQO">18.7.3. 基因查询优化器</A></H2><P> 基因查询优化（GEQO）是一种算法，采用启发式搜索查询规划。这样可以为复杂查询（链接着很多关系）减少规划时间，
+生产规划成本有时低于由正常穷举搜索算法发现的那些。
+获取更多信息，请参阅<A HREF="http://school.yunwei.edu/manual/PostgreSQL/geqo.html">第 53 &#31456;</A>。</P><P></P><DIV CLASS="VARIABLELIST"><DL><DT><A NAME="GUC-GEQO"></A><TT CLASS="VARNAME">geqo</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P> 允许或禁止基因查询优化，这是缺省值。 在生产中最好不要关闭它。
+<TT CLASS="VARNAME">geqo_threshold</TT>变量提供了GEQO的更精细方法。</P></DD><DT><A NAME="GUC-GEQO-THRESHOLD"></A><TT CLASS="VARNAME">geqo_threshold</TT> (<TT CLASS="TYPE">integer</TT>)</DT><DD><P> 只有当涉及的<TT CLASS="LITERAL">FROM</TT>关系数量至少有这么多个的时候，才使用基因查询优化。
+（请注意一个<TT CLASS="LITERAL">FULL OUTER JOIN</TT>构造只算一个<TT CLASS="LITERAL">FROM</TT>项）。缺省是12。
+对于数量小于此值的查询，也许使用判定性的穷举搜索更有效。但是对于有许多表的查询
+，规划器做判断要花很多时间。往往比执行一个次优规划时间更长。
+因此，查询大小阈值是管理使用GEQO的简单方法。</P></DD><DT><A NAME="GUC-GEQO-EFFORT"></A><TT CLASS="VARNAME">geqo_effort</TT>
+(<TT CLASS="TYPE">integer</TT>)</DT><DD><P> 控制GEQO里规划时间和查询规划的有效性之间的平衡。这个变量必须是一个范围从1到10的整数。
+缺省值是5。大的数值增加花在进行查询规划上面的时间，
+但是也很可能会提高选中更有效的查询规划的几率。</P><P> <TT CLASS="VARNAME">geqo_effort</TT>实际上并没有直接干什么事情；
+只是用于计算其它那些影响GEQO行为变量的缺省值(在下面描述)。
+如果你愿意，你可以手工设置其它参数。</P></DD><DT><A NAME="GUC-GEQO-POOL-SIZE"></A><TT CLASS="VARNAME">geqo_pool_size</TT> (<TT CLASS="TYPE">integer</TT>)</DT><DD><P> 控制GEQO使用的池大小。池大小是基因全体中的个体数量。它必须至少是2，
+并且有用的数值通常在100和1000之间。如果把它设置为零(缺省)，
+那么就会基于<TT CLASS="VARNAME">geqo_effort</TT>和查询中表的数量选取一个合适的值。</P></DD><DT><A NAME="GUC-GEQO-GENERATIONS"></A><TT CLASS="VARNAME">geqo_generations</TT> (<TT CLASS="TYPE">integer</TT>)</DT><DD><P> 控制GEQO使用的子代数目。子代的意思是算法的迭代次数。它必须至少是1，
+有用的值范围和池大小相同。如果设置为零(缺省)，那么将基于<TT CLASS="VARNAME">geqo_pool_size</TT>选取合适的值。</P></DD><DT><A NAME="GUC-GEQO-SELECTION-BIAS"></A><TT CLASS="VARNAME">geqo_selection_bias</TT> (<TT CLASS="TYPE">floating point</TT>)</DT><DD><P> 控制GEQO使用的选择性偏好。选择性偏好是在一个种群中的选择性压力。数值可以是1.5到2.0之间；
+缺省是2.0。</P></DD><DT><A NAME="GUC-GEQO-SEED"></A><TT CLASS="VARNAME">geqo_seed</TT> (<TT CLASS="TYPE">floating point</TT>)</DT><DD><P> 控制随机数发生器的初始值，它使用由GEQO通过连接顺序搜索空间来选择随机路径。
+该值的范围可以从零（默认值）到一。
+各种不同的值改变探索连接路径的设置，
+并可能导致发现或好或坏的最佳路径。</P></DD></DL></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="RUNTIME-CONFIG-QUERY-OTHER">18.7.4. 其它规划器选项</A></H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><A NAME="GUC-DEFAULT-STATISTICS-TARGET"></A><TT CLASS="VARNAME">default_statistics_target</TT> (<TT CLASS="TYPE">integer</TT>)</DT><DD><P> 为没有用<TT CLASS="COMMAND">ALTER TABLE SET STATISTICS</TT>设置字段相关目标的表中其它字段设置缺省统计目标。
+更大的数值增加了<TT CLASS="COMMAND">ANALYZE</TT>所需要的时间，但是可能会改善规划器的估计质量。
+缺省值是100。
+有关<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的查询规划器使用的统计的更多信息，请参考<A HREF="planner-stats.html">第 14.2 &#33410;</A>。</P></DD><DT><A NAME="GUC-CONSTRAINT-EXCLUSION"></A><TT CLASS="VARNAME">constraint_exclusion</TT> (<TT CLASS="TYPE">enum</TT>)</DT><DD><P> 控制查询规划器使用的表约束优化查询。<TT CLASS="VARNAME">constraint_exclusion</TT>允许的值是
+<TT CLASS="LITERAL">on</TT>（检查所有表的约束），
+<TT CLASS="LITERAL">off</TT>（永远不检查约束），以及
+<TT CLASS="LITERAL">partition</TT>（检查仅用于继承子表和<TT CLASS="LITERAL">UNION ALL</TT>子查询的约束）。
+<TT CLASS="LITERAL">partition</TT>是默认设置。它往往使用继承和分区表来提高性能。</P><P>
+当这个参数为特定表允许时，那么规划器用查询条件和<TT CLASS="LITERAL">CHECK</TT>约束进行比较，
+并且在查询条件和约束冲突的情况下，忽略对表的扫描。比如：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TABLE parent(key integer, ...);
+CREATE TABLE child1000(check (key between 1000 and 1999)) INHERITS(parent);
+CREATE TABLE child2000(check (key between 2000 and 2999)) INHERITS(parent);
+...
+SELECT * FROM parent WHERE key = 2400;</PRE><P>
+在打开约束排除的时候，这个<TT CLASS="COMMAND">SELECT</TT>将完全不会扫描<TT CLASS="STRUCTNAME">child1000</TT>。
+这样可以提高性能。
+</P><P> 目前，constraint exclusion默认启用，
+仅适用于那些通常用来实现表分区情况。
+在简单查询中为所有表强加额外开销计划而打开它是很明显的，
+并且经常会产生不受益于简单查询。
+如果你没有分区表，您可能更愿意将其完全关闭。</P><P> 参考<A HREF="ddl-partitioning.html#DDL-PARTITIONING-CONSTRAINT-EXCLUSION">第 5.9.4 &#33410;</A>获取有关使用约束排除和分区的更多信息。</P></DD><DT><A NAME="GUC-CURSOR-TUPLE-FRACTION"></A><TT CLASS="VARNAME">cursor_tuple_fraction</TT> (<TT CLASS="TYPE">floating point</TT>)</DT><DD><P> 设置被检索的游标行分数的规划器估计。
+默认值是0.1。这个设置较小的值
+偏好规划器使用<SPAN CLASS="QUOTE">"fast start"</SPAN>规划游标，
+当可能花费很长时间读取所有行时，这将很快检索出前几行
+。较大的值把更多的重点放在总的估计时间上。
+1.0的最大设置，规划游标类似于定期查询，
+只考虑总估计时间，而不是多长时间传递第一行。</P></DD><DT><A NAME="GUC-FROM-COLLAPSE-LIMIT"></A><TT CLASS="VARNAME">from_collapse_limit</TT> (<TT CLASS="TYPE">integer</TT>)</DT><DD><P> 如果生成的<TT CLASS="LITERAL">FROM</TT>列表不超过这个限制的项数，规划器将把子查询融合到上层查询。
+小的数值降低规划的时间，但是可能会生成差些的查询计划。缺省是8。
+更多信息请查看<A HREF="explicit-joins.html">第 14.3 &#33410;</A>。</P><P> 设置这个值到<A HREF="runtime-config-query.html#GUC-GEQO-THRESHOLD">geqo_threshold</A>或者GEQO规划器触发，
+导致非最优规划。参阅<A HREF="runtime-config-query.html#RUNTIME-CONFIG-QUERY-GEQO">第 18.7.3 &#33410;</A>。</P></DD><DT><A NAME="GUC-JOIN-COLLAPSE-LIMIT"></A><TT CLASS="VARNAME">join_collapse_limit</TT> (<TT CLASS="TYPE">integer</TT>)</DT><DD><P> 如果得出的列表不超过这个数目的项，
+那么规划器将把除<TT CLASS="LITERAL">FULL JOIN</TT>之外的<TT CLASS="LITERAL">JOIN</TT>构造抹平到<TT CLASS="LITERAL">FROM</TT>列表项中。
+小的数值降低规划的时间，但是可能会生成差些的查询计划。</P><P> 缺省时，这个值和<TT CLASS="VARNAME">from_collapse_limit</TT>相同，这样适合大多数场合。
+把它设置为1则避免任何<TT CLASS="LITERAL">JOIN</TT>的融合，这样就将明确使用语句中的连接顺序。
+查询优化器并不是总能选取最优的连接顺序；高级用户可以选择暂时把这个变量设置为1，
+然后明确地声明他们需要的连接顺序。更多信息参见<A HREF="explicit-joins.html">第 14.3 &#33410;</A>。</P><P> 设置这个值到<A HREF="runtime-config-query.html#GUC-GEQO-THRESHOLD">geqo_threshold</A>或者GEQO规划器触发，
+导致非最优规划。参阅<A HREF="runtime-config-query.html#RUNTIME-CONFIG-QUERY-GEQO">第 18.7.3 &#33410;</A>。</P></DD></DL></DIV></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="runtime-config-replication.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="runtime-config-logging.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">复制</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime-config.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">错误报告和日志</TD></TR></TABLE></DIV></BODY></HTML>

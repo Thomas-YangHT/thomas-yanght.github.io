@@ -1,0 +1,717 @@
+<!DOCTYPE HTML>
+<html lang="zh-hans">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>在MSBuild里使用编译选项 | TypeScript Handbook</title>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="description" content="">
+<meta name="generator" content="GitBook 2.6.7">
+<meta name="author" content="Patrick Zhong">
+<meta name="HandheldFriendly" content="true"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+<link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../../gitbook/style.css">
+<link rel="stylesheet" href="../../gitbook/plugins/gitbook-plugin-highlight/website.css">
+<link rel="stylesheet" href="../../gitbook/plugins/gitbook-plugin-search/search.css">
+<link rel="stylesheet" href="../../gitbook/plugins/gitbook-plugin-fontsettings/website.css">
+<link rel="next" href="Integrating&#32;with&#32;Build&#32;Tools.html" />
+<link rel="prev" href="Compiler&#32;Options.html" />
+</head>
+<body>
+<div class="book" data-level="4.4" data-chapter-title="在MSBuild里使用编译选项" data-filepath="doc/handbook/Compiler Options in MSBuild.md" data-basepath="../.." data-revision="Tue Aug 09 2016 17:22:22 GMT+0800 (CST)" data-innerlanguage="">
+<div class="book-summary">
+<nav role="navigation">
+<ul class="summary">
+<li class="chapter " data-level="0" data-path="index.html">
+<a href="../../index.html">
+<i class="fa fa-check"></i>
+介绍
+</a>
+</li>
+<li class="chapter " data-level="1" data-path="doc/handbook/tutorials/index.html">
+<span><b>1.</b> 快速上手</span>
+<ul class="articles">
+<li class="chapter " data-level="1.1" data-path="doc/handbook/tutorials/ASP.NET Core.html">
+<a href="tutorials/ASP.NET&#32;Core.html">
+<i class="fa fa-check"></i>
+<b>1.1.</b>
+ASP.NET Core
+</a>
+</li>
+<li class="chapter " data-level="1.2" data-path="doc/handbook/tutorials/ASP.NET 4.html">
+<a href="tutorials/ASP.NET&#32;4.html">
+<i class="fa fa-check"></i>
+<b>1.2.</b>
+ASP.NET 4
+</a>
+</li>
+<li class="chapter " data-level="1.3" data-path="doc/handbook/tutorials/Gulp.html">
+<a href="tutorials/Gulp.html">
+<i class="fa fa-check"></i>
+<b>1.3.</b>
+Gulp
+</a>
+</li>
+<li class="chapter " data-level="1.4" data-path="doc/handbook/tutorials/Knockout.html">
+<a href="tutorials/Knockout.html">
+<i class="fa fa-check"></i>
+<b>1.4.</b>
+Knockout.js
+</a>
+</li>
+<li class="chapter " data-level="1.5" data-path="doc/handbook/tutorials/React &amp; Webpack.html">
+<a href="tutorials/React&#32;&amp;&#32;Webpack.html">
+<i class="fa fa-check"></i>
+<b>1.5.</b>
+React与webpack
+</a>
+</li>
+<li class="chapter " data-level="1.6" data-path="doc/handbook/tutorials/Angular 2.html">
+<a href="tutorials/Angular&#32;2.html">
+<i class="fa fa-check"></i>
+<b>1.6.</b>
+Angular 2
+</a>
+</li>
+</ul>
+</li>
+<li class="chapter " data-level="2" data-path="doc/release-notes/index.html">
+<a href="../release-notes/index.html">
+<i class="fa fa-check"></i>
+<b>2.</b>
+新增功能
+</a>
+<ul class="articles">
+<li class="chapter " data-level="2.1" data-path="doc/release-notes/TypeScript 1.8.html">
+<a href="../release-notes/TypeScript&#32;1.8.html">
+<i class="fa fa-check"></i>
+<b>2.1.</b>
+TypeScript 1.8
+</a>
+</li>
+<li class="chapter " data-level="2.2" data-path="doc/release-notes/TypeScript 1.7.html">
+<a href="../release-notes/TypeScript&#32;1.7.html">
+<i class="fa fa-check"></i>
+<b>2.2.</b>
+TypeScript 1.7
+</a>
+</li>
+<li class="chapter " data-level="2.3" data-path="doc/release-notes/TypeScript 1.6.html">
+<a href="../release-notes/TypeScript&#32;1.6.html">
+<i class="fa fa-check"></i>
+<b>2.3.</b>
+TypeScript 1.6
+</a>
+</li>
+<li class="chapter " data-level="2.4" data-path="doc/release-notes/TypeScript 1.5.html">
+<a href="../release-notes/TypeScript&#32;1.5.html">
+<i class="fa fa-check"></i>
+<b>2.4.</b>
+TypeScript 1.5
+</a>
+</li>
+<li class="chapter " data-level="2.5" data-path="doc/release-notes/TypeScript 1.4.html">
+<a href="../release-notes/TypeScript&#32;1.4.html">
+<i class="fa fa-check"></i>
+<b>2.5.</b>
+TypeScript 1.4
+</a>
+</li>
+<li class="chapter " data-level="2.6" data-path="doc/release-notes/TypeScript 1.3.html">
+<a href="../release-notes/TypeScript&#32;1.3.html">
+<i class="fa fa-check"></i>
+<b>2.6.</b>
+TypeScript 1.3
+</a>
+</li>
+<li class="chapter " data-level="2.7" data-path="doc/release-notes/TypeScript 1.1.html">
+<a href="../release-notes/TypeScript&#32;1.1.html">
+<i class="fa fa-check"></i>
+<b>2.7.</b>
+TypeScript 1.1
+</a>
+</li>
+</ul>
+</li>
+<li class="chapter " data-level="3" data-path="doc/handbook/index.html">
+<span><b>3.</b> 手册</span>
+<ul class="articles">
+<li class="chapter " data-level="3.1" data-path="doc/handbook/Basic Types.html">
+<a href="Basic&#32;Types.html">
+<i class="fa fa-check"></i>
+<b>3.1.</b>
+基础类型
+</a>
+</li>
+<li class="chapter " data-level="3.2" data-path="doc/handbook/Variable Declarations.html">
+<a href="Variable&#32;Declarations.html">
+<i class="fa fa-check"></i>
+<b>3.2.</b>
+变量声明
+</a>
+</li>
+<li class="chapter " data-level="3.3" data-path="doc/handbook/Interfaces.html">
+<a href="Interfaces.html">
+<i class="fa fa-check"></i>
+<b>3.3.</b>
+接口
+</a>
+</li>
+<li class="chapter " data-level="3.4" data-path="doc/handbook/Classes.html">
+<a href="Classes.html">
+<i class="fa fa-check"></i>
+<b>3.4.</b>
+类
+</a>
+</li>
+<li class="chapter " data-level="3.5" data-path="doc/handbook/Functions.html">
+<a href="Functions.html">
+<i class="fa fa-check"></i>
+<b>3.5.</b>
+函数
+</a>
+</li>
+<li class="chapter " data-level="3.6" data-path="doc/handbook/Generics.html">
+<a href="Generics.html">
+<i class="fa fa-check"></i>
+<b>3.6.</b>
+泛型
+</a>
+</li>
+<li class="chapter " data-level="3.7" data-path="doc/handbook/Enums.html">
+<a href="Enums.html">
+<i class="fa fa-check"></i>
+<b>3.7.</b>
+枚举
+</a>
+</li>
+<li class="chapter " data-level="3.8" data-path="doc/handbook/Type Inference.html">
+<a href="Type&#32;Inference.html">
+<i class="fa fa-check"></i>
+<b>3.8.</b>
+类型推论
+</a>
+</li>
+<li class="chapter " data-level="3.9" data-path="doc/handbook/Type Compatibility.html">
+<a href="Type&#32;Compatibility.html">
+<i class="fa fa-check"></i>
+<b>3.9.</b>
+类型兼容性
+</a>
+</li>
+<li class="chapter " data-level="3.10" data-path="doc/handbook/Advanced Types.html">
+<a href="Advanced&#32;Types.html">
+<i class="fa fa-check"></i>
+<b>3.10.</b>
+高级类型
+</a>
+</li>
+<li class="chapter " data-level="3.11" data-path="doc/handbook/Symbols.html">
+<a href="Symbols.html">
+<i class="fa fa-check"></i>
+<b>3.11.</b>
+Symbols
+</a>
+</li>
+<li class="chapter " data-level="3.12" data-path="doc/handbook/Iterators and Generators.html">
+<a href="Iterators&#32;and&#32;Generators.html">
+<i class="fa fa-check"></i>
+<b>3.12.</b>
+Iterators 和 Generators
+</a>
+</li>
+<li class="chapter " data-level="3.13" data-path="doc/handbook/Modules.html">
+<a href="Modules.html">
+<i class="fa fa-check"></i>
+<b>3.13.</b>
+模块
+</a>
+</li>
+<li class="chapter " data-level="3.14" data-path="doc/handbook/Namespaces.html">
+<a href="Namespaces.html">
+<i class="fa fa-check"></i>
+<b>3.14.</b>
+命名空间
+</a>
+</li>
+<li class="chapter " data-level="3.15" data-path="doc/handbook/Namespaces and Modules.html">
+<a href="Namespaces&#32;and&#32;Modules.html">
+<i class="fa fa-check"></i>
+<b>3.15.</b>
+命名空间和模块
+</a>
+</li>
+<li class="chapter " data-level="3.16" data-path="doc/handbook/Module Resolution.html">
+<a href="Module&#32;Resolution.html">
+<i class="fa fa-check"></i>
+<b>3.16.</b>
+模块解析
+</a>
+</li>
+<li class="chapter " data-level="3.17" data-path="doc/handbook/Declaration Merging.html">
+<a href="Declaration&#32;Merging.html">
+<i class="fa fa-check"></i>
+<b>3.17.</b>
+声明合并
+</a>
+</li>
+<li class="chapter " data-level="3.18" data-path="doc/handbook/Writing Definition Files.html">
+<a href="Writing&#32;Definition&#32;Files.html">
+<i class="fa fa-check"></i>
+<b>3.18.</b>
+书写.d.ts文件
+</a>
+</li>
+<li class="chapter " data-level="3.19" data-path="doc/handbook/JSX.html">
+<a href="JSX.html">
+<i class="fa fa-check"></i>
+<b>3.19.</b>
+JSX
+</a>
+</li>
+<li class="chapter " data-level="3.20" data-path="doc/handbook/Decorators.html">
+<a href="Decorators.html">
+<i class="fa fa-check"></i>
+<b>3.20.</b>
+Decorators
+</a>
+</li>
+<li class="chapter " data-level="3.21" data-path="doc/handbook/Mixins.html">
+<a href="Mixins.html">
+<i class="fa fa-check"></i>
+<b>3.21.</b>
+混入
+</a>
+</li>
+<li class="chapter " data-level="3.22" data-path="doc/handbook/Triple-Slash Directives.html">
+<a href="Triple-Slash&#32;Directives.html">
+<i class="fa fa-check"></i>
+<b>3.22.</b>
+三斜线指令
+</a>
+</li>
+</ul>
+</li>
+<li class="chapter " data-level="4">
+<span><b>4.</b> 工程配置</span>
+<ul class="articles">
+<li class="chapter " data-level="4.1" data-path="doc/handbook/tsconfig.json.html">
+<a href="tsconfig.json.html">
+<i class="fa fa-check"></i>
+<b>4.1.</b>
+tsconfig.json
+</a>
+</li>
+<li class="chapter " data-level="4.2" data-path="doc/handbook/Typings for NPM Packages.html">
+<a href="Typings&#32;for&#32;NPM&#32;Packages.html">
+<i class="fa fa-check"></i>
+<b>4.2.</b>
+NPM包的类型
+</a>
+</li>
+<li class="chapter " data-level="4.3" data-path="doc/handbook/Compiler Options.html">
+<a href="Compiler&#32;Options.html">
+<i class="fa fa-check"></i>
+<b>4.3.</b>
+编译选项
+</a>
+</li>
+<li class="chapter active" data-level="4.4" data-path="doc/handbook/Compiler Options in MSBuild.html">
+<a href="Compiler&#32;Options&#32;in&#32;MSBuild.html">
+<i class="fa fa-check"></i>
+<b>4.4.</b>
+在MSBuild里使用编译选项
+</a>
+</li>
+<li class="chapter " data-level="4.5" data-path="doc/handbook/Integrating with Build Tools.html">
+<a href="Integrating&#32;with&#32;Build&#32;Tools.html">
+<i class="fa fa-check"></i>
+<b>4.5.</b>
+与其它构建工具整合
+</a>
+</li>
+<li class="chapter " data-level="4.6" data-path="doc/handbook/Nightly Builds.html">
+<a href="Nightly&#32;Builds.html">
+<i class="fa fa-check"></i>
+<b>4.6.</b>
+使用TypeScript的每日构建版本
+</a>
+</li>
+</ul>
+</li>
+<li class="chapter " data-level="5" data-path="doc/wiki/index.html">
+<span><b>5.</b> Wiki</span>
+<ul class="articles">
+<li class="chapter " data-level="5.1" data-path="doc/wiki/this-in-TypeScript.html">
+<a href="../wiki/this-in-TypeScript.html">
+<i class="fa fa-check"></i>
+<b>5.1.</b>
+TypeScript里的this
+</a>
+</li>
+<li class="chapter " data-level="5.2" data-path="doc/wiki/coding_guidelines.html">
+<a href="../wiki/coding_guidelines.html">
+<i class="fa fa-check"></i>
+<b>5.2.</b>
+编码规范
+</a>
+</li>
+<li class="chapter " data-level="5.3" data-path="doc/wiki/Common Errors.html">
+<a href="../wiki/Common&#32;Errors.html">
+<i class="fa fa-check"></i>
+<b>5.3.</b>
+常见编译错误
+</a>
+</li>
+<li class="chapter " data-level="5.4" data-path="doc/wiki/TypeScript-Editor-Support.html">
+<a href="../wiki/TypeScript-Editor-Support.html">
+<i class="fa fa-check"></i>
+<b>5.4.</b>
+支持TypeScript的编辑器
+</a>
+</li>
+<li class="chapter " data-level="5.5" data-path="doc/wiki/Using-TypeScript-With-ASP.NET-5.html">
+<a href="../wiki/Using-TypeScript-With-ASP.NET-5.html">
+<i class="fa fa-check"></i>
+<b>5.5.</b>
+结合ASP.NET v5使用TypeScript
+</a>
+</li>
+<li class="chapter " data-level="5.6" data-path="doc/wiki/Architectural-Overview.html">
+<a href="../wiki/Architectural-Overview.html">
+<i class="fa fa-check"></i>
+<b>5.6.</b>
+架构概述
+</a>
+</li>
+<li class="chapter " data-level="5.7" data-path="doc/wiki/Roadmap.html">
+<a href="../wiki/Roadmap.html">
+<i class="fa fa-check"></i>
+<b>5.7.</b>
+发展路线图
+</a>
+</li>
+</ul>
+</li>
+<li class="divider"></li>
+<li>
+<a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+本书使用 GitBook 发布
+</a>
+</li>
+</ul>
+</nav>
+</div>
+<div class="book-body">
+<div class="body-inner">
+<div class="book-header" role="navigation">
+<h1>
+<i class="fa fa-circle-o-notch fa-spin"></i>
+<a href="../../index.html">TypeScript Handbook</a>
+</h1>
+</div>
+<div class="page-wrapper" tabindex="-1" role="main">
+<div class="page-inner">
+<section class="normal" id="section-">
+<h2 id="&#x6982;&#x8FF0;">&#x6982;&#x8FF0;</h2>
+<p>&#x7F16;&#x8BD1;&#x9009;&#x9879;&#x53EF;&#x4EE5;&#x5728;&#x4F7F;&#x7528;MSBuild&#x7684;&#x9879;&#x76EE;&#x91CC;&#x901A;&#x8FC7;MSBuild&#x5C5E;&#x6027;&#x6307;&#x5B9A;&#x3002;</p>
+<h2 id="&#x4F8B;&#x5B50;">&#x4F8B;&#x5B50;</h2>
+<pre><code class="lang-XML">  <span class="hljs-tag">&lt;<span class="hljs-title">PropertyGroup</span> <span class="hljs-attribute">Condition</span>=<span class="hljs-value">&quot;&apos;$(Configuration)&apos; == &apos;Debug&apos;&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">TypeScriptRemoveComments</span>&gt;</span>false<span class="hljs-tag">&lt;/<span class="hljs-title">TypeScriptRemoveComments</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">TypeScriptSourceMap</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-title">TypeScriptSourceMap</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-title">PropertyGroup</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">PropertyGroup</span> <span class="hljs-attribute">Condition</span>=<span class="hljs-value">&quot;&apos;$(Configuration)&apos; == &apos;Release&apos;&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">TypeScriptRemoveComments</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-title">TypeScriptRemoveComments</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-title">TypeScriptSourceMap</span>&gt;</span>false<span class="hljs-tag">&lt;/<span class="hljs-title">TypeScriptSourceMap</span>&gt;</span>
+  <span class="hljs-tag">&lt;/<span class="hljs-title">PropertyGroup</span>&gt;</span>
+  <span class="hljs-tag">&lt;<span class="hljs-title">Import</span> <span class="hljs-attribute">Project</span>=<span class="hljs-value">&quot;$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets&quot;</span>
+          <span class="hljs-attribute">Condition</span>=<span class="hljs-value">&quot;Exists(&apos;$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets&apos;)&quot;</span> /&gt;</span>
+</code></pre>
+<h2 id="&#x6620;&#x5C04;">&#x6620;&#x5C04;</h2>
+<table>
+<thead>
+<tr>
+<th>&#x7F16;&#x8BD1;&#x9009;&#x9879;</th>
+<th>MSBuild&#x5C5E;&#x6027;&#x540D;&#x79F0;</th>
+<th>&#x53EF;&#x7528;&#x503C;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--declaration</code></td>
+<td>TypeScriptGeneratesDeclarations</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--module</code></td>
+<td>TypeScriptModuleKind</td>
+<td><code>AMD</code>, <code>CommonJs</code>, <code>UMD</code> &#x6216; <code>System</code></td>
+</tr>
+<tr>
+<td><code>--target</code></td>
+<td>TypeScriptTarget</td>
+<td><code>ES3</code>, <code>ES5</code>, or <code>ES6</code></td>
+</tr>
+<tr>
+<td><code>--charset</code></td>
+<td>TypeScriptCharset</td>
+<td></td>
+</tr>
+<tr>
+<td><code>--emitBOM</code></td>
+<td>TypeScriptEmitBOM</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--emitDecoratorMetadata</code></td>
+<td>TypeScriptEmitDecoratorMetadata</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--experimentalDecorators</code></td>
+<td>TypeScriptExperimentalDecorators</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--inlineSourceMap</code></td>
+<td>TypeScriptInlineSourceMap</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--inlineSources</code></td>
+<td>TypeScriptInlineSources</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--locale</code></td>
+<td><em>&#x81EA;&#x52A8;&#x7684;</em></td>
+<td>&#x81EA;&#x52A8;&#x8BBE;&#x7F6E;&#x6210;PreferredUILang&#x7684;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--mapRoot</code></td>
+<td>TypeScriptMapRoot</td>
+<td>&#x6587;&#x4EF6;&#x8DEF;&#x5F84;</td>
+</tr>
+<tr>
+<td><code>--newLine</code></td>
+<td>TypeScriptNewLine</td>
+<td><code>CRLF</code> &#x6216; <code>LF</code></td>
+</tr>
+<tr>
+<td><code>--noEmitOnError</code></td>
+<td>TypeScriptNoEmitOnError</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--noEmitHelpers</code></td>
+<td>TypeScriptNoEmitHelpers</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--noImplicitAny</code></td>
+<td>TypeScriptNoImplicitAny</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--noUnusedLocals</code></td>
+<td>TypeScriptNoUnusedLocals</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--noUnusedParameters</code></td>
+<td>TypeScriptNoUnusedParameters</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--noLib</code></td>
+<td>TypeScriptNoLib</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--noResolve</code></td>
+<td>TypeScriptNoResolve</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--out</code></td>
+<td>TypeScriptOutFile</td>
+<td>&#x6587;&#x4EF6;&#x8DEF;&#x5F84;</td>
+</tr>
+<tr>
+<td><code>--outDir</code></td>
+<td>TypeScriptOutDir</td>
+<td>&#x6587;&#x4EF6;&#x8DEF;&#x5F84;</td>
+</tr>
+<tr>
+<td><code>--preserveConstEnums</code></td>
+<td>TypeScriptPreserveConstEnums</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--removeComments</code></td>
+<td>TypeScriptRemoveComments</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--rootDir</code></td>
+<td>TypeScriptRootDir</td>
+<td>&#x6587;&#x4EF6;&#x8DEF;&#x5F84;</td>
+</tr>
+<tr>
+<td><code>--isolatedModules</code></td>
+<td>TypeScriptIsolatedModules</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--sourceMap</code></td>
+<td>TypeScriptSourceMap</td>
+<td>&#x6587;&#x4EF6;&#x8DEF;&#x5F84;</td>
+</tr>
+<tr>
+<td><code>--sourceRoot</code></td>
+<td>TypeScriptSourceRoot</td>
+<td>&#x6587;&#x4EF6;&#x8DEF;&#x5F84;</td>
+</tr>
+<tr>
+<td><code>--suppressImplicitAnyIndexErrors</code></td>
+<td>TypeScriptSuppressImplicitAnyIndexErrors</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--suppressExcessPropertyErrors</code></td>
+<td>TypeScriptSuppressExcessPropertyErrors</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--moduleResolution</code></td>
+<td>TypeScriptModuleResolution</td>
+<td><code>Classic</code> or <code>Node</code></td>
+</tr>
+<tr>
+<td><code>--experimentalAsyncFunctions</code></td>
+<td>TypeScriptExperimentalAsyncFunctions</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--jsx</code></td>
+<td>TypeScriptJSXEmit</td>
+<td><code>React</code> or <code>Preserve</code></td>
+</tr>
+<tr>
+<td><code>--reactNamespace</code></td>
+<td>TypeScriptReactNamespace</td>
+<td>string</td>
+</tr>
+<tr>
+<td><code>--skipDefaultLibCheck</code></td>
+<td>TypeScriptSkipDefaultLibCheck</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--allowUnusedLabels</code></td>
+<td>TypeScriptAllowUnusedLabels</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--noImplicitReturns</code></td>
+<td>TypeScriptNoImplicitReturns</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--noFallthroughCasesInSwitch</code></td>
+<td>TypeScriptNoFallthroughCasesInSwitch</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--allowUnreachableCode</code></td>
+<td>TypeScriptAllowUnreachableCode</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--forceConsistentCasingInFileNames</code></td>
+<td>TypeScriptForceConsistentCasingInFileNames</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--allowSyntheticDefaultImports</code></td>
+<td>TypeScriptAllowSyntheticDefaultImports</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--noImplicitUseStrict</code></td>
+<td>TypeScriptNoImplicitUseStrict</td>
+<td>&#x5E03;&#x5C14;&#x503C;</td>
+</tr>
+<tr>
+<td><code>--project</code></td>
+<td><em>VS&#x4E0D;&#x652F;&#x6301;</em></td>
+<td></td>
+</tr>
+<tr>
+<td><code>--watch</code></td>
+<td><em>VS&#x4E0D;&#x652F;&#x6301;</em></td>
+<td></td>
+</tr>
+<tr>
+<td><code>--diagnostics</code></td>
+<td><em>VS&#x4E0D;&#x652F;&#x6301;</em></td>
+<td></td>
+</tr>
+<tr>
+<td><code>--listFiles</code></td>
+<td><em>VS&#x4E0D;&#x652F;&#x6301;</em></td>
+<td></td>
+</tr>
+<tr>
+<td><code>--noEmit</code></td>
+<td><em>VS&#x4E0D;&#x652F;&#x6301;</em></td>
+<td></td>
+</tr>
+<tr>
+<td><code>--allowJs</code></td>
+<td><em>VS&#x4E0D;&#x652F;&#x6301;</em></td>
+<td></td>
+</tr>
+<tr>
+<td><em>VS&#x7279;&#x6709;&#x9009;&#x9879;</em></td>
+<td>TypeScriptAdditionalFlags</td>
+<td><em>&#x4EFB;&#x610F;&#x7F16;&#x8BD1;&#x9009;&#x9879;</em></td>
+</tr>
+</tbody>
+</table>
+<h2 id="&#x6211;&#x4F7F;&#x7528;&#x7684;visual-studio&#x7248;&#x672C;&#x91CC;&#x652F;&#x6301;&#x54EA;&#x4E9B;&#x9009;&#x9879;">&#x6211;&#x4F7F;&#x7528;&#x7684;Visual Studio&#x7248;&#x672C;&#x91CC;&#x652F;&#x6301;&#x54EA;&#x4E9B;&#x9009;&#x9879;?</h2>
+<p>&#x67E5;&#x627E; <code>C:\Program Files (x86)\MSBuild\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets</code> &#x6587;&#x4EF6;&#x3002;
+&#x53EF;&#x7528;&#x7684;MSBuild XML&#x6807;&#x7B7E;&#x4E0E;&#x76F8;&#x5E94;&#x7684;<code>tsc</code>&#x7F16;&#x8BD1;&#x9009;&#x9879;&#x7684;&#x6620;&#x5C04;&#x90FD;&#x5728;&#x90A3;&#x91CC;&#x3002;</p>
+<h2 id="toolsversion">ToolsVersion</h2>
+<p>&#x5DE5;&#x7A0B;&#x6587;&#x4EF6;&#x91CC;&#x7684;<code>&lt;TypeScriptToolsVersion&gt;1.7&lt;/TypeScriptToolsVersion&gt;</code>&#x5C5E;&#x6027;&#x503C;&#x8868;&#x660E;&#x4E86;&#x6784;&#x5EFA;&#x65F6;&#x4F7F;&#x7528;&#x7684;&#x7F16;&#x8BD1;&#x5668;&#x7684;&#x7248;&#x672C;&#x53F7;&#xFF08;&#x8FD9;&#x4E2A;&#x4F8B;&#x5B50;&#x91CC;&#x662F;1.7&#xFF09;
+&#x8FD9;&#x6837;&#x5C31;&#x5141;&#x8BB8;&#x4E00;&#x4E2A;&#x5DE5;&#x7A0B;&#x5728;&#x4E0D;&#x540C;&#x7684;&#x673A;&#x5668;&#x4E0A;&#x4F7F;&#x7528;&#x56FA;&#x5B9A;&#x7684;&#x7248;&#x672C;&#x53BB;&#x7F16;&#x8BD1;&#x3002;</p>
+<p>&#x5982;&#x679C;&#x6CA1;&#x6709;&#x6307;&#x5B9A;<code>TypeScriptToolsVersion</code>&#xFF0C;&#x5219;&#x4F1A;&#x4F7F;&#x7528;&#x673A;&#x5668;&#x4E0A;&#x5B89;&#x88C5;&#x7684;&#x6700;&#x65B0;&#x7248;&#x672C;&#x7684;&#x7F16;&#x8BD1;&#x5668;&#x53BB;&#x6784;&#x5EFA;&#x3002;</p>
+<p>&#x5982;&#x679C;&#x7528;&#x6237;&#x4F7F;&#x7528;&#x7684;&#x662F;&#x66F4;&#x65B0;&#x7248;&#x672C;&#x7684;TypeScript&#xFF0C;&#x5219;&#x4F1A;&#x5728;&#x9996;&#x6B21;&#x52A0;&#x8F7D;&#x5DE5;&#x7A0B;&#x7684;&#x65F6;&#x5019;&#x770B;&#x5230;&#x4E00;&#x4E2A;&#x63D0;&#x793A;&#x5347;&#x7EA7;&#x5DE5;&#x7A0B;&#x7684;&#x5BF9;&#x8BDD;&#x6846;&#x3002;</p>
+<h2 id="typescriptcompileblocked">TypeScriptCompileBlocked</h2>
+<p>&#x5982;&#x679C;&#x4F60;&#x4F7F;&#x7528;&#x5176;&#x5B83;&#x7684;&#x6784;&#x5EFA;&#x5DE5;&#x5177;&#xFF08;&#x6BD4;&#x5982;&#xFF0C;gulp&#xFF0C; grunt&#x7B49;&#x7B49;&#xFF09;&#x5E76;&#x4E14;&#x4F7F;&#x7528;VS&#x505A;&#x4E3A;&#x5F00;&#x53D1;&#x548C;&#x8C03;&#x8BD5;&#x5DE5;&#x5177;&#xFF0C;&#x90A3;&#x4E48;&#x5728;&#x5DE5;&#x7A0B;&#x91CC;&#x8BBE;&#x7F6E;<code>&lt;TypeScriptCompileBlocked&gt;true&lt;/TypeScriptCompileBlocked&gt;</code>&#x3002;
+&#x8FD9;&#x6837;VS&#x53EA;&#x4F1A;&#x63D0;&#x4F9B;&#x7ED9;&#x4F60;&#x7F16;&#x8F91;&#x7684;&#x529F;&#x80FD;&#xFF0C;&#x800C;&#x4E0D;&#x4F1A;&#x5728;&#x4F60;&#x6309;F5&#x7684;&#x65F6;&#x5019;&#x53BB;&#x6784;&#x5EFA;&#x3002;</p>
+</section>
+</div>
+</div>
+</div>
+<a href="Compiler&#32;Options.html" class="navigation navigation-prev " aria-label="Previous page: 编译选项"><i class="fa fa-angle-left"></i></a>
+<a href="Integrating&#32;with&#32;Build&#32;Tools.html" class="navigation navigation-next " aria-label="Next page: 与其它构建工具整合"><i class="fa fa-angle-right"></i></a>
+</div>
+</div>
+<script src="../../gitbook/app.js"></script>
+<script src="../../gitbook/plugins/gitbook-plugin-search/lunr.min.js"></script>
+<script src="../../gitbook/plugins/gitbook-plugin-search/search.js"></script>
+<script src="../../gitbook/plugins/gitbook-plugin-sharing/buttons.js"></script>
+<script src="../../gitbook/plugins/gitbook-plugin-fontsettings/buttons.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+    var config = {"highlight":{},"search":{"maxIndexSize":1000000},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2}};
+    gitbook.start(config);
+});
+</script>
+</body>
+</html>

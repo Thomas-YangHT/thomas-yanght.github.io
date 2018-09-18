@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>窗口函数</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="函数和操作符" HREF="http://school.yunwei.edu/manual/PostgreSQL/functions.html"><LINK REL="PREVIOUS" TITLE="聚集函数" HREF="functions-aggregate.html"><LINK REL="NEXT" TITLE="子查询表达式" HREF="functions-subquery.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/func.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="聚集函数" HREF="functions-aggregate.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/functions.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 9. 函数和操作符</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="子查询表达式" HREF="functions-subquery.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="FUNCTIONS-WINDOW">9.21. 窗口函数</A></H1><P><I CLASS="FIRSTTERM">窗口函数</I>提供跨行相关的当前查询行集执行计算的能力。
+参阅<A HREF="tutorial-window.html">第 3.5 &#33410;</A>获取这个特性的介绍。</P><P><A HREF="functions-window.html#FUNCTIONS-WINDOW-TABLE">&#34920; 9-48</A>列出了内建的窗口函数。
+注意<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">必须</I></SPAN>使用窗口函数的语法调用这些函数；一个<TT CLASS="LITERAL">OVER</TT>子句是必需的。</P><P>除了这些函数外，任何内建的或用户定义的聚集函数都可以作为窗口函数（见
+<A HREF="functions-aggregate.html">第 9.20 &#33410;</A>关于内建聚集函数的列表）。
+仅当调用跟着<TT CLASS="LITERAL">OVER</TT>子句的聚集函数，作为窗口函数；否则它们作为常规的聚合。</P><DIV CLASS="TABLE"><A NAME="FUNCTIONS-WINDOW-TABLE"></A><P><B>&#34920; 9-48. 通用窗口函数</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><THEAD><TR><TH>函数</TH><TH>返回类型</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD>
+<CODE CLASS="FUNCTION">row_number()</CODE>
+</TD><TD> <TT CLASS="TYPE">bigint</TT>
+</TD><TD>在其分区中的当前行号，从1计</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">rank()</CODE>
+</TD><TD> <TT CLASS="TYPE">bigint</TT>
+</TD><TD>有间隔的当前行排名；与它的第一个相同行的<CODE CLASS="FUNCTION">row_number</CODE>相同</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">dense_rank()</CODE>
+</TD><TD> <TT CLASS="TYPE">bigint</TT>
+</TD><TD>没有间隔的当前行排名；这个函数计数对等组。</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">percent_rank()</CODE>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD>当前行的相对排名: (<CODE CLASS="FUNCTION">rank</CODE> - 1) / (总行数 - 1)</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">cume_dist()</CODE>
+</TD><TD> <TT CLASS="TYPE">double precision</TT>
+</TD><TD>当前行的相对排名：(前面的行数或与当前行相同的行数)/(总行数)</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">ntile(<TT CLASS="REPLACEABLE"><I>num_buckets</I></TT> <TT CLASS="TYPE">integer</TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">integer</TT>
+</TD><TD>从1到参数值的整数范围，尽可能相等的划分分区。</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION"> lag(<TT CLASS="REPLACEABLE"><I>value</I></TT> <TT CLASS="TYPE">any</TT>
+[, <TT CLASS="REPLACEABLE"><I>offset</I></TT> <TT CLASS="TYPE">integer</TT>
+[, <TT CLASS="REPLACEABLE"><I>default</I></TT> <TT CLASS="TYPE">any</TT> ]])
+</CODE>
+</TD><TD> <TT CLASS="TYPE">类型同 <TT CLASS="REPLACEABLE"><I>value</I></TT></TT>
+</TD><TD> 计算分区当前行的前<TT CLASS="REPLACEABLE"><I>offset</I></TT>
+行，返回<TT CLASS="REPLACEABLE"><I>value</I></TT> 。如果没有这样的行，
+返回<TT CLASS="REPLACEABLE"><I>default</I></TT>替代。
+<TT CLASS="REPLACEABLE"><I>offset</I></TT>和<TT CLASS="REPLACEABLE"><I>default</I></TT>
+都是当前行计算的结果。如果忽略了，则<TT CLASS="REPLACEABLE"><I>offset</I></TT>
+默认是1，<TT CLASS="REPLACEABLE"><I>default</I></TT>默认是 null。
+</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION"> lead(<TT CLASS="REPLACEABLE"><I>value</I></TT> <TT CLASS="TYPE">any</TT>
+[, <TT CLASS="REPLACEABLE"><I>offset</I></TT> <TT CLASS="TYPE">integer</TT>
+[, <TT CLASS="REPLACEABLE"><I>default</I></TT> <TT CLASS="TYPE">any</TT> ]])
+</CODE>
+</TD><TD> <TT CLASS="TYPE">类型同<TT CLASS="REPLACEABLE"><I>value</I></TT></TT>
+</TD><TD> 计算分区当前行的后<TT CLASS="REPLACEABLE"><I>offset</I></TT>行，
+返回<TT CLASS="REPLACEABLE"><I>value</I></TT>。如果没有这样的行，
+返回<TT CLASS="REPLACEABLE"><I>default</I></TT>替代。
+<TT CLASS="REPLACEABLE"><I>offset</I></TT>和<TT CLASS="REPLACEABLE"><I>default</I></TT>
+都是当前行计算的结果。如果忽略了，则<TT CLASS="REPLACEABLE"><I>offset</I></TT>
+默认是1，<TT CLASS="REPLACEABLE"><I>default</I></TT>默认是 null。
+</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">first_value(<TT CLASS="REPLACEABLE"><I>value</I></TT> <TT CLASS="TYPE">any</TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">类型同<TT CLASS="REPLACEABLE"><I>value</I></TT></TT>
+</TD><TD> 返回窗口第一行的计算<TT CLASS="REPLACEABLE"><I>value</I></TT>值。
+</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION">last_value(<TT CLASS="REPLACEABLE"><I>value</I></TT> <TT CLASS="TYPE">any</TT>)</CODE>
+</TD><TD> <TT CLASS="TYPE">类型同<TT CLASS="REPLACEABLE"><I>value</I></TT></TT>
+</TD><TD> 返回窗口最后一行的计算<TT CLASS="REPLACEABLE"><I>value</I></TT>值。
+</TD></TR><TR><TD>
+<CODE CLASS="FUNCTION"> nth_value(<TT CLASS="REPLACEABLE"><I>value</I></TT> <TT CLASS="TYPE">any</TT>, <TT CLASS="REPLACEABLE"><I>nth</I></TT> <TT CLASS="TYPE">integer</TT>)
+</CODE>
+</TD><TD> <TT CLASS="TYPE">类型同<TT CLASS="REPLACEABLE"><I>value</I></TT></TT>
+</TD><TD> 返回窗口第<TT CLASS="REPLACEABLE"><I>nth</I></TT>行的计算
+<TT CLASS="REPLACEABLE"><I>value</I></TT>值（行从1计数）；没有这样的行则返回 null。
+</TD></TR></TBODY></TABLE></DIV><P>在<A HREF="functions-window.html#FUNCTIONS-WINDOW-TABLE">&#34920; 9-48</A>列出的所有函数，
+依赖于与窗口定义有关的<TT CLASS="LITERAL">ORDER BY</TT>子句指定的排序。
+<I CLASS="FIRSTTERM">同行</I>是说在<TT CLASS="LITERAL">ORDER BY</TT>排序时不唯一的行。
+定义的这四个排名函数，对于任何两个同行的答案相同。</P><P>注意<CODE CLASS="FUNCTION">first_value</CODE>，<CODE CLASS="FUNCTION">last_value</CODE>，和<CODE CLASS="FUNCTION">nth_value</CODE>
+只考虑<SPAN CLASS="QUOTE">"window frame"</SPAN>内的行，其默认情况下，包含从分区的开始行直到当前行的最后同行。
+像<CODE CLASS="FUNCTION">last_value</CODE>和<CODE CLASS="FUNCTION">nth_value</CODE>有时会给出没有用的结果。
+您可以通过向<TT CLASS="LITERAL">OVER</TT>子句添加合适的框架规范（<TT CLASS="LITERAL">RANGE</TT>或者<TT CLASS="LITERAL">ROWS</TT>）
+来重新定义该框架。参阅<A HREF="sql-expressions.html#SYNTAX-WINDOW-FUNCTIONS">第 4.2.8 &#33410;</A>获取框架定义的信息。</P><P>当一个聚集函数作为窗口函数使用时，将聚合超过当前行的窗框内的行。
+一个使用<TT CLASS="LITERAL">ORDER BY</TT>和默认窗框定义处理<SPAN CLASS="QUOTE">"运行时求和"</SPAN>类型的行为的聚集函数，
+可能不是想要的结果。为了获取超过整个分区聚合，忽略<TT CLASS="LITERAL">ORDER BY</TT>
+或者使用<TT CLASS="LITERAL">ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING</TT>。
+其它窗框规格可以用来获取其它的效果。</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>SQL 标准为<CODE CLASS="FUNCTION">lead</CODE>, <CODE CLASS="FUNCTION">lag</CODE>, <CODE CLASS="FUNCTION">first_value</CODE>, <CODE CLASS="FUNCTION">last_value</CODE>,
+和<CODE CLASS="FUNCTION">nth_value</CODE>定义了一个<TT CLASS="LITERAL">RESPECT NULLS</TT>或<TT CLASS="LITERAL">IGNORE NULLS</TT>选项。
+这个在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>没有实现：行为总是与标准默认相同，即<TT CLASS="LITERAL">RESPECT NULLS</TT>。
+同样用于<CODE CLASS="FUNCTION">nth_value</CODE>的标准<TT CLASS="LITERAL">FROM FIRST</TT>或<TT CLASS="LITERAL">FROM LAST</TT>
+选项也没有实现：只支持默认<TT CLASS="LITERAL">FROM FIRST</TT>行为。
+（您可以通过<TT CLASS="LITERAL">ORDER BY</TT>排序取反获取到<TT CLASS="LITERAL">FROM LAST</TT>的结果。）</P></BLOCKQUOTE></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="functions-aggregate.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="functions-subquery.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">聚集函数</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/functions.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">子查询表达式</TD></TR></TABLE></DIV></BODY></HTML>

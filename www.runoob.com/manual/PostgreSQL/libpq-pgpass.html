@@ -1,0 +1,47 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>口令文件</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="libpq - C 库" HREF="http://school.yunwei.edu/manual/PostgreSQL/libpq.html"><LINK REL="PREVIOUS" TITLE="环境变量" HREF="libpq-envars.html"><LINK REL="NEXT" TITLE="连接服务的文件" HREF="libpq-pgservice.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/libpq.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="环境变量" HREF="libpq-envars.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/libpq.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 31. <SPAN CLASS="APPLICATION">libpq</SPAN> - C 库</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="连接服务的文件" HREF="libpq-pgservice.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="LIBPQ-PGPASS">31.15. 口令文件</A></H1><P>用户家目录中的<TT CLASS="FILENAME">.pgpass</TT>或者<TT CLASS="ENVAR">PGPASSFILE</TT>
+引用的文件是一个可以包含口令的文件。如果连接要求口令（并且没有用其它方法声明口令），
+那么可以用它。 在 Microsoft Windows 上，文件名字是<TT CLASS="FILENAME">%APPDATA%\postgresql\pgpass.conf</TT>
+（<TT CLASS="FILENAME">%APPDATA%</TT>指用户配置里的 Application Data 子目录）。</P><P>这个文件应该有下面这样的格式行：
+</P><PRE CLASS="SYNOPSIS"><TT
+CLASS="REPLACEABLE"
+><I
+>hostname</I
+></TT
+>:<TT
+CLASS="REPLACEABLE"
+><I
+>port</I
+></TT
+>:<TT
+CLASS="REPLACEABLE"
+><I
+>database</I
+></TT
+>:<TT
+CLASS="REPLACEABLE"
+><I
+>username</I
+></TT
+>:<TT
+CLASS="REPLACEABLE"
+><I
+>password</I
+></TT
+></PRE><P>
+你可以通过复制上面的行并且在前面添加<TT CLASS="LITERAL">#</TT>用于添加提醒注释到文件，
+头四个字段每个都可以是一个文本值，或者<TT CLASS="LITERAL">*</TT>，它匹配所有的东西。
+第一个匹配当前连接参数的口令行的口令域将得以使用。（因此，如果你使用了通配符，
+那么应该把最具体的记录放在前面。）如果记录包含<TT CLASS="LITERAL">:</TT>或者<TT CLASS="LITERAL">\</TT>，
+应该用<TT CLASS="LITERAL">\</TT>转义。一个<TT CLASS="LITERAL">localhost</TT>的主机名匹配来自本机的
+TCP（主机名<TT CLASS="LITERAL">localhost</TT>）和Unix域套接字（<TT CLASS="LITERAL">pghost</TT>为空或缺省的套接字目录）连接。
+在备用服务器中，一个名字为<TT CLASS="LITERAL">replication</TT>的数据库被匹配到主服务器的流复制连接。
+<TT CLASS="LITERAL">database</TT>字段用处有限，因为对同一集群中所有数据库用户有相同密码。
+</P><P>在linux系统中，<TT CLASS="FILENAME">.pgpass</TT>的权限必须不允许任何全局或者同组的用户访问；
+我们可以用命令<TT CLASS="COMMAND">chmod 0600 ~/.pgpass</TT>实现这个目的。如果权限比这个松，
+这个文件将被忽略。在Microsoft Windows上，假定该文件存储在一个安全的目录中，所以没有做特殊的权限检查。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="libpq-envars.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="libpq-pgservice.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">环境变量</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/libpq.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">连接服务的文件</TD></TR></TABLE></DIV></BODY></HTML>

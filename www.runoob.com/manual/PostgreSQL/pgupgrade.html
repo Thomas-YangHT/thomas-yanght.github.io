@@ -1,0 +1,179 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>pg_upgrade</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="服务器端应用程序" HREF="contrib-prog-server.html"><LINK REL="PREVIOUS" TITLE="pg_test_timing" HREF="pgtesttiming.html"><LINK REL="NEXT" TITLE="pg_xlogdump" HREF="pgxlogdump.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/pgupgrade.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="pg_test_timing" HREF="pgtesttiming.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="contrib-prog-server.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="pg_xlogdump" HREF="pgxlogdump.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="PGUPGRADE"></A><SPAN CLASS="APPLICATION">pg_upgrade</SPAN></H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN152474"></A><H2>&#21517;&#31216;</H2>pg_upgrade&nbsp;--&nbsp;升级 <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 数据库实例</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN152480"></A><H2>&#22823;&#32434;</H2><P><TT CLASS="COMMAND">pg_upgrade</TT> <TT CLASS="OPTION">-b</TT> <TT CLASS="REPLACEABLE"><I>oldbindir</I></TT> <TT CLASS="OPTION">-B</TT> <TT CLASS="REPLACEABLE"><I>newbindir</I></TT> <TT CLASS="OPTION">-d</TT> <TT CLASS="REPLACEABLE"><I>olddatadir</I></TT> <TT CLASS="OPTION">-D</TT> <TT CLASS="REPLACEABLE"><I>newdatadir</I></TT> [<TT CLASS="REPLACEABLE"><I>option</I></TT>...]</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN152501"></A><H2>描述</H2><P> <SPAN CLASS="APPLICATION">pg_upgrade</SPAN> (原名称为 <SPAN CLASS="APPLICATION">pg_migrator</SPAN>) 允许数据在
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 数据文件中升级到<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>新的
+大版本而不需要数据的备份/还原，通常适用在升级大版本时，例如从8.4.7升级到当前
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的新最新版本。 在小版本之间升级往往是不需要的， 例如
+从9.0.1升级到9.0.4。
+</P><P> PostgreSQL大版本更新会定期增加新的功能，这往往导致系统表结构布局经常
+改变，但是内部的数据的存储格式很少改动。 针对这种情况
+<SPAN CLASS="APPLICATION">pg_upgrade</SPAN> 通过建立新的系统表和简易的利用旧的用户
+数据文件高效的完成升级。如果未来一个新的主要版本改变了数据存储
+结构这将导致旧数据结构无法读取， <SPAN CLASS="APPLICATION">pg_upgrade</SPAN> 将不能
+完成升级。（社区会试图避免这种情况的发生。）
+</P><P> <SPAN CLASS="APPLICATION">pg_upgrade</SPAN>能很好的完成新旧实例的二进制兼容，例如包括
+32/64二进制的兼容性编译时间设置检查。检查任何一个外部模块的二进制兼容
+是很有必要的，然而不能通过 <SPAN CLASS="APPLICATION">pg_upgrade</SPAN>来检查。
+</P><P> pg_upgrade 支持从8.3.X升级到最近的 <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>主要发行版本，
+包括快照和alpha版本。
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN152517"></A><H2>选项</H2><P> <SPAN CLASS="APPLICATION">pg_upgrade</SPAN> 可以使用下面命令行参数:
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="OPTION">-b</TT> <TT CLASS="REPLACEABLE"><I>old_bindir</I></TT><BR><TT CLASS="OPTION">--old-bindir=</TT><TT CLASS="REPLACEABLE"><I>old_bindir</I></TT></DT><DD><P>旧的数据实例的可执行文件目录;
+环境变量 <TT CLASS="ENVAR">PGBINOLD</TT></P></DD><DT><TT CLASS="OPTION">-B</TT> <TT CLASS="REPLACEABLE"><I>new_bindir</I></TT><BR><TT CLASS="OPTION">--new-bindir=</TT><TT CLASS="REPLACEABLE"><I>new_bindir</I></TT></DT><DD><P>新的数据实例的可执行文件目录;
+环境变量 <TT CLASS="ENVAR">PGBINNEW</TT></P></DD><DT><TT CLASS="OPTION">-c</TT><BR><TT CLASS="OPTION">--check</TT></DT><DD><P>仅检查实例，不做任何数据更新</P></DD><DT><TT CLASS="OPTION">-d</TT> <TT CLASS="REPLACEABLE"><I>old_datadir</I></TT><BR><TT CLASS="OPTION">--old-datadir=</TT><TT CLASS="REPLACEABLE"><I>old_datadir</I></TT></DT><DD><P>旧的群集数据目录;环境变量<TT CLASS="ENVAR">PGDATAOLD</TT></P></DD><DT><TT CLASS="OPTION">-D</TT> <TT CLASS="REPLACEABLE"><I>new_datadir</I></TT><BR><TT CLASS="OPTION">--new-datadir=</TT><TT CLASS="REPLACEABLE"><I>new_datadir</I></TT></DT><DD><P>新的群集数据目录;环境变量<TT CLASS="ENVAR">PGDATANEW</TT></P></DD><DT><TT CLASS="OPTION">-j</TT><BR><TT CLASS="OPTION">--jobs</TT></DT><DD><P>同时使用的进程或者线程数
+</P></DD><DT><TT CLASS="OPTION">-k</TT><BR><TT CLASS="OPTION">--link</TT></DT><DD><P>使用硬链接替代拷贝文件到新的数据库实例
+(在windows使用NTFS的接点）</P></DD><DT><TT CLASS="OPTION">-o</TT> <TT CLASS="REPLACEABLE"><I>options</I></TT><BR><TT CLASS="OPTION">--old-options</TT> <TT CLASS="REPLACEABLE"><I>options</I></TT></DT><DD><P>options to be passed directly to the
+old <TT CLASS="COMMAND">postgres</TT> command</P></DD><DT><TT CLASS="OPTION">-O</TT> <TT CLASS="REPLACEABLE"><I>options</I></TT><BR><TT CLASS="OPTION">--new-options</TT> <TT CLASS="REPLACEABLE"><I>options</I></TT></DT><DD><P>options to be passed directly to the
+new <TT CLASS="COMMAND">postgres</TT> command</P></DD><DT><TT CLASS="OPTION">-p</TT> <TT CLASS="REPLACEABLE"><I>old_port_number</I></TT><BR><TT CLASS="OPTION">--old-port=</TT><TT CLASS="REPLACEABLE"><I>old_portnum</I></TT></DT><DD><P>旧数据库实例的端口;环境变量<TT CLASS="ENVAR">PGPORTOLD</TT></P></DD><DT><TT CLASS="OPTION">-P</TT> <TT CLASS="REPLACEABLE"><I>new_port_number</I></TT><BR><TT CLASS="OPTION">--new-port=</TT><TT CLASS="REPLACEABLE"><I>new_portnum</I></TT></DT><DD><P>新数据库实例的端口;环境变量<TT CLASS="ENVAR">PGPORTNEW</TT></P></DD><DT><TT CLASS="OPTION">-r</TT><BR><TT CLASS="OPTION">--retain</TT></DT><DD><P>即使在升级成功也保存相关的SQL和日志文件。
+</P></DD><DT><TT CLASS="OPTION">-u</TT> <TT CLASS="REPLACEABLE"><I>user_name</I></TT><BR><TT CLASS="OPTION">--user=</TT><TT CLASS="REPLACEABLE"><I>user_name</I></TT></DT><DD><P>数据实例的超级管理员名; 环境变量 <TT CLASS="ENVAR">PGUSER</TT></P></DD><DT><TT CLASS="OPTION">-v</TT><BR><TT CLASS="OPTION">--verbose</TT></DT><DD><P>启用详细的内部日志信息</P></DD><DT><TT CLASS="OPTION">-V</TT><BR><TT CLASS="OPTION">--version</TT></DT><DD><P>打印版本信息，然后退出</P></DD><DT><TT CLASS="OPTION">-?</TT><BR><TT CLASS="OPTION">-h</TT><BR><TT CLASS="OPTION">--help</TT></DT><DD><P>显示当前帮助，然后退出</P></DD></DL></DIV><P>
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN152663"></A><H2>用法</H2><P> 用 <SPAN CLASS="APPLICATION">pg_upgrade</SPAN>进行升级的步骤:
+</P><DIV CLASS="PROCEDURE"><OL TYPE="1"><LI CLASS="STEP"><P><B>选择性的移动实例的安装目录</B></P><P> 如果你用了指定版本的安装目录，例如 <TT CLASS="FILENAME">/opt/PostgreSQL/9.1</TT>, 你不需要再移动
+旧的安装目录。图形化安装工具都是指定安装目录的。
+</P><P> 如果你的安装目录不是版本指定的，例如 <TT CLASS="FILENAME">/usr/local/pgsql</TT>, 这就有必要
+移动当前的安装目录，这样就避免影响了新的 <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 的安装。
+当 <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 数据库服务停止后， 重命令PostgreSQL的安装
+目录的操作是安全的;假如旧安装目录是 <TT CLASS="FILENAME">/usr/local/pgsql</TT>, 你可以用命令:
+</P><PRE CLASS="PROGRAMLISTING">mv /usr/local/pgsql /usr/local/pgsql.old</PRE><P>
+来重命令当前目录名。
+</P></LI><LI CLASS="STEP"><P><B>用源码安装，构建一个新的版本</B></P><P> 用兼容旧的数据库实例<TT CLASS="COMMAND">configure</TT> 选项来构建新的PostgreSQL。在开始升级之前
+<SPAN CLASS="APPLICATION">pg_upgrade</SPAN> 将会检查<TT CLASS="COMMAND">pg_controldata</TT> 来确保所有的设置都兼容。
+</P></LI><LI CLASS="STEP"><P><B>安装新的二进制文件</B></P><P> 安装新服务器的二进制可执行文件和支持文件。
+</P><P> 用源码安装时，如果你想要在自定义目录安装新服务器，可以使用 <TT CLASS="LITERAL">prefix</TT> 变量:
+</P><PRE CLASS="PROGRAMLISTING">gmake prefix=/usr/local/pgsql.new install</PRE><P></P></LI><LI CLASS="STEP"><P><B>Install pg_upgrade and pg_upgrade_support</B></P><P> 在新PostgreSQL的安装中，安装 <SPAN CLASS="APPLICATION">pg_upgrade</SPAN> 二进制文件 and
+<SPAN CLASS="APPLICATION">pg_upgrade_support</SPAN>库文件 。
+</P></LI><LI CLASS="STEP"><P><B>初始化新的数据库实例</B></P><P> 使用<TT CLASS="COMMAND">initdb</TT>命令初始化新的数据库实例。
+并且，要用兼容的旧数据库实例的<TT CLASS="COMMAND">initdb</TT>
+选项 。 很多预构建安装会自动完成这一部。不需要去启动新的数据库实例。
+</P></LI><LI CLASS="STEP"><P><B>安装自定义的共享对象文件</B></P><P> 安装所以旧数据库实例用到的自定义共享对象文件（或者是DLL文件）,
+例如 <TT CLASS="FILENAME">pgcrypto.so</TT>, 无论他们来自 <TT CLASS="FILENAME">contrib</TT>
+或者其它的源。 不需要安装一类模式的定义， 例如<TT CLASS="FILENAME">pgcrypto.sql</TT>,
+因为这些也会从旧数据库实例中升级。
+</P></LI><LI CLASS="STEP"><P><B>调整连接认证</B></P><P> <TT CLASS="COMMAND">pg_upgrade</TT> 会数次连到新旧数据库实例，所以你修改
+<TT CLASS="FILENAME">pg_hba.conf</TT>,可以把认证设置成 <TT CLASS="LITERAL">trust</TT>
+或者是 <TT CLASS="LITERAL">peer</TT> ，另外也可以使用
+<TT CLASS="LITERAL">md5</TT> 的认证方式， 同时使用 <TT CLASS="FILENAME">~/.pgpass</TT>密码文件
+(参考 <A HREF="libpq-pgpass.html">第 31.15 &#33410;</A>).
+</P></LI><LI CLASS="STEP"><P><B>停止新旧数据库</B></P><P> 确保两个数据库都停止使用， 在类Unix操作系统中使用 例如:
+</P><PRE CLASS="PROGRAMLISTING">pg_ctl -D /opt/PostgreSQL/8.4 stop
+pg_ctl -D /opt/PostgreSQL/9.0 stop</PRE><P>
+在Windows中，使用windows可用的服务名：
+</P><PRE CLASS="PROGRAMLISTING">NET STOP postgresql-8.4
+NET STOP postgresql-9.0</PRE><P>
+或者
+</P><PRE CLASS="PROGRAMLISTING">NET STOP pgsql-8.3  (8.3和更早版本的<SPAN
+CLASS="PRODUCTNAME"
+>PostgreSQL</SPAN
+>  使用了不同的服务器）</PRE><P></P></LI><LI CLASS="STEP"><P><B>运行 <SPAN CLASS="APPLICATION">pg_upgrade</SPAN></B></P><P> 运行新数据库的可执行命令 <SPAN CLASS="APPLICATION">pg_upgrade</SPAN> ， 而不是旧数据库的。
+<SPAN CLASS="APPLICATION">pg_upgrade</SPAN> 需要指定新旧数据库实例的数据目录和可执行的
+(<TT CLASS="FILENAME">bin</TT>) 目录。 当然你还可以指定用户和端口，指定是否使用数据硬链接代替使用
+数据复制（默认方式）。
+</P><P> 如果你使用链接模式，升级将会非常快（没有文件拷贝）并且占用更少的硬盘，但是你不能
+再访问你的旧数据库当你升级完成启动新的数据库实例。 链接模式还需要新旧数据库
+数据目录使用相同的文件系统。（表空间和 <TT CLASS="FILENAME">pg_xlog</TT> 可以在不同的
+文件系统。） 参考 <TT CLASS="LITERAL">pg_upgrade --help</TT> 查看完整的帮助选项列表。
+</P><P> <TT CLASS="OPTION">--jobs</TT> 选项可以在拷贝/链接数据文件时使用多CPU核心并且可以并行
+的还原数据库模式;一个好的值是CPU核数和表空间的最大值。在一个多核数据库
+机器上升级一个多数据库服务器时这个选项能大量的节约时间。
+</P><P> For Windows users, you must be logged into an administrative account, and
+对于Windows用户来说，你必要登录一个管理员的帐号，并且用 <TT CLASS="LITERAL">postgres</TT>
+用户来启动一个终端设置可用的PATH
+</P><PRE CLASS="PROGRAMLISTING">RUNAS /USER:postgres "CMD.EXE"
+SET PATH=%PATH%;C:\Program Files\PostgreSQL\9.0\bin;</PRE><P>
+然后运行 <SPAN CLASS="APPLICATION">pg_upgrade</SPAN> 带上引号， 例如:
+</P><PRE CLASS="PROGRAMLISTING">pg_upgrade.exe
+        --old-datadir "C:/Program Files/PostgreSQL/8.4/data"
+        --new-datadir "C:/Program Files/PostgreSQL/9.0/data"
+        --old-bindir "C:/Program Files/PostgreSQL/8.4/bin"
+        --new-bindir "C:/Program Files/PostgreSQL/9.0/bin"</PRE><P>
+开始以后， <TT CLASS="COMMAND">pg_upgrade</TT>会验证两个数据库实例是兼容的
+然后开始升级。 你可以使用 <TT CLASS="COMMAND">pg_upgrade --check</TT>
+去执行检查工作，甚至是旧数据库实例仍在运行。<TT CLASS="COMMAND">pg_upgrade --check</TT>
+会概述一些自定义的调整你需要在升级后去查看。如果你使用了链接模式，你必需要
+要用<TT CLASS="OPTION">--link</TT>参数和<TT CLASS="OPTION">--check</TT> 来启用指定链接模式的
+检查。 <TT CLASS="COMMAND">pg_upgrade</TT> 需要对当前目录有可写权限。
+</P><P> 在数据库升级过程中不能访问数据库实例这是显而易见的。<SPAN CLASS="APPLICATION">pg_upgrade</SPAN>
+默认在端口50432运行来避免预期之外的数据库连接。当你在升级的时候你可以在
+新旧数据库实例上使用同一个端口因为新旧数据库实例不会同时运行
+然而， 当查检旧数据库实例时， 新旧数据库实例的端口必需不同。
+</P><P> 如果在还原数据库模式时出现错误时， <TT CLASS="COMMAND">pg_upgrade</TT> 将会退出你必需参照
+<A HREF="pgupgrade.html#PGUPGRADE-STEP-REVERT">&#27493;&#39588; 14</A>的概要信息还原旧实例
+再一次使用<TT CLASS="COMMAND">pg_upgrade</TT> ， 你可能需要修改旧实例以让旧数据库模式
+升级成功。如果问题出现在某个外部模块上，你可能需要从旧实例上卸载这些外部模块
+然后在升级成功后再在新实例上安装它们，假设模块没有被用于储存用户数据。
+</P></LI><LI CLASS="STEP"><P><B>还原 <TT CLASS="FILENAME">pg_hba.conf</TT></B></P><P> 如果你修改<TT CLASS="FILENAME">pg_hba.conf</TT> 成 <TT CLASS="LITERAL">trust</TT>的方式，
+还原它的原来的认证设置。 还有可能需要去调整其它的配置文件去和旧的数据库
+实例相匹配，例如。<TT CLASS="FILENAME">postgresql.conf</TT>.
+</P></LI><LI CLASS="STEP"><P><B>升级后的处理</B></P><P> 如果有升级后续操作需要执行，pg_upgrade会在完成后发布出警告信息。
+同时它会生成由管理员运行脚本文件。 脚本会连到新旧数据库执行后续操作。
+脚本可以用下面命令执行：
+</P><PRE CLASS="PROGRAMLISTING">psql --username postgres --file script.sql postgres</PRE><P>
+脚本可以任意顺序执行，执行完后可以被删除。
+</P><DIV CLASS="CAUTION"><P></P><TABLE CLASS="CAUTION" BORDER="1" WIDTH="100%"><TR><TD ALIGN="CENTER"><B>&#23567;&#24515;</B></TD></TR><TR><TD ALIGN="LEFT"><P> 通常情况下在重建脚本运行结束之前不允许访问被引用的表;这样做可能会出现
+意想不到的错误结果或者是性能不佳 。不引用的表可以被立限访问。
+</P></TD></TR></TABLE></DIV></LI><LI CLASS="STEP"><P><B>统计</B></P><P> 因为优化统计结果不会被<TT CLASS="COMMAND">pg_upgrade</TT>传递， 你需要指定去运行命令去在升级
+完成后生成一些新的信息。你可能需要设置连接参数去匹配新的数据库实例。
+</P></LI><LI CLASS="STEP"><P><B>删除旧的数据库实例</B></P><P> 当<TT CLASS="COMMAND">pg_upgrade</TT> 成功的升级完成后，你可能要运行脚本的
+方法删除旧的数据库实例的数据目录你可以删除旧安装目录
+(例如。 <TT CLASS="FILENAME">bin</TT>, <TT CLASS="FILENAME">share</TT>)。
+</P></LI><LI CLASS="STEP"><A NAME="PGUPGRADE-STEP-REVERT"></A><P><B>还原到旧实例</B></P><P> 如果，运行<TT CLASS="COMMAND">pg_upgrade</TT>后， 你希望回复到旧实例，
+下面是一些选项：
+<P></P></P><UL><LI><P> 如果你运行了加<TT CLASS="OPTION">--check</TT> 参数的<TT CLASS="COMMAND">pg_upgrade</TT>
+，不会对旧数据实例产生影响可以随时更新实用。
+</P></LI><LI><P> 如果你运行了加<TT CLASS="OPTION">--link</TT>参数的 <TT CLASS="COMMAND">pg_upgrade</TT>
+数据文件会被新旧数据实例所共用，如果你启动了新数据实例，新的
+数据库会写到那些共享文件上，这对旧实例是不安全的。
+</P></LI><LI><P> 如果你运行了<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">不加</I></SPAN><TT CLASS="OPTION">--link</TT>参数的 <TT CLASS="COMMAND">pg_upgrade</TT>
+或者没有启动新的数据库，旧实例并没有被修改过，如果链接开始，
+<TT CLASS="LITERAL">.old</TT>后缀会出现在 <TT CLASS="FILENAME">$PGDATA/global/pg_control</TT>目录下。
+为了重新旧数据实例，可以从<TT CLASS="FILENAME">$PGDATA/global/pg_control</TT>
+目录下移除<TT CLASS="FILENAME">.old</TT>后缀的文件;然后你可以重启旧实例。
+</P></LI></UL><P>
+</P></LI></OL></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="AEN152797"></A><H2>注意事项</H2><P> <SPAN CLASS="APPLICATION">pg_upgrade</SPAN>不支持包含有<TT CLASS="TYPE">reg*</TT> 类型的OID-引用 比如
+以下类型: <TT CLASS="TYPE">regproc</TT>, <TT CLASS="TYPE">regprocedure</TT>, <TT CLASS="TYPE">regoper</TT>,
+<TT CLASS="TYPE">regoperator</TT>, <TT CLASS="TYPE">regconfig</TT>, and <TT CLASS="TYPE">regdictionary</TT>.
+(<TT CLASS="TYPE">regtype</TT> 可以被升级。）
+</P><P> 所有失败， 重建， 和重建索引会影响到你升级都会被<SPAN CLASS="APPLICATION">pg_upgrade</SPAN>报告。
+升级后的重建表和索引会自动生成。如果你尝试自动升级多个实例，你应该找到
+相同的数据模式需要相同的升级后步骤对所以的实例升级;这是因为升级后的步骤
+是基于数据库模式的，而不是用户数据。
+</P><P> 部署测试，可以创建一个只读的模式从旧数据实例复制，插入一些虚拟的数据，
+然后升级他们。
+</P><P> 如果你升级<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 9.2版本之前只用一个仅配置目录的
+的数据库，你必要传递真的数据目录给pg_upgrade,并且给数据库传递配置目录， 例如。
+<TT CLASS="LITERAL">-d /real-data-directory -o '-D /configuration-directory'</TT>。
+</P><P> 如果用一个9.1之前用了非默认的Unix域socket目录或者默认的位置和新实例
+默认位置不一致，要设置 <TT CLASS="ENVAR">PGHOST</TT>来指定旧数据库的socket位置。
+（在Windows下不需要。）
+</P><P> 一个日志同步的数据库（<A HREF="warm-standby.html">第 25.2 &#33410;</A>) 不能被升级原因是
+升级数据库必需要允许写。很简单的方式是升级方库然后用rsync去重新建
+备份。你可以运行<TT CLASS="COMMAND">rsync</TT> 当主库停用后，或者作为一次基础备份
+(<A HREF="continuous-archiving.html#BACKUP-BASE-BACKUP">第 24.3.2 &#33410;</A>)去覆盖旧的数据库备份。
+</P><P> 如果你想要用link方式并且当新实例启动后你不想要你的旧数据库实例数据被修改
+用<TT CLASS="COMMAND">rsync</TT> 从运行中的旧实例新建一个脏的数据复制，然后关闭旧实例
+再一次运行<TT CLASS="COMMAND">rsync</TT> 保证所有的数据更改保持一致的。你可能需要
+排除一些文件，例如。<TT CLASS="FILENAME">postmaster.pid</TT>, 还有在 <A HREF="continuous-archiving.html#BACKUP-LOWLEVEL-BASE-BACKUP">第 24.3.3 &#33410;</A>提到的文件。
+</P><DIV CLASS="REFSECT2"><A NAME="AEN152826"></A><H3>从PostgreSQL 8.3升级的局限性</H3><P> <SPAN CLASS="emphasis"><I CLASS="EMPHASIS">从</I></SPAN> PostgreSQL 8.3 升级有一些额外的条件没有被提及
+当升级到以后的PostgreSQL发行版本。 举个例子，在8.3版本中如果用户字段中
+定义了:
+<P></P></P><UL><LI><P> 一个 <TT CLASS="TYPE">tsquery</TT> 数据类型
+</P></LI><LI><P> 数据类型<TT CLASS="TYPE">name</TT> 并不是第一个字段pg_upgrade将不支持升级。
+</P></LI></UL><P>
+</P><P>你必需要删除任何这样的字段并且手动升级他们。
+</P><P>如果<TT CLASS="FILENAME">ltree</TT>模块被安装到数据库中，pg_upgradebu将不支持。
+</P><P>pg_upgrade 会需要重建表如果表：
+<P></P></P><UL><LI><P> 一个字段的数据类型是<TT CLASS="TYPE">tsvector</TT>
+</P></LI></UL><P>
+</P><P>pg_upgrade 会需要重建索引如果：
+<P></P></P><UL><LI><P> 一个索引的类型是hash 或者 GIN
+</P></LI><LI><P> 一个使用了 <CODE CLASS="FUNCTION">bpchar_pattern_ops</CODE>的索引
+</P></LI></UL><P>
+</P><P>同样的，<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 8.3之后的版本默认的日期存储格式更改到整型。
+pg_upgrade会查检日期存储格式让新旧数据库实例匹配。确保你的新实例是构建时
+configure 带上了<TT CLASS="OPTION">--disable-integer-datetimes</TT>参数。
+</P><P> 对于Windows用户，要注意的不同的整型的日期类型设置是在图形华和MSI安装程序中，
+它仅仅可能从版本8.3的安装版到8.4升级或者最近的安装版。不可能从MSI安装程序
+到升级新的图形化安装程序中。
+</P></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="AEN152856"></A><H2>参考</H2><A HREF="app-initdb.html">initdb</A>, <A HREF="app-pg-ctl.html"><SPAN CLASS="APPLICATION">pg_ctl</SPAN></A>, <A HREF="app-pgdump.html">pg_dump</A>, <A HREF="app-postgres.html"><SPAN CLASS="APPLICATION">postgres</SPAN></A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="pgtesttiming.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="pgxlogdump.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><SPAN CLASS="APPLICATION">pg_test_timing</SPAN></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="contrib-prog-server.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><SPAN CLASS="APPLICATION">pg_xlogdump</SPAN></TD></TR></TABLE></DIV></BODY></HTML>

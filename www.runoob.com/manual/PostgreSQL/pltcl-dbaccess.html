@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>在PL/Tcl里访问数据库</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="PL/Tcl - Tcl 过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/pltcl.html"><LINK REL="PREVIOUS" TITLE="PL/Tcl里的全局量" HREF="pltcl-global.html"><LINK REL="NEXT" TITLE="PL/Tcl里的触发器过程" HREF="pltcl-trigger.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/pltcl.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="PL/Tcl里的全局量" HREF="pltcl-global.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/pltcl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 41. PL/Tcl - Tcl 过程语言</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="PL/Tcl里的触发器过程" HREF="pltcl-trigger.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="PLTCL-DBACCESS">41.5. 在PL/Tcl里访问数据库</A></H1><P>在 PL/Tcl 过程体里有下面的命令可以用于访问数据库：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">spi_exec</CODE> ?<SPAN CLASS="OPTIONAL">-count <TT CLASS="REPLACEABLE"><I>n</I></TT></SPAN>? ?<SPAN CLASS="OPTIONAL">-array <TT CLASS="REPLACEABLE"><I>name</I></TT></SPAN>? <TT CLASS="REPLACEABLE"><I>command</I></TT> ?<SPAN CLASS="OPTIONAL"><TT CLASS="REPLACEABLE"><I>loop-body</I></TT></SPAN>?</TT></DT><DD><P>执行一个以字符串形式给出的 SQL 查询。查询中的错误会导致抛出一个错误。否则，
+<CODE CLASS="FUNCTION">spi_exec</CODE>的返回值是命令处理的行数(选出、插入、更新、删除)，
+如果该命令是一个功能性语句则返回零。另外，如果查询是一条<TT CLASS="COMMAND">SELECT</TT>语句，
+那么选出的字段值按照下面描述的方法放在 Tcl 变量中。</P><P>可选的<TT CLASS="LITERAL">-count</TT>值告诉<CODE CLASS="FUNCTION">spi_exec</CODE>在该查询中处理的最大的行数。
+其效果和把查询设置为一个游标，然后说<TT CLASS="LITERAL">FETCH <TT CLASS="REPLACEABLE"><I>n</I></TT></TT>是一样的。</P><P>如果查询是一个<TT CLASS="COMMAND">SELECT</TT>语句，那么其结果列的数值将放在用各字段名命名的 Tcl 变量中。
+如果给出了<TT CLASS="LITERAL">-array</TT>选项，那么字段值将放到这个命名的相关数组中，字段名用做数组索引。</P><P>如果查询是<TT CLASS="COMMAND">SELECT</TT>语句并且没有给出<TT CLASS="REPLACEABLE"><I>loop-body</I></TT>脚本，
+那么只有结果的头一行会存储到 Tcl 变量中；如果还有其它行的话，将会被忽略。
+如果查询没有返回任何行，那么不会存储什么数据(这个情况可以通过检查<CODE CLASS="FUNCTION">spi_exec</CODE>
+的结果来判断)。比如：
+</P><PRE CLASS="PROGRAMLISTING">spi_exec "SELECT count(*) AS cnt FROM pg_proc"</PRE><P>
+将设置 Tcl 变量<TT CLASS="LITERAL">$cnt</TT>设为系统表<TT CLASS="STRUCTNAME">pg_proc</TT>中的行数。</P><P>如果给出了可选的<TT CLASS="REPLACEABLE"><I>loop-body</I></TT>参数，那么它就是一小段 Tcl 脚本，
+它会为查询结果中的每一行执行一次(注意：如果给出的查询不是<TT CLASS="COMMAND">SELECT</TT>，
+那么忽略<TT CLASS="REPLACEABLE"><I>loop-body</I></TT>)。在每次迭代之前，
+当前行的字段的数值都存储到 Tcl 变量中去了。比如：
+</P><PRE CLASS="PROGRAMLISTING">spi_exec -array C "SELECT * FROM pg_class" {
+    elog DEBUG "have table $C(relname)"
+}</PRE><P>
+将为<TT CLASS="LITERAL">pg_class</TT>的每一行打印一行日志信息。这个特性和其它 Tcl 循环构造的运做方式类似；
+特别是<TT CLASS="LITERAL">continue</TT>和<TT CLASS="LITERAL">break</TT>在循环体中的作用和平常是一样的。</P><P>如果一个查询结果的某个字段是 NULL ，那么其目标变量就是<SPAN CLASS="QUOTE">"unset"</SPAN>而不会设置上什么东西。</P></DD><DT><CODE CLASS="FUNCTION">spi_prepare</CODE> <TT CLASS="REPLACEABLE"><I>query</I></TT> <TT CLASS="REPLACEABLE"><I>typelist</I></TT></DT><DD><P>为后面的执行准备并保存一个查询规划。保存的规划的生命期就是当前会话的生命期。&#13;</P><P>查询可以使用参数，这些参数是规划实际执行的时候提供的数值的占位符。在查询字符串里，
+用符号<TT CLASS="LITERAL">$1</TT> ... <TT CLASS="LITERAL">$<TT CLASS="REPLACEABLE"><I>n</I></TT></TT>引用各个参数。
+如果查询使用了参数，那么参数类型名必需以一个 Tcl 列表的形式给出。如果没有使用参数，那么给
+<TT CLASS="REPLACEABLE"><I>typelist</I></TT>写一个空列表。</P><P><CODE CLASS="FUNCTION">spi_prepare</CODE>的返回值是一个可以在随后的<CODE CLASS="FUNCTION">spi_execp</CODE>
+调用中使用的查询 ID 。参阅<CODE CLASS="FUNCTION">spi_execp</CODE>获取例子。</P></DD><DT><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">spi_execp</CODE> ?<SPAN CLASS="OPTIONAL">-count <TT CLASS="REPLACEABLE"><I>n</I></TT></SPAN>? ?<SPAN CLASS="OPTIONAL">-array <TT CLASS="REPLACEABLE"><I>name</I></TT></SPAN>? ?<SPAN CLASS="OPTIONAL">-nulls <TT CLASS="REPLACEABLE"><I>string</I></TT></SPAN>? <TT CLASS="REPLACEABLE"><I>queryid</I></TT> ?<SPAN CLASS="OPTIONAL"><TT CLASS="REPLACEABLE"><I>value-list</I></TT></SPAN>? ?<SPAN CLASS="OPTIONAL"><TT CLASS="REPLACEABLE"><I>loop-body</I></TT></SPAN>?</TT></DT><DD><P>执行一个前面用<CODE CLASS="FUNCTION">spi_prepare</CODE>准备的查询。<TT CLASS="REPLACEABLE"><I>queryid</I></TT>是
+<CODE CLASS="FUNCTION">spi_prepare</CODE>返回的 ID 。如果该查询引用了参数，那么必需提供一个<TT CLASS="REPLACEABLE"><I>value-list</I></TT>：
+这是一个 Tcl 列表，里面包含那些参数的实际数值。这个列表的长度必需和前面给<CODE CLASS="FUNCTION">spi_prepare</CODE>
+提供的参数类型列表的长度一样长。如果查询没有参数，那么省略<TT CLASS="REPLACEABLE"><I>value-list</I></TT>。</P><P><TT CLASS="LITERAL">-nulls</TT>可选的数值是一个空白字符串和字符<TT CLASS="LITERAL">'n'</TT>，告诉<CODE CLASS="FUNCTION">spi_execp</CODE>
+哪些参数是 NULL 。如果给出，那么它必需和<TT CLASS="REPLACEABLE"><I>value-list</I></TT>的长度相同。
+如果没有给出，那么所有参数值都是非 NULL 。</P><P>除了查询及其参数声明的方式之外，<CODE CLASS="FUNCTION">spi_execp</CODE>的使用方法基本上和
+<CODE CLASS="FUNCTION">spi_exec</CODE>一样。<TT CLASS="LITERAL">-count</TT>, <TT CLASS="LITERAL">-array</TT>, <TT CLASS="REPLACEABLE"><I>loop-body</I></TT>
+选项都是一样的，结果数值也一样。</P><P> 下面是一个使用预备规划的 PL/Tcl 函数的例子：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION t1_count(integer, integer) RETURNS integer AS $$
+    if {![ info exists GD(plan) ]} {
+        # prepare the saved plan on the first call
+        set GD(plan) [ spi_prepare \
+                "SELECT count(*) AS cnt FROM t1 WHERE num &gt;= \$1 AND num &lt;= \$2" \
+                [ list int4 int4 ] ]
+    }
+    spi_execp -count 1 $GD(plan) [ list $1 $2 ]
+    return $cnt
+$$ LANGUAGE pltcl;</PRE><P>
+需要在给<CODE CLASS="FUNCTION">spi_prepare</CODE>的查询字符串里放反斜杠，以确保<TT CLASS="LITERAL">$<TT CLASS="REPLACEABLE"><I>n</I></TT></TT>
+标记会原样传递给<CODE CLASS="FUNCTION">spi_prepare</CODE>，而不是被 Tcl 的变量代换替换掉。
+</P></DD><DT><CODE CLASS="FUNCTION">spi_lastoid</CODE></DT><DD><P>如果该查询是单行<TT CLASS="COMMAND">INSERT</TT>并且被修改的表包含 OID ，则返回最后的
+<CODE CLASS="FUNCTION">spi_exec</CODE>或<CODE CLASS="FUNCTION">spi_execp</CODE>查询插入的行的 OID 。如果不是，将得到零。</P></DD><DT><CODE CLASS="FUNCTION">quote</CODE> <TT CLASS="REPLACEABLE"><I>string</I></TT></DT><DD><P>在给出的字符串里将所由单引号和反斜杠字符复制成双份。它可以用于安全地处理那些要输入到
+<CODE CLASS="FUNCTION">spi_exec</CODE>或<CODE CLASS="FUNCTION">spi_prepare</CODE>中的 SQL 命令中的引号包围字符串。
+比如，假如一个 SQL 命令看起来像这样:
+</P><PRE CLASS="PROGRAMLISTING">"SELECT '$val' AS ret"</PRE><P>
+这里的 Tcl 变量<TT CLASS="LITERAL">val</TT>实际上包含<TT CLASS="LITERAL">doesn't</TT>。
+这样最后的命令字符串会是这样：
+</P><PRE CLASS="PROGRAMLISTING">SELECT 'doesn't' AS ret</PRE><P>
+而这个字符串在<CODE CLASS="FUNCTION">spi_exec</CODE>或<CODE CLASS="FUNCTION">spi_prepare</CODE>
+的时候会导致一个分析错误。为了能工作正常，提交的命令应该包含：
+</P><PRE CLASS="PROGRAMLISTING">SELECT 'doesn''t' AS ret</PRE><P>
+在 PL/Tcl 中可以这样构造：
+</P><PRE CLASS="PROGRAMLISTING">"SELECT '[ quote $val ]' AS ret"</PRE><P>
+<CODE CLASS="FUNCTION">spi_execp</CODE> 的一个优点是你不需要像这样引号包围参数值，
+因为参数绝不会当做 SQL 查询字符串的一部分被分析。
+</P></DD><DT><CODE CLASS="FUNCTION">elog</CODE> <TT CLASS="REPLACEABLE"><I>level</I></TT> <TT CLASS="REPLACEABLE"><I>msg</I></TT></DT><DD><P>发出一个日志或者错误消息。可能的级别是<TT CLASS="LITERAL">DEBUG</TT>, <TT CLASS="LITERAL">LOG</TT>, <TT CLASS="LITERAL">INFO</TT>,
+<TT CLASS="LITERAL">NOTICE</TT>, <TT CLASS="LITERAL">WARNING</TT>, <TT CLASS="LITERAL">ERROR</TT> 和 <TT CLASS="LITERAL">FATAL</TT>。
+<TT CLASS="LITERAL">ERROR</TT>抛出一个错误条件：如果没有被周围的Tcl代码捕获，那么该错误传到调用的查询中，
+导致当前事务或子事务退出。作用和Tcl的<TT CLASS="LITERAL">error</TT>命令相同。<TT CLASS="LITERAL">FATAL</TT>
+退出当前事务并且导致当前会话关闭(可能在 PL/Tcl 函数里没有什么理由使用这个错误级别，
+提供它主要是为了完整)。其他级别只产生不同的优先级信息。
+某个优先级别的信息是报告给客户端还是写到服务器日志，还是两个都做是由<A HREF="runtime-config-logging.html#GUC-LOG-MIN-MESSAGES">log_min_messages</A>
+和<A HREF="runtime-config-logging.html#GUC-CLIENT-MIN-MESSAGES">client_min_messages</A>配置变量控制的。参阅<A HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime-config.html">第 18 &#31456;</A>获取更多细节。</P></DD></DL></DIV><P>
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="pltcl-global.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="pltcl-trigger.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">PL/Tcl里的全局量</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/pltcl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">PL/Tcl里的触发器过程</TD></TR></TABLE></DIV></BODY></HTML>

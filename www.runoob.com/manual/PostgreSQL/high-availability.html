@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>高可用性与负载均衡，复制</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="https://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="服务器管理" HREF="admin.html"><LINK REL="PREVIOUS" TITLE="在线备份以及即时恢复(PITR)" HREF="https://school.yunwei.edu/manual/PostgreSQL/continuous-archiving.html"><LINK REL="NEXT" TITLE="不同解决方案的比较" HREF="https://school.yunwei.edu/manual/PostgreSQL/different-replication-solutions.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="CHAPTER">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/high-availability.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="https://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="在线备份以及即时恢复(PITR)" HREF="https://school.yunwei.edu/manual/PostgreSQL/continuous-archiving.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="admin.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="不同解决方案的比较" HREF="https://school.yunwei.edu/manual/PostgreSQL/different-replication-solutions.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="CHAPTER"><H1><A NAME="HIGH-AVAILABILITY"></A>&#31456; 25. 高可用性与负载均衡，复制</H1><DIV CLASS="TOC"><DL><DT><B>&#30446;&#24405;</B></DT><DT>25.1. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/different-replication-solutions.html">不同解决方案的比较</A></DT><DT>25.2. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/warm-standby.html">日志传送备份服务器</A></DT><DD><DL><DT>25.2.1. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/warm-standby.html#STANDBY-PLANNING">规划</A></DT><DT>25.2.2. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/warm-standby.html#STANDBY-SERVER-OPERATION">备用服务器操作</A></DT><DT>25.2.3. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/warm-standby.html#PREPARING-MASTER-FOR-STANDBY">为备用服务器准备主服务器</A></DT><DT>25.2.4. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/warm-standby.html#STANDBY-SERVER-SETUP">建立备用服务器</A></DT><DT>25.2.5. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/warm-standby.html#STREAMING-REPLICATION">流复制</A></DT><DT>25.2.6. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/warm-standby.html#CASCADING-REPLICATION">Cascading Replication</A></DT><DT>25.2.7. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/warm-standby.html#SYNCHRONOUS-REPLICATION">同步复制</A></DT></DL></DD><DT>25.3. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/warm-standby-failover.html">失效切换</A></DT><DT>25.4. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/log-shipping-alternative.html">日志传送的替代方法</A></DT><DD><DL><DT>25.4.1. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/log-shipping-alternative.html#WARM-STANDBY-CONFIG">实施</A></DT><DT>25.4.2. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/log-shipping-alternative.html#WARM-STANDBY-RECORD">基于记录的日志传送</A></DT></DL></DD><DT>25.5. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/hot-standby.html">热备</A></DT><DD><DL><DT>25.5.1. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/hot-standby.html#HOT-STANDBY-USERS">用户概述</A></DT><DT>25.5.2. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/hot-standby.html#HOT-STANDBY-CONFLICT">处理查询冲突</A></DT><DT>25.5.3. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/hot-standby.html#HOT-STANDBY-ADMIN">管理员概述</A></DT><DT>25.5.4. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/hot-standby.html#HOT-STANDBY-PARAMETERS">热备参数参考</A></DT><DT>25.5.5. <A HREF="https://school.yunwei.edu/manual/PostgreSQL/hot-standby.html#HOT-STANDBY-CAVEATS">Caveats</A></DT></DL></DD></DL></DIV><P> 多个数据库服务器可以协同工作，
+比如在主服务器失效的时候备份服务器立即取代它的位置(高可用性)，
+或者几台机器同时服务于同一个数据库(负载均衡)。
+理想状态多台服务器之间可以无缝协作。
+为静态页面提供服务的Web服务器可以轻松的通过将web请求分摊到多台机
+器从而实现负载均衡。 事实上，只读数据库也能轻松的以相同的方法实现负载均衡。
+不幸的是，大多数数据库服务器都需要同时处理混合的读/写请求，
+将这些数据库联合起来工作是件很麻烦的事。
+虽然只读数据只需要在每台服务器上复制一份即可，
+但是在任何一台服务器上的写动作都必须传播到其它所有服务器上，
+这样才能保证将来对这些已修改数据的读取返回一致的结果。&#13;</P><P> 这个写同步问题就是导致多台服务器协同工作麻烦重重的最基本原因。
+有多种解决此问题的方法，其思路也各不相同，
+但都不是既简单又高效的方案。</P><P> 有一种解决方案是仅允许单独的一台"主"服务器修改数据，
+可以修改数据的服务器称为只读/写，<I CLASS="FIRSTTERM">master</I>或者<I CLASS="FIRSTTERM">primary</I>服务器。
+跟踪“主”服务器数据变化的叫<I CLASS="FIRSTTERM">备</I>
+或者<I CLASS="FIRSTTERM">从</I>服务器。
+备用服务器不能连接到主服务器，直到它晋升为<I CLASS="FIRSTTERM">热备</I>服务器。
+可以接受连接而且只读服务器称为<I CLASS="FIRSTTERM">热备</I>服务器。</P><P> 一些方案是"同步的"，
+意思是直到所有服务器都完成了某个修改数据的事务之后，
+该事务才被认为是已经完成的。
+这将确保失效切换不会丢失任何数据并且所有服务器都将返回一致的结果。
+另一些方案是"异步的"，这种方案允许在事务提交之后
+与传播到所有其它服务器之间有一小段延时，
+但是在切换到备份服务器的时候某些事务可能会丢失，
+并且不同的服务器可能返回不一致的结果。
+当同步可能会很慢的时候可以使用异步通信。</P><P> 还可以按照粒度对解决方案进行分类。
+某些方案只能将整个数据库集群作为一个整体，
+而某些方案可以针对每个数据库或每张表分别做不同的处理。</P><P> 在选择任何失效切换或负载均衡方案的时候都必须考虑性能因素。
+功能和性能不可兼得，比如，一个完全同步的解决方案在慢速网络上可能削减性能一半以上，
+而完全异步的方案可能仅对性能有极其微小的影响。</P><P> 下面的部分大致描述了各种常见的失效切换、复制、负载均衡方案。
+<A HREF="http://www.postgres-r.org/documentation/terms" TARGET="_top">glossary</A>
+也是可用的。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="https://school.yunwei.edu/manual/PostgreSQL/continuous-archiving.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="https://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="https://school.yunwei.edu/manual/PostgreSQL/different-replication-solutions.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">在线备份以及即时恢复(PITR)</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="admin.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">不同解决方案的比较</TD></TR></TABLE></DIV></BODY></HTML>

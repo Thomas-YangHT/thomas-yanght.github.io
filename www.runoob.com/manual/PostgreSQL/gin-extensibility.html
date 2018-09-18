@@ -1,0 +1,98 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>扩展性</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="GIN索引" HREF="http://school.yunwei.edu/manual/PostgreSQL/gin.html"><LINK REL="PREVIOUS" TITLE="介绍" HREF="gin-intro.html"><LINK REL="NEXT" TITLE="实现" HREF="gin-implementation.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/gin.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="介绍" HREF="gin-intro.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/gin.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 57. GIN索引</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="实现" HREF="gin-implementation.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="GIN-EXTENSIBILITY">57.2. 扩展性</A></H1><P><ACRONYM CLASS="ACRONYM">GIN</ACRONYM>接口有一个高层次的抽象，仅要求实现被访问数据类型的语义即可。
+<ACRONYM CLASS="ACRONYM">GIN</ACRONYM>层自身可以处理并发操作、记录日志、搜索树结构。
+</P><P>定义一个<ACRONYM CLASS="ACRONYM">GIN</ACRONYM>访问方法所要做的所有事情就是实现四个(或五个)用户定义的方法，
+这些方法定义了键在树中的行为、键与键之间的关系、被索引的项目、能够使用索引的查询。
+简而言之，<ACRONYM CLASS="ACRONYM">GIN</ACRONYM>将扩展性与普遍性、代码重用、清晰的接口结合在了一起。
+</P><P>一个<ACRONYM CLASS="ACRONYM">GIN</ACRONYM>索引操作符类必须实现的四个方法如下：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><CODE CLASS="FUNCTION">int compare(Datum a, Datum b)</CODE></DT><DD><P>比较两个键(不是被索引的项目!)然后返回一个小于、等于或大于零的值，分别表示第一个键小于、等于或大于第二个键。
+NULL的键永远不会被传入这个函数。
+</P></DD><DT><CODE CLASS="FUNCTION">Datum *extractValue(Datum itemValue, int32 *nkeys,
+bool **nullFlags)</CODE></DT><DD><P>给定一个被索引的项目，返回一个对应的由palloc分配的键的数组。返回的键的数目必须存储在<TT CLASS="LITERAL">*nkeys</TT>中。
+如果任何键可能为NULL，还要palloc一个包含<TT CLASS="LITERAL">*nkeys</TT>个<TT CLASS="TYPE">bool</TT>元素的数组，
+将地址存储到<TT CLASS="LITERAL">*nullFlags</TT>，并且根据需要设置NULL值。
+如果所有键都是非NULL的，可以让<TT CLASS="LITERAL">*nullFlags</TT>保持为<TT CLASS="SYMBOL">NULL</TT>（它的初始值）。
+如果输入的项目不包含任何键，返回值可以为<TT CLASS="SYMBOL">NULL</TT>。
+</P></DD><DT><CODE CLASS="FUNCTION">Datum *extractQuery(Datum query, int32 *nkeys,
+StrategyNumber n, bool **pmatch, Pointer **extra_data,
+bool **nullFlags, int32 *searchMode)</CODE></DT><DD><P>给定一个被查询的值，返回一个对应的palloc分配的键数组。
+也就是说，<TT CLASS="LITERAL">query</TT>是可索引操作符右侧的值，而该操作符左侧是被索引的字段。
+<TT CLASS="LITERAL">n</TT>是操作符类中的操作符策略号(参见<A HREF="xindex.html#XINDEX-STRATEGIES">第 35.14.2 &#33410;</A>)。
+通常，<CODE CLASS="FUNCTION">extractQuery</CODE>需要考量<TT CLASS="LITERAL">n</TT>来决定<TT CLASS="LITERAL">query</TT>的数据类型以及提取键值的方法。
+返回的数组的元素个数必须存放在<TT CLASS="LITERAL">*nkeys</TT>中。
+如果任何键可能为NULL，还要palloc一个包含<TT CLASS="LITERAL">*nkeys</TT>个<TT CLASS="TYPE">bool</TT>元素的数组，
+将地址存储到<TT CLASS="LITERAL">*nullFlags</TT>，并且根据需要设置NULL值。
+如果所有键都是非NULL的，可以让<TT CLASS="LITERAL">*nullFlags</TT>保持为<TT CLASS="SYMBOL">NULL</TT>（它的初始值）。
+如果<TT CLASS="LITERAL">query</TT>不包含任何键，返回值可以为<TT CLASS="SYMBOL">NULL</TT>。
+</P><P><TT CLASS="LITERAL">searchMode</TT>是一个输出参数，它允许<CODE CLASS="FUNCTION">extractQuery</CODE>指定一些关于如何执行搜索的细节。
+如果<TT CLASS="LITERAL">*searchMode</TT>被设置成<TT CLASS="LITERAL">GIN_SEARCH_MODE_DEFAULT</TT>(这也是调用函数前它被初始化的值)，
+只有匹配至少一个返回的键才能被认为是候选的匹配。
+如果<TT CLASS="LITERAL">*searchMode</TT>被设置成<TT CLASS="LITERAL">GIN_SEARCH_MODE_INCLUDE_EMPTY</TT>，
+除了包含至少一个匹配的键的项目，根本不包含任何键的项目也被视为候选的匹配。
+（这个模式对于实现像“是否是子集”这样的操作是有用的）
+如果<TT CLASS="LITERAL">*searchMode</TT>被设置成<TT CLASS="LITERAL">GIN_SEARCH_MODE_ALL</TT>，
+索引中所有非NULL的项目都被认为是候选的匹配，不管它们是否匹配返回的键中的任何一个。
+（这个模式比起其它两个要慢很多，因为它必须要扫描整个索引，但这对正确的实现边界条件可能是必要的。
+一个需要这种模式的操作符在大多数时候很可能不是一个好的GIN操作符类的候选。）
+用于设置这个模式的符号定义在<TT CLASS="FILENAME">access/gin.h</TT>中。
+</P><P><TT CLASS="LITERAL">pmatch</TT>是在部分匹配时需要用到的一个输出参数。
+如果使用它，<CODE CLASS="FUNCTION">extractQuery</CODE>必须分配一个有<TT CLASS="LITERAL">*nkeys</TT>个布尔值的数组，
+并把数组地址保存到<TT CLASS="LITERAL">*pmatch</TT>。
+数组的每个元素应该被设置为：TRUE，如果相应的键需要部分匹配；或者FALSE，如果不是。
+如果<TT CLASS="LITERAL">*pmatch</TT>被设置为<TT CLASS="SYMBOL">NULL</TT>，GIN假设不需要部分匹配。
+在函数调用前这个值被初始化成了<TT CLASS="SYMBOL">NULL</TT>，
+因此，对于不支持部分匹配的操作符类，可以简单的忽略这个参数。
+</P><P><TT CLASS="LITERAL">extra_data</TT>是一个允许<CODE CLASS="FUNCTION">extractQuery</CODE>传递额外数据给<CODE CLASS="FUNCTION">consistent</CODE>
+和<CODE CLASS="FUNCTION">comparePartial</CODE>的输出参数。
+如果使用它，<CODE CLASS="FUNCTION">extractQuery</CODE>必须分配一个包含<TT CLASS="LITERAL">*nkeys</TT>个Pointer元素的数组，
+并把数组地址保存到<TT CLASS="LITERAL">*extra_data</TT>，然后把它想附加的东西存储到各个独立的指针中。
+在函数调用前这个值被初始化成了<TT CLASS="SYMBOL">NULL</TT>，
+因此，对于不需要附加数据的操作符类，可以简单的忽略这个参数。
+如果<TT CLASS="LITERAL">*extra_data</TT>被设置了，那么整个数组会被传给<CODE CLASS="FUNCTION">consistent</CODE>方法，
+适当的元素会被传给<CODE CLASS="FUNCTION">comparePartial</CODE>方法。
+</P></DD><DT><CODE CLASS="FUNCTION">bool consistent(bool check[], StrategyNumber n, Datum query,
+int32 nkeys, Pointer extra_data[], bool *recheck,
+Datum queryKeys[], bool nullFlags[])</CODE></DT><DD><P>如果被索引项目满足策略号为<TT CLASS="LITERAL">n</TT>的查询操作符（或可能满足，如果recheck指示符被返回了的话）返回TRUE。
+这个函数并不直接访问被索引项目的值，因为<ACRONYM CLASS="ACRONYM">GIN</ACRONYM>并没有精确的把项目保存下来，
+但是需要知道哪些从查询中提取的键值出现在给定的索引项目中。
+<TT CLASS="LITERAL">check</TT>数组的长度是<TT CLASS="LITERAL">nkeys</TT>，这与先前针对这个<TT CLASS="LITERAL">query</TT>调用的<CODE CLASS="FUNCTION">extractQuery</CODE>函数返回的键值的数目相同。
+如果被索引项目包含了相应的查询键，<TT CLASS="LITERAL">check</TT>数组中对应的元素值就是TRUE。
+比如，如果(check[i] == TRUE)，那么意味着<CODE CLASS="FUNCTION">extractQuery</CODE>的结果数组的第i个键出现在了索引项目中。
+考虑到<CODE CLASS="FUNCTION">consistent</CODE>可能会用到，原始的<TT CLASS="LITERAL">query</TT>也被作为参数传入进来。
+与此相同的还有<CODE CLASS="FUNCTION">extractQuery</CODE>函数返回的<TT CLASS="LITERAL">queryKeys[]</TT>和<TT CLASS="LITERAL">nullFlags[]</TT>。
+<TT CLASS="LITERAL">extra_data</TT>是<CODE CLASS="FUNCTION">extractQuery</CODE>函数返回的额外数据数组，如果没有的话就是<TT CLASS="SYMBOL">NULL</TT>。
+</P><P>当<CODE CLASS="FUNCTION">extractQuery</CODE>在<TT CLASS="LITERAL">queryKeys[]</TT>中返回一个NULL的键值，
+如果被索引项目包含NULL键值，相应的<TT CLASS="LITERAL">check[]</TT>中的元素是TRUE。
+也就是说，<TT CLASS="LITERAL">check[]</TT>的语义很像<TT CLASS="LITERAL">IS NOT DISTINCT FROM</TT>。
+如果需要知道是通常值匹配还是NULL匹配，<CODE CLASS="FUNCTION">consistent</CODE>函数可以检查相应的<TT CLASS="LITERAL">nullFlags[]</TT>元素。
+</P><P>成功执行后，如果对这个元组需要执行查询操作符是否匹配的再检查，<TT CLASS="LITERAL">*recheck</TT>需要被设置为TRUE，
+如果索引测试已经是精确的了，则设为FALSE。
+也就是说，FALSE的返回值确保堆元组不匹配这个查询；
+伴随<TT CLASS="LITERAL">*recheck</TT>为FASLE的TRUE的返回值确保堆元组匹配这个查询；
+伴随<TT CLASS="LITERAL">*recheck</TT>为TRUE的TRUE的返回值意味着堆元组可能匹配这个查询，
+因此需要取得这个堆元组，并通过直接针对原始的被索引项目评估查询操作符的方式进行再检查。
+</P></DD></DL></DIV><P>
+<ACRONYM CLASS="ACRONYM">GIN</ACRONYM>操作符类可以可选地提供第五个函数。
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><CODE CLASS="FUNCTION">int comparePartial(Datum partial_key, Datum key, StrategyNumber n,
+Pointer extra_data)</CODE></DT><DD><P>比较一个部分匹配查询键和一个索引键。
+返回一个整形值，它个符号代表了不同的含义：小于0意味着索引键不匹配查询，但是索引扫描应该继续；
+0意味着索引键匹配查询；大于0指示应该终止索引扫描，因为不可能再有更多的匹配。
+这里提供了生成部分一致查询的操作符的策略号<TT CLASS="LITERAL">n</TT>，以防需要用它的语义去决定何时终止扫描。
+同样的，<TT CLASS="LITERAL">extra_data</TT>是<CODE CLASS="FUNCTION">extractQuery</CODE>生成的额外数据数组中的相应元素，或者为NULL，如果没有的话。
+NULL的键永远不会被传入这个函数。
+</P></DD></DL></DIV><P>
+</P><P>为了支持<SPAN CLASS="QUOTE">"部分匹配"</SPAN>查询，一个操作符类必须提供<CODE CLASS="FUNCTION">comparePartial</CODE>方法，
+并且当遇到部分匹配查询时，它的<CODE CLASS="FUNCTION">extractQuery</CODE>方法必须设置<TT CLASS="LITERAL">pmatch</TT>参数。
+详细请参考<A HREF="gin-implementation.html#GIN-PARTIAL-MATCH">第 57.3.2 &#33410;</A>。
+</P><P>上面的各种<TT CLASS="LITERAL">Datum</TT>值的实际数据类型根据操作符类的不同而不同。
+传入到<CODE CLASS="FUNCTION">extractValue</CODE>中的项目值总是操作符类的输入类型，
+所有的键值类型必须这个类的<TT CLASS="LITERAL">STORAGE</TT>类型。
+传入到<CODE CLASS="FUNCTION">extractQuery</CODE>和<CODE CLASS="FUNCTION">consistent</CODE>的<TT CLASS="LITERAL">query</TT>参数的类型
+是由策略号识别的类成员操作符的右操作数的输入类型。
+它不需要和项目类型相同，只要可以从中抽取出正确类型的键值。
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="gin-intro.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="gin-implementation.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">介绍</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/gin.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">实现</TD></TR></TABLE></DIV></BODY></HTML>

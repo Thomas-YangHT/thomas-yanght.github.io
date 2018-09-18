@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>CREATE TABLESPACE</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="CREATE TABLE AS" HREF="sql-createtableas.html"><LINK REL="NEXT" TITLE="CREATE TEXT SEARCH CONFIGURATION" HREF="sql-createtsconfig.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/create_tablespace.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="CREATE TABLE AS" HREF="sql-createtableas.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="CREATE TEXT SEARCH CONFIGURATION" HREF="sql-createtsconfig.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-CREATETABLESPACE"></A>CREATE TABLESPACE</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN73261"></A><H2>&#21517;&#31216;</H2>CREATE TABLESPACE&nbsp;--&nbsp;定义一个新的表空间</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN73266"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">CREATE TABLESPACE <TT
+CLASS="REPLACEABLE"
+><I
+>tablespace_name</I
+></TT
+> [ OWNER <TT
+CLASS="REPLACEABLE"
+><I
+>user_name</I
+></TT
+> ] LOCATION '<TT
+CLASS="REPLACEABLE"
+><I
+>directory</I
+></TT
+>'</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN73271"></A><H2>描述</H2><P><TT CLASS="COMMAND">CREATE TABLESPACE</TT>注册一个集群范围内的新表空间。
+表空间的名字必须在该数据库集群中的任何现有表空间中唯一。</P><P>表空间允许超级用户在文件系统中定义一个可选的位置，
+这个位置可以存放代表数据库对象的数据文件(比如表和索引)。</P><P>一个用户，如果有合适的权限，就可以把<TT CLASS="COMMAND">CREATE DATABASE</TT>,
+<TT CLASS="COMMAND">CREATE TABLE</TT>, <TT CLASS="COMMAND">CREATE INDEX</TT>, <TT CLASS="COMMAND">ADD CONSTRAINT</TT>
+之一传递给<TT CLASS="REPLACEABLE"><I>tablespace_name</I></TT>，
+这样就让这些对象的数据文件存储在指定的表空间里。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN73282"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="REPLACEABLE"><I>tablespace_name</I></TT></DT><DD><P>要创建的表空间的名字。这个名字不能以<TT CLASS="LITERAL">pg_</TT>开头，
+因为这些名字是保留给系统表空间使用的。</P></DD><DT><TT CLASS="REPLACEABLE"><I>user_name</I></TT></DT><DD><P>将拥有这个表空间的用户名。如果省略，缺省为执行此命令的用户名。
+只有超级用户可以创建表空间，但是他们可以把表空间的所有者授予非超级用户。</P></DD><DT><TT CLASS="REPLACEABLE"><I>directory</I></TT></DT><DD><P>用于表空间的目录。目录必须是空的，并且由运行<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+系统用户所有。目录必须用一个绝对路径声明。</P></DD></DL></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="AEN73302"></A><H2>注意</H2><P>只有在那些支持符号连接的系统上才支持表空间。</P><P><TT CLASS="COMMAND">CREATE TABLESPACE</TT>不允许在一个事务块内部执行。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN73307"></A><H2>例子</H2><P>在<TT CLASS="LITERAL">/data/dbs</TT>创建一个表空间<TT CLASS="LITERAL">dbspace</TT>：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TABLESPACE dbspace LOCATION '/data/dbs';</PRE><P></P><P>在<TT CLASS="LITERAL">/data/indexes</TT>创建一个表空间<TT CLASS="LITERAL">indexspace</TT>
+并由用户<TT CLASS="LITERAL">genevieve</TT>所有：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TABLESPACE indexspace OWNER genevieve LOCATION '/data/indexes';</PRE><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN73318"></A><H2>兼容性</H2><P><TT CLASS="COMMAND">CREATE TABLESPACE</TT>是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>扩展。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN73323"></A><H2>又见</H2><A HREF="sql-createdatabase.html">CREATE DATABASE</A>, <A HREF="sql-createtable.html">CREATE TABLE</A>, <A HREF="sql-createindex.html">CREATE INDEX</A>, <A HREF="sql-droptablespace.html">DROP TABLESPACE</A>, <A HREF="sql-altertablespace.html">ALTER TABLESPACE</A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-createtableas.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-createtsconfig.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">CREATE TABLE AS</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">CREATE TEXT SEARCH CONFIGURATION</TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>initdb</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="PostgreSQL 服务器应用程序" HREF="http://school.yunwei.edu/manual/PostgreSQL/reference-server.html"><LINK REL="PREVIOUS" TITLE="PostgreSQL 服务器应用程序" HREF="http://school.yunwei.edu/manual/PostgreSQL/reference-server.html"><LINK REL="NEXT" TITLE="pg_controldata" HREF="app-pgcontroldata.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/initdb.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="PostgreSQL 服务器应用程序" HREF="http://school.yunwei.edu/manual/PostgreSQL/reference-server.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/reference-server.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="pg_controldata" HREF="app-pgcontroldata.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="APP-INITDB"></A>initdb</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN89030"></A><H2>&#21517;&#31216;</H2>initdb&nbsp;--&nbsp;创建一个新的<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>数据库簇（cluster）</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN89036"></A><H2>&#22823;&#32434;</H2><P><TT CLASS="COMMAND">initdb</TT> [<TT CLASS="REPLACEABLE"><I>option</I></TT>...] [<TT CLASS="OPTION">--pgdata</TT> | <TT CLASS="OPTION">-D</TT>]<TT CLASS="REPLACEABLE"><I> directory</I></TT> </P></DIV><DIV CLASS="REFSECT1"><A NAME="R1-APP-INITDB-1"></A><H2> 描述
+</H2><P> <TT CLASS="COMMAND">initdb</TT>创建一个新的
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>数据库簇（cluster）。
+一个数据库簇（cluster）是由单个服务端实例管理的多个数据库的集合。
+</P><P> 创建数据库系统包括创建数据库数据的宿主目录，生成共享的系统表
+（不属于任何特定数据库的表）和创建<TT CLASS="LITERAL">template1</TT>
+和<TT CLASS="LITERAL">postgres</TT>数据库。
+当你以后再创建一个新数据库时，<TT CLASS="LITERAL">template1</TT>
+数据库里所有内容都会拷贝过来。（因此，任何在<TT CLASS="LITERAL">template1</TT>
+里面安装的东西都自动拷贝到以后创建的数据库中。）
+<TT CLASS="LITERAL">postgres</TT>数据库是一个缺省数据库，用于给用户、工具、第三方应用提供缺省数据库。
+</P><P> 尽管<TT CLASS="COMMAND">initdb</TT>会尝试创建相应的数据目录，
+但经常会没有权限做这件事。因为所要创建目录的父目录通常被
+root所拥有。要初始化这种设置，用root创建一个空数据目录，然后用
+<TT CLASS="COMMAND">chown</TT>把该目录的所有权交给数据库用户帐号，然后
+<TT CLASS="COMMAND">su</TT>成数据库用户，最后以数据库用户身份运行
+<TT CLASS="COMMAND">initdb</TT>。
+</P><P> <TT CLASS="COMMAND">initdb</TT>必须以运行数据库服务端的用户身份运行，
+因为服务端需要访问<TT CLASS="COMMAND">initdb</TT>创建的目录和文件。
+因为服务端通常是以非root身份运行的，因此一般也就不以root用户运行
+<TT CLASS="COMMAND">initdb</TT>（事实上将拒绝你以root用户运行它）。
+</P><P> <TT CLASS="COMMAND">initdb</TT>初始化该数据库簇（cluster）的缺省区域和字符集编码。
+字符编码排序(<TT CLASS="LITERAL">LC_COLLATE</TT>)和字符集类
+(<TT CLASS="LITERAL">LC_CTYPE</TT>, 也就是大写、小写、数字等)可以在数据库创建的时候独立设置。
+<TT CLASS="COMMAND">initdb</TT>决定了<TT CLASS="LITERAL">template1</TT>数据库，
+这个设置将成为所有其它（以后新建）数据库的缺省。
+</P><P> 要更改默认的排序顺序或字符集分类，使用
+<TT CLASS="OPTION">--lc-collate</TT>和<TT CLASS="OPTION">--lc-ctype</TT>选项。
+使用<TT CLASS="LITERAL">C</TT>或<TT CLASS="LITERAL">POSIX</TT>之外的字符编码排序还会有性能影响。
+因此在运行<TT CLASS="COMMAND">initdb</TT>的时候就做出正确的选择是非常重要的。
+</P><P> 在服务端启动时，你可以使用<TT CLASS="OPTION">--locale</TT>
+设置缺省的所有语言环境类别，包括排序顺序和字符集种类。
+其余的语言环境类别以后可以修改。所有服务器区域值(<TT CLASS="LITERAL">lc_*</TT>)
+可以用<TT CLASS="COMMAND">SHOW ALL</TT>显示。
+更多细节可以在<A HREF="locale.html">第 22.1 &#33410;</A>找到。
+</P><P> 要修改缺省编码，可以使用<TT CLASS="OPTION">--encoding</TT>选项。
+更多细节可以在<A HREF="multibyte.html">第 22.3 &#33410;</A>找到。
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN89088"></A><H2>选项</H2><P> <P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="OPTION">-A <TT CLASS="REPLACEABLE"><I>authmethod</I></TT></TT><BR><TT CLASS="OPTION">--auth=<TT CLASS="REPLACEABLE"><I>authmethod</I></TT></TT></DT><DD><P> 这个选项指定本地用户在<TT CLASS="FILENAME">pg_hba.conf</TT>里面设置的认证方法。 (<TT CLASS="LITERAL">host</TT>
+和<TT CLASS="LITERAL">local</TT> 所在行)。 除非你信任所有本地系统用户。
+否则不要使用 <TT CLASS="LITERAL">trust</TT>。<TT CLASS="LITERAL">trust</TT>是缺省的。
+</P></DD><DT><TT CLASS="OPTION">--auth-host=<TT CLASS="REPLACEABLE"><I>authmethod</I></TT></TT></DT><DD><P> 这个选项指定本地TCP/IP联接用户在<TT CLASS="FILENAME">pg_hba.conf</TT>里面设置的认证方法。
+(<TT CLASS="LITERAL">host</TT> 所在行)。
+</P></DD><DT><TT CLASS="OPTION">--auth-local=<TT CLASS="REPLACEABLE"><I>authmethod</I></TT></TT></DT><DD><P> 这个选项指定本地Unix-domain socket联接用户在<TT CLASS="FILENAME">pg_hba.conf</TT>里面设置的认证方法。
+(<TT CLASS="LITERAL">local</TT> 所在行)。
+</P></DD><DT><TT CLASS="OPTION">-D <TT CLASS="REPLACEABLE"><I>directory</I></TT></TT><BR><TT CLASS="OPTION">--pgdata=<TT CLASS="REPLACEABLE"><I>directory</I></TT></TT></DT><DD><P> 这个选项声明数据库簇（cluster）应该存放在哪个目录。这是
+<TT CLASS="COMMAND">initdb</TT>惟一（必须）需要的信息，但是你可以通过设置
+<TT CLASS="ENVAR">PGDATA</TT>环境变量来避免键入，这样做可能方便一些，因为稍后数据库服务器
+(<TT CLASS="COMMAND">postgres</TT>) 可以通过同一个变量找到数据库目录。
+</P></DD><DT><TT CLASS="OPTION">-E <TT CLASS="REPLACEABLE"><I>encoding</I></TT></TT><BR><TT CLASS="OPTION">--encoding=<TT CLASS="REPLACEABLE"><I>encoding</I></TT></TT></DT><DD><P> 选择模板数据库的编码方式。这将是你以后创建的数据库的缺省编码方式，
+除非你创建数据库时覆盖了它。缺省是从区域设置中获得的，如果没有区域设置，就是
+<TT CLASS="LITERAL">SQL_ASCII</TT>。<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+服务器支持的字符集在<A HREF="multibyte.html#MULTIBYTE-CHARSET-SUPPORTED">第 22.3.1 &#33410;</A>里描述。
+</P></DD><DT><A NAME="APP-INITDB-DATA-CHECKSUMS"></A><TT CLASS="OPTION">-k</TT><BR><TT CLASS="OPTION">--data-checksums</TT></DT><DD><P> 使用数据页产生校验和，以帮助I/O系统，否则将静音检测损坏。
+启用校验和可能产生明显的性能损失。
+此选项只能在初始化过程中设置，并且以后不能更改。
+如果设置，那么在所有数据库中计算所有对象的校验和。
+</P></DD><DT><TT CLASS="OPTION">--locale=<TT CLASS="REPLACEABLE"><I>locale</I></TT></TT></DT><DD><P> 为数据库簇（cluster）设置缺省的区域。如果没有指定这个选项，
+那么区域是从<TT CLASS="COMMAND">initdb</TT> 运行的环境中继承过来的。
+区域设置在<A HREF="locale.html">第 22.1 &#33410;</A>里描述。
+</P></DD><DT><TT CLASS="OPTION">--lc-collate=<TT CLASS="REPLACEABLE"><I>locale</I></TT></TT><BR><TT CLASS="OPTION">--lc-ctype=<TT CLASS="REPLACEABLE"><I>locale</I></TT></TT><BR><TT CLASS="OPTION">--lc-messages=<TT CLASS="REPLACEABLE"><I>locale</I></TT></TT><BR><TT CLASS="OPTION">--lc-monetary=<TT CLASS="REPLACEABLE"><I>locale</I></TT></TT><BR><TT CLASS="OPTION">--lc-numeric=<TT CLASS="REPLACEABLE"><I>locale</I></TT></TT><BR><TT CLASS="OPTION">--lc-time=<TT CLASS="REPLACEABLE"><I>locale</I></TT></TT></DT><DD><P> 类似<TT CLASS="OPTION">--locale</TT>，但是只设置特殊范畴的区域。
+</P></DD><DT><TT CLASS="OPTION">--no-locale</TT></DT><DD><P> 相当于<TT CLASS="OPTION">--locale=C</TT>。
+</P></DD><DT><TT CLASS="OPTION">-N</TT><BR><TT CLASS="OPTION">--nosync</TT></DT><DD><P> 缺省情况下<TT CLASS="COMMAND">initdb</TT>会等待所有的文件被安全地写入到磁盘中。
+此选项会导致<TT CLASS="COMMAND">initdb</TT>不进行等待，这样更快，
+但意味着随后的操作系统崩溃可能把数据目录损坏。
+</P></DD><DT><TT CLASS="OPTION">--pwfile=<TT CLASS="REPLACEABLE"><I>filename</I></TT></TT></DT><DD><P> 令<TT CLASS="COMMAND">initdb</TT>从文件中读取数据库超级用户的密码。该文件的第一行被作为密码。
+</P></DD><DT><TT CLASS="OPTION">-S</TT><BR><TT CLASS="OPTION">--sync-only</TT></DT><DD><P> 安全地写入所有数据库文件到磁盘然后退出。这并不进行任何普通<SPAN CLASS="APPLICATION">initdb</SPAN>操作。
+</P></DD><DT><TT CLASS="OPTION">-T <TT CLASS="REPLACEABLE"><I>CFG</I></TT></TT><BR><TT CLASS="OPTION">--text-search-config=<TT CLASS="REPLACEABLE"><I>CFG</I></TT></TT></DT><DD><P> 设置缺省的文本搜索配置。
+见<A HREF="runtime-config-client.html#GUC-DEFAULT-TEXT-SEARCH-CONFIG">default_text_search_config</A>了解更多信息。
+</P></DD><DT><TT CLASS="OPTION">-U <TT CLASS="REPLACEABLE"><I>username</I></TT></TT><BR><TT CLASS="OPTION">--username=<TT CLASS="REPLACEABLE"><I>username</I></TT></TT></DT><DD><P> 选择数据库超级用户的用户名。缺省是运行
+<TT CLASS="COMMAND">initdb</TT>的用户的有效用户。超级用户的名字是什么并不重要，
+但是可以选择习惯的名字<SPAN CLASS="SYSTEMITEM">postgres</SPAN>，即使和操作系统的用户名不一样也没关系。
+</P></DD><DT><TT CLASS="OPTION">-W</TT><BR><TT CLASS="OPTION">--pwprompt</TT></DT><DD><P> 令<TT CLASS="COMMAND">initdb</TT>提示输入数据库超级用户的口令。
+如果你不准备使用口令认证，这个选项并不重要。否则你将不能使用口令认证，直到你设置了口令。
+</P></DD><DT><TT CLASS="OPTION">-X <TT CLASS="REPLACEABLE"><I>directory</I></TT></TT><BR><TT CLASS="OPTION">--xlogdir=<TT CLASS="REPLACEABLE"><I>directory</I></TT></TT></DT><DD><P> 此选项指定事务日志应该存放在哪个目录。
+</P></DD></DL></DIV><P>
+</P><P> 其它不常用的参数还有：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="OPTION">-d</TT><BR><TT CLASS="OPTION">--debug</TT></DT><DD><P> 从初始化后端打印调试输出以及一些其它的一些普通用户不太感兴趣的信息。
+初始化后端是<TT CLASS="COMMAND">initdb</TT>
+用于创建系统表的程序。这个选项生成大量非常枯燥的输出。
+</P></DD><DT><TT CLASS="OPTION">-L <TT CLASS="REPLACEABLE"><I>directory</I></TT></TT></DT><DD><P> 告诉<TT CLASS="COMMAND">initdb</TT>初始化数据库时所需要的输入文件的位置。
+通常不需要。如果需要你明确指定的话，程序会提示你输入。
+</P></DD><DT><TT CLASS="OPTION">-n</TT><BR><TT CLASS="OPTION">--noclean</TT></DT><DD><P> 缺省时，当<TT CLASS="COMMAND">initdb</TT>创建数据库簇（cluster）时出错，
+它将在检测到不能结束工作之前将其创建的所有文件删除。
+这个选项禁止任何清理动作，因而对调试很有用。
+</P></DD></DL></DIV><P>
+</P><P> 其它参数：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="OPTION">-V</TT><BR><TT CLASS="OPTION">--version</TT></DT><DD><P> 输出<SPAN CLASS="APPLICATION">initdb</SPAN>命令的版本信息，然后退出。
+</P></DD><DT><TT CLASS="OPTION">-?</TT><BR><TT CLASS="OPTION">--help</TT></DT><DD><P> 显示<SPAN CLASS="APPLICATION">initdb</SPAN>命令的帮助信息，然后退出。
+</P></DD></DL></DIV><P>
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN89294"></A><H2>环境变量</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="ENVAR">PGDATA</TT></DT><DD><P> 指定数据库簇（cluster）存储的目录;
+可以使用<TT CLASS="OPTION">-D</TT>选项覆盖。
+</P></DD></DL></DIV><P> 此实用工具，像大多其他的<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 实用工具，
+还使用libpq支持的环境变量<SPAN CLASS="APPLICATION">libpq</SPAN>
+(见 <A HREF="libpq-envars.html">第 31.14 &#33410;</A>)。
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN89307"></A><H2>注意</H2><P> <TT CLASS="COMMAND">initdb</TT>还可以通过调用
+<TT CLASS="COMMAND">pg_ctl initdb</TT>.
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN89312"></A><H2>另请参阅</H2><A HREF="app-pg-ctl.html"><SPAN CLASS="APPLICATION">pg_ctl</SPAN></A>, <A HREF="app-postgres.html"><SPAN CLASS="APPLICATION">postgres</SPAN></A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/reference-server.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="app-pgcontroldata.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">PostgreSQL 服务器应用程序</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/reference-server.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><SPAN CLASS="APPLICATION">pg_controldata</SPAN></TD></TR></TABLE></DIV></BODY></HTML>

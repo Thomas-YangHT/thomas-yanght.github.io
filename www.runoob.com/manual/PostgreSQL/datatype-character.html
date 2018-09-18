@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>字符类型</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="数据类型" HREF="http://school.yunwei.edu/manual/PostgreSQL/datatype.html"><LINK REL="PREVIOUS" TITLE="货币类型" HREF="datatype-money.html"><LINK REL="NEXT" TITLE="二进制数据类型" HREF="datatype-binary.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/datatype.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="货币类型" HREF="datatype-money.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/datatype.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 8. 数据类型</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="二进制数据类型" HREF="datatype-binary.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="DATATYPE-CHARACTER">8.3. 字符类型</A></H1><DIV CLASS="TABLE"><A NAME="DATATYPE-CHARACTER-TABLE"></A><P><B>&#34920; 8-4. 字符类型</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><THEAD><TR><TH>名字</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD><TT CLASS="TYPE">character varying(<TT CLASS="REPLACEABLE"><I>n</I></TT>)</TT>, <TT CLASS="TYPE">varchar(<TT CLASS="REPLACEABLE"><I>n</I></TT>)</TT></TD><TD>变长，有长度限制</TD></TR><TR><TD><TT CLASS="TYPE">character(<TT CLASS="REPLACEABLE"><I>n</I></TT>)</TT>, <TT CLASS="TYPE">char(<TT CLASS="REPLACEABLE"><I>n</I></TT>)</TT></TD><TD>定长，不足补空白</TD></TR><TR><TD><TT CLASS="TYPE">text</TT></TD><TD>变长，无长度限制</TD></TR></TBODY></TABLE></DIV><P><A HREF="datatype-character.html#DATATYPE-CHARACTER-TABLE">&#34920; 8-4</A>显示了在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+里可用于一般用途的字符类型。 </P><P><ACRONYM CLASS="ACRONYM">SQL</ACRONYM>定义了两种基本的字符类型：<TT CLASS="TYPE">character varying(<TT CLASS="REPLACEABLE"><I>n</I></TT>)</TT>
+和<TT CLASS="TYPE">character(<TT CLASS="REPLACEABLE"><I>n</I></TT>)</TT>，这里的<TT CLASS="REPLACEABLE"><I>n</I></TT>
+是一个正整数。两种类型都可以存储最多<TT CLASS="REPLACEABLE"><I>n</I></TT>个字符的字符串（没有字节）。
+试图存储更长的字符串到这些类型的字段里会产生一个错误，
+除非超出长度的字符都是空白，这种情况下该字符串将被截断为最大长度。
+这个看上去有点怪异的例外是<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>标准要求的。
+如果要存储的字符串比声明的长度短，类型为<TT CLASS="TYPE">character</TT>的数值将会用空白填满；
+而类型为<TT CLASS="TYPE">character varying</TT>的数值将只是存储短些的字符串。 </P><P>如果我们明确地把一个数值转换成<TT CLASS="TYPE">character varying(<TT CLASS="REPLACEABLE"><I>n</I></TT>)</TT>
+或<TT CLASS="TYPE">character(<TT CLASS="REPLACEABLE"><I>n</I></TT>)</TT>，那么超长的数值将被截断成<TT CLASS="REPLACEABLE"><I>n</I></TT>
+个字符，且不会抛出错误。这也是<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>标准的要求。 </P><P><TT CLASS="TYPE">varchar(<TT CLASS="REPLACEABLE"><I>n</I></TT>)</TT>和<TT CLASS="TYPE">char(<TT CLASS="REPLACEABLE"><I>n</I></TT>)</TT>
+分别是<TT CLASS="TYPE">character varying(<TT CLASS="REPLACEABLE"><I>n</I></TT>)</TT>
+和<TT CLASS="TYPE">character(<TT CLASS="REPLACEABLE"><I>n</I></TT>)</TT>的别名，
+没有声明长度的<TT CLASS="TYPE">character</TT>等于<TT CLASS="TYPE">character(1)</TT>；
+如果不带长度说明词使用<TT CLASS="TYPE">character varying</TT>，
+那么该类型接受任何长度的字符串。后者是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的扩展。 </P><P>另外，<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>提供<TT CLASS="TYPE">text</TT>类型，
+它可以存储任何长度的字符串。尽管类型<TT CLASS="TYPE">text</TT>不是<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>
+标准，但是许多其它SQL数据库系统也有它。</P><P><TT CLASS="TYPE">character</TT>类型的数值物理上都用空白填充到指定的长度<TT CLASS="REPLACEABLE"><I>n</I></TT>，
+并且以这种方式存储和显示。不过，填充的空白是无语意的。在比较两个<TT CLASS="TYPE">character</TT>
+值的时候，填充的空白都不会被关注，在转换成其它字符串类型的时候，
+<TT CLASS="TYPE">character</TT>值里面的空白会被删除。请注意，
+在<TT CLASS="TYPE">character varying</TT>和<TT CLASS="TYPE">text</TT>数值里，结尾的空白是<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">有语意</I></SPAN>的。
+并且当使用模式匹配时，如<TT CLASS="LITERAL">LIKE</TT>，使用正则表达式。 </P><P>一个简短的字符串（最多126个字节）的存储要求是1个字节加上实际的字符串，
+其中包括空格填充的<TT CLASS="TYPE">character</TT>。更长的字符串有4个字节的开销，
+而不是1。长的字符串将会自动被系统压缩，因此在磁盘上的物理需求可能会更少些。
+更长的数值也会存储在后台表里面，这样它们就不会干扰对短字段值的快速访问。
+不管怎样，允许存储的最长字符串大概是1GB 。允许在数据类型声明中出现的<TT CLASS="REPLACEABLE"><I>n</I></TT>
+的最大值比这还小。修改这个行为没有什么意义，因为在多字节编码下字符和字节的数目可能差别很大。
+如果你想存储没有特定上限的长字符串，那么使用<TT CLASS="TYPE">text</TT>
+或没有长度声明的<TT CLASS="TYPE">character varying</TT>，而不要选择一个任意长度限制。</P><DIV CLASS="TIP"><BLOCKQUOTE CLASS="TIP"><P><B>&#25552;&#31034;: </B>这三种类型之间没有性能差别，除了当使用填充空白类型时的增加存储空间，
+和当存储长度约束的列时一些检查存入时长度的额外的CPU周期。
+虽然在某些其它的数据库系统里，<TT CLASS="TYPE">character(<TT CLASS="REPLACEABLE"><I>n</I></TT>)</TT>
+有一定的性能优势，但在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>里没有。
+事实上，<TT CLASS="TYPE">character(<TT CLASS="REPLACEABLE"><I>n</I></TT>)</TT>通常是这三个中最慢的，
+因为额外存储成本。在大多数情况下，应该使用<TT CLASS="TYPE">text</TT>
+或<TT CLASS="TYPE">character varying</TT>。</P></BLOCKQUOTE></DIV><P>请参考<A HREF="sql-syntax-lexical.html#SQL-SYNTAX-STRINGS">第 4.1.2.1 &#33410;</A>获取关于字符串文本的语法的信息，
+以及<A HREF="http://school.yunwei.edu/manual/PostgreSQL/functions.html">第 9 &#31456;</A>获取关于可用操作符和函数的信息。
+数据库的字符集决定用于存储文本值的字符集；有关字符集支持的更多信息，
+请参考<A HREF="multibyte.html">第 22.3 &#33410;</A>。</P><DIV CLASS="EXAMPLE"><A NAME="AEN5232"></A><P><B>&#20363; 8-1. 使用字符类型</B></P><PRE CLASS="PROGRAMLISTING">CREATE TABLE test1 (a character(4));
+INSERT INTO test1 VALUES ('ok');
+SELECT a, char_length(a) FROM test1; -- <A
+NAME="CO.DATATYPE-CHAR"
+><B
+>(1)</B
+></A
+>
+<SAMP
+CLASS="COMPUTEROUTPUT"
+>  a   | char_length
+------+-------------
+ ok   |           2</SAMP
+>
+
+CREATE TABLE test2 (b varchar(5));
+INSERT INTO test2 VALUES ('ok');
+INSERT INTO test2 VALUES ('good      ');
+INSERT INTO test2 VALUES ('too long');
+<SAMP
+CLASS="COMPUTEROUTPUT"
+>ERROR:  value too long for type character varying(5)</SAMP
+>
+INSERT INTO test2 VALUES ('too long'::varchar(5)); -- 明确截断
+SELECT b, char_length(b) FROM test2;
+<SAMP
+CLASS="COMPUTEROUTPUT"
+>   b   | char_length
+-------+-------------
+ ok    |           2
+ good  |           5
+ too l |           5</SAMP
+></PRE><DIV CLASS="CALLOUTLIST"><DL COMPACT="COMPACT"><DT><A HREF="datatype-character.html#CO.DATATYPE-CHAR"><B>(1)</B></A></DT><DD><CODE CLASS="FUNCTION">char_length</CODE>函数在<A HREF="functions-string.html">第 9.4 &#33410;</A>中讨论。</DD></DL></DIV></DIV><P>在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>里另外还有两种定长字符类型。
+在<A HREF="datatype-character.html#DATATYPE-CHARACTER-SPECIAL-TABLE">&#34920; 8-5</A>里显示。<TT CLASS="TYPE">name</TT>
+类型<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">只</I></SPAN>用于在内部系统表中存储标识符并且不是给一般用户使用的。
+该类型长度当前定为 64 字节(63 可用字符加结束符)但应该使用<TT CLASS="LITERAL">C</TT>源码中的常量
+<TT CLASS="SYMBOL">NAMEDATALEN</TT>引用。这个长度是在编译的时候设置的，
+因而可以为特殊用途调整，缺省的最大长度在以后的版本可能会改变。
+类型<TT CLASS="TYPE">"char"</TT>(注意引号)和<TT CLASS="TYPE">char(1)</TT>是不一样的，
+它只用了一个字节的存储空间。它在系统内部用于系统表当做过分简单化的枚举类型用。</P><DIV CLASS="TABLE"><A NAME="DATATYPE-CHARACTER-SPECIAL-TABLE"></A><P><B>&#34920; 8-5. 特殊字符类型</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><THEAD><TR><TH>名字</TH><TH>存储空间</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD><TT CLASS="TYPE">"char"</TT></TD><TD>1 字节</TD><TD>单字节内部类型</TD></TR><TR><TD><TT CLASS="TYPE">name</TT></TD><TD>64 字节</TD><TD>用于对象名的内部类型</TD></TR></TBODY></TABLE></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="datatype-money.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="datatype-binary.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">货币类型</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/datatype.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">二进制数据类型</TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>内部函数</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="扩展SQL" HREF="http://school.yunwei.edu/manual/PostgreSQL/extend.html"><LINK REL="PREVIOUS" TITLE="过程语言函数" HREF="xfunc-pl.html"><LINK REL="NEXT" TITLE="C-语言函数" HREF="xfunc-c.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/xfunc.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="过程语言函数" HREF="xfunc-pl.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/extend.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 35. 扩展<ACRONYM CLASS="ACRONYM">SQL</ACRONYM></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="C-语言函数" HREF="xfunc-c.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="XFUNC-INTERNAL">35.8. 内部函数</A></H1><P> 内部函数都是用C写的函数，它们已经通过静态链接的方式嵌入
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>服务器进程中了。
+函数定义的<SPAN CLASS="QUOTE">"函数体"</SPAN>确定了函数的C语言名称，
+它不必与给 SQL 使用的名称相同。出于向下兼容考虑，
+一个空的函数体也可以被接受，
+这意味着 C 函数名与 SQL 函数名相同。</P><P>
+通常，所有在服务器里出现的内部函数都在数据库初始化时定义(参阅<A HREF="creating-cluster.html">第 17.2 &#33410;</A>)。
+但是用户可以用<TT CLASS="COMMAND">CREATE FUNCTION</TT>为内部函数创建额外的别名。
+内部函数在<TT CLASS="COMMAND">CREATE FUNCTION</TT>命令里是带着<TT CLASS="LITERAL">internal</TT>语言名声明的。
+比如，要给<CODE CLASS="FUNCTION">sqrt</CODE>函数创建一个别名：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION square_root(double precision) RETURNS double precision
+    AS 'dsqrt'
+    LANGUAGE internal
+    STRICT;</PRE><P>
+（大多数内部函数都应该声明为<SPAN CLASS="QUOTE">"strict"</SPAN>）。
+</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B> 并非所有<SPAN CLASS="QUOTE">"预定义"</SPAN>的函数都像上面那样是<SPAN CLASS="QUOTE">"内部的"</SPAN>。
+有些预定义的函数是用 SQL 写的。&#13;</P></BLOCKQUOTE></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="xfunc-pl.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="xfunc-c.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">过程语言函数</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/extend.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">C-语言函数</TD></TR></TABLE></DIV></BODY></HTML>

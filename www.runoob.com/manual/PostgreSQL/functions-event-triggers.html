@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>事件触发函数</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="函数和操作符" HREF="http://school.yunwei.edu/manual/PostgreSQL/functions.html"><LINK REL="PREVIOUS" TITLE="触发器函数" HREF="functions-trigger.html"><LINK REL="NEXT" TITLE="类型转换" HREF="http://school.yunwei.edu/manual/PostgreSQL/typeconv.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/func.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="触发器函数" HREF="functions-trigger.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/functions.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 9. 函数和操作符</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="类型转换" HREF="http://school.yunwei.edu/manual/PostgreSQL/typeconv.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="FUNCTIONS-EVENT-TRIGGERS">9.28. 事件触发函数</A></H1><P>当前<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>提供一个内建的事件触发帮助函数 <CODE CLASS="FUNCTION">pg_event_trigger_dropped_objects</CODE>。</P><P><CODE CLASS="FUNCTION">pg_event_trigger_dropped_objects</CODE>返回一个在<TT CLASS="LITERAL">sql_drop</TT>
+事件中调用的命令删除的所有对象的列表。如果在任何其他上下文中调用，
+<CODE CLASS="FUNCTION">pg_event_trigger_dropped_objects</CODE>将抛出一个错误。
+<CODE CLASS="FUNCTION">pg_event_trigger_dropped_objects</CODE>返回下列的字段：
+<DIV CLASS="INFORMALTABLE"><P></P><A NAME="AEN21026"></A><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><THEAD><TR><TH>名字</TH><TH>类型</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD><TT CLASS="LITERAL">classid</TT></TD><TD><TT CLASS="TYPE">Oid</TT></TD><TD>对象所在的目录的OID</TD></TR><TR><TD><TT CLASS="LITERAL">objid</TT></TD><TD><TT CLASS="TYPE">Oid</TT></TD><TD>目录中对象的OID</TD></TR><TR><TD><TT CLASS="LITERAL">objsubid</TT></TD><TD><TT CLASS="TYPE">int32</TT></TD><TD>对象的sub-id(例如，字段的属性个数)</TD></TR><TR><TD><TT CLASS="LITERAL">object_type</TT></TD><TD><TT CLASS="TYPE">text</TT></TD><TD>对象的类型</TD></TR><TR><TD><TT CLASS="LITERAL">schema_name</TT></TD><TD><TT CLASS="TYPE">text</TT></TD><TD> 如果有，为对象所在模式的名字；否则为<TT CLASS="LITERAL">NULL</TT>。不用双引号。
+</TD></TR><TR><TD><TT CLASS="LITERAL">object_name</TT></TD><TD><TT CLASS="TYPE">text</TT></TD><TD> 如果模式和名字的组合可以用来唯一的标识对象，那么就是对象的名字；否则为<TT CLASS="LITERAL">NULL</TT>。
+不用双引号，并且名字是从不模式限定的。
+</TD></TR><TR><TD><TT CLASS="LITERAL">object_identity</TT></TD><TD><TT CLASS="TYPE">text</TT></TD><TD> 对象身份的文本表现，模式限定的。每个标识符在身份中出现时要在必要时引用。
+</TD></TR></TBODY></TABLE><P></P></DIV>
+</P><P><CODE CLASS="FUNCTION">pg_event_trigger_dropped_objects</CODE> 函数可以在一个事务触发器中使用：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION test_event_trigger_for_drops()
+        RETURNS event_trigger LANGUAGE plpgsql AS $$
+DECLARE
+    obj record;
+BEGIN
+    FOR obj IN SELECT * FROM pg_event_trigger_dropped_objects()
+    LOOP
+        RAISE NOTICE '% dropped object: % %.% %',
+                     tg_tag,
+                     obj.object_type,
+                     obj.schema_name,
+                     obj.object_name,
+                     obj.object_identity;
+    END LOOP;
+END
+$$;
+CREATE EVENT TRIGGER test_event_trigger_for_drops
+   ON sql_drop
+   EXECUTE PROCEDURE test_event_trigger_for_drops();</PRE><P>
+</P><P>关于事务触发器的更多信息请参阅<A HREF="http://school.yunwei.edu/manual/PostgreSQL/event-triggers.html">第 37 &#31456;</A>。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="functions-trigger.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/typeconv.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">触发器函数</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/functions.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">类型转换</TD></TR></TABLE></DIV></BODY></HTML>

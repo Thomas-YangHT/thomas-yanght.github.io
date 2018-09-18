@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>GIN提示与技巧</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="GIN索引" HREF="http://school.yunwei.edu/manual/PostgreSQL/gin.html"><LINK REL="PREVIOUS" TITLE="实现" HREF="gin-implementation.html"><LINK REL="NEXT" TITLE="限制" HREF="gin-limit.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/gin.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="实现" HREF="gin-implementation.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/gin.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 57. GIN索引</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="限制" HREF="gin-limit.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="GIN-TIPS">57.4. GIN提示与技巧</A></H1><P></P><DIV CLASS="VARIABLELIST"><DL><DT>创建 vs 插入</DT><DD><P>由于可能要为每个项目插入很多键，所以<ACRONYM CLASS="ACRONYM">GIN</ACRONYM>索引的插入可能比较慢。
+对于向表中大量插入的操作，我们建议先删除GIN索引，在完成插入之后再重建它。
+</P><P>由于从<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 8.4开始可以使用延迟索引了，这个建议已经没有那么必要了。
+（详细请参考<A HREF="gin-implementation.html#GIN-FAST-UPDATE">第 57.3.1 &#33410;</A>。）
+但是，对于非常大量的更新，最好还是先删除，而后再重建索引。
+</P></DD><DT><A HREF="runtime-config-resource.html#GUC-MAINTENANCE-WORK-MEM">maintenance_work_mem</A></DT><DD><P><ACRONYM CLASS="ACRONYM">GIN</ACRONYM>索引的构建时间对<TT CLASS="VARNAME">maintenance_work_mem</TT>的设置非常敏感。
+它没有为在索引创建期间少使用工作内存做出努力。
+</P></DD><DT><A HREF="runtime-config-resource.html#GUC-WORK-MEM">work_mem</A></DT><DD><P>在一系列往已有的启用了<TT CLASS="LITERAL">FASTUPDATE</TT>的<ACRONYM CLASS="ACRONYM">GIN</ACRONYM>索引的插入操作期间，
+只要待处理实体列表的大小超过了<TT CLASS="VARNAME">work_mem</TT>，系统就会清理这个列表。
+为了避免可观察到的响应时间的大起大落，让待处理实体列表在后台被清理是比较合适的（比如通过autovacuum）。
+前台清理操作可以通过增加<TT CLASS="VARNAME">work_mem</TT>或者更加激进的autovacuum来避免。
+然而，扩大<TT CLASS="VARNAME">work_mem</TT>意味着如果发生了前台清理，那么它的执行时间将更长。
+</P></DD><DT><A HREF="runtime-config-client.html#GUC-GIN-FUZZY-SEARCH-LIMIT">gin_fuzzy_search_limit</A></DT><DD><P>开发<ACRONYM CLASS="ACRONYM">GIN</ACRONYM>索引的主要目的是为了让<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+支持高度可伸缩的全文索引，并且常常会遇见全文索引返回海量结果的情形。
+而且，这经常发生在查询高频词的时候，因而得到的结果集没什么用处。
+因为从磁盘读取大量记录并对其进行排序会消耗大量资源，这在产品环境下是不能接受的(注意，索引搜索本身是很快的)。
+</P><P>为了易于控制这种情况，<ACRONYM CLASS="ACRONYM">GIN</ACRONYM>有一个可配置的返回结果行数的软上限配置参数
+<TT CLASS="VARNAME">gin_fuzzy_search_limit</TT>。
+缺省值 0 表示没有限制。如果设置了非零值，那么返回的结果就是从完整结果集中随机选择的一部分。
+</P><P><SPAN CLASS="QUOTE">"软"</SPAN>的意思是实际返回的结果集大小可能与指定值稍有出入，具体取决于查询以及系统的随机数发生器的品质。
+</P><P>经验上，数千的值(比如5000 &mdash; 20000)可以工作得很好。
+</P></DD></DL></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="gin-implementation.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="gin-limit.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">实现</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/gin.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">限制</TD></TR></TABLE></DIV></BODY></HTML>

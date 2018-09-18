@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>CREATE DATABASE</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="CREATE CONVERSION" HREF="sql-createconversion.html"><LINK REL="NEXT" TITLE="CREATE DOMAIN" HREF="sql-createdomain.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/create_database.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="CREATE CONVERSION" HREF="sql-createconversion.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="CREATE DOMAIN" HREF="sql-createdomain.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-CREATEDATABASE"></A>CREATE DATABASE</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN69530"></A><H2>&#21517;&#31216;</H2>CREATE DATABASE&nbsp;--&nbsp;创建一个新数据库</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN69535"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">CREATE DATABASE <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+>
+    [ [ WITH ] [ OWNER [=] <TT
+CLASS="REPLACEABLE"
+><I
+>user_name</I
+></TT
+> ]
+           [ TEMPLATE [=] <TT
+CLASS="REPLACEABLE"
+><I
+>template</I
+></TT
+> ]
+           [ ENCODING [=] <TT
+CLASS="REPLACEABLE"
+><I
+>encoding</I
+></TT
+> ]
+           [ LC_COLLATE [=] <TT
+CLASS="REPLACEABLE"
+><I
+>lc_collate</I
+></TT
+> ]
+           [ LC_CTYPE [=] <TT
+CLASS="REPLACEABLE"
+><I
+>lc_ctype</I
+></TT
+> ]
+           [ TABLESPACE [=] <TT
+CLASS="REPLACEABLE"
+><I
+>tablespace_name</I
+></TT
+> ]
+           [ CONNECTION LIMIT [=] <TT
+CLASS="REPLACEABLE"
+><I
+>connlimit</I
+></TT
+> ] ]</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN69545"></A><H2>描述</H2><P><TT CLASS="COMMAND">CREATE DATABASE</TT>创建一个新<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>数据库。 </P><P>要创建一个数据库，你必须是一个超级用户或者有特殊的<TT CLASS="LITERAL">CREATEDB</TT>权限。 参阅<A HREF="sql-createuser.html">CREATE USER</A>。 </P><P>缺省情况下新数据库将通过复制标准系统数据库<TT CLASS="LITERAL">template1</TT>来创建。
+可以通过<TT CLASS="LITERAL">TEMPLATE <TT CLASS="REPLACEABLE"><I>name</I></TT></TT>指定不同的模板。
+尤其是，用<TT CLASS="LITERAL">TEMPLATE template0</TT>创建一个很纯净的、 只包括<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>预定义的标准对象的数据库。
+这个方法对于避免把任何已经加入到<TT CLASS="LITERAL">template1</TT>里的本地安装对象拷贝到新数据库是非常有用的。 </P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN69560"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="REPLACEABLE"><I>name</I></TT></DT><DD><P>要创建的数据库名字。</P></DD><DT><TT CLASS="REPLACEABLE"><I>user_name</I></TT></DT><DD><P>数据库用户的名字，他将是新数据库的所有者，或者是使用<TT CLASS="LITERAL">DEFAULT</TT>选项来指定当前缺省用户(也就是执行命令的用户)。
+要创建一个其他角色所有的数据库，你必须是那个角色的直接或间接的成员，或者是超级用户。</P></DD><DT><TT CLASS="REPLACEABLE"><I>template</I></TT></DT><DD><P>模板名，即从哪个模板创建新数据库，或者使用<TT CLASS="LITERAL">DEFAULT</TT>选项来指定缺省模板(<TT CLASS="LITERAL">template1</TT>)。 </P></DD><DT><TT CLASS="REPLACEABLE"><I>encoding</I></TT></DT><DD><P>创建新数据库使用的字符编码。
+可以使用文本名字(例如<TT CLASS="LITERAL">'SQL_ASCII'</TT>)、整数编号或是<TT CLASS="LITERAL">DEFAULT</TT>选项来指定(模版数据库的编码)。
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>服务器支持的字符集在<A HREF="multibyte.html#MULTIBYTE-CHARSET-SUPPORTED">第 22.3.1 &#33410;</A>里有描述。
+额外的限制参见下文。 </P></DD><DT><TT CLASS="REPLACEABLE"><I>lc_collate</I></TT></DT><DD><P>用于新数据库的排序规则(LC_COLLATE)。
+这影响到应用对字符串的排序顺序，例如：在有ORDER BY的查询中，以及用于文本列的索引的顺序。
+在默认情况下，使用模板数据库的排序规则。 请看以下附加的限制。 </P></DD><DT><TT CLASS="REPLACEABLE"><I>lc_ctype</I></TT></DT><DD><P>用于新数据库的字符分类(<TT CLASS="LITERAL">LC_CTYPE</TT>)。
+这影响字符的分类，例如： 小写、大写和数字。
+默认情况下使用模板数据库的字符分类。 请看以下附加的限制。 </P></DD><DT><TT CLASS="REPLACEABLE"><I>tablespace_name</I></TT></DT><DD><P>和新数据库关联的表空间名字， 或者使用<TT CLASS="LITERAL">DEFAULT</TT>选项表示使用模版数据库的表空间。
+这个表空间将成为在这个数据库里创建的对象的缺省表空间。 参阅<A HREF="sql-createtablespace.html">CREATE TABLESPACE</A>获取更多信息。 </P></DD><DT><TT CLASS="REPLACEABLE"><I>connlimit</I></TT></DT><DD><P>数据库可以接受多少并发的连接。-1(缺省)意味着没有限制。 </P></DD></DL></DIV><P>可选参数可以按任意顺序书写，而不仅仅是上面显示的顺序。 </P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN69614"></A><H2>注意</H2><P><TT CLASS="COMMAND">CREATE DATABASE</TT>不能在事务块里面执行。</P><P>类似<SPAN CLASS="QUOTE">"could not initialize database directory"</SPAN>这样的错误，最有可能是因为数据目录的权限不够或者磁盘满之类的文件系统问题。 </P><P>使用<A HREF="sql-dropdatabase.html">DROP DATABASE</A>删除一个数据库。 </P><P>程序<A HREF="app-createdb.html"><SPAN CLASS="APPLICATION">createdb</SPAN></A>是这个命令的封装，使用更加方便。 </P><P>尽管可以通过把某数据库名声明为模板而不是用<TT CLASS="LITERAL">template1</TT>，但是这(还)不是一个通用的<SPAN CLASS="QUOTE">"<TT CLASS="COMMAND">COPY DATABASE</TT>"</SPAN>功能。
+主要的限制是在从模版复制的时候不允许有其它会话链接到模版数据库上。
+如果在开始执行<TT CLASS="COMMAND">CREATE DATABASE</TT>的时候有其它会话正连接在模版数据库上，那么操作将会失败；
+否则直到<TT CLASS="COMMAND">CREATE DATABASE</TT>完成之后，才允许对模板数据库建立新的会话连接。
+参见<A HREF="manage-ag-templatedbs.html">第 21.3 &#33410;</A>获取更多信息。 </P><P>为一个新数据库指定的字符集编码必须兼容所选择的区域环境设置 (<TT CLASS="LITERAL">LC_COLLATE</TT>和<TT CLASS="LITERAL">LC_CTYPE</TT>)。
+若区域设置为 <TT CLASS="LITERAL">C</TT>(或相当于<TT CLASS="LITERAL">POSIX</TT>)，那么所有的编码都允许， 但是对于其他的区域设置，只有一个编码能正常工作。
+（然而，在Windows系统中， UTF-8编码可用于任何区域设置。）
+<TT CLASS="COMMAND">CREATE DATABASE</TT>将会允许超级用户 来指定<TT CLASS="LITERAL">SQL_ASCII</TT>编码而不考虑区域设置情况，这种做法已过时了，是不宜采用的，它会导致编码与不兼容区域设置的数据被存储在数据库中时字符串函数功能会不正常。 </P><P>除了<TT CLASS="LITERAL">template0</TT>用作模板的时候，其他数据库的编码和区域设置必须匹配模板数据库。
+这是因为其他数据库可能会包含不匹配指定编码的数据，或者可能包含排序顺序受<TT CLASS="LITERAL">LC_COLLATE</TT>和<TT CLASS="LITERAL">LC_CTYPE</TT>影响的索引。
+复制这些数据会导致数据库被新设置破坏。
+然而，<TT CLASS="LITERAL">template0</TT>公认是不包含任何会受到影响的数据或者索引的。 </P><P><TT CLASS="LITERAL">CONNECTION LIMIT</TT>选项只是近似地强制；如果两个新的连接几乎同时发起， 而只剩下一个连接<SPAN CLASS="QUOTE">"slot"</SPAN>了，那么很可能两个连接都失效。另外，超级用户连接时不受这个限制。 </P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN69646"></A><H2>例子</H2><P>创建一个新数据库:
+</P><PRE CLASS="PROGRAMLISTING">CREATE DATABASE lusiadas;</PRE><P></P><P> 创建一个由用户<TT CLASS="LITERAL">salesapp</TT>拥有的数据库<TT CLASS="LITERAL">sales</TT>，缺省表空间是<TT CLASS="LITERAL">salesspace</TT>：
+</P><PRE CLASS="PROGRAMLISTING">CREATE DATABASE sales OWNER salesapp TABLESPACE salesspace;</PRE><P></P><P>创建一个数据库<TT CLASS="LITERAL">music</TT>，支持ISO-8859-1字符集：
+</P><PRE CLASS="PROGRAMLISTING">CREATE DATABASE music ENCODING 'LATIN1' TEMPLATE template0;</PRE><P>
+在这个例子中，<TT CLASS="LITERAL">TEMPLATE template0</TT>选项只在<TT CLASS="LITERAL">template1</TT>的编码不是ISO-8859-1时被请求。
+请注意：更改编码可能也会需要选择新的<TT CLASS="LITERAL">LC_COLLATE</TT>和<TT CLASS="LITERAL">LC_CTYPE</TT>设置。 </P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN69662"></A><H2>兼容性</H2><P>在sql标准里头没有 CREATE DATABASE 语句。数据库等同于目录，其创建是交给具体的数据库实现去定义的。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN69665"></A><H2>参见</H2><A HREF="sql-alterdatabase.html">ALTER DATABASE</A>, <A HREF="sql-dropdatabase.html">DROP DATABASE</A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-createconversion.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-createdomain.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">CREATE CONVERSION</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">CREATE DOMAIN</TD></TR></TABLE></DIV></BODY></HTML>

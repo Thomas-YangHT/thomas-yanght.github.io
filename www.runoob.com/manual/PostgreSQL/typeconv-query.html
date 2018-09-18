@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>值存储</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="类型转换" HREF="http://school.yunwei.edu/manual/PostgreSQL/typeconv.html"><LINK REL="PREVIOUS" TITLE="函数" HREF="typeconv-func.html"><LINK REL="NEXT" TITLE="UNION, CASE 和相关构造 " HREF="typeconv-union-case.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/typeconv.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="函数" HREF="typeconv-func.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/typeconv.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 10. 类型转换</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="UNION, CASE 和相关构造 " HREF="typeconv-union-case.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="TYPECONV-QUERY">10.4. 值存储</A></H1><P>要插入表中的数值也根据下面的步骤转换成目标列的数据类型。</P><DIV CLASS="PROCEDURE"><P><B>值存储数据类型解析</B></P><OL TYPE="1"><LI CLASS="STEP"><P>查找与目标字段准确的匹配。</P></LI><LI CLASS="STEP"><P>试着将表达式直接转换成目标类型。如果已知这两种类型之间存在一个已注册的转换函数，
+那么直接调用该转换函数即可。如果表达式是一个未知类型文本，
+该文本字符串的内容将交给目标类型的输入转换过程。</P></LI><LI CLASS="STEP"><P>检查一下看看目标类型是否有长度转换。长度转换是一个从某类型到自身的转换。
+如果在<TT CLASS="STRUCTNAME">pg_cast</TT>表里面找到一个，那么在存储到目标字段之前先在表达式上应用。
+这样的转换函数总是接受一个额外的类型为<TT CLASS="TYPE">integer</TT>的参数，
+它接收目标字段的<TT CLASS="STRUCTFIELD">atttypmod</TT>值(实际上是其声明长度，<TT CLASS="STRUCTFIELD">atttypmod</TT>
+的解释随不同的数据类型而不同)，并且它可能接受一个<TT CLASS="TYPE">boolean</TT>类型的第三个参数，
+表示转换是显式的还是隐式的。转换函数负责施加那些长度相关的语义，比如长度检查或者截断。</P></LI></OL></DIV><DIV CLASS="EXAMPLE"><A NAME="AEN21376"></A><P><B>&#20363; 10-7. <TT CLASS="TYPE">character</TT> 存储类型转换</B></P><P>对一个目标列定义为<TT CLASS="TYPE">character(20)</TT>的语句，下面的语句显示存储值的长度正确：
+</P><PRE CLASS="SCREEN">CREATE TABLE vv (v character(20));
+INSERT INTO vv SELECT 'abc' || 'def';
+SELECT v, octet_length(v) FROM vv;
+
+          v           | octet_length
+----------------------+--------------
+ abcdef               |           20
+(1 row)</PRE><P></P><P>这里真正发生的事情是两个 unknown 文本缺省解析成<TT CLASS="TYPE">text</TT>，
+这样就允许<TT CLASS="LITERAL">||</TT>操作符解析成<TT CLASS="TYPE">text</TT>连接。
+然后操作符的<TT CLASS="TYPE">text</TT>结果转换成<TT CLASS="TYPE">bpchar</TT>(<SPAN CLASS="QUOTE">"空白填充的字符型"</SPAN>，
+<TT CLASS="TYPE">character</TT>类型内部名称)以匹配目标字段类型。不过，从<TT CLASS="TYPE">text</TT>
+到<TT CLASS="TYPE">bpchar</TT>的转换是二进制兼容的，这样的转换是隐含的并且实际上不做任何函数调用。
+最后，在系统表里找到长度转换函数<TT CLASS="LITERAL">bpchar(bpchar, integer, boolean)</TT>
+并且应用于该操作符的结果和存储的字段长。这个类型相关的函数执行所需的长度检查和额外的空白填充。</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="typeconv-func.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="typeconv-union-case.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">函数</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/typeconv.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><TT CLASS="LITERAL">UNION</TT>, <TT CLASS="LITERAL">CASE</TT> 和相关构造</TD></TR></TABLE></DIV></BODY></HTML>

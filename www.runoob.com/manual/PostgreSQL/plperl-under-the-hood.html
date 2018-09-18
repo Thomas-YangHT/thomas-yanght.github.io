@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>后台PL/Perl</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="PL/Perl - Perl 过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/plperl.html"><LINK REL="PREVIOUS" TITLE="PL/Perl 触发器" HREF="plperl-triggers.html"><LINK REL="NEXT" TITLE="PL/Python - Python 过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/plpython.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/plperl.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="PL/Perl 触发器" HREF="plperl-triggers.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plperl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 42. PL/Perl - Perl 过程语言</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="PL/Python - Python 过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/plpython.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="PLPERL-UNDER-THE-HOOD">42.7. 后台PL/Perl</A></H1><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="PLPERL-CONFIG">42.7.1. 配置</A></H2><P>本节列出影响<SPAN CLASS="APPLICATION">PL/Perl</SPAN>的配置参数。</P><P></P><DIV CLASS="VARIABLELIST"><DL><DT><A NAME="GUC-PLPERL-ON-INIT"></A><TT CLASS="VARNAME">plperl.on_init</TT> (<TT CLASS="TYPE">string</TT>)</DT><DD><P>指定当Perl触发器第一次初始化时执行Perl代码，在这之前是专业为了<TT CLASS="LITERAL">plperl</TT>或
+<TT CLASS="LITERAL">plperlu</TT>使用的。当这段代码执行时SPI函数是不适用的。如果代码因错误而失败，
+那么它将退出解释器的初始化，并且传播错误到调用的查询，导致当前事务或子事务退出。</P><P>Perl代码限制为单个字符串。更长的代码可以放入一个模块，并且由<TT CLASS="LITERAL">on_init</TT>字符串加载。例子：
+</P><PRE CLASS="PROGRAMLISTING">plperl.on_init = 'require "plperlinit.pl"'
+plperl.on_init = 'use lib "/my/app"; use MyApp::PgInit;'</PRE><P>
+</P><P>任何由<TT CLASS="LITERAL">plperl.on_init</TT>直接或非直接加载的模块，都将适用于<TT CLASS="LITERAL">plperl</TT>使用。
+这可能会创建一个安全风险。要查看哪个模块被加载了可以使用：
+</P><PRE CLASS="PROGRAMLISTING">DO 'elog(WARNING, join ", ", sort keys %INC)' LANGUAGE plperl;</PRE><P>
+</P><P>如果plperl库包含在<A HREF="runtime-config-resource.html#GUC-SHARED-PRELOAD-LIBRARIES">shared_preload_libraries</A>里面，那么初始化将在postmaster中发生，
+这种情况下要额外考虑postmaster不稳定的风险。利用这一特性的首要原因是Perl模块通过<TT CLASS="LITERAL">plperl.on_init</TT>
+加载需要在postmaster启动的情况下，并且在个人的数据库会话中不会有额外开销加载，立即可用。然而，
+请记住，额外开销只是在第一次Perl解释器被数据库会话使用的时候避免，
+也就是PL/PerlU或PL/Perl是调用PL/Perl函数的第一个SQL角色。
+在一个数据库会话中创建的任何额外的Perl解释器必须重新执行<TT CLASS="LITERAL">plperl.on_init</TT>。同样，在Windows上，
+从预加载中不会有任何节省，因为在postmaster进程中创建的Perl解释器不会传播到子进程。</P><P>这个postmaster只能在<TT CLASS="FILENAME">postgresql.conf</TT>文件或服务器命令行中设置。</P></DD><DT><A NAME="GUC-PLPERL-ON-PLPERL-INIT"></A><TT CLASS="VARNAME">plperl.on_plperl_init</TT> (<TT CLASS="TYPE">string</TT>)<BR><TT CLASS="VARNAME">plperl.on_plperlu_init</TT> (<TT CLASS="TYPE">string</TT>)</DT><DD><P>这些参数指定当Perl解释器专门分别为<TT CLASS="LITERAL">plperl</TT>或<TT CLASS="LITERAL">plperlu</TT>时执行Perl代码。
+当PL/Perl或PL/PerlU函数在一个数据库会话中第一次执行时会发生这种情况，
+或当一个额外的解释器因为其他语言的调用或一个PL/Perl函数被一个新的SQL角色调用而创建时，
+也会发生这种情况。这遵循任何由<TT CLASS="LITERAL">plperl.on_init</TT>所做的初始化。
+当执行Perl代码时无法使用SPI函数。在<TT CLASS="LITERAL">plperl.on_plperl_init</TT>里面的Perl代码在
+<SPAN CLASS="QUOTE">"锁定"</SPAN>解释器后执行，并且因此只能执行信任的操作。</P><P>如果代码因错误而失败，那么它将退出解释器的初始化，并且传播错误到调用的查询，导致当前事务或子事务退出。
+任何Perl已经做的动作不会回滚；但是，那个解释器将不会再使用。如果语言再次被使用，
+那么初始化将在一个新的Perl解释器中尝试。</P><P>只有超级用户可以改变这些设置。尽管这些设置可以在一个会话中改变，
+但是这些改变将不会影响到已经用来执行函数的Perl解释器。</P></DD><DT><A NAME="GUC-PLPERL-USE-STRICT"></A><TT CLASS="VARNAME">plperl.use_strict</TT> (<TT CLASS="TYPE">boolean</TT>)</DT><DD><P>当设置PL/Perl函数的真实的后续编译时，将启用<TT CLASS="LITERAL">strict</TT>编译指示。
+这个参数不影响已经用当前会话编译过的函数。</P></DD></DL></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="PLPERL-MISSING">42.7.2. 限制及缺少的特性</A></H2><P> 下面的特性目前还在 PL/Perl 里面缺少，但是欢迎贡献。
+<P></P></P><UL><LI><P>PL/Perl 函数无法相互直接调用。</P></LI><LI><P>SPI 目前尚未完全实现。</P></LI><LI><P>如果你用<TT CLASS="LITERAL">spi_exec_query</TT>抓取非常大的数据集，你应该明白这些数据都会放到内存里。
+你可以用前面演示的<TT CLASS="LITERAL">spi_query</TT>/<TT CLASS="LITERAL">spi_fetchrow</TT>来避免这些。</P><P>类似的问题也会发生在一个返回集合的函数用<TT CLASS="LITERAL">return</TT>
+给 PostgreSQL 传递回去一个巨大的行集合。你也可以像前面演示的那样用<TT CLASS="LITERAL">return_next</TT>
+返回每个返回行的方法避免这个问题。</P></LI><LI><P>当一个会话正常结束时，不是因为一个致命的错误而结束，执行任何已经定义的<TT CLASS="LITERAL">END</TT>块。
+当前没有其他动作执行。特别的，文件句柄不自动刷新并且对象不自动销毁。</P></LI></UL><P>
+</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="plperl-triggers.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plpython.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">PL/Perl 触发器</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plperl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">PL/Python - Python 过程语言</TD></TR></TABLE></DIV></BODY></HTML>

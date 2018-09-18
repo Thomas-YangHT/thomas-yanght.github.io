@@ -1,0 +1,315 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>安装过程</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="  源码安装" HREF="http://school.yunwei.edu/manual/PostgreSQL/installation.html"><LINK REL="PREVIOUS" TITLE="获取源码" HREF="install-getsource.html"><LINK REL="NEXT" TITLE="安装后设置" HREF="install-post.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/installation.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="获取源码" HREF="install-getsource.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/installation.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 15. 源码安装</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="安装后设置" HREF="install-post.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="INSTALL-PROCEDURE">15.4. 安装过程</A></H1><DIV CLASS="PROCEDURE"><OL TYPE="1"><LI CLASS="STEP"><A NAME="CONFIGURE"></A><P><B>配置</B></P><P>
+安装过程的第一步就是配置源代码树并选择你喜欢的选项。这个工作是通过运行<TT CLASS="FILENAME">configure</TT>脚本实现的，
+对于缺省安装，你只需要简单地敲入:
+</P><PRE CLASS="SCREEN"><KBD
+CLASS="USERINPUT"
+>./configure</KBD
+></PRE><P>
+该脚本将运行一些测试来决定一些系统相关的变量，并检测操作系统的设置，
+最后将在编译树中创建一些文件以记录它找到了什么。
+如果你想保持编译目录的独立，
+那么你也可以在源代码树之外的其它目录里运行<TT CLASS="FILENAME">configure</TT>。
+这个过程也被称为<I CLASS="FIRSTTERM">VPATH</I>
+编译。这里是方法：
+</P><PRE CLASS="SCREEN"><KBD
+CLASS="USERINPUT"
+>mkdir build_dir</KBD
+>
+<KBD
+CLASS="USERINPUT"
+>cd build_dir</KBD
+>
+<KBD
+CLASS="USERINPUT"
+>/path/to/source/tree/configure [options go here]</KBD
+>
+<KBD
+CLASS="USERINPUT"
+>gmake</KBD
+></PRE><P>
+</P><P> 缺省设置将编译服务器和应用程序，还有所有只需要C编译器的客户端程序和接口。
+缺省时所有文件都将安装到<TT CLASS="FILENAME">/usr/local/pgsql</TT>目录。</P><P>
+你可以通过给出下面的一个或多个<TT CLASS="FILENAME">configure</TT>命令
+行选项来自定义编译和安装过程：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="OPTION">--prefix=<TT CLASS="REPLACEABLE"><I>PREFIX</I></TT></TT></DT><DD><P>
+把所有文件安装到<TT CLASS="REPLACEABLE"><I>PREFIX</I></TT>目录下而不是<TT CLASS="FILENAME">/usr/local/pgsql</TT>里。
+实际的文件会安装到不同的子目录里；
+甚至没有一个文件会直接安装到<TT CLASS="REPLACEABLE"><I>PREFIX</I></TT>目录里。
+</P><P> 如果你有特殊需要，你还可以用下面的选项自定义不同子目录的位置。
+不过，即使你保持缺省设置，安装也是可以再定位的，意味着在安装之后可以移动目录(<TT CLASS="LITERAL">man</TT>和<TT CLASS="LITERAL">doc</TT>的位置不受影响)。</P><P> 为了可以再定位安装，你可能需要使用<TT CLASS="FILENAME">configure</TT>的<TT CLASS="LITERAL">--disable-rpath</TT>选项。
+还有，你需要告诉操作系统如何找到共享库。</P></DD><DT><TT CLASS="OPTION">--exec-prefix=<TT CLASS="REPLACEABLE"><I>EXEC-PREFIX</I></TT></TT></DT><DD><P> 把系统结构相关的文件安装到<TT CLASS="REPLACEABLE"><I>EXEC-PREFIX</I></TT>，
+而不是<TT CLASS="REPLACEABLE"><I>PREFIX</I></TT>设置的地方。
+这样做可以比较方便地在不同主机之间共享系统结构相关的文件。如果你省略它，
+那么<TT CLASS="REPLACEABLE"><I>EXEC-PREFIX</I></TT>就会被设置为等于<TT CLASS="REPLACEABLE"><I>PREFIX</I></TT>并且不论与系统结构相关与否的文件
+都会被安装到同一目录树下，这也可能是你想要的。</P></DD><DT><TT CLASS="OPTION">--bindir=<TT CLASS="REPLACEABLE"><I>DIRECTORY</I></TT></TT></DT><DD><P> 声明可执行程序的目录，缺省是<TT CLASS="FILENAME"><TT CLASS="REPLACEABLE"><I>EXEC-PREFIX</I></TT>/bin</TT>，
+通常也就是<TT CLASS="FILENAME">/usr/local/pgsql/bin</TT>。</P></DD><DT><TT CLASS="OPTION">--sysconfdir=<TT CLASS="REPLACEABLE"><I>DIRECTORY</I></TT></TT></DT><DD><P> 设置各种配置文件的目录。缺省是<TT CLASS="FILENAME"><TT CLASS="REPLACEABLE"><I>PREFIX</I></TT>/etc</TT>。</P></DD><DT><TT CLASS="OPTION">--libdir=<TT CLASS="REPLACEABLE"><I>DIRECTORY</I></TT></TT></DT><DD><P> 设置库文件和可动态装载模块的目录。缺省是<TT CLASS="FILENAME"><TT CLASS="REPLACEABLE"><I>EXEC-PREFIX</I></TT>/lib</TT>。</P></DD><DT><TT CLASS="OPTION">--includedir=<TT CLASS="REPLACEABLE"><I>DIRECTORY</I></TT></TT></DT><DD><P> 设置C和C++头文件的目录。缺省是<TT CLASS="FILENAME"><TT CLASS="REPLACEABLE"><I>PREFIX</I></TT>/include</TT>。</P></DD><DT><TT CLASS="OPTION">--datarootdir=<TT CLASS="REPLACEABLE"><I>DIRECTORY</I></TT></TT></DT><DD><P> 设置各种类型只读数据文件的根目录。这只设置了一些下面的缺省选项。缺省是
+<TT CLASS="FILENAME"><TT CLASS="REPLACEABLE"><I>PREFIX</I></TT>/share</TT>。</P></DD><DT><TT CLASS="OPTION">--datadir=<TT CLASS="REPLACEABLE"><I>DIRECTORY</I></TT></TT></DT><DD><P> 设置使用安装程序的只读数据文件的目录，缺省是<TT CLASS="FILENAME"><TT CLASS="REPLACEABLE"><I>DATAROOTDIR</I></TT></TT>。
+请注意这与你的数据库文件放在哪里无关。</P></DD><DT><TT CLASS="OPTION">--localedir=<TT CLASS="REPLACEABLE"><I>DIRECTORY</I></TT></TT></DT><DD><P> 设置安装区域数据的目录，特别是消息转变目录文件。缺省是
+<TT CLASS="FILENAME"><TT CLASS="REPLACEABLE"><I>DATAROOTDIR</I></TT>/locale</TT>。</P></DD><DT><TT CLASS="OPTION">--mandir=<TT CLASS="REPLACEABLE"><I>DIRECTORY</I></TT></TT></DT><DD><P> 随着<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>一起的手册页将安装到这个目录的<TT CLASS="FILENAME">man<TT CLASS="REPLACEABLE"><I>x</I></TT></TT>子目录里。
+缺省是<TT CLASS="FILENAME"><TT CLASS="REPLACEABLE"><I>DATAROOTDIR</I></TT>/man</TT>。</P></DD><DT><TT CLASS="OPTION">--docdir=<TT CLASS="REPLACEABLE"><I>DIRECTORY</I></TT></TT></DT><DD><P> 设置除<SPAN CLASS="QUOTE">"man"</SPAN>以外的文档文件的根目录。这只设置下面选项的缺省，
+这个选项的缺省值是<TT CLASS="FILENAME"><TT CLASS="REPLACEABLE"><I>DATAROOTDIR</I></TT>/doc/postgresql</TT>。 </P></DD><DT><TT CLASS="OPTION">--htmldir=<TT CLASS="REPLACEABLE"><I>DIRECTORY</I></TT></TT></DT><DD><P> <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的HTML-格式文档将安装在这个目录。
+缺省是<TT CLASS="FILENAME"><TT CLASS="REPLACEABLE"><I>DATAROOTDIR</I></TT></TT>。</P></DD></DL></DIV><P>
+</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B> 为了让<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>能够安装在一些共享的安装位置(比如<TT CLASS="FILENAME">/usr/local/include</TT>)，
+同时又不至于和系统其它部分产生名字空间干扰，我们采取了一些措施。
+首先，安装脚本会自动给<TT CLASS="VARNAME">datadir</TT>,
+<TT CLASS="VARNAME">sysconfdir</TT>和<TT CLASS="VARNAME">docdir</TT>后面附加上<SPAN CLASS="QUOTE">"<TT CLASS="LITERAL">/postgresql</TT>"</SPAN>字符串，
+除非展开的完整路径名已经包含字符串<SPAN CLASS="QUOTE">"<TT CLASS="LITERAL">postgres</TT>"</SPAN>或者
+<SPAN CLASS="QUOTE">"<TT CLASS="LITERAL">pgsql</TT>"</SPAN>。
+比如，如果你选择<TT CLASS="FILENAME">/usr/local</TT>作为prefix，
+那么文档将安装在<TT CLASS="FILENAME">/usr/local/doc/postgresql</TT>，
+但如果prefix是<TT CLASS="FILENAME">/opt/postgres</TT>，那么它将被放到<TT CLASS="FILENAME">/opt/postgres/doc</TT>。
+客户端接口的公共C头文件安装到了<TT CLASS="VARNAME">includedir</TT>，并且是名字空间无关的。
+内部的头文件和服务器端的头文件都安装到<TT CLASS="VARNAME">includedir</TT>下的私有目录中去了。
+参考每种接口的文档获取关于如何访问头文件的信息。最后，如果合适，
+那么也会在<TT CLASS="VARNAME">libdir</TT>下创建一个私有的子目录，用于安装动态装载模块。</P></BLOCKQUOTE></DIV><P>
+</P><P> <P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="OPTION">--with-includes=<TT CLASS="REPLACEABLE"><I>DIRECTORIES</I></TT></TT></DT><DD><P> <TT CLASS="REPLACEABLE"><I>DIRECTORIES</I></TT>是一系列冒号分隔的目录，
+这些目录将被加入编译器的头文件搜索列表中。
+如果你有一些可选的包(比如GNU <SPAN CLASS="APPLICATION">Readline</SPAN>)安装在非标准位置，
+你就必须使用这个选项，
+以及可能还有相应的<TT CLASS="OPTION">--with-libraries</TT>选项。
+</P><P> 例子： <TT CLASS="LITERAL">--with-includes=/opt/gnu/include:/usr/sup/include</TT>。</P></DD><DT><TT CLASS="OPTION">--with-libraries=<TT CLASS="REPLACEABLE"><I>DIRECTORIES</I></TT></TT></DT><DD><P> <TT CLASS="REPLACEABLE"><I>DIRECTORIES</I></TT>是一系列冒号分隔的目录，这些目录是用于查找库文件的。
+如果你有一些包安装在非标准位置，
+你可能就需要使用这个选项(以及对应的<TT CLASS="OPTION">--with-includes</TT>选项)。</P><P> 例子：<TT CLASS="LITERAL">--with-libraries=/opt/gnu/lib:/usr/sup/lib</TT>。</P></DD><DT><TT CLASS="OPTION">--enable-nls[<SPAN CLASS="OPTIONAL">=<TT CLASS="REPLACEABLE"><I>LANGUAGES</I></TT></SPAN>]</TT></DT><DD><P> 打开本地语言支持(<ACRONYM CLASS="ACRONYM">NLS</ACRONYM>)，也就是以非英文显示程序的消息的能力。
+<TT CLASS="REPLACEABLE"><I>LANGUAGES</I></TT>是一个可选的空格分隔的语言代码列表，标识你想支持的语言。
+比如<TT CLASS="LITERAL">--enable-nls='de fr'</TT>。(你提供的列表和实际支持的列表之间的交集会自动计算出来。)
+如果你没有声明一个列表，那么就安装所有可用的翻译。</P><P> 要使用这个选项，你需要一个<SPAN CLASS="APPLICATION">Gettext</SPAN>的实现。见上文。</P></DD><DT><TT CLASS="OPTION">--with-pgport=<TT CLASS="REPLACEABLE"><I>NUMBER</I></TT></TT></DT><DD><P> <TT CLASS="REPLACEABLE"><I>NUMBER</I></TT>为服务器和客户端的缺省端口(缺省是 5432)。这个端口可以在以后设置，
+不过如果你在这里声明，那么服务器和客户端将有相同的编译好了的缺省值。这样会方便些。
+通常选取一个非缺省值的好理由是你企图在同一台机器上运行多个<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>服务。</P></DD><DT><TT CLASS="OPTION">--with-perl</TT></DT><DD><P> 编译<SPAN CLASS="APPLICATION">PL/Perl</SPAN>服务器端编程语言。</P></DD><DT><TT CLASS="OPTION">--with-python</TT></DT><DD><P> 编译<SPAN CLASS="APPLICATION">PL/Python</SPAN>服务器端编程语言。</P></DD><DT><TT CLASS="OPTION">--with-tcl</TT></DT><DD><P> 编译<SPAN CLASS="APPLICATION">PL/Tcl</SPAN>服务器端编程语言。</P></DD><DT><TT CLASS="OPTION">--with-tclconfig=<TT CLASS="REPLACEABLE"><I>DIRECTORY</I></TT></TT></DT><DD><P> Tcl安装的<TT CLASS="FILENAME">tclConfig.sh</TT>文件所在目录，它里面包含编译 Tcl 模块的配置信息。
+这个文件通常会自动在约定俗成的位置找到这些文件，但是如果你需要一个不同版本的Tcl，
+你也可以指定能找到它的目录。</P></DD><DT><TT CLASS="OPTION">--with-gssapi</TT></DT><DD><P> 编译支持GSSAPI认证的东西。在许多系统上，GSSAPI（通常Kerberos安装部分）系统没有安装在缺省的搜索目录下
+(比如 <TT CLASS="FILENAME">/usr/include</TT>,<TT CLASS="FILENAME">/usr/lib</TT>)，
+所以你必须使用附加的<TT CLASS="OPTION">--with-includes</TT>和<TT CLASS="OPTION">--with-libraries</TT>选项。
+<TT CLASS="FILENAME">configure</TT>在继续配置之前将检查所需要的头文件和库，
+以确保GSSAPI是充分可用的。</P></DD><DT><TT CLASS="OPTION">--with-krb5</TT></DT><DD><P> 编译支持 Kerberos 5 认证的东西。在许多系统上，
+Kerberos 系统没有安装在缺省的搜索目录下(比如 <TT CLASS="FILENAME">/usr/include</TT>,<TT CLASS="FILENAME">/usr/lib</TT>)，
+所以你必须使用附加的<TT CLASS="OPTION">--with-includes</TT>和<TT CLASS="OPTION">--with-libraries</TT>选项。
+<TT CLASS="FILENAME">configure</TT>在继续配置之前将检查所需要的头文件和库，以确保 Kerberos 是充分可用的。</P></DD><DT><TT CLASS="OPTION">--with-krb-srvnam=<TT CLASS="REPLACEABLE"><I>NAME</I></TT></TT></DT><DD><P> 缺省的Kerberos服务主的名称（通过GSSAPI使用）。缺省是<TT CLASS="LITERAL">postgres</TT>。
+通常没有理由改变这个值。除非你在Windows环境下，在这种情况下必须设置大写<TT CLASS="LITERAL">POSTGRES</TT>。</P></DD><DT><TT CLASS="OPTION">--with-openssl</TT></DT><DD><P> 编译支持<ACRONYM CLASS="ACRONYM">SSL</ACRONYM>(加密的)连接。这个选项需要安装<SPAN CLASS="PRODUCTNAME">OpenSSL</SPAN>包。
+<TT CLASS="FILENAME">configure</TT>将在安装之前检查所需要的头文件和库文件以确信<SPAN CLASS="PRODUCTNAME">OpenSSL</SPAN>安装是充分可用的。</P></DD><DT><TT CLASS="OPTION">--with-pam</TT></DT><DD><P> 编译<ACRONYM CLASS="ACRONYM">PAM</ACRONYM>(可插拔认证模块)支持。</P></DD><DT><TT CLASS="OPTION">--with-ldap</TT></DT><DD><P> 编译<ACRONYM CLASS="ACRONYM">LDAP</ACRONYM>支持。
+用于认证和查找连接参数(参见<A HREF="libpq-ldap.html">第 31.17 &#33410;</A>和<A HREF="auth-methods.html#AUTH-LDAP">第 19.3.8 &#33410;</A>以获取更多信息)。
+在 Unix 上，这需要<SPAN CLASS="PRODUCTNAME">OpenLDAP</SPAN>包的支持。
+在Windows上，缺省使用<SPAN CLASS="PRODUCTNAME">WinLDAP</SPAN>库。
+<TT CLASS="FILENAME">configure</TT>将会检查所需的头文件和库以确保<SPAN CLASS="PRODUCTNAME">OpenLDAP</SPAN>的安装是充分可用的。 </P></DD><DT><TT CLASS="OPTION">--without-readline</TT></DT><DD><P> 避免使用<SPAN CLASS="APPLICATION">Readline</SPAN>与<SPAN CLASS="APPLICATION">libedit</SPAN>库。
+这样就关闭了<SPAN CLASS="APPLICATION">psql</SPAN>里的命令行编辑和历史，因此我们不建议这么做。</P></DD><DT><TT CLASS="OPTION">--with-libedit-preferred</TT></DT><DD><P> 优先使用BSD-认证的<SPAN CLASS="APPLICATION">libedit</SPAN>库而不是GPL认证的<SPAN CLASS="APPLICATION">Readline</SPAN>库。
+该选项仅在同时安装了这两个库的情况下才有意义。
+缺省使用<SPAN CLASS="APPLICATION">Readline</SPAN>库。&#13;</P></DD><DT><TT CLASS="OPTION">--with-bonjour</TT></DT><DD><P> 编译Bonjour支持。这要求操作系统支持Bonjour。在Mac OS X上建议使用。</P></DD><DT><TT CLASS="OPTION">--with-ossp-uuid</TT></DT><DD><P> 使用<A HREF="http://www.ossp.org/pkg/lib/uuid/" TARGET="_top">OSSP UUID library</A>编译组件。
+特别是，编译
+<A HREF="uuid-ossp.html">uuid-ossp</A>模块，
+它提供了函数产生UUIDs.。 </P></DD><DT><TT CLASS="OPTION">--with-libxml</TT></DT><DD><P> 编译libxml (开启SQL/XML支持)。需要Libxml 2.6.23或者更高版本支持这一特性。</P><P>Libxml安装程序<TT CLASS="COMMAND">xml2-config</TT>可用于检测所需的编译器和链接器选项。
+如果发现，PostgreSQL将自动使用它。
+在一个不寻常的位置来指定libxml安装，
+您可以要么设置环境变量<TT CLASS="ENVAR">XML2_CONFIG</TT>以指向
+<TT CLASS="COMMAND">xml2-config</TT>附属于安装的程序
+或者使用选项<TT CLASS="OPTION">--with-includes</TT>和<TT CLASS="OPTION">--with-libraries</TT>。</P></DD><DT><TT CLASS="OPTION">--with-libxslt</TT></DT><DD><P> 当编译
+<A HREF="xml2.html">xml2</A>模块时，使用libxslt。
+<SPAN CLASS="APPLICATION">xml2</SPAN>依赖于这个库执行XML的XSL转变。</P></DD><DT><TT CLASS="OPTION">--disable-integer-datetimes</TT></DT><DD><P> 禁用64 位的时间戳整数存储和时间间隔支持。并且作为浮点数存储日期时间值。
+在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>8.4版本发布之前缺省浮点日期时间存储。
+但它现在已经过时，因为它没有支持<TT CLASS="TYPE">timestamp</TT>值的全范围的微秒精度。
+然而，基于整数的日期时间存储需要一个64位的整数类型。
+因此，当没有这样的类型可用时，或适用于<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>先前版本的应用程序时，
+可以使用此选项。
+参阅
+<A HREF="datatype-datetime.html">第 8.5 &#33410;</A>获取更多的信息。 </P></DD><DT><TT CLASS="OPTION">--disable-float4-byval</TT></DT><DD><P> 禁用<SPAN CLASS="QUOTE">"按值传递"</SPAN>float4值，使它们<SPAN CLASS="QUOTE">"通过引用"</SPAN>传递。
+此选项消耗性能，但可能需要与用C语言编写的旧的用户定义的函数兼容，并且使用
+<SPAN CLASS="QUOTE">"版本 0"</SPAN>调用约定。一个更好的长期的解决办法是使用<SPAN CLASS="QUOTE">"版本 1"</SPAN>调用约定更新任何此类函数。</P></DD><DT><TT CLASS="OPTION">--disable-float8-byval</TT></DT><DD><P> 禁用<SPAN CLASS="QUOTE">"按值传递"</SPAN>传递float8值，使它们<SPAN CLASS="QUOTE">"通过引用"</SPAN>传递。
+此选项消耗性能，但可能需要与用C语言编写的旧的用户定义的函数兼容，并且使用
+<SPAN CLASS="QUOTE">"版本 0"</SPAN>调用约定。一个更好的长期的解决办法是使用<SPAN CLASS="QUOTE">"版本 1"</SPAN>调用约定更新任何此类函数
+请注意，此选项不仅影响float8，而且也影响int8以及一些相关类型（如时间戳）。
+在32位平台上，缺省是<TT CLASS="OPTION">--disable-float8-byval</TT>。
+并且它不允许选择<TT CLASS="OPTION">--enable-float8-byval</TT>。</P></DD><DT><TT CLASS="OPTION">--with-segsize=<TT CLASS="REPLACEABLE"><I>SEGSIZE</I></TT></TT></DT><DD><P>设置<I CLASS="FIRSTTERM">段大小</I> ，以GB为单位。
+大表被分成多个操作系统文件，每个文件的大小等同于段大小。
+这避免了存在许多平台上的文件大小限制。
+默认段大小，1GB，在所有支持的平台上是安全的。
+如果你的操作系统支持<SPAN CLASS="QUOTE">"largefile"</SPAN>（现在大多数支持），
+你可以使用更大的段大小。
+这可以帮助减少当大表工作时消耗掉的文件描述符数量。
+但要小心，不要选择一个大于您的平台和您打算使用的文件系统支持的值，
+你可能希望使用其他工具，比如<SPAN CLASS="APPLICATION">tar</SPAN>，
+也可以设置可用文件大小的限制。
+因此建议，虽然不是绝对必要的，但该值是2的幂。
+请注意，改变这个值需要初始化数据库。 </P></DD><DT><TT CLASS="OPTION">--with-blocksize=<TT CLASS="REPLACEABLE"><I>BLOCKSIZE</I></TT></TT></DT><DD><P>设置<I CLASS="FIRSTTERM">块大小</I>，以KB为单位。这是表中存储和I/O单元。
+默认情况下，8KB，适用于大多数情况；
+但是其它的值可能在特殊情况下是有用的。
+该值必须是1和32之间（KB）2的幂。
+请注意，改变这个值需要初始化数据库。</P></DD><DT><TT CLASS="OPTION">--with-wal-segsize=<TT CLASS="REPLACEABLE"><I>SEGSIZE</I></TT></TT></DT><DD><P>设置<I CLASS="FIRSTTERM">WAL段大小</I>，以MB为单位。
+这是WAL日志中每个单独的文件的大小。它可能有助于调整这个大小来控制WAL日志传送的粒度。
+缺省大小为16MB。
+该值必须是1和64之间（MB）2的幂。
+请注意，改变这个值需要初始化数据库。</P></DD><DT><TT CLASS="OPTION">--with-wal-blocksize=<TT CLASS="REPLACEABLE"><I>BLOCKSIZE</I></TT></TT></DT><DD><P>设置<I CLASS="FIRSTTERM">WAL块大小</I>，以KB为单位。
+这是WAL日志中存储和I/O单元。
+默认情况下，8KB，适用于大多数情况；
+但是其它的值可能在特殊情况下是有用的。
+该值必须是1和64之间（KB）2的幂。
+请注意，改变这个值需要初始化数据库。</P></DD><DT><TT CLASS="OPTION">--disable-spinlocks</TT></DT><DD><P> 允许在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>没有该平台的CPU自旋锁支持的情况下编译成功。
+缺乏自旋锁的支持将导致性能恶化；
+因此，只有在编译过程退出，并且告诉你说该平台缺乏自旋锁支持的时候才使用这个选项。
+如果在你的平台上需要这个选项才能编译<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>，
+请向<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>开发者报告这个问题。</P></DD><DT><TT CLASS="OPTION">--disable-thread-safety</TT></DT><DD><P> 禁用客户端库是线程安全的。
+这样就允许在<SPAN CLASS="APPLICATION">libpq</SPAN>和
+<SPAN CLASS="APPLICATION">ECPG</SPAN>程序里的并发线程安全地控制他们私有的连接句柄。 </P></DD><DT><TT CLASS="OPTION">--with-system-tzdata=<TT CLASS="REPLACEABLE"><I>DIRECTORY</I></TT></TT></DT><DD><P> <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>包括它自己的时区数据库，
+它要求对日期和时间操作。此时区数据库实际上是与许多操作系统比如FreeBSD,Linux, and Solaris提供的<SPAN CLASS="QUOTE">"zoneinfo"</SPAN>时区数据库兼容。
+所以重新安装将是多余的。当这个选项被使用时，将使用系统在<TT CLASS="REPLACEABLE"><I>DIRECTORY</I></TT>中提供的时区数据库来代替PostgreSQL源代码发布中的时区数据库。
+<TT CLASS="REPLACEABLE"><I>DIRECTORY</I></TT>必须作为绝对路径被指定。
+<TT CLASS="FILENAME">/usr/share/zoneinfo</TT>是某些操作系统上的可能目录。
+请注意，这个安装程序将不检测不匹配的或者错误的时间区域数据。
+如果您使用此选项，建议您运行回归测试，以验证你指定的时区数据，
+在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>中能够很好的工作。</P><P> 该选项主要是针对那些对他们要使用的操作系统了如指掌的二进制软件包的分发者。
+使用此选项的主要优势是，当许多当地白昼节约时间规则变化的任何时候，PostgreSQL包不需要升级。
+另一个优点是，如果时区数据库文件在安装期间不需要被编译，PostgreSQL可以进行交叉编译更直截了当。</P></DD><DT><TT CLASS="OPTION">--without-zlib</TT></DT><DD><P> 避免使用<SPAN CLASS="APPLICATION">Zlib</SPAN>库。这样就关闭了<SPAN CLASS="APPLICATION">pg_dump</SPAN>
+和<SPAN CLASS="APPLICATION">pg_restore</SPAN>里面的压缩支持。
+这个选项只适用于那些没有这个库的罕见的系统。</P></DD><DT><TT CLASS="OPTION">--enable-debug</TT></DT><DD><P> 把所有程序和库以带有调试符号的方式编译。这意味着你可以通过一个调试器运行程序来分析问题。
+这样做显著增大了最后安装的可执行文件的大小，并且在非GCC的编译器上，
+这么做通常还要关闭编译器优化，导致速度的下降。但是，如果有这些符号的话，
+就可以非常有效地帮助解决可能发生的问题。目前，
+我们只是在你使用GCC的情况下才建议在产品的安装中使用这个选项。
+但是如果你正在进行开发工作，或者正在使用beta版本，
+那么你就总应该打开它。</P></DD><DT><TT CLASS="OPTION">--enable-coverage</TT></DT><DD><P> 如果使用GCC，所有的程序和库连同代码覆盖测试设置一起被编译。
+在运行时，它们与代码覆盖率度量在编译目录下生成文件。
+参阅<A HREF="regress-coverage.html">第 30.4 &#33410;</A>
+获取更多信息该选项只在使用GCC进行开发工作时使用。。</P></DD><DT><TT CLASS="OPTION">--enable-profiling</TT></DT><DD><P>如果使用GCC，则编译所有程序和库，使他们可以配置。在后台退出，创建子目录，
+包含配置用的<TT CLASS="FILENAME">gmon.out</TT>文件。
+该选项只在使用GCC进行开发工作时使用。</P></DD><DT><TT CLASS="OPTION">--enable-cassert</TT></DT><DD><P> 打开服务器中的<I CLASS="FIRSTTERM">assertion</I>检查，它会检查许多<SPAN CLASS="QUOTE">"不可能发生"</SPAN>的条件。
+它对于代码开发的用途而言是无价之宝，不过这些测试可以显著减缓服务器。
+并且，打开这个测试不会提高系统的稳定性！这些断言检查并不是按照错误的严重性分类的，
+因此一些相对无害的小问题也可能导致服务器重启 (只要它触发了一次断言失败)。目前，
+我们不推荐在产品环境中使用这个选项，但是如果你在做开发或者在使用beta版本的时候应该打开它。</P></DD><DT><TT CLASS="OPTION">--enable-depend</TT></DT><DD><P> 打开自动依赖性跟踪。如果打开这个选项，
+那么 makefile 文件将设置为在任何头文件被修改的时候都将重新编译所有受影响的目标文件。
+如果你在做开发的工作，那么这个选项很有用，但是如果你只是想编译一次并且安装，
+那么这就是浪费时间。目前，这个选项只有在你使用GCC的时候才管用。</P></DD><DT><TT CLASS="OPTION">--enable-dtrace</TT></DT><DD><P>
+编译<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>支持动态跟踪工具DTrace。
+参阅<A HREF="dynamic-trace.html">第 27.4 &#33410;</A>获取更多信息。
+</P><P> 指向<TT CLASS="COMMAND">dtrace</TT>程序，设置环境变量<TT CLASS="ENVAR">DTRACE</TT>。
+这往往是必须的，因为<TT CLASS="COMMAND">dtrace</TT>
+通常安装在<TT CLASS="FILENAME">/usr/sbin</TT>中且该目录一般不在搜索路经中。</P><P>
+在环境变量<TT CLASS="ENVAR">DTRACEFLAGS</TT>中为<TT CLASS="COMMAND">dtrace</TT>程序指定
+额外命令行选项。在Solaris上，
+要包含64位二进制的DTrace支持，需要为configure指定<TT CLASS="LITERAL">DTRACEFLAGS="-64"</TT>，比如，
+在使用GCC编译的时候:
+</P><PRE CLASS="SCREEN">./configure CC='gcc -m64' --enable-dtrace DTRACEFLAGS='-64' ...</PRE><P>
+在使用Sun编译器的时候：
+</P><PRE CLASS="SCREEN">./configure CC='/opt/SUNWspro/bin/cc -xtarget=native64' --enable-dtrace DTRACEFLAGS='-64' ...</PRE><P>
+</P></DD></DL></DIV><P>
+</P><P> 如果你喜欢使用不同于<TT CLASS="FILENAME">configure</TT>找出来的 C 编译器，
+可以将环境变量<TT CLASS="ENVAR">CC</TT>设置为你选择的程序。缺省时，
+<TT CLASS="FILENAME">configure</TT>将选择<TT CLASS="FILENAME">gcc</TT>(只要可用)，
+或者是该平台的缺省(通常是<TT CLASS="FILENAME">cc</TT>)。类似地，
+你可以用<TT CLASS="ENVAR">CFLAGS</TT>覆盖缺省编译器标志。</P><P>
+你可以在<TT CLASS="FILENAME">configure</TT>命令行上声明环境变量，比如：
+</P><PRE CLASS="SCREEN"><KBD
+CLASS="USERINPUT"
+>./configure CC=/opt/bin/gcc CFLAGS='-O2 -pipe'</KBD
+></PRE><P>
+</P><P>
+下面是可用的环境变量列表：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="ENVAR">BISON</TT></DT><DD><P>
+Bison程序
+</P></DD><DT><TT CLASS="ENVAR">CC</TT></DT><DD><P> C编译器</P></DD><DT><TT CLASS="ENVAR">CFLAGS</TT></DT><DD><P> 传递给C编译器的选项</P></DD><DT><TT CLASS="ENVAR">CPP</TT></DT><DD><P> C预处理器</P></DD><DT><TT CLASS="ENVAR">CPPFLAGS</TT></DT><DD><P> 传递给C预处理器的选项</P></DD><DT><TT CLASS="ENVAR">DTRACE</TT></DT><DD><P> <TT CLASS="COMMAND">dtrace</TT>程序位置</P></DD><DT><TT CLASS="ENVAR">DTRACEFLAGS</TT></DT><DD><P> 传递给<TT CLASS="COMMAND">dtrace</TT>程序的选项</P></DD><DT><TT CLASS="ENVAR">FLEX</TT></DT><DD><P> Flex程序</P></DD><DT><TT CLASS="ENVAR">LDFLAGS</TT></DT><DD><P> 当连接可执行文件或共享库时使用的选项</P></DD><DT><TT CLASS="ENVAR">LDFLAGS_EX</TT></DT><DD><P> 只连接可执行文件时的额外选项</P></DD><DT><TT CLASS="ENVAR">LDFLAGS_SL</TT></DT><DD><P> 只连接共享库时的额外选项</P></DD><DT><TT CLASS="ENVAR">MSGFMT</TT></DT><DD><P> 本地语言支持的<TT CLASS="COMMAND">msgfmt</TT>程序</P></DD><DT><TT CLASS="ENVAR">PERL</TT></DT><DD><P> Perl解释器的完整路径。用于确定编译PL/Perl的依赖关系。</P></DD><DT><TT CLASS="ENVAR">PYTHON</TT></DT><DD><P> Python解释器的完整路径。用于确定编译PL/Python的依赖关系。
+另外，Python 2或3是否在这声明（或另有隐式选择）决定了PL/Python
+的哪种语言是可用的。
+参阅<A HREF="plpython-python23.html">第 43.1 &#33410;</A>
+获取更多详情。
+</P></DD><DT><TT CLASS="ENVAR">TCLSH</TT></DT><DD><P> Tcl解释器的完整路径。用于确定编译PL/Tcl的依赖关系。并且它将替代Tcl脚本。</P></DD><DT><TT CLASS="ENVAR">XML2_CONFIG</TT></DT><DD><P> <TT CLASS="COMMAND">xml2-config</TT>程序用于定位libxml安装。</P></DD></DL></DIV><P>
+</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B> 当开发服务器端的内部代码时，建议使用配置选项<TT CLASS="OPTION">--enable-cassert</TT>（其中
+打开许多运行时错误检查）和<TT CLASS="OPTION">--enable-debug</TT>
+（可以改进调试工具的有效性）。</P><P> 如果使用GCC，最好是进行至少<TT CLASS="OPTION">-O1</TT>的优化级别的编译。
+因为不使用优化(<TT CLASS="OPTION">-O0</TT>)会禁止一些重要的编译器警告（例如，使用未初始化变量）。
+然而，非零优化级别可以进行复杂调试，
+因为通过编译代码步进调试往往与源代码的行无法一对一的匹配。
+如果你在试图调试优化后的代码时感到困惑，可以重新编译特定文件指定<TT CLASS="OPTION">-O0</TT>。
+一个简单方法来做到这一点是通过传递选项到<SPAN CLASS="APPLICATION">make</SPAN>: <TT CLASS="COMMAND">gmake PROFILE=-O0 file.o</TT>。</P></BLOCKQUOTE></DIV></LI><LI CLASS="STEP"><A NAME="BUILD"></A><P><B>编译</B></P><P>
+开始编译，键入：
+</P><PRE CLASS="SCREEN"><KBD
+CLASS="USERINPUT"
+>gmake</KBD
+></PRE><P>
+（记住使用<ACRONYM CLASS="ACRONYM">GNU</ACRONYM> <SPAN CLASS="APPLICATION">make</SPAN>）。
+依硬件不同，编译过程可能需要一些时间。显示的最后一行应该是：
+</P><PRE CLASS="SCREEN">All of PostgreSQL is successfully made. Ready to install.</PRE><P>
+</P><P>
+如果你想要编译一切可以编译的东西，包含文档（HTML和手册页），以及额外模块（<TT CLASS="FILENAME">contrib</TT>）
+键入：
+</P><PRE CLASS="SCREEN"><KBD
+CLASS="USERINPUT"
+>gmake world</KBD
+></PRE><P>
+显示的最后一行应该是：
+</P><PRE CLASS="SCREEN">PostgreSQL, contrib and HTML documentation successfully made. Ready to install.</PRE><P>
+</P></LI><LI CLASS="STEP"><P><B>回归测试</B></P><P>
+如果你想在安装前测试新编译出的服务器，
+那么你可以在这个时候运行回归测试。
+回归测试是一个用于验证<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>在你的系统上是否按照开发人员设想的那样运行的测试套件。
+敲入：
+</P><PRE CLASS="SCREEN"><KBD
+CLASS="USERINPUT"
+>gmake check</KBD
+></PRE><P>
+这条命令在root用户下无法执行；请在非特权用户下运行该命令。
+<A HREF="http://school.yunwei.edu/manual/PostgreSQL/regress.html">第 30 &#31456;</A> 包含
+关于如何解释测试结果的详细信息。
+你可以在以后的任何时间通过执行这条命令来运行这个测试。
+</P></LI><LI CLASS="STEP"><A NAME="INSTALL"></A><P><B>安装</B></P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B> 如果你正在升级一套现有的系统一定要读
+<A HREF="upgrading.html">第 17.6 &#33410;</A>
+中关于升级集群的说明。 </P></BLOCKQUOTE></DIV><P>
+安装<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>，键入：
+</P><PRE CLASS="SCREEN"><KBD
+CLASS="USERINPUT"
+>gmake install</KBD
+></PRE><P>
+这条命令将把文件安装到在<A HREF="install-procedure.html#CONFIGURE">&#27493;&#39588; 1</A>声明的目录里面去。
+确保你对那个目录有足够的权限。通常你需要用 root 权限做这一步。
+或者你也可以事先创建目标目录并且分派合适的权限。
+</P><P>
+安装文档（HTML和手册页），键入：
+</P><PRE CLASS="SCREEN"><KBD
+CLASS="USERINPUT"
+>gmake install-docs</KBD
+></PRE><P>
+</P><P>
+如果上面编译了world,键入：
+</P><PRE CLASS="SCREEN"><KBD
+CLASS="USERINPUT"
+>gmake install-world</KBD
+></PRE><P>
+这也会安装文档。
+</P><P> 你可以使用<TT CLASS="LITERAL">gmake install-strip</TT>代替<TT CLASS="LITERAL">gmake install</TT>在安装可执行文件和库文件时把它们的调试信息抽取掉。
+这样将节约一些空间。如果你编译时带着调试支持，那么抽取将有效地删除调试支持，
+因此我们应该只是在不再需要调试的时候做这些事情。
+<TT CLASS="LITERAL">install-strip</TT>力图做一些合理的事情来节约空间，
+但是它并不知道如何从可执行文件中抽取每个不需要的字节，
+因此，如果你希望节约所有可能节约的磁盘空间，那么你可能需要手工做些处理。</P><P> 标准的安装只提供所有开发客户端应用的头文件和服务器端的程序开发，
+比如用 C 写客户函数或者数据类型的头文件。
+（<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 8.0之前，后者需要单独的执行<TT CLASS="LITERAL">gmake install-all-headers</TT>命令，但是这一步现在已经被包含在标准安装中了）。</P><DIV CLASS="FORMALPARA"><P><B>只装客户端: </B>
+如果你只想装客户应用和接口，那么你可以用下面的命令:
+</P><PRE CLASS="SCREEN"><KBD
+CLASS="USERINPUT"
+>gmake -C src/bin install</KBD
+>
+<KBD
+CLASS="USERINPUT"
+>gmake -C src/include install</KBD
+>
+<KBD
+CLASS="USERINPUT"
+>gmake -C src/interfaces install</KBD
+>
+<KBD
+CLASS="USERINPUT"
+>gmake -C doc install</KBD
+></PRE><P>
+<TT CLASS="FILENAME">src/bin</TT>中有一些仅供服务器使用的二进制文件，但是它们都很小。
+</P></DIV></LI></OL></DIV><DIV CLASS="FORMALPARA"><P><B>卸载: </B> 可以使用<TT CLASS="COMMAND">gmake uninstall</TT>命令卸载。
+不过这样不会删除任何创建出来的目录。</P></DIV><DIV CLASS="FORMALPARA"><P><B>清理: </B> 在安装完成以后，你可以通过在源码树里面用命令<TT CLASS="COMMAND">gmake clean</TT>删除编译过程文件释放磁盘空间。
+这样会保留<TT CLASS="COMMAND">configure</TT>程序生成的文件，这样以后你就可以用<TT CLASS="COMMAND">gmake</TT>命令重新编译所有东西。
+要把源码树恢复为发布时的状态，用<TT CLASS="COMMAND">gmake distclean</TT>命令。
+如果你想从同一棵源码树上为多个不同平台编译，
+你就一定要运行这条命令并且为每个平台重新配置。
+另外，在每种系统上使用一套独立的编译树，这样源代码树就可以保留不被更改。</P></DIV><P> 如果你执行了一次编译，然后发现你的<TT CLASS="COMMAND">配置</TT>选项是错误的，
+或者你修改了任何<TT CLASS="COMMAND">配置</TT>所探测的东西(比如升级了软件)，
+那么在重新配置和编译之前运行一下<TT CLASS="COMMAND">gmake distclean</TT>是个好习惯。如果不做这个事情，
+你修改的配置选项可能无法传播到所有需要变化的地方。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="install-getsource.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="install-post.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">获取源码</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/installation.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">安装后设置</TD></TR></TABLE></DIV></BODY></HTML>

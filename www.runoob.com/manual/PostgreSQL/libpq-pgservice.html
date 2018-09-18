@@ -1,0 +1,21 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>连接服务的文件</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="libpq - C 库" HREF="http://school.yunwei.edu/manual/PostgreSQL/libpq.html"><LINK REL="PREVIOUS" TITLE="口令文件" HREF="libpq-pgpass.html"><LINK REL="NEXT" TITLE="LDAP查找连接参数" HREF="libpq-ldap.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/libpq.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="口令文件" HREF="libpq-pgpass.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/libpq.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 31. <SPAN CLASS="APPLICATION">libpq</SPAN> - C 库</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="LDAP查找连接参数" HREF="libpq-ldap.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="LIBPQ-PGSERVICE">31.16. 连接服务的文件</A></H1><P>连接服务文件允许libpq连接参数可以与一个单一的服务名称相关联。
+服务名之后可以被一个libpq连接声明，并且会使用相关设置。
+允许连接参数无需要求一个重新编译的libpq应用进行修改。
+服务名同样可以用<TT CLASS="ENVAR">PGSERVICE</TT>环境变量进行声明。</P><P>连接服务文件可以是在<TT CLASS="FILENAME">~/.pg_service.conf</TT>，或者<TT CLASS="ENVAR">PGSERVICEFILE</TT>
+环境变量声明位置中的一个按用户的服务文件，也可以是一个位于<TT CLASS="FILENAME">etc/pg_service.conf</TT>，
+或者<TT CLASS="ENVAR">PGSYSCONFDIR</TT>环境变量声明位置中的一个全系统文件。
+如果定义的服务名与在用户和系统文件中的名字相同，那么用户文件优先。</P><P>该文件使用<SPAN CLASS="QUOTE">"INI file"</SPAN>格式（章节名是服务名，并且参数是连接参数）；
+参阅<A HREF="libpq-connect.html#LIBPQ-PARAMKEYWORDS">第 31.1.2 &#33410;</A>获取一个列表，例如：
+</P><PRE CLASS="PROGRAMLISTING"># comment
+[mydb]
+host=somehost
+port=5433
+user=admin</PRE><P>
+在<TT CLASS="FILENAME">share/pg_service.conf.sample</TT>中提供了一个示例文件。
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="libpq-pgpass.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="libpq-ldap.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">口令文件</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/libpq.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">LDAP查找连接参数</TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>启动数据库服务器</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="服务器设置和操作" HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime.html"><LINK REL="PREVIOUS" TITLE="创建数据库集群" HREF="creating-cluster.html"><LINK REL="NEXT" TITLE="管理内核资源" HREF="kernel-resources.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/runtime.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="创建数据库集群" HREF="creating-cluster.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 17. 服务器设置和操作</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="管理内核资源" HREF="kernel-resources.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="SERVER-START">17.3. 启动数据库服务器</A></H1><P>在任何人可以访问数据库前，你必须启动数据库服务器。数据库服务器程序名叫<TT CLASS="COMMAND">postgres</TT>，
+它必须知道在哪里能找到它要用的数据。
+这是利用<TT CLASS="OPTION">-D</TT>选项实现的。因此，启动服务器最简单的方法是像下面这样：
+</P><PRE CLASS="SCREEN">$ <KBD
+CLASS="USERINPUT"
+>postgres -D /usr/local/pgsql/data</KBD
+></PRE><P>
+这样将把服务器放在前台运行。这个步骤同样必须以<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>用户帐户登录来做。
+没有<TT CLASS="OPTION">-D</TT>选项，服务器将使用环境变量<TT CLASS="ENVAR">PGDATA</TT>命名的目录；
+如果这个环境变量也没有，将导致失败。
+</P><P>通常，最好在后台启动<TT CLASS="COMMAND">postgres</TT>，使用下面的 Unix shell 语法：
+</P><PRE CLASS="SCREEN">$ <KBD
+CLASS="USERINPUT"
+>postgres -D /usr/local/pgsql/data &gt;logfile 2&gt;&amp;1 &amp;</KBD
+></PRE><P>
+把服务器的<SPAN CLASS="SYSTEMITEM">stdout</SPAN>和<SPAN CLASS="SYSTEMITEM">stderr</SPAN>放到某个地方是非常重要的，
+就像在上面建议的这样。这样做既可以帮助审计又可以帮助诊断问题。
+参阅<A HREF="logfile-maintenance.html">第 23.3 &#33410;</A>获取有关日志文件处理的更完整讨论。
+</P><P><TT CLASS="COMMAND">postgres</TT>还接受一些其它的一些命令行选项。
+更多的信息请参考<A HREF="app-postgres.html"><SPAN CLASS="APPLICATION">postgres</SPAN></A>手册页和下面的<A HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime-config.html">第 18 &#31456;</A>。</P><P>这些 shell 语法很容易让人觉得无聊。因此我们提供了封装程序
+<A HREF="app-pg-ctl.html"><SPAN CLASS="APPLICATION">pg_ctl</SPAN></A>以简化一些任务。比如：
+</P><PRE CLASS="PROGRAMLISTING">pg_ctl start -l logfile</PRE><P>
+将在后台启动服务器并且把输出放到指定的日志文件中。<TT CLASS="OPTION">-D</TT>
+选项和你直接运行<TT CLASS="COMMAND">postgres</TT>时的意思是一样的。<TT CLASS="COMMAND">pg_ctl</TT>
+还可以用于关闭服务器。
+</P><P>通常，你会希望在计算机启动的时候启动数据库服务器。
+自动启动脚本是与操作系统相关的。<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>自己带了几个，
+放在<TT CLASS="FILENAME">contrib/start-scripts</TT>目录里。需要 root 权限安装它们。</P><P>不同的系统在引导时有不同的启动守护进程的方法，所以我们建议你先熟悉它。
+许多系统有名字称为<TT CLASS="FILENAME">/etc/rc.local</TT>或<TT CLASS="FILENAME">/etc/rc.d/rc.local</TT>
+这样的文件，其它的还有<TT CLASS="FILENAME">rc.d</TT>目录。不管你怎么做，都要记住服务器必须以
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>用户帐户，<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">而不是 root </I></SPAN>
+或者任何其它用户身份运行。因此，你可能总是要用<TT CLASS="LITERAL">su postgres -c '...'</TT>这样的命令。比如：
+</P><PRE CLASS="PROGRAMLISTING">su postgres -c 'pg_ctl start -D /usr/local/pgsql/data -l serverlog'</PRE><P>
+</P><P>下面是一些比较详细的与操作系统相关的建议。请注意把每个例子里的具体数值替换成合适的安装路径和用户名。
+<P></P></P><UL><LI><P>
+对于<SPAN CLASS="PRODUCTNAME">FreeBSD</SPAN>，看看<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+源代码版本里的<TT CLASS="FILENAME">contrib/start-scripts/freebsd</TT>文件。
+</P></LI><LI><P>在<SPAN CLASS="PRODUCTNAME">OpenBSD</SPAN>上，把下面几行加到<TT CLASS="FILENAME">/etc/rc.local</TT>文件里：
+</P><PRE CLASS="PROGRAMLISTING">if [ -x /usr/local/pgsql/bin/pg_ctl -a -x /usr/local/pgsql/bin/postgres ]; then
+    su -l postgres -c '/usr/local/pgsql/bin/pg_ctl start -s -l /var/postgresql/log -D /usr/local/pgsql/data'
+    echo -n ' postgresql'
+fi</PRE><P>
+</P></LI><LI><P>在<SPAN CLASS="PRODUCTNAME">Linux</SPAN>系统里，要么往<TT CLASS="FILENAME">/etc/rc.d/rc.local</TT>或
+<TT CLASS="FILENAME">/etc/rc.local</TT>文件里加上下面几行：
+</P><PRE CLASS="PROGRAMLISTING">/usr/local/pgsql/bin/pg_ctl start -l logfile -D /usr/local/pgsql/data</PRE><P>
+要么看看<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>源代码树里的
+<TT CLASS="FILENAME">contrib/start-scripts/linux</TT>文件。
+</P></LI><LI><P>在<SPAN CLASS="PRODUCTNAME">NetBSD</SPAN>上，你可以根据爱好选择<SPAN CLASS="PRODUCTNAME">FreeBSD</SPAN>
+或<SPAN CLASS="PRODUCTNAME">Linux</SPAN>的启动脚本之一。&#13;</P></LI><LI><P>在<SPAN CLASS="PRODUCTNAME">Solaris</SPAN>上，创建一个叫<TT CLASS="FILENAME">/etc/init.d/postgresql</TT>的文件，
+包含下面行：
+</P><PRE CLASS="PROGRAMLISTING">su - postgres -c "/usr/local/pgsql/bin/pg_ctl start -l logfile -D /usr/local/pgsql/data"</PRE><P>
+然后在<TT CLASS="FILENAME">/etc/rc3.d</TT>里创建一个指向它的符号链接，名字叫<TT CLASS="FILENAME">S99postgresql</TT>。
+</P></LI></UL><P>
+</P><P>运行的时候，它的<ACRONYM CLASS="ACRONYM">PID</ACRONYM>是保存在数据目录下的<TT CLASS="FILENAME">postmaster.pid</TT>
+文件里的。这样做是为了避免多个服务器在同一个数据目录内运行，此文件同样可以用于关闭服务器。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="SERVER-START-FAILURES">17.3.1. 服务器启动失败</A></H2><P>有几个非常常见的原因会导致服务器启动失败。通过检查服务器日志或者使用手工启动的方法
+(不做 stdout 和 stderr 的重定向)，就可以看到错误信息。下面我们更详细地解释了其中一些错误信息。</P><P></P><PRE CLASS="SCREEN">LOG:  could not bind IPv4 socket: Address already in use
+HINT:  Is another postmaster already running on port 5432? If not, wait a few seconds and retry.
+FATAL:  could not create TCP/IP listen socket</PRE><P>
+就像它提示的那样：你试图在已经有一个服务器运行着的端口上再运行了一个服务器。不过，
+如果内核的错误信息不是<SAMP CLASS="COMPUTEROUTPUT"> Address already in use </SAMP>或者是其它的变种，
+那就有可能是别的毛病。比如，试图在一个保留的端口上运行服务器会收到下面这样的信息：
+</P><PRE CLASS="SCREEN">$ <KBD
+CLASS="USERINPUT"
+>postgres -p 666</KBD
+>
+LOG:  could not bind IPv4 socket: Permission denied
+HINT:  Is another postmaster already running on port 666? If not, wait a few seconds and retry.
+FATAL:  could not create TCP/IP listen socket</PRE><P>
+</P><P>像这样的信息：
+</P><PRE CLASS="SCREEN">FATAL:  could not create shared memory segment: Invalid argument
+DETAIL:  Failed system call was shmget(key=5440001, size=4011376640, 03600).</PRE><P>
+可能意味着内核对共享内存区的限制小于<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>试图分配的缓冲区大小
+(本例中是 4011376640 字节)。或者可能意味着你根本就没有配置 System-V 风格的共享内存支持。
+作为一个临时的解决办法，你可以试着以小于正常数量的缓冲区数(<A HREF="runtime-config-resource.html#GUC-SHARED-BUFFERS">shared_buffers</A>)
+启动服务器。你最终还是会希望重新配置内核，以增加共享内存的尺寸。
+如果你试图在同一台机器上启动多个服务器，而且它们所需的总空间超过了内核的限制，也会报这个错。
+</P><P>像下面这样的错误：
+</P><PRE CLASS="SCREEN">FATAL:  could not create semaphores: No space left on device
+DETAIL:  Failed system call was semget(5440126, 17, 03600).</PRE><P>
+<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">并不</I></SPAN>意味着着你已经用光磁盘空间了。它的意思是内核的
+<SPAN CLASS="SYSTEMITEM">System V</SPAN>信号灯的限制小于<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>想创建的数量。
+和上面一样，你可以通过减少允许的连接数(<A HREF="runtime-config-connection.html#GUC-MAX-CONNECTIONS">max_connections</A>)来绕开，
+但最终你还是会希望修改内核的限制。
+</P><P>如果你收到一个<SPAN CLASS="QUOTE">"illegal system call"</SPAN>错误，那么很有可能是内核根本不支持共享内存或者信号灯。
+如果是这样的话，你唯一的选择就是重新配置内核并且把这些特性打开。</P><P>关于配置系统<SPAN CLASS="SYSTEMITEM">System V</SPAN> <ACRONYM CLASS="ACRONYM">IPC</ACRONYM>资源的细节见<A HREF="kernel-resources.html#SYSVIPC">第 17.4.1 &#33410;</A>。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="CLIENT-CONNECTION-PROBLEMS">17.3.2. 客户端连接问题</A></H2><P>尽管可能在客户端出现的错误条件范围宽广，而且还和应用相关，但的确有几种错误与服务器的启动方式直接相关。
+除了下面提到的几种错误以外的问题都应该在相应的客户端应用的文档中。</P><P></P><PRE CLASS="SCREEN">psql: could not connect to server: Connection refused
+        Is the server running on host "server.joe.com" and accepting
+        TCP/IP connections on port 5432?</PRE><P>
+这是纯粹的<SPAN CLASS="QUOTE">"我找不到可以交谈的服务器"</SPAN>错误。当试图进行 TCP/IP 通讯时它看起来像上面的样子。
+常见的错误是忘记把服务器配置成允许 TCP/IP 连接。
+</P><P>另外，当试图通过一个 Unix 套接字与本机服务器通讯时，你会看到这个：
+</P><PRE CLASS="SCREEN">psql: could not connect to server: No such file or directory
+        Is the server running locally and accepting
+        connections on Unix domain socket "/tmp/.s.PGSQL.5432"?</PRE><P>
+</P><P>最后一行可以有效地验证客户端进行连接尝试时是否连对了位置。如果实际上没有服务器在那里运行，
+典型的内核错误是像上面显示的那样或者是<SAMP CLASS="COMPUTEROUTPUT">Connection refused</SAMP>或
+<SAMP CLASS="COMPUTEROUTPUT">No such file or directory</SAMP>。尤其要注意的是这种环境下
+<SAMP CLASS="COMPUTEROUTPUT">Connection refused</SAMP>的信息显示<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">并不</I></SPAN>
+意味着服务器收到连接然后拒绝了连接。那样的话会产生一个不同的信息(像
+<A HREF="client-authentication-problems.html">第 19.4 &#33410;</A>里面显示的那样)。其它像
+<SAMP CLASS="COMPUTEROUTPUT">Connection timed out</SAMP>这样的信息表示更基本的问题，比如缺少网络连接等。</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="creating-cluster.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="kernel-resources.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">创建数据库集群</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/runtime.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">管理内核资源</TD></TR></TABLE></DIV></BODY></HTML>

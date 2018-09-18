@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>版本 6.3.1</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="版本 6.3.2" HREF="release-6-3-2.html"><LINK REL="NEXT" TITLE="版本 6.3" HREF="release-6-3.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-old.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="版本 6.3.2" HREF="release-6-3-2.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="版本 6.3" HREF="release-6-3.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-6-3-1">E.231. 版本 6.3.1</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>1998-03-23</P></BLOCKQUOTE></DIV><P>
+摘要：
+<P></P></P><UL><LI><P>对多字节字符集的附加支持。</P></LI><LI><P>修复了混合字节序的服务器和客户端环境的支持。</P></LI><LI><P>对允许的 SQL 语法进行了小的升级。</P></LI><LI><P>改善了安装过程的配置自动检测功能。</P></LI></UL><P></P><P>对那些运行着6.3版本的应用不需要进行转储/恢复操作。升级工作只需要
+<TT CLASS="LITERAL">make distclean</TT>，<TT CLASS="LITERAL">make</TT>，和 <TT CLASS="LITERAL">make install</TT>。
+最后一步应该在 postmaster 没有运行时进行。升级后你应该对所有使用
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 库的用户应用重新进行连接．</P><P>对于从v6.3以前的版本升级，请参考v6.3的安装和移植指导。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN143812">E.231.1. 修改列表</A></H2><P></P><PRE CLASS="PROGRAMLISTING">ecpg 清理/修复，现在的版本是 1.1 (Michael Meskes)
+pg_user 清理 (Bruce)
+pg_dump 和 tclsh 的大对象修复 (alvin)
+修复多个临近的下划线的 LIKE 
+修复重新定义内建函数 (Thomas)
+ultrix4 清理
+升级到 pg_access 0.83
+更新了 CLUSTER 手册页
+多字节字符设置支持，参阅 doc/README.mb (Tatsuo)
+configure --with-pgport 修复
+pg_ident 修复
+为后端通信修复 big-endian (Kataoka)
+SUBSTR() 和 substring() 修复 (Jan)
+几个 jdbc 修复(Peter)
+libpgtcl 改善，参阅 libptcl/README (Randy Kunkee)
+修复了 "Datasize = 0" 错误 (Vadim)
+阻止 \do 打包 (Bruce)
+删除重复的俄语字符集条目
+Sunos4 清理 
+在 LOCK 和 SELECT INTO 中允许 TABLE 关键字可选 (Thomas) 
+CREATE SEQUENCE 选项允许负整数 (Thomas)
+作为一个允许的字段标识符添加 "PASSWORD" (Thomas)
+为 UNION 目标字段添加检查 (Bruce)
+修复了 Alpha 端口 (Dwayne Bailey)
+修复了文本数组包含引号的问题 (Doug Gibson)
+Solaris 编译修复 (Albert Chin-A-Young)
+更好的识别出 tcl 和 tk 库和包含 (Bruce) </PRE><P>
+</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-6-3-2.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-6-3.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">版本 6.3.2</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">版本 6.3</TD></TR></TABLE></DIV></BODY></HTML>

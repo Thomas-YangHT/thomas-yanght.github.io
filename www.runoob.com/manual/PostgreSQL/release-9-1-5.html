@@ -1,0 +1,82 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>发布9.1.5</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="发布9.1.6" HREF="release-9-1-6.html"><LINK REL="NEXT" TITLE="发布9.1.4" HREF="release-9-1-4.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-9.1.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="发布9.1.6" HREF="release-9-1-6.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="发布9.1.4" HREF="release-9-1-4.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-9-1-5">E.14. 发布9.1.5</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>2012-08-17</P></BLOCKQUOTE></DIV><P> 这个版本包含9.1.4的各种修复。关于9.1主要版本的新功能的信息，
+参阅<A HREF="release-9-1.html">第 E.19 &#33410;</A>。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN117781">E.14.1. 迁移到版本9.1.5</A></H2><P> 为运行9.1.X不需要转储/恢复。</P><P> 然而，如果你从9.1.4的更早版本更新，
+参阅9.1.4的发布说明。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN117785">E.14.2. 变化</A></H2><P></P><UL><LI><P> 防止通过XML实体引用访问外部文件夹/URL(Noah Misch, Tom Lane)</P><P> <CODE CLASS="FUNCTION">xml_parse()</CODE>可以尝试读取外部文件夹或者URL作为需要解决DTD
+以及XML值中的实体引用，从而允许未授权数据库用户尝试读取与数据库服务器权限的数据。
+当外部数据还没直接返回给用户时，如果数据没有解析为有效XML，那么它的一部分可能会暴露
+在错误信息中；并且无论如何检查文件是否存在的能力可能对攻击者有用。</P></LI><LI><P> 阻止通过<TT CLASS="FILENAME">contrib/xml2</TT>的
+<CODE CLASS="FUNCTION">xslt_process()</CODE>访问外部文件夹/URL(Peter Eisentraut)</P><P> <SPAN CLASS="APPLICATION">libxslt</SPAN>提供通过样式表命令读写文件夹和URL的能力，
+从而允许未授权数据库用户以读写带有数据库服务器权限的数据。
+禁止通过<SPAN CLASS="APPLICATION">libxslt</SPAN>的安全选项的正确使用。(CVE-2012-3488)</P><P> 同时，删除<CODE CLASS="FUNCTION">xslt_process()</CODE>的能力从外部文件夹/URL中读取文件和样式表。
+当这是已证明<SPAN CLASS="QUOTE">"特性"</SPAN>时，那么它被长期视为坏主意。
+为了CVE-2012-3489修复打破该能力，而不是付出努力尝试修复它，
+我们只是打算简单地删除它。
+</P></LI><LI><P> 防止btree索引页过早回收利用(Noah Misch)</P><P> 当我们允许只读事务略过已分配XID时，
+当只读事务仍然运行到它时，
+那么我们介绍已删除btree页可以被重新利用的可能性。
+这会导致不正确索引搜索结果。
+在该字段产生错误的可能性很低，因为时间要求，
+但尽管如此它应该被修复。</P></LI><LI><P> 修复带有新创造或者重新设置序列的碰撞安全漏洞(Tom Lane)</P><P> 如果在新创造或者重新设置序列上执行<TT CLASS="COMMAND">ALTER SEQUENCE</TT>，
+然后在它上精确执行一个<CODE CLASS="FUNCTION">nextval()</CODE>调用，
+然后服务器崩溃了，WAL回放可以恢复序列到似乎没有执行<CODE CLASS="FUNCTION">nextval()</CODE>的状态下，
+然而允许通过下一个<CODE CLASS="FUNCTION">nextval()</CODE>调用再次返回第一个序列值。
+特别是这可以表现为<TT CLASS="TYPE">serial</TT>列，因为串行列的序列的创建包含
+<TT CLASS="COMMAND">ALTER SEQUENCE OWNED BY</TT>步骤。</P></LI><LI><P> 修复<TT CLASS="LITERAL">enum</TT>类型值比较的竞争条件
+(Robert Haas, Tom Lane)</P><P> 当遇到一个被添加的枚举值时，
+比较可能失败，
+因为当前查询开始。</P></LI><LI><P> 当不再热备份时，
+修复<CODE CLASS="FUNCTION">txid_current()</CODE>以报告正确时代(Heikki Linnakangas)</P><P> 这修复了上一个次要版本介绍的回归。</P></LI><LI><P> 防止不当的复制连接选择作为同步备用(Fujii Masao)</P><P> 主库可能不恰当选择虚假服务器
+比如<SPAN CLASS="APPLICATION">pg_receivexlog</SPAN>或者<SPAN CLASS="APPLICATION">pg_basebackup</SPAN>
+作为同步备用，然后无限期等待它们。</P></LI><LI><P> 当主事务有很多子事务时，
+修复热备启用错误(Andres Freund)</P><P> 这个错误导致故障报告
+为<SPAN CLASS="QUOTE">"无效XID插入到KnownAssignedXids中"</SPAN>。</P></LI><LI><P> 在<CODE CLASS="FUNCTION">pg_start_backup()</CODE>之后确保
+<TT CLASS="FILENAME">backup_label</TT>文件是fsync (Dave Kerr)</P></LI><LI><P> 在walsender进程中修复超时处理(Tom Lane)</P><P> WAL发送后端进程以建立<SPAN CLASS="SYSTEMITEM">SIGALRM</SPAN>处理程序，
+意味着它们会永远等待超时发生的一些情况。
+</P></LI><LI><P> 在每个后端通过walwriter冲洗后意识到walsender (Andres
+Freund, Simon Riggs)</P><P> 当工作负载只包含异步提交事务时，
+这大大减少了复制延迟。</P></LI><LI><P> 修复<TT CLASS="LITERAL">LISTEN</TT>/<TT CLASS="LITERAL">NOTIFY</TT>更好地处理I/O问题，
+比如磁盘空间不足(Tom Lane)</P><P> 在写入失败后，尝试发送更多<TT CLASS="LITERAL">NOTIFY</TT>消息的所有子序列可能
+带有信息如<SPAN CLASS="QUOTE">"不能从文件"pg_notify/<TT CLASS="REPLACEABLE"><I>nnnn</I></TT>"
+偏移量<TT CLASS="REPLACEABLE"><I>nnnnn</I></TT>: 成功读取"</SPAN>而失败。</P></LI><LI><P> 仅仅允许autovacuum通过直接的封锁进程被自动取消(Tom Lane)</P><P> 原代码可能允许某些情况下的不一致操作；
+特别是，在少于<TT CLASS="LITERAL">deadlock_timeout</TT>宽限期后可以取消autovacuum。</P></LI><LI><P> 改善autovacuum取消记录(Robert Haas)</P></LI><LI><P> 修复日志收集器以致于在服务器启动后
+第一个日志循环期间运行<TT CLASS="LITERAL">log_truncate_on_rotation</TT> (Tom Lane)</P></LI><LI><P> 修复<TT CLASS="LITERAL">WITH</TT>附属于嵌套设置操作
+(<TT CLASS="LITERAL">UNION</TT>/<TT CLASS="LITERAL">INTERSECT</TT>/<TT CLASS="LITERAL">EXCEPT</TT>)
+(Tom Lane)</P></LI><LI><P> 确保参照子查询的整行不包含任何额外的
+<TT CLASS="LITERAL">GROUP BY</TT>或者<TT CLASS="LITERAL">ORDER BY</TT>列(Tom Lane)</P></LI><LI><P> 在<TT CLASS="LITERAL">ALTER TABLE ... ADD CONSTRAINT USING INDEX</TT>期间修复产生的依赖(Tom Lane)</P><P>这个命令为索引留下了多余的<TT CLASS="STRUCTNAME">pg_depend</TT>项，
+这可能混淆后期操作，
+尤其是索引列之一上的<TT CLASS="LITERAL">ALTER TABLE ... ALTER COLUMN TYPE</TT>。</P></LI><LI><P> 修复<TT CLASS="COMMAND">REASSIGN OWNED</TT>以影响扩展(Alvaro Herrera)</P></LI><LI><P> 在<TT CLASS="COMMAND">CREATE TABLE</TT>期间<TT CLASS="LITERAL">CHECK</TT>约束和索引定义中不
+允许拷贝整行引用(Tom Lane)</P><P> 这种情况可以产生带有
+<TT CLASS="LITERAL">LIKE</TT>或者<TT CLASS="LITERAL">INHERITS</TT>的<TT CLASS="COMMAND">CREATE TABLE</TT>。
+复制整列变量被错误地标记带有不是一个新的原来表的行类型。
+为<TT CLASS="LITERAL">LIKE</TT>拒绝理由似乎是合理的，
+因为行类型可能后面会分散。
+为<TT CLASS="LITERAL">INHERITS</TT>我们理论上应该接受它，
+伴随对父表的行类型的隐含
+胁迫；但比起后端补丁似乎是安全的需要更多的工作。</P></LI><LI><P> 修复<TT CLASS="LITERAL">ARRAY(SELECT ...)</TT>子查询中的内存泄露
+(Heikki Linnakangas, Tom Lane)</P></LI><LI><P> 修复规划器传递正确规则排序到操作符选择性估计者(Tom Lane)</P><P>任何核心选择性估计函数先前不需要这个，
+但是第三方代码可能需要它。</P></LI><LI><P> 从正则表达式修复常见前缀提取(Tom Lane)</P><P> 该代码被量化的括号子表达式搞糊涂了，比如<TT CLASS="LITERAL">^(foo)?bar</TT>。
+这将导致这种模式不正确的搜索索引优化。</P></LI><LI><P> 修复<TT CLASS="TYPE">interval</TT>常量中带有分析符号
+<TT CLASS="REPLACEABLE"><I>hh</I></TT><TT CLASS="LITERAL">:</TT><TT CLASS="REPLACEABLE"><I>mm</I></TT>和
+<TT CLASS="REPLACEABLE"><I>hh</I></TT><TT CLASS="LITERAL">:</TT><TT CLASS="REPLACEABLE"><I>mm</I></TT><TT CLASS="LITERAL">:</TT><TT CLASS="REPLACEABLE"><I>ss</I></TT>
+字段的错误(Amit Kapila, Tom Lane)</P></LI><LI><P> 修复<SPAN CLASS="APPLICATION">pg_dump</SPAN>以
+更好处理包含部分<TT CLASS="LITERAL">GROUP BY</TT>列表
+的视图(Tom Lane)</P><P> 视图在<TT CLASS="LITERAL">GROUP BY</TT>中只列出一个主键列，
+但如果他们使用其他表列进行分组，那么根据主键进行标记。
+<SPAN CLASS="APPLICATION">pg_dump</SPAN>中这样的主键依赖的恰当处理导致差的有序转储，
+这充其量是效率很低的恢复而且
+在最坏的情况
+可能会导致一个平行的<SPAN CLASS="APPLICATION">pg_restore</SPAN>运行的彻底失败。</P></LI><LI><P> 在PL/Perl中，当使用SQL_ASCII编码时，
+避免设置UTF8标记(Alex Hunsaker, Kyotaro Horiguchi, Alvaro Herrera)</P></LI><LI><P> 当转换Python Unicode字符串到PL/Python中的服务器编码时，
+使用Postgres的编码转换函数，而不是Python的。</P><P> 这避免了一些拐角情况问题，
+值得注意的是Python不支持所有Postgres编码。
+一个显著功能变化是如果服务器编码是SQL_ASCII，
+你会
+得到字符串UTF-8表示形式；以前，
+字符串中任何非ASCII字符可以导致错误。</P></LI><LI><P> 修复PostgreSQL编码映射到PL/Python中的Python编码(Jan Urbanski)</P></LI><LI><P> 适当报告<TT CLASS="FILENAME">contrib/xml2</TT>的
+<CODE CLASS="FUNCTION">xslt_process()</CODE>中的错误(Tom Lane)</P></LI><LI><P> 为Morocco和Tokelau中DST变化规律更新时区
+数据文件到<SPAN CLASS="APPLICATION">tzdata</SPAN>发布2012e</P></LI></UL></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-9-1-6.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-9-1-4.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">发布9.1.6</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">发布9.1.4</TD></TR></TABLE></DIV></BODY></HTML>

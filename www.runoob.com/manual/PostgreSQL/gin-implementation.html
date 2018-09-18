@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>实现</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="GIN索引" HREF="http://school.yunwei.edu/manual/PostgreSQL/gin.html"><LINK REL="PREVIOUS" TITLE="扩展性" HREF="gin-extensibility.html"><LINK REL="NEXT" TITLE="GIN提示与技巧" HREF="gin-tips.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/gin.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="扩展性" HREF="gin-extensibility.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/gin.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 57. GIN索引</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="GIN提示与技巧" HREF="gin-tips.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="GIN-IMPLEMENTATION">57.3. 实现</A></H1><P>在内部，<ACRONYM CLASS="ACRONYM">GIN</ACRONYM>索引包含一个在键上构造的B-tree索引，
+每个键是一个或多个被索引项目的一个元素(比如，一个数组的一个成员) 。
+并且叶子页上每个元组包含了或者堆指针的B-tree的一个指针（一个<SPAN CLASS="QUOTE">"posting tree"</SPAN>），
+或者，当列表小到足以和键值一起存储到一个索引元组中时，则是堆指针的一个简单列表（一个<SPAN CLASS="QUOTE">"posting list"</SPAN>），
+</P><P>从<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 9.1开始，NULL的键值可以被包含到索引里。
+对NULL的或根据<CODE CLASS="FUNCTION">extractValue</CODE>不包含任何键的被索引项，占位符null被包含到了索引中。
+这就允许应该找到空项目的搜索可以执行。
+</P><P>多列<ACRONYM CLASS="ACRONYM">GIN</ACRONYM>索引通过在组合值（列号，键值）上建立一个单个的B-tree实现。
+不同列的键值可以有不同的类型。
+</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="GIN-FAST-UPDATE">57.3.1. GIN快速更新技术</A></H2><P>由于倒排索引的本质特性，更新一个<ACRONYM CLASS="ACRONYM">GIN</ACRONYM>索引可能会比较慢。
+插入或更新一个堆行可能导致许多往索引的插入（从被索引项目中抽取出的每一个键一个）。
+从<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 8.4开始，
+<ACRONYM CLASS="ACRONYM">GIN</ACRONYM>可以通过插入新的元组到一个临时的，待处理实体的未排序列表，来推迟很多这样的工作。
+当表被vacuumed，或者如果待处理实体的列表太大了（大于<A HREF="runtime-config-resource.html#GUC-WORK-MEM">work_mem</A>），
+这些实体被使用和初始索引创建时用到的相同的bulk插入方法，移动到主要的<ACRONYM CLASS="ACRONYM">GIN</ACRONYM>数据结构。
+即使把额外的vacuum开销算进去，这也大大提升了<ACRONYM CLASS="ACRONYM">GIN</ACRONYM>索引更新的速度。
+而且，这种额外开销的工作可以通过后台进程而不是前端查询来处理。
+</P><P>这种方法的主要缺点在于搜索时除了常规的索引还必须要扫描待处理实体的列表。
+因此，大的待处理实体的列表会显著的拖慢搜索。
+另一个缺点是，虽然大多数更新很快，一个导致待处理列表(pending list)变得<SPAN CLASS="QUOTE">"太大"</SPAN>的更新将引发一个立即的清理周期，
+并因此比起其它更新会非常慢。
+恰当的使用autovacuum可以最小化这两个问题。
+</P><P>如果一致的响应时间比更新速度更重要，可以通过把<ACRONYM CLASS="ACRONYM">GIN</ACRONYM>
+索引的存储参数<TT CLASS="LITERAL">FASTUPDATE</TT>设置为off而不使用待处理实体。
+详细请参考<A HREF="sql-createindex.html">CREATE INDEX</A>。
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="GIN-PARTIAL-MATCH">57.3.2. 部分匹配算法</A></H2><P>GIN可以支持<SPAN CLASS="QUOTE">"部分匹配"</SPAN>查询。即：查询并不决定单个或多个键的一个精确的匹配，
+而是，可能的匹配落在一个合理的狭窄键值范围内（根据<CODE CLASS="FUNCTION">compare</CODE>支持函数决定的键值排序顺序）。
+此时，<CODE CLASS="FUNCTION">extractQuery</CODE>方法并不返回一个用于精确匹配的键值，取而代之的是，
+返回一个要被搜索的键值范围的下边界，并且设置<TT CLASS="LITERAL">pmatch</TT>为true。
+然后，这个键值范围被使用<CODE CLASS="FUNCTION">comparePartial</CODE>进行扫描。
+<CODE CLASS="FUNCTION">comparePartial</CODE>必须为一个相匹配的索引键返回0，不匹配但依然在被搜索范围内时返回小于0的值，对超过可以匹配的范围的索引键则返回大于0的值。
+</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="gin-extensibility.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="gin-tips.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">扩展性</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/gin.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">GIN提示与技巧</TD></TR></TABLE></DIV></BODY></HTML>

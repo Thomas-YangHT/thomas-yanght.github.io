@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>要求</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="  源码安装" HREF="http://school.yunwei.edu/manual/PostgreSQL/installation.html"><LINK REL="PREVIOUS" TITLE="简版" HREF="install-short.html"><LINK REL="NEXT" TITLE="获取源码" HREF="install-getsource.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/installation.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="简版" HREF="install-short.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/installation.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 15. 源码安装</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="获取源码" HREF="install-getsource.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="INSTALL-REQUIREMENTS">15.2. 要求</A></H1><P>一般说来，一个现代的与 Unix 兼容的平台应该就能运行<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>。
+<A HREF="supported-platforms.html">第 15.6 &#33410;</A>列出了到发布为止已经明确测试过的平台。
+在发布的<TT CLASS="FILENAME">doc</TT>子目录里面有许多平台相关的<ACRONYM CLASS="ACRONYM">FAQ</ACRONYM>，
+如果你碰到问题你可能会需要参考它们。</P><P>
+编译<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>需要下面的软件包：
+<P></P></P><UL><LI><P>
+需要<ACRONYM CLASS="ACRONYM">GNU</ACRONYM> <SPAN CLASS="APPLICATION">make</SPAN>的3.80版本或者更新版本；
+<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">不能</I></SPAN>使用其它<SPAN CLASS="APPLICATION">make</SPAN> 程序或者老版本的<ACRONYM CLASS="ACRONYM">GNU</ACRONYM><SPAN CLASS="APPLICATION">make</SPAN>。
+<ACRONYM CLASS="ACRONYM">GNU</ACRONYM> <SPAN CLASS="APPLICATION">make</SPAN>常被安装为<TT CLASS="FILENAME">gmake</TT>的名字。
+本文档将一直使用这个名字称呼它(在一些系统上<ACRONYM CLASS="ACRONYM">GNU</ACRONYM><SPAN CLASS="APPLICATION">make</SPAN>是名字叫<TT CLASS="FILENAME">make</TT>的缺省工具)。
+要想测试<ACRONYM CLASS="ACRONYM">GNU</ACRONYM><SPAN CLASS="APPLICATION">make</SPAN>，敲入：
+</P><PRE CLASS="SCREEN"><KBD
+CLASS="USERINPUT"
+>gmake --version</KBD
+></PRE><P>
+</P></LI><LI><P> 你需要一个<ACRONYM CLASS="ACRONYM">ISO</ACRONYM>/<ACRONYM CLASS="ACRONYM">ANSI</ACRONYM> C编译器（至少C89-标准）。
+我们推荐使用最近版本的<SPAN CLASS="PRODUCTNAME">GCC</SPAN>。不过，
+众所周知的是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>可以利用许多不同厂商的不同编译器进行编译。</P></LI><LI><P>
+除了<SPAN CLASS="APPLICATION">gzip</SPAN>或者<SPAN CLASS="APPLICATION">bzip2</SPAN>之外，还需要<SPAN CLASS="APPLICATION">tar</SPAN>来解开发布。
+</P></LI><LI><P>
+缺省时将自动使用<ACRONYM CLASS="ACRONYM">GNU</ACRONYM> <SPAN CLASS="PRODUCTNAME">Readline</SPAN>库
+它允许<SPAN CLASS="APPLICATION">psql</SPAN>（PostgreSQL命令行SQL解释器）记住每个键入的命令，
+并允许你使用箭头键来调用和编辑以前的命令。这是非常有帮助的，强烈推荐。
+如果你不想用它，那么你必需给<TT CLASS="FILENAME">configure</TT>声明<TT CLASS="OPTION">--without-readline</TT>选项。
+作为替代，你可以经常使用BSD许可的<TT CLASS="FILENAME">libedit</TT>库，最初
+在<SPAN CLASS="PRODUCTNAME">NetBSD</SPAN>上开发的。
+如果没有发现<TT CLASS="FILENAME">libreadline</TT>，或者如果为<TT CLASS="FILENAME">configure</TT>指定<TT CLASS="OPTION">--with-libedit-preferred</TT>，
+可以使用与GNU <SPAN CLASS="PRODUCTNAME">Readline</SPAN>兼容的<TT CLASS="FILENAME">libedit</TT>库。
+如果你使用的是一个基于包的 Linux 发布，那么要注意你需要<TT CLASS="LITERAL">readline</TT>和<TT CLASS="LITERAL">readline-devel</TT>两个包，
+特别是如果这两个包在你的版本里是分开的时候。
+</P></LI><LI><P>
+缺省的时候将使用<SPAN CLASS="PRODUCTNAME">zlib</SPAN>压缩库。如果你不想使用它，
+那么你必须给<TT CLASS="FILENAME">configure</TT>声明<TT CLASS="OPTION">--without-zlib</TT>选项。
+使用这个选项关闭了在<SPAN CLASS="APPLICATION">pg_dump</SPAN>和
+<SPAN CLASS="APPLICATION">pg_restore</SPAN>里面压缩归档的支持。
+</P></LI></UL><P>
+</P><P>
+下列包是可选的。在缺省配置的时候并不要求它们，
+但是如果打开了一些编译选项之后就需要它们了，如下面解释的:
+<P></P></P><UL><LI><P>
+要编译<SPAN CLASS="APPLICATION">PL/Perl</SPAN>服务器端编程语言，你需要一个完整的<SPAN CLASS="PRODUCTNAME">Perl</SPAN>安装，
+包括<TT CLASS="FILENAME">libperl</TT>库和头文件。因为<SPAN CLASS="APPLICATION">PL/Perl</SPAN>是一个共享库，
+<TT CLASS="FILENAME">libperl</TT>库在大多数平台上也必须是一个共享库。
+最新版本的<SPAN CLASS="PRODUCTNAME">Perl</SPAN>好像已经是缺省这么做了，但是早先的版本可不是这样的，
+而且在任何安装了Perl的地方总是可选的。
+如果你打算不是偶尔使用<SPAN CLASS="APPLICATION">PL/Perl</SPAN>的话，
+你应确保编译带有<TT CLASS="LITERAL">usemultiplicity</TT>启用选项的<SPAN CLASS="PRODUCTNAME">Perl</SPAN>安装
+（<TT CLASS="LITERAL">perl -V</TT>将显示是否是这种情况）。
+</P><P>
+如果没有共享库，但却需要它，那么在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>编译过程中将看到下面的信息，指出这个问题：
+</P><PRE CLASS="SCREEN">*** Cannot build PL/Perl because libperl is not a shared library.
+*** You might have to rebuild your Perl installation.  Refer to
+*** the documentation for details.</PRE><P>
+如果你不按照屏幕输出的指示去做，那么你只会注意到<SPAN CLASS="APPLICATION">PL/Perl</SPAN>库对象<TT CLASS="FILENAME">plperl.so</TT>或者类似的什么东西，
+不会安装到系统里。如果你看到这些东西，那么你就必须重新手工编译并安装<SPAN CLASS="PRODUCTNAME">Perl</SPAN>，
+这样才能编译<SPAN CLASS="APPLICATION">PL/Perl</SPAN>。在配置<SPAN CLASS="PRODUCTNAME">Perl</SPAN>的过程中，要求一个共享库。
+</P></LI><LI><P> 要编译<SPAN CLASS="APPLICATION">PL/Python</SPAN>服务器端编程语言，你需要一个<SPAN CLASS="PRODUCTNAME">Python</SPAN>的安装，
+包括头文件和<SPAN CLASS="APPLICATION">distutils</SPAN>模块。
+最小所需版本是<SPAN CLASS="PRODUCTNAME">Python</SPAN>2.3。
+如果版本是3.1或者更高版本，则支持<SPAN CLASS="PRODUCTNAME">Python 3</SPAN>；但是当使用Python 3的时候，
+则参阅
+<A HREF="plpython-python23.html">第 43.1 &#33410;</A>。</P><P>
+因为<SPAN CLASS="APPLICATION">PL/Python</SPAN>将以共享库的方式编译，
+<TT CLASS="FILENAME">libpython</TT>库在大多数平台上也必须是一个共享库。
+在缺省的<SPAN CLASS="PRODUCTNAME">Python</SPAN>安装时不是这样的。如果在编译和安装<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>之后，
+你有一个叫做<TT CLASS="FILENAME">plpython.so</TT>的文件(可能扩展名会有所不同)，那么一切都好说，
+否则你应该会看到类似下面的信息飘过:
+</P><PRE CLASS="SCREEN">*** Cannot build PL/Python because libpython is not a shared library.
+*** You might have to rebuild your Python installation.  Refer to
+*** the documentation for details.</PRE><P>
+这意味着你必须重新编译(一部分)<SPAN CLASS="PRODUCTNAME">Python</SPAN>安装，以创建这个共享库。
+</P><P> 如果有问题，用<TT CLASS="LITERAL">--enable-shared</TT>标志运行<SPAN CLASS="PRODUCTNAME">Python</SPAN> 2.3或更高版本的configure 脚本。
+在有些操作系统上，你不必非要编译一个共享库，不过你需要让<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的编译系统知道这些。
+参考<TT CLASS="FILENAME">src/pl/plpython</TT>目录中的<TT CLASS="FILENAME">Makefile</TT>获取细节。</P></LI><LI><P> 如果想编译<SPAN CLASS="APPLICATION">PL/Tcl</SPAN>过程语言，那么当然需要安装<SPAN CLASS="PRODUCTNAME">Tcl</SPAN>了。
+如果你使用<SPAN CLASS="PRODUCTNAME">Tcl</SPAN>先前的8.4版本，应该确保它编译时没有多线程支持。</P></LI><LI><P> 要打开本地语言支持(<ACRONYM CLASS="ACRONYM">NLS</ACRONYM>)，也就是说，用英语之外的语言显示程序的信息，
+你需要一个<SPAN CLASS="APPLICATION">Gettext</SPAN> <ACRONYM CLASS="ACRONYM">API</ACRONYM>的实现。
+有些操作系统内置了这些(比如<SPAN CLASS="SYSTEMITEM">Linux</SPAN>, <SPAN CLASS="SYSTEMITEM">NetBSD</SPAN>,
+<SPAN CLASS="SYSTEMITEM">Solaris</SPAN>)，
+对于其它系统，你可以从 <A HREF="http://www.gnu.org/software/gettext/" TARGET="_top">http://www.gnu.org/software/gettext/</A>下载一个额外的包。
+如果你在<ACRONYM CLASS="ACRONYM">GNU</ACRONYM> C库里面使用<SPAN CLASS="APPLICATION">Gettext</SPAN>实现，
+那么你就额外需要<SPAN CLASS="PRODUCTNAME">GNU Gettext</SPAN>包，
+因为我们需要里面的几个工具程序。对于任何其它的实现，你应该不需要它。</P></LI><LI><P> <SPAN CLASS="APPLICATION">Kerberos</SPAN>, <SPAN CLASS="PRODUCTNAME">OpenSSL</SPAN>,
+<SPAN CLASS="PRODUCTNAME">OpenLDAP</SPAN>,和/或者<SPAN CLASS="APPLICATION">PAM</SPAN>，
+如果你想支持使用这些服务的认证或者加密，那你需要这些包。</P></LI><LI><P> 为了编译<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>文档，有一套独立要求；参阅
+<A HREF="docguide-toolsets.html">第 J.2 &#33410;</A>.
+</P></LI></UL><P>
+</P><P>
+如果你从<SPAN CLASS="PRODUCTNAME">Git</SPAN>树中编译，而不是使用发布的源代码包，
+或者你想做一些服务器端的开发，
+那么你还需要下面的包：
+<P></P></P><UL><LI><P>
+如果你需要从Git检出中编译，或者你修改了扫描器和分析器的定义文件，
+那么你需要<SPAN CLASS="APPLICATION">Flex</SPAN>和<SPAN CLASS="APPLICATION">Bison</SPAN>。如果你需要它们，
+那么确保自己拿到的是<SPAN CLASS="APPLICATION">Flex</SPAN> 2.5.31或更新的版本，以及<SPAN CLASS="APPLICATION">Bison</SPAN> 1.875或者更新的版本。
+其它的<SPAN CLASS="APPLICATION">lex</SPAN>和<SPAN CLASS="APPLICATION">yacc</SPAN>程序肯定是不行的。
+</P></LI><LI><P>
+如果需要从Git检出中编译或者如果需要改变使用Perl脚本的任何编译步骤的输入文件，那么
+需要<SPAN CLASS="APPLICATION">Perl</SPAN> 5.8或者更新版本。如果在Windows上编译，那么你在任何情况下都需要
+<SPAN CLASS="APPLICATION">Perl</SPAN>。
+</P></LI></UL><P>
+</P><P> 如果你需要获取<ACRONYM CLASS="ACRONYM">GNU</ACRONYM>包，你可以在<ACRONYM CLASS="ACRONYM">GNU</ACRONYM>镜像站点
+<A HREF="http://www.gnu.org/order/ftp.html" TARGET="_top">http://www.gnu.org/order/ftp.html</A>或者<A HREF="ftp://ftp.gnu.org/gnu/" TARGET="_top">ftp://ftp.gnu.org/gnu/</A>
+找到它们。</P><P> 请检查一下，看看你是否有足够的磁盘空间。
+你将大概需要近100MB 用于存放安装过程中的源码树和大约20MB用于安装目录。
+一个空数据库大概需要35MB。
+在存放相同的数据时，数据库大概需要文本文件五倍的存储空间。
+如果你要运行回归测试，还临时需要额外的150MB 。
+请用<TT CLASS="COMMAND">df</TT>命令检查剩余磁盘空间。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="install-short.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="install-getsource.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">简版</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/installation.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">获取源码</TD></TR></TABLE></DIV></BODY></HTML>

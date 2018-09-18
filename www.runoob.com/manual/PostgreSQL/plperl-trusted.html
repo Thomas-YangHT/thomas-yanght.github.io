@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>可信的和不可信的 PL/Perl</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="PL/Perl - Perl 过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/plperl.html"><LINK REL="PREVIOUS" TITLE="PL/Perl里的全局变量" HREF="plperl-global.html"><LINK REL="NEXT" TITLE="PL/Perl 触发器" HREF="plperl-triggers.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/plperl.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="PL/Perl里的全局变量" HREF="plperl-global.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plperl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 42. PL/Perl - Perl 过程语言</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="PL/Perl 触发器" HREF="plperl-triggers.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="PLPERL-TRUSTED">42.5. 可信的和不可信的 PL/Perl</A></H1><P>通常，PL/Perl 是作为一种叫<TT CLASS="LITERAL">plperl</TT>的<SPAN CLASS="QUOTE">"可信"</SPAN>编程语言安装的。在这种设置中，
+为了保持安全，某些 Perl 操作被关闭掉了。通常，受限制的操作都是那些和环境相互交互的动作。
+这包括文件句柄操作、<TT CLASS="LITERAL">require</TT> 、<TT CLASS="LITERAL">use</TT>(对于外部模块)。
+没有办法访问数据库服务器进程内部或者获取具有服务器进程权限的 OS 级别的访问，就像 C 函数那样。
+因此，任何非特权的数据库用户都可以允许使用这种语言。</P><P>这里是一个无法运转的函数的例子，因为出于安全原因，文件系统的操作是不允许的：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION badfunc() RETURNS integer AS $$
+    my $tmpfile = "/tmp/badfile";
+    open my $fh, '&gt;', $tmpfile
+        or elog(ERROR, qq{could not open the file "$tmpfile": $!});
+    print $fh "Testing writing to a file\n";
+    close $fh or elog(ERROR, qq{could not close the file "$tmpfile": $!});
+    return 1;
+$$ LANGUAGE plperl;</PRE><P>
+创建这个函数将会失败，因为它使用的非法调用将会被验证器捕获。
+</P><P>有时候想写不受限制的 Perl 函数。比如，可能需要一个能发送邮件的 Perl 函数。为了处理这种情况，
+PL/Perl 也可以安装为<SPAN CLASS="QUOTE">"不可信的"</SPAN>的语言<SPAN CLASS="APPLICATION">PL/PerlU</SPAN>。
+在这种情况下，可以使用完整的 Perl 语言。当安装这个语言时，<TT CLASS="LITERAL">plperlu</TT>
+这个名字可以选取不可信的 PL/Perl 变种。</P><P><SPAN CLASS="APPLICATION">PL/PerlU</SPAN>函数的作者必须注意不能把该函数用于做任何不想做的事情，
+因为它可以干任何数据库管理员能干的事情。请注意数据库系统只允许数据库超级用户创建不可信语言写的函数。</P><P>如果上面的函数由超级用户用<TT CLASS="LITERAL">plperlu</TT>创建，那么执行就会成功。</P><P>同样的方式，如果语言被声明为<TT CLASS="LITERAL">plperlu</TT>而不是<TT CLASS="LITERAL">plperl</TT>，
+那么用Perl写的匿名代码块可以使用受限制的操作，但是调用者必须是超级用户。</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>当<SPAN CLASS="APPLICATION">PL/Perl</SPAN>函数在一个单独的为每个SQL用户的Perl解释器里运行时，
+所有的<SPAN CLASS="APPLICATION">PL/PerlU</SPAN>函数在一个单独的Perl解释器里的给定会话中执行
+（不是用于<SPAN CLASS="APPLICATION">PL/Perl</SPAN>函数的那个解释器）。这允许<SPAN CLASS="APPLICATION">PL/PerlU</SPAN>
+函数自由的分享数据，但是在<SPAN CLASS="APPLICATION">PL/Perl</SPAN>和<SPAN CLASS="APPLICATION">PL/PerlU</SPAN>
+函数之间不会有通讯发生。</P></BLOCKQUOTE></DIV><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>Perl在一个进程中不能支持多个解释器，除非在编译时给它适当的标志，<TT CLASS="LITERAL">usemultiplicity</TT>
+或 <TT CLASS="LITERAL">useithreads</TT>。（<TT CLASS="LITERAL">usemultiplicity</TT>是首选的，除非你实际需要使用线程。
+获取更多信息，请参阅<SPAN CLASS="CITEREFENTRY"><SPAN CLASS="REFENTRYTITLE">perlembed</SPAN></SPAN>手册页。）
+如果<SPAN CLASS="APPLICATION">PL/Perl</SPAN>与一个没有这样编译的Perl的副本一起使用，那么每个会话只可能有一个Perl解释器，
+所以任意一个会话只能执行<SPAN CLASS="APPLICATION">PL/PerlU</SPAN>函数，或<SPAN CLASS="APPLICATION">PL/Perl</SPAN>函数，
+他们都是通过同一个SQL角色调用的。</P></BLOCKQUOTE></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="plperl-global.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="plperl-triggers.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">PL/Perl里的全局变量</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plperl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">PL/Perl 触发器</TD></TR></TABLE></DIV></BODY></HTML>

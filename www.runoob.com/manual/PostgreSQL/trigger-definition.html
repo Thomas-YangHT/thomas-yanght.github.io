@@ -1,0 +1,109 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>触发器行为概述</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="触发器" HREF="http://school.yunwei.edu/manual/PostgreSQL/triggers.html"><LINK REL="PREVIOUS" TITLE="触发器" HREF="http://school.yunwei.edu/manual/PostgreSQL/triggers.html"><LINK REL="NEXT" TITLE="数据改变的可视性" HREF="trigger-datachanges.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/trigger.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="触发器" HREF="http://school.yunwei.edu/manual/PostgreSQL/triggers.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/triggers.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 36. 触发器</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="数据改变的可视性" HREF="trigger-datachanges.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="TRIGGER-DEFINITION">36.1. 触发器行为概述</A></H1><P> 一个触发器是一种声明，告诉数据库应该在执行特定的操作的时候执行特定的函数。
+触发器可以附加到表和视图上。</P><P> 触发器可以定义在一个<TT CLASS="COMMAND">INSERT</TT>, <TT CLASS="COMMAND">UPDATE</TT>, or
+<TT CLASS="COMMAND">DELETE</TT>命令之前或者之后执行，
+要么是对每行执行一次，要么是对每条<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>语句执行一次。
+如果某列在<TT CLASS="COMMAND">UPDATE</TT>
+语句的<TT CLASS="LITERAL">SET</TT>子句中被提及，则<TT CLASS="COMMAND">UPDATE</TT>触发器再次被触发。
+触发器可以为<TT CLASS="COMMAND">TRUNCATE</TT>语句触发。
+如果发生触发器事件，那么将在合适的时刻调用触发器函数以处理该事件。</P><P> 在视图上，触发器可以被定义执行而不是<TT CLASS="COMMAND">INSERT</TT>, <TT CLASS="COMMAND">UPDATE</TT>或者
+<TT CLASS="COMMAND">DELETE</TT>操作。为了需要在视图中修改的每一行触发<TT CLASS="LITERAL">INSTEAD OF</TT>触发器。
+这是触发器函数在基表下执行必要修改的责任，并且在适当情况下，返回在视图中出现的修改的行。
+在执行每个<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>语句，
+<TT CLASS="COMMAND">INSERT</TT>, <TT CLASS="COMMAND">UPDATE</TT>或者<TT CLASS="COMMAND">DELETE</TT>
+操作之前或之后也可以定义视图上的触发器。 </P><P> 触发器函数必须在创建触发器之前，作为一个没有参数并且返回<TT CLASS="LITERAL">trigger</TT>类型的函数定义。
+触发器函数通过特殊的<TT CLASS="STRUCTNAME">TriggerData</TT>结构接收其输入，
+而不是用普通的函数参数方式。</P><P> 一旦创建了一个合适的触发器函数，
+就可以用<A HREF="sql-createtrigger.html">CREATE TRIGGER</A>创建触发器。
+同一个触发器函数可以用于多个触发器。</P><P> <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>提供<I CLASS="FIRSTTERM">按行</I>与<I CLASS="FIRSTTERM">按语句</I>触发的触发器。
+按行触发的触发器函数为触发语句影响的每一行执行一次；相比之下，
+按语句触发的触发器函数为每条触发语句执行一次，而不管影响的行数。
+特别是，一个影响零行的语句将仍然导致按语句触发的触发器执行。
+这两种类型的触发器有时候分别叫做<I CLASS="FIRSTTERM">行级</I>触发器和<I CLASS="FIRSTTERM">语句级</I>触发器。
+在<TT CLASS="COMMAND">TRUNCATE</TT>上的触发器可能只能在语句级别定义。
+触发之前或之后的视图，触发器只能在语句级别定义，
+然而非<TT CLASS="COMMAND">INSERT</TT>, <TT CLASS="COMMAND">UPDATE</TT>或者
+<TT CLASS="COMMAND">DELETE</TT>触发的触发器在行级别定义。</P><P> 触发器通常按照触发的<I CLASS="FIRSTTERM">before</I>和<I CLASS="FIRSTTERM">after</I>，
+或者<I CLASS="FIRSTTERM">instead of</I>操作进行分类。
+这些分别被称为<TT CLASS="LITERAL">BEFORE</TT>触发器，<TT CLASS="LITERAL">AFTER</TT>触发器，
+<TT CLASS="LITERAL">INSTEAD OF</TT>触发器。
+语句级别的<TT CLASS="LITERAL">BEFORE</TT>触发器通常在语句开始做任何事情之前触发，
+而语句级别的<TT CLASS="LITERAL">AFTER</TT>触发器在语句结束时触发。
+触发器的这些类型可以在表或者视图上定义。
+行级别的<TT CLASS="LITERAL">BEFORE</TT>触发器在对特定行进行操作之前触发，
+而行级别的<TT CLASS="LITERAL">AFTER</TT>触发器在语句结束的时候触发
+(但是在任何语句级别的<TT CLASS="LITERAL">AFTER</TT>触发器之前)。
+触发器的这些类型可能只在表上定义。
+行级别<TT CLASS="LITERAL">INSTEAD OF</TT>触发器可能只在视图上定义，
+并且立刻触发作为视图上的每一行被标识为需要的操作。 </P><P>
+按语句触发的触发器应该总是返回<TT CLASS="SYMBOL">NULL</TT>。
+如果必要，按行触发的触发器函数可以给调用它的执行者返回一行数据
+(一个类型为<TT CLASS="STRUCTNAME">HeapTuple</TT>的数值)，
+那些在操作之前触发的触发器有以下选择：
+<P></P></P><UL><LI><P>
+它可以返回<TT CLASS="SYMBOL">NULL</TT>以忽略对当前行的操作。
+这就指示执行器不要执行调用该触发器的行级别操作(对特定行的插入或者更改)。
+</P></LI><LI><P> 只用于<TT CLASS="COMMAND">INSERT</TT>和<TT CLASS="COMMAND">UPDATE</TT>行触发器：
+返回的行将成为被插入的行或者是成为将要更新的行。
+这样就允许触发器函数修改将要被插入或者更新的行。</P></LI></UL><P>
+一个无意导致任何这类行为的在操作之前触发的行级触发器必须仔细返回那个被当作新行传进来的行。
+也就是说，对于<TT CLASS="COMMAND">INSERT</TT>和<TT CLASS="COMMAND">UPDATE</TT>触发器而言，
+是<TT CLASS="VARNAME">NEW</TT>行，
+对于<TT CLASS="COMMAND">DELETE</TT>触发器而言，
+是<TT CLASS="VARNAME">OLD</TT>行。
+</P><P>行级别<TT CLASS="LITERAL">INSTEAD OF</TT>触发器应该返回<TT CLASS="SYMBOL">NULL</TT>表示它不修改来自视图的基础表的任何数据，
+它应该返回传递到（<TT CLASS="COMMAND">INSERT</TT>和<TT CLASS="COMMAND">UPDATE</TT>的<TT CLASS="VARNAME">NEW</TT>行，
+或者<TT CLASS="COMMAND">DELETE</TT>操作的<TT CLASS="VARNAME">OLD</TT>行
+）的视图行。非空返回值用于发信号，使触发器执行视图中必要的数据修改。
+这将导致计算通过这个命令递增的受影响的行数。
+对于<TT CLASS="COMMAND">INSERT</TT>和<TT CLASS="COMMAND">UPDATE</TT>操作，触发器可能在返回它之前修改<TT CLASS="VARNAME">NEW</TT>行。
+这将改变通过<TT CLASS="COMMAND">INSERT RETURNING</TT>或者<TT CLASS="COMMAND">UPDATE RETURNING</TT>返回的数据。
+并且当视图不能完全显示所提供的同一数据时是有用的。</P><P> 对于在操作之后触发的行级触发器，其返回值会被忽略，因此可以返回<TT CLASS="SYMBOL">NULL</TT>。</P><P> 如果多于一个触发器为同样的事件定义在同样的关系上，
+触发器将按照名字的字母顺序触发。
+在<TT CLASS="LITERAL">BEFORE</TT>和
+<TT CLASS="LITERAL">INSTEAD OF</TT>触发器的情况下，
+每个触发器返回的可能已经被修改过的行成为下一个触发器的输入。
+如果<TT CLASS="LITERAL">BEFORE</TT>或者<TT CLASS="LITERAL">INSTEAD OF</TT>触发器返回<TT CLASS="SYMBOL">NULL</TT>，
+那么对该行的操作将被丢弃并且随后的触发器也不会被触发。</P><P> 一个触发器定义也可以声明一个布尔型的<TT CLASS="LITERAL">WHEN</TT>条件，用于检查触发器是否应该被触发。
+在行级别触发器上，<TT CLASS="LITERAL">WHEN</TT>条件可以检查旧和/或新的列值。语句级的触发器也可以有<TT CLASS="LITERAL">WHEN</TT>条件，
+尽管对其没有用。在一个<TT CLASS="LITERAL">BEFORE</TT>触发器中，<TT CLASS="LITERAL">WHEN</TT>条件只在函数正在或将被执行之前被触发执行，
+因此使用<TT CLASS="LITERAL">WHEN</TT>条件实际上与在触发器开始时执行相同条件的结果是一样的。然而，
+在一个<TT CLASS="LITERAL">AFTER</TT>触发器中，<TT CLASS="LITERAL">WHEN</TT>条件只有在发生更新行时才会执行，
+并且决定在语句结束之后，
+一个事件是否需要等待触发触发器。因此当一个<TT CLASS="LITERAL">AFTER</TT>触发器的<TT CLASS="LITERAL">WHEN</TT>条件没有返回真时，
+队列中的时间不需要在语句结束后重新读取行。如果触发器只会被一些行触发时，
+<TT CLASS="LITERAL">INSTEAD OF</TT>触发器不支持<TT CLASS="LITERAL">WHEN</TT>条件。</P><P> 通常，行的<TT CLASS="LITERAL">BEFORE</TT>触发器用于检查或修改将要插入或者更新的数据。
+比如，一个<TT CLASS="LITERAL">BEFORE</TT>触发器可以用于把当前时间插入一个<TT CLASS="TYPE">timestamp</TT>字段，
+或者跟踪该行的两个元素是一致的。行的<TT CLASS="LITERAL">AFTER</TT>触发器多数用于填充或者更新其它表，
+或者对其它表 进行一致性检查。这么区分工作的原因是<TT CLASS="LITERAL">AFTER</TT>触发器肯定可以看到该行的最后数值，
+而<TT CLASS="LITERAL">BEFORE</TT>触发器不能；还可能有其它的<TT CLASS="LITERAL">BEFORE</TT>触发器在其后触发。
+如果你没有具体的原因定义触发器是<TT CLASS="LITERAL">BEFORE</TT>或者
+<TT CLASS="LITERAL">AFTER</TT>，
+那么<TT CLASS="LITERAL">BEFORE</TT>触发器的效率高些，
+因为操作相关的信息不必保存到语句的结尾。</P><P> 如果一个触发器函数执行SQL命令，而这些命令再次触发触发器，
+这就是所谓的级联触发器。对级联触发器的级联深度没有明确的限制。
+有可能出现级联触发器导致同一个触发器递归调用的情况；
+比如，一个<TT CLASS="COMMAND">INSERT</TT>触发器可能执行一个命令，
+把一个额外的行插入同一个表中，
+导致<TT CLASS="COMMAND">INSERT</TT>触发器再次触发。
+避免这样无穷递归的问题是触发器程序员的责任。</P><P>
+在定义一个触发器的时候，可以声明一些参数。
+在触发器定义中包含参数的目的是允许类似需求的不同触发器调用同一个函数。
+比如，可能有一个通用的触发器函数，接受两个字段名字，把当前用户放在第一个，
+而当前时间戳在第二个。只要写得恰当，
+那么这个触发器函数就可以和触发它的特定表无关。
+这样同一个函数就可以用于有着合适字段的任何表的<TT CLASS="COMMAND">INSERT</TT>事件，
+实现自动跟踪交易表中的记录创建之类的问题。
+如果定义成一个<TT CLASS="COMMAND">UPDATE</TT>触发器，还可以用它跟踪最后更新的事件。
+</P><P> 每种支持触发器的编程语言都有自己的方法让触发器函数得到输入数据。
+这些输入数据包括触发器事件的类型(比如<TT CLASS="COMMAND">INSERT</TT>或者<TT CLASS="COMMAND">UPDATE</TT>)以及所有
+在<TT CLASS="COMMAND">CREATE TRIGGER</TT>里面列出的参数。对于低层次的触发器，
+输入数据也包括<TT CLASS="COMMAND">INSERT</TT>和
+<TT CLASS="COMMAND">UPDATE</TT>触发器的<TT CLASS="VARNAME">NEW</TT>
+和/或<TT CLASS="COMMAND">UPDATE</TT>和<TT CLASS="COMMAND">DELETE</TT>触发器的<TT CLASS="VARNAME">OLD</TT>行。
+语句级别的触发器目前没有任何方法检查该语句修改的独立行。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/triggers.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="trigger-datachanges.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">触发器</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/triggers.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">数据改变的可视性</TD></TR></TABLE></DIV></BODY></HTML>

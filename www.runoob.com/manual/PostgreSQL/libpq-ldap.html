@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>LDAP查找连接参数</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="libpq - C 库" HREF="http://school.yunwei.edu/manual/PostgreSQL/libpq.html"><LINK REL="PREVIOUS" TITLE="连接服务的文件" HREF="libpq-pgservice.html"><LINK REL="NEXT" TITLE="SSL 支持" HREF="libpq-ssl.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/libpq.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="连接服务的文件" HREF="libpq-pgservice.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/libpq.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 31. <SPAN CLASS="APPLICATION">libpq</SPAN> - C 库</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="SSL 支持" HREF="libpq-ssl.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="LIBPQ-LDAP">31.17. LDAP查找连接参数</A></H1><P>如果<SPAN CLASS="APPLICATION">libpq</SPAN>已经通过LDAP支持（<TT CLASS="COMMAND">configure</TT>
+的<TT CLASS="LITERAL"><TT CLASS="OPTION">--with-ldap</TT></TT>）进行了编译，可以从一个中央服务器，
+通过LDAP检索连接选项，如<TT CLASS="LITERAL">host</TT>或<TT CLASS="LITERAL">dbname</TT>。
+这样做的好处是，如果一个数据库连接参数发生了改变，在所有客户端的连接信息不必进行改变。</P><P>LDAP连接参数查找使用连接服务文件<TT CLASS="FILENAME">pg_service.conf</TT>(参阅
+<A HREF="libpq-pgservice.html">第 31.16 &#33410;</A>)。在<TT CLASS="FILENAME">pg_service.conf</TT>
+中的以<TT CLASS="LITERAL">ldap://</TT>开始的一行被看做是一个LDAP URL，
+并且会执行一个LDAP查询。返回结果会是一个<TT CLASS="LITERAL">keyword = value</TT>的列表，
+用于设置连接选项。URL必须符合RFC 1959，并且是如下形式：
+</P><PRE CLASS="SYNOPSIS">ldap://[<TT
+CLASS="REPLACEABLE"
+><I
+>hostname</I
+></TT
+>[:<TT
+CLASS="REPLACEABLE"
+><I
+>port</I
+></TT
+>]]/<TT
+CLASS="REPLACEABLE"
+><I
+>search_base</I
+></TT
+>?<TT
+CLASS="REPLACEABLE"
+><I
+>attribute</I
+></TT
+>?<TT
+CLASS="REPLACEABLE"
+><I
+>search_scope</I
+></TT
+>?<TT
+CLASS="REPLACEABLE"
+><I
+>filter</I
+></TT
+></PRE><P>
+这里<TT CLASS="REPLACEABLE"><I>hostname</I></TT>缺省为<TT CLASS="LITERAL">localhost</TT>
+和<TT CLASS="REPLACEABLE"><I>port</I></TT>缺省为389。
+</P><P><TT CLASS="FILENAME">pg_service.conf</TT>的处理在LDAP成功查找之后就会被终止，
+但如果不能成功连接LDAP服务，那么会继续。
+这是为了进一步指向不同的LDAP服务器的LDAP URL线而提供的一个回滚，
+标准的<TT CLASS="LITERAL">keyword = value</TT>对格式，或缺省的连接参数。
+如果想在这种情况下获得一个错误信息，可以在LDAP URL后添加一个语法不正确的行。</P><P>LDIF文件创建的一个样本LDAP条目：
+</P><PRE CLASS="PROGRAMLISTING">version:1
+dn:cn=mydatabase,dc=mycompany,dc=com
+changetype:add
+objectclass:top
+objectclass:groupOfUniqueNames
+cn:mydatabase
+uniqueMember:host=dbserver.mycompany.com
+uniqueMember:port=5439
+uniqueMember:dbname=mydb
+uniqueMember:user=mydb_user
+uniqueMember:sslmode=require</PRE><P>
+可能被下列的 LDAP URL查询：
+</P><PRE CLASS="PROGRAMLISTING">ldap://ldap.mycompany.com/dc=mycompany,dc=com?uniqueMember?one?(cn=mydatabase)</PRE><P>
+</P><P>也可以通过LDAP查找来混合日常服务文件。一个<TT CLASS="FILENAME">pg_service.conf</TT>
+中完整的一节的例子如下：
+</P><PRE CLASS="PROGRAMLISTING"># only host and port are stored in LDAP, specify dbname and user explicitly
+[customerdb]
+dbname=customer
+user=appuser
+ldap://ldap.acme.com/cn=dbserver,cn=hosts?pgconnectinfo?base?(objectclass=*)</PRE><P>
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="libpq-pgservice.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="libpq-ssl.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">连接服务的文件</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/libpq.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">SSL 支持</TD></TR></TABLE></DIV></BODY></HTML>

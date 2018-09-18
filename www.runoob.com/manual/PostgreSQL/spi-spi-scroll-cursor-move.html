@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>SPI_scroll_cursor_move</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="接口函数" HREF="spi-interface.html"><LINK REL="PREVIOUS" TITLE="SPI_scroll_cursor_fetch" HREF="spi-spi-scroll-cursor-fetch.html"><LINK REL="NEXT" TITLE="SPI_cursor_close" HREF="spi-spi-cursor-close.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/spi.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="SPI_scroll_cursor_fetch" HREF="spi-spi-scroll-cursor-fetch.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="spi-interface.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="SPI_cursor_close" HREF="spi-spi-cursor-close.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SPI-SPI-SCROLL-CURSOR-MOVE"></A>SPI_scroll_cursor_move</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN62723"></A><H2>&#21517;&#31216;</H2>SPI_scroll_cursor_move&nbsp;--&nbsp;移动一个游标</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN62728"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">void SPI_scroll_cursor_move(Portal <TT
+CLASS="PARAMETER"
+>portal</TT
+>, FetchDirection <TT
+CLASS="PARAMETER"
+>direction</TT
+>,
+                            long <TT
+CLASS="PARAMETER"
+>count</TT
+>)</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN62733"></A><H2>描述</H2><P><CODE CLASS="FUNCTION">SPI_scroll_cursor_move</CODE>忽略游标中的一些行数。
+这个函数相当于SQL命令<TT CLASS="COMMAND">MOVE</TT>。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN62738"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL">Portal <TT CLASS="PARAMETER">portal</TT></TT></DT><DD><P>包含游标的入口</P></DD><DT><TT CLASS="LITERAL">FetchDirection <TT CLASS="PARAMETER">direction</TT></TT></DT><DD><P><TT CLASS="SYMBOL">FETCH_FORWARD</TT>、<TT CLASS="SYMBOL">FETCH_BACKWARD</TT>、
+<TT CLASS="SYMBOL">FETCH_ABSOLUTE</TT>或<TT CLASS="SYMBOL">FETCH_RELATIVE</TT>之一</P></DD><DT><TT CLASS="LITERAL">long <TT CLASS="PARAMETER">count</TT></TT></DT><DD><P><TT CLASS="SYMBOL">FETCH_FORWARD</TT>或<TT CLASS="SYMBOL">FETCH_BACKWARD</TT>移动的行数；
+<TT CLASS="SYMBOL">FETCH_ABSOLUTE</TT>移动的绝对行数；或<TT CLASS="SYMBOL">FETCH_RELATIVE</TT>
+移动的相对行数</P></DD></DL></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="AEN62767"></A><H2>返回值</H2><P>如果成功，<TT CLASS="VARNAME">SPI_processed</TT>的设置和<CODE CLASS="FUNCTION">SPI_execute</CODE>
+里的一样。<TT CLASS="VARNAME">SPI_tuptable</TT>设置为<TT CLASS="SYMBOL">NULL</TT>，
+因为这个函数没有返回行。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN62774"></A><H2>注意</H2><P>参阅SQL <A HREF="sql-fetch.html">FETCH</A>命令获取<TT CLASS="PARAMETER">direction</TT>
+和<TT CLASS="PARAMETER">count</TT>参数的解释的详细信息。</P><P>如果游标的规划没有使用<TT CLASS="SYMBOL">CURSOR_OPT_SCROLL</TT>选项创建，
+那么方向值而不是<TT CLASS="SYMBOL">FETCH_FORWARD</TT>会失败。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="spi-spi-scroll-cursor-fetch.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="spi-spi-cursor-close.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">SPI_scroll_cursor_fetch</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="spi-interface.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">SPI_cursor_close</TD></TR></TABLE></DIV></BODY></HTML>

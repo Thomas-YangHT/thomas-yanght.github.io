@@ -1,0 +1,1041 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>控制结构</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="PL/pgSQL - SQL过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/plpgsql.html"><LINK REL="PREVIOUS" TITLE="基本语句" HREF="plpgsql-statements.html"><LINK REL="NEXT" TITLE="游标" HREF="plpgsql-cursors.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/plpgsql.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="基本语句" HREF="plpgsql-statements.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plpgsql.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 40. <SPAN CLASS="APPLICATION">PL/pgSQL</SPAN> - <ACRONYM CLASS="ACRONYM">SQL</ACRONYM>过程语言</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="游标" HREF="plpgsql-cursors.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="PLPGSQL-CONTROL-STRUCTURES">40.6. 控制结构</A></H1><P> 控制结构可能是<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>中最有用的(以及最重要)的部分了。
+利用<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>的控制结构，
+你可以以非常灵活而且强大的方法操纵<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的数据。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="PLPGSQL-STATEMENTS-RETURNING">40.6.1. 从函数返回</A></H2><P> 有两个命令可以用来从函数中返回数据：<TT CLASS="COMMAND">RETURN</TT>和
+<TT CLASS="COMMAND">RETURN NEXT</TT>。</P><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN57970">40.6.1.1. <TT CLASS="COMMAND">RETURN</TT></A></H3><PRE CLASS="SYNOPSIS">RETURN <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+>;</PRE><P> 带表达式的<TT CLASS="COMMAND">RETURN</TT>用于终止函数
+并把<TT CLASS="REPLACEABLE"><I>expression</I></TT>的值返回给调用者。
+这种形式用于不返回集合的<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>函数。</P><P> 如果函数中返回标量类型，那么表达式结果将被自动转换成函数的返回类型，
+就像在赋值中描述的那样。但是要返回一个复合(行)数值，
+你必须写一个准确提供需求列集合的表达式，这可能需要显式转换。</P><P> 如果你声明带有输出参数的函数，那么就只需要写无表达式的<TT CLASS="COMMAND">RETURN</TT>。
+那么输出参数变量的当前值将被返回。</P><P> 如果你声明函数返回<TT CLASS="TYPE">void</TT>，那么一个<TT CLASS="COMMAND">RETURN</TT>
+语句可以用于提前退出函数；
+但是不要在<TT CLASS="COMMAND">RETURN</TT>后面写一个表达式。</P><P> 一个函数的返回值不能是未定义。
+如果控制到达了函数最顶层的块而没有碰到一个<TT CLASS="COMMAND">RETURN</TT>语句，
+那么它就会发生一个错误。不过，这个限制不适用于带输出参数的函数以及那些返回<TT CLASS="TYPE">void</TT>的函数。
+在这些例子里，如果顶层的块结束，则自动执行一个<TT CLASS="COMMAND">RETURN</TT>语句。</P><P>
+例子：
+</P><PRE CLASS="PROGRAMLISTING">-- 返回一个标量类型函数
+RETURN 1 + 2;
+RETURN scalar_var;
+-- 返回复合类型函数
+RETURN composite_type_var;
+RETURN (1, 2, 'three'::text);  -- must cast columns to correct types</PRE><P>
+</P></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN57992">40.6.1.2. <TT CLASS="COMMAND">RETURN NEXT</TT>和<TT CLASS="COMMAND">RETURN QUERY</TT></A></H3><PRE CLASS="SYNOPSIS">RETURN NEXT <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+>;
+RETURN QUERY <TT
+CLASS="REPLACEABLE"
+><I
+>query</I
+></TT
+>;
+RETURN QUERY EXECUTE <TT
+CLASS="REPLACEABLE"
+><I
+>command-string</I
+></TT
+> [<SPAN
+CLASS="OPTIONAL"
+> USING <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> [<SPAN
+CLASS="OPTIONAL"
+>, ... </SPAN
+>] </SPAN
+>];</PRE><P> 如果一个<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>函数声明为返回<TT CLASS="LITERAL">SETOF <TT CLASS="REPLACEABLE"><I>sometype</I></TT></TT>，
+那么遵循的过程则略有不同。
+在这种情况下，要返回的独立项是在<TT CLASS="COMMAND">RETURN NEXT</TT>或者
+<TT CLASS="COMMAND">RETURN QUERY</TT>命令里声明的，
+然后最后有一个不带参数的<TT CLASS="COMMAND">RETURN</TT>命令用于告诉这个函数已经完成执行了。
+<TT CLASS="COMMAND">RETURN NEXT</TT>可以用于标量和复合数据类型；对于复合类型，
+将返回一个完整的结果<SPAN CLASS="QUOTE">"table"</SPAN>。
+<TT CLASS="COMMAND">RETURN QUERY</TT>命令将一条查询的结果追加到一个函数的结果集中。
+<TT CLASS="COMMAND">RETURN NEXT</TT>和<TT CLASS="COMMAND">RETURN QUERY</TT>在单一集合返回
+函数中自由混合，在这种情况下，结果将被级联。</P><P><TT CLASS="COMMAND">RETURN NEXT</TT>和<TT CLASS="COMMAND">RETURN QUERY</TT>实际上不会从函数中返回，
+它们是将零或者多个行追加到函数的结果集中。
+然后继续执行<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>函数里的下一条语句。
+随着后继的<TT CLASS="COMMAND">RETURN NEXT</TT>或者<TT CLASS="COMMAND">RETURN QUERY</TT>命令的执行，
+结果集就建立起来了。最后一个<TT CLASS="COMMAND">RETURN</TT>应该没有参数，
+它导致控制退出该函数(或者你可以简单地让控制到达函数的结尾)。</P><P> <TT CLASS="COMMAND">RETURN QUERY</TT>有一个变形<TT CLASS="COMMAND">RETURN QUERY EXECUTE</TT>，
+指定查询将被动态执行。
+参数表达式可以通过<TT CLASS="LITERAL">USING</TT>插入到计算查询字符串中，以<TT CLASS="COMMAND">EXECUTE</TT>命令的同样方式。&#13;</P><P> 如果你声明函数带有输出参数，那么就只需要写不带表达式的<TT CLASS="COMMAND">RETURN NEXT</TT>。
+输出参数的当前值将被保存，用于最终返回。请注意如果有多个输出参数，
+比如声明函数为返回<TT CLASS="LITERAL">SETOF record</TT>或者是在只有一个类
+型为<TT CLASS="REPLACEABLE"><I>sometype</I></TT>的输出参数时声明
+为<TT CLASS="LITERAL">SETOF <TT CLASS="REPLACEABLE"><I>sometype</I></TT></TT>，
+这样才能创建一个带有输出参数的返回集合的函数。</P><P>
+下面是一个使用<TT CLASS="COMMAND">RETURN NEXT</TT>的函数例子:
+</P><PRE CLASS="PROGRAMLISTING">CREATE TABLE foo (fooid INT, foosubid INT, fooname TEXT);
+INSERT INTO foo VALUES (1, 2, 'three');
+INSERT INTO foo VALUES (4, 5, 'six');
+
+CREATE OR REPLACE FUNCTION get_all_foo() RETURNS SETOF foo AS
+$BODY$
+DECLARE
+    r foo%rowtype;
+BEGIN
+    FOR r IN
+        SELECT * FROM foo WHERE fooid &gt; 0
+    LOOP
+   
+-- 可以在这里做一些处理
+        RETURN NEXT r; -- return current row of SELECT
+    END LOOP;
+    RETURN;
+END
+$BODY$
+LANGUAGE plpgsql;
+
+SELECT * FROM get_all_foo();</PRE><P>
+</P><P>
+这是一个使用<TT CLASS="COMMAND">RETURN QUERY</TT>的函数例子:
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION get_available_flightid(date) RETURNS SETOF integer AS
+$BODY$
+BEGIN
+    RETURN QUERY SELECT flightid
+                   FROM flight
+                  WHERE flightdate &#62;= $1
+                    AND flightdate &#60; ($1 + 1);
+    
+-- 由于没有完成执行，我们可以检查行是否返回并且如果没有则抛出异常。
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'No flight at %.', $1;
+    END IF;
+
+    RETURN;
+ END
+$BODY$
+LANGUAGE plpgsql;
+-- 如果没有可用航班，则返回可用航班或者抛出异常。
+SELECT * FROM get_available_flightid(CURRENT_DATE);</PRE><P>
+</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B> 目前<TT CLASS="COMMAND">RETURN NEXT</TT>和<TT CLASS="COMMAND">RETURN QUERY</TT>
+实现在从函数返回之前把整个结果集都保存起来，
+就像上面描述的那样。这意味着如果一个<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>函数生成一个非常大的结果集，
+性能可能会很差：数据将被写到磁盘上以避免内存耗尽，
+但是函数在完成整个结果集的生成之前不会退出。
+将来的<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>版本可能会允许用户定义没有这样限制的返回集合的函数。
+目前，数据开始向磁盘里写的时刻是由配置变量<A HREF="runtime-config-resource.html#GUC-WORK-MEM">work_mem</A>控制的。
+拥有足够内存的管理员如果想在内存里存储更大的结果集，
+则可以考虑把这个参数增大一些。</P></BLOCKQUOTE></DIV></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="PLPGSQL-CONDITIONALS">40.6.2. 条件</A></H2><P>
+<TT CLASS="COMMAND">IF</TT>和<TT CLASS="COMMAND">CASE</TT>语句让你可以根据某种条件执行命令。
+<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>有三种形式的<TT CLASS="COMMAND">IF</TT>：
+<P></P></P><UL><LI><P><TT CLASS="LITERAL">IF ... THEN</TT></P></LI><LI><P><TT CLASS="LITERAL">IF ... THEN ... ELSE</TT></P></LI><LI><P><TT CLASS="LITERAL">IF ... THEN ... ELSIF ... THEN ... ELSE</TT></P></LI></UL><P>
+以及两种形式的<TT CLASS="COMMAND">CASE</TT>:
+<P></P></P><UL><LI><P><TT CLASS="LITERAL">CASE ... WHEN ... THEN ... ELSE ... END CASE</TT></P></LI><LI><P><TT CLASS="LITERAL">CASE WHEN ... THEN ... ELSE ... END CASE</TT></P></LI></UL><P>
+</P><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN58077">40.6.2.1. <TT CLASS="LITERAL">IF-THEN</TT></A></H3><PRE CLASS="SYNOPSIS">IF <TT
+CLASS="REPLACEABLE"
+><I
+>boolean-expression</I
+></TT
+> THEN
+    <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+>
+END IF;</PRE><P> <TT CLASS="LITERAL">IF-THEN</TT>语句是<TT CLASS="LITERAL">IF</TT>的最简单形式。如果条件为真，
+在<TT CLASS="LITERAL">THEN</TT>和<TT CLASS="LITERAL">END IF</TT>之间的语句将被执行。
+否则，将忽略它们。</P><P>
+例如：
+</P><PRE CLASS="PROGRAMLISTING">IF v_user_id &lt;&gt; 0 THEN
+    UPDATE users SET email = v_email WHERE user_id = v_user_id;
+END IF;</PRE><P>
+</P></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN58090">40.6.2.2. <TT CLASS="LITERAL">IF-THEN-ELSE</TT></A></H3><PRE CLASS="SYNOPSIS">IF <TT
+CLASS="REPLACEABLE"
+><I
+>boolean-expression</I
+></TT
+> THEN
+    <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+>
+ELSE
+    <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+>
+END IF;</PRE><P> <TT CLASS="LITERAL">IF-THEN-ELSE</TT>语句增加了<TT CLASS="LITERAL">IF-THEN</TT>的分支，
+让你可以声明在条件为假的时候执行的语句。（请注意这包含条件是NULL的情况）。</P><P>
+例如：
+</P><PRE CLASS="PROGRAMLISTING">IF parentid IS NULL OR parentid = ''
+THEN
+    RETURN fullname;
+ELSE
+    RETURN hp_true_filename(parentid) || '/' || fullname;
+END IF;</PRE><P>
+</P><PRE CLASS="PROGRAMLISTING">IF v_count &gt; 0 THEN
+    INSERT INTO users_count (count) VALUES (v_count);
+    RETURN 't';
+ELSE
+    RETURN 'f';
+END IF;</PRE><P>
+</P></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN58103">40.6.2.3. <TT CLASS="LITERAL">IF-THEN-ELSIF</TT></A></H3><PRE CLASS="SYNOPSIS">IF <TT
+CLASS="REPLACEABLE"
+><I
+>boolean-expression</I
+></TT
+> THEN
+    <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+>
+[<SPAN
+CLASS="OPTIONAL"
+> ELSIF <TT
+CLASS="REPLACEABLE"
+><I
+>boolean-expression</I
+></TT
+> THEN
+    <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+>
+[<SPAN
+CLASS="OPTIONAL"
+> ELSIF <TT
+CLASS="REPLACEABLE"
+><I
+>boolean-expression</I
+></TT
+> THEN
+    <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+>
+    ...</SPAN
+>]</SPAN
+>]
+[<SPAN
+CLASS="OPTIONAL"
+> ELSE
+    <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+> </SPAN
+>]
+END IF;</PRE><P> 有时不止两个选择。<TT CLASS="LITERAL">IF-THEN-ELSIF</TT>
+反过来提供了一个简便的方法来检查选择条件。
+<TT CLASS="LITERAL">IF</TT>判断会陆续检查，直到找到第一个为真的，然后执行相关声明，如此，
+直到<TT CLASS="LITERAL">END IF</TT>（<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">不会</I></SPAN>检测<TT CLASS="LITERAL">IF</TT>子查询）。
+如果没有一个条件符合<TT CLASS="LITERAL">IF</TT>判断，那么会接着执行<TT CLASS="LITERAL">ELSE</TT>判断。</P><P>
+例如：
+</P><PRE CLASS="PROGRAMLISTING">IF number = 0 THEN
+    result := 'zero';
+ELSIF number &gt; 0 THEN
+    result := 'positive';
+ELSIF number &lt; 0 THEN
+    result := 'negative';
+ELSE
+    
+-- 唯一可能性是号码为空
+    result := 'NULL';
+END IF;</PRE><P>
+</P><P> <TT CLASS="LITERAL">ELSIF</TT>关键字也可以写成<TT CLASS="LITERAL">ELSEIF</TT>。</P><P>
+另一个可以实现该目的的方法是使用<TT CLASS="LITERAL">IF-THEN-ELSE</TT>声明，如下:
+</P><PRE CLASS="PROGRAMLISTING">IF demo_row.sex = 'm' THEN
+    pretty_sex := 'man';
+ELSE
+    IF demo_row.sex = 'f' THEN
+        pretty_sex := 'woman';
+    END IF;
+END IF;</PRE><P>
+</P><P> 然而，这个方法需要为每个<TT CLASS="LITERAL">IF</TT>写<TT CLASS="LITERAL">END IF</TT>，
+因此当有很多选择时，这种方法明显比<TT CLASS="LITERAL">ELSIF</TT>繁琐。</P></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN58137">40.6.2.4. 简单<TT CLASS="LITERAL">CASE</TT></A></H3><PRE CLASS="SYNOPSIS">CASE <TT
+CLASS="REPLACEABLE"
+><I
+>search-expression</I
+></TT
+>
+    WHEN <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> [<SPAN
+CLASS="OPTIONAL"
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> [<SPAN
+CLASS="OPTIONAL"
+> ... </SPAN
+>]</SPAN
+>] THEN
+      <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+>
+  [<SPAN
+CLASS="OPTIONAL"
+> WHEN <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> [<SPAN
+CLASS="OPTIONAL"
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> [<SPAN
+CLASS="OPTIONAL"
+> ... </SPAN
+>]</SPAN
+>] THEN
+      <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+>
+    ... </SPAN
+>]
+  [<SPAN
+CLASS="OPTIONAL"
+> ELSE
+      <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+> </SPAN
+>]
+END CASE;</PRE><P> <TT CLASS="COMMAND">CASE</TT>简单的形式提供基于操作数平等的条件执行。<TT CLASS="REPLACEABLE"><I>search-expression</I></TT>被评价并且
+先后比较<TT CLASS="LITERAL">WHEN</TT>子句中的每个<TT CLASS="REPLACEABLE"><I>表达式</I></TT>。
+如果找到匹配，那么相应的<TT CLASS="REPLACEABLE"><I>statements</I></TT>被执行，
+然后控制在<TT CLASS="LITERAL">END CASE</TT>之后传递到下一个语句。
+（随后的<TT CLASS="LITERAL">WHEN</TT>表达式不被评估。）
+如果没有发现匹配，执行<TT CLASS="LITERAL">ELSE</TT> <TT CLASS="REPLACEABLE"><I>statements</I></TT>；
+但如果<TT CLASS="LITERAL">ELSE</TT>是不存在的，然后引发<TT CLASS="LITERAL">CASE_NOT_FOUND</TT>异常。</P><P>
+例如：
+</P><PRE CLASS="PROGRAMLISTING">CASE x
+    WHEN 1, 2 THEN
+        msg := 'one or two';
+    ELSE
+        msg := 'other value than one or two';
+END CASE;</PRE><P>
+</P></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN58169">40.6.2.5. 搜索<TT CLASS="LITERAL">CASE</TT></A></H3><PRE CLASS="SYNOPSIS">CASE
+    WHEN <TT
+CLASS="REPLACEABLE"
+><I
+>boolean-expression</I
+></TT
+> THEN
+      <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+>
+  [<SPAN
+CLASS="OPTIONAL"
+> WHEN <TT
+CLASS="REPLACEABLE"
+><I
+>boolean-expression</I
+></TT
+> THEN
+      <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+>
+    ... </SPAN
+>]
+  [<SPAN
+CLASS="OPTIONAL"
+> ELSE
+      <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+> </SPAN
+>]
+END CASE;</PRE><P> <TT CLASS="COMMAND">CASE</TT>搜索形式基于布尔表达式的真理提供条件执行。
+每个<TT CLASS="LITERAL">WHEN</TT>子句的<TT CLASS="REPLACEABLE"><I>boolean-expression</I></TT>依次被评估，
+直到找到一个产生<TT CLASS="LITERAL">true</TT>为止。
+然后执行相应的<TT CLASS="REPLACEABLE"><I>statements</I></TT>，
+控制<TT CLASS="LITERAL">END CASE</TT>之后传递到下一个语句。
+（随后不评估<TT CLASS="LITERAL">WHEN</TT>表达式）。
+如果发现没有真实结果，则执行<TT CLASS="LITERAL">ELSE</TT><TT CLASS="REPLACEABLE"><I>statements</I></TT>；
+但如果<TT CLASS="LITERAL">ELSE</TT>是不存在的，那么引发
+<TT CLASS="LITERAL">CASE_NOT_FOUND</TT>异常。</P><P>
+例如：
+</P><PRE CLASS="PROGRAMLISTING">CASE
+    WHEN x BETWEEN 0 AND 10 THEN
+        msg := 'value is between zero and ten';
+    WHEN x BETWEEN 11 AND 20 THEN
+        msg := 'value is between eleven and twenty';
+END CASE;</PRE><P>
+</P><P> <TT CLASS="COMMAND">CASE</TT>这种形式完全等价于
+<TT CLASS="LITERAL">IF-THEN-ELSIF</TT>，除了达到忽略错误中的<TT CLASS="LITERAL">ELSE</TT>子句结果而不是什么都不做的规则。</P></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="PLPGSQL-CONTROL-STRUCTURES-LOOPS">40.6.3. 简单循环</A></H2><P> 使用<TT CLASS="LITERAL">LOOP</TT>, <TT CLASS="LITERAL">EXIT</TT>,<TT CLASS="LITERAL">CONTINUE</TT>, <TT CLASS="LITERAL">WHILE</TT>，
+<TT CLASS="LITERAL">FOR</TT>和<TT CLASS="LITERAL">FOREACH</TT>语句，
+可以控制<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>函数重复一系列命令。</P><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN58211">40.6.3.1. <TT CLASS="LITERAL">循环</TT></A></H3><PRE CLASS="SYNOPSIS">[<SPAN
+CLASS="OPTIONAL"
+> &lt;&lt;<TT
+CLASS="REPLACEABLE"
+><I
+>label</I
+></TT
+>&gt;&gt; </SPAN
+>]
+LOOP
+    <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+>
+END LOOP [<SPAN
+CLASS="OPTIONAL"
+> <TT
+CLASS="REPLACEABLE"
+><I
+>label</I
+></TT
+> </SPAN
+>];</PRE><P> <TT CLASS="LITERAL">LOOP</TT>定义一个无条件的循环，无限循环，
+直到由<TT CLASS="LITERAL">EXIT</TT>或者
+<TT CLASS="COMMAND">RETURN</TT>语句终止。
+可选的<TT CLASS="REPLACEABLE"><I>label</I></TT>可以由<TT CLASS="LITERAL">EXIT</TT>
+和<TT CLASS="LITERAL">CONTINUE</TT>语句使用，
+用于在嵌套循环中声明应该应用于哪一层循环。</P></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN58227">40.6.3.2. <TT CLASS="LITERAL">退出</TT></A></H3><PRE CLASS="SYNOPSIS">EXIT [<SPAN
+CLASS="OPTIONAL"
+> <TT
+CLASS="REPLACEABLE"
+><I
+>label</I
+></TT
+> </SPAN
+>] [<SPAN
+CLASS="OPTIONAL"
+> WHEN <TT
+CLASS="REPLACEABLE"
+><I
+>boolean-expression</I
+></TT
+> </SPAN
+>];</PRE><P> 如果没有给出<TT CLASS="REPLACEABLE"><I>label</I></TT>，那么退出最内层的循环，
+然后执行跟在<TT CLASS="LITERAL">END LOOP</TT>后面的语句。
+如果给出<TT CLASS="REPLACEABLE"><I>label</I></TT>，
+那么它必须是当前或者更高层的嵌套循环块或者语句块的标签。
+然后该命名块或者循环就会终止，而控制落到对应循环/块的<TT CLASS="LITERAL">END</TT>语句后面的语句上。</P><P> 如果声明了<TT CLASS="LITERAL">WHEN</TT>，
+循环退出只有在<TT CLASS="REPLACEABLE"><I>boolean-expression</I></TT>为真的时候才发生，
+否则控制会落到<TT CLASS="LITERAL">EXIT</TT>后面的语句上。</P><P> <TT CLASS="LITERAL">EXIT</TT>可以用于在所有的循环类型中，它并不仅仅限制于在无条件循环中使用。</P><P>在和<TT CLASS="LITERAL">BEGIN</TT>块一起使用的时候，<TT CLASS="LITERAL">EXIT</TT>把控制交给块结束后的下一个语句。
+需要注意的是，一个标签必须用于这个目的；
+一个没有标记的<TT CLASS="LITERAL">EXIT</TT>永远无法与<TT CLASS="LITERAL">BEGIN</TT>进行匹配。
+（这是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 8.4之前版本的一个变化，
+这将允许未标记<TT CLASS="LITERAL">EXIT</TT>匹配<TT CLASS="LITERAL">BEGIN</TT>块）。</P><P>
+例如：
+</P><PRE CLASS="PROGRAMLISTING">LOOP
+    
+-- 一些计算
+    IF count &gt; 0 THEN
+        EXIT;  -- exit loop
+    END IF;
+END LOOP;
+
+LOOP
+    
+-- 一些计算
+EXIT WHEN count &gt; 0;  -- 和前面的例子相同结果
+END LOOP;
+
+&lt;&lt;ablock&gt;&gt;
+BEGIN
+    
+-- 一些计算
+    IF stocks &gt; 100000 THEN
+    EXIT ablock;  -- 导致从BEGIN块退出
+    END IF;
+ -- 忽略这儿的计算，当stocks &gt; 100000时
+END;</PRE><P>
+</P></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN58259">40.6.3.3. <TT CLASS="LITERAL">CONTINUE</TT></A></H3><PRE CLASS="SYNOPSIS">CONTINUE [<SPAN
+CLASS="OPTIONAL"
+> <TT
+CLASS="REPLACEABLE"
+><I
+>label</I
+></TT
+> </SPAN
+>] [<SPAN
+CLASS="OPTIONAL"
+> WHEN <TT
+CLASS="REPLACEABLE"
+><I
+>boolean-expression</I
+></TT
+> </SPAN
+>];</PRE><P> 如果没有给出<TT CLASS="REPLACEABLE"><I>label</I></TT>，那么就开始最内层循环的下一次执行。
+也就是说，控制传递回给循环控制表达式(如果有)，然后重新计算循环体。
+如果出现了<TT CLASS="REPLACEABLE"><I>label</I></TT>，它声明即将继续执行的循环的标签。</P><P> 如果声明了<TT CLASS="LITERAL">WHEN</TT>，那么循环的下一次执行只有
+在<TT CLASS="REPLACEABLE"><I>boolean-expression</I></TT>为真的情况下才进行。
+否则，控制传递给<TT CLASS="LITERAL">CONTINUE</TT>后面的语句。</P><P> <TT CLASS="LITERAL">CONTINUE</TT>可以用于所有类型的循环；它并不仅仅限于无条件循环。</P><P>
+例如：
+</P><PRE CLASS="PROGRAMLISTING">LOOP
+    
+-- 一些计算
+    EXIT WHEN count &gt; 100; 
+    CONTINUE WHEN count &lt; 50;
+-- 在[50 .. 100]内的计算
+END LOOP;</PRE><P>
+</P></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="AEN58281">40.6.3.4. <TT CLASS="LITERAL">WHILE</TT></A></H3><PRE CLASS="SYNOPSIS">[<SPAN
+CLASS="OPTIONAL"
+> &lt;&lt;<TT
+CLASS="REPLACEABLE"
+><I
+>label</I
+></TT
+>&gt;&gt; </SPAN
+>]
+WHILE <TT
+CLASS="REPLACEABLE"
+><I
+>boolean-expression</I
+></TT
+> LOOP
+    <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+>
+END LOOP [<SPAN
+CLASS="OPTIONAL"
+> <TT
+CLASS="REPLACEABLE"
+><I
+>label</I
+></TT
+> </SPAN
+>];</PRE><P> 只要条件表达式（<TT CLASS="REPLACEABLE"><I>boolean-expression</I></TT>）为真，
+<TT CLASS="LITERAL">WHILE</TT>语句就会不停的在一系列语句上进行循环，
+条件是在每次进入循环体的时候被检查。</P><P>
+例如：
+</P><PRE CLASS="PROGRAMLISTING">WHILE amount_owed &gt; 0 AND gift_certificate_balance &gt; 0 LOOP
+    -- 这里的一些计算
+END LOOP;
+
+WHILE NOT done LOOP
+    -- 这里的一些计算
+END LOOP;</PRE><P>
+</P></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="PLPGSQL-INTEGER-FOR">40.6.3.5. <TT CLASS="LITERAL">FOR</TT> (Integer 变量)</A></H3><PRE CLASS="SYNOPSIS">[<SPAN
+CLASS="OPTIONAL"
+> &lt;&lt;<TT
+CLASS="REPLACEABLE"
+><I
+>label</I
+></TT
+>&gt;&gt; </SPAN
+>]
+FOR <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+> IN [<SPAN
+CLASS="OPTIONAL"
+> REVERSE </SPAN
+>] <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> .. <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> [<SPAN
+CLASS="OPTIONAL"
+> BY <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> </SPAN
+>] LOOP
+    <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+>
+END LOOP [<SPAN
+CLASS="OPTIONAL"
+> <TT
+CLASS="REPLACEABLE"
+><I
+>label</I
+></TT
+> </SPAN
+>];</PRE><P> 这种形式的<TT CLASS="LITERAL">FOR</TT>对一定范围的整数进行迭代的循环。
+变量<TT CLASS="REPLACEABLE"><I>name</I></TT>会自动定义为<TT CLASS="LITERAL">BY</TT>类型并且只在循环里存在
+(任何该变量名的现存定义在此循环内都将被忽略)。
+给出范围上下界的两个表达式在进入循环的时候计算一次。
+<TT CLASS="LITERAL">BY</TT>子句指定迭代步长(缺省为 1)，
+但如果声明了<TT CLASS="LITERAL">REVERSE</TT>步长将变为相应的负值。</P><P>
+一些整数<TT CLASS="LITERAL">FOR</TT>循环的例子：
+</P><PRE CLASS="PROGRAMLISTING">FOR i IN 1..10 LOOP
+    -- 我将在值1,2,3,4,5,6,7,8,9,10中循环
+END LOOP;
+
+FOR i IN REVERSE 10..1 LOOP
+    -- 将在值10,9,8,7,6,5,4,3,2,1中循环
+END LOOP;
+
+FOR i IN REVERSE 10..1 BY 2 LOOP
+    -- 将在值10,8,6,4,2中循环
+END LOOP;</PRE><P>
+</P><P> 如果下界大于上界(或者是在<TT CLASS="LITERAL">REVERSE</TT>情况下是小于)，
+那么循环体将完全不被执行。
+而且不会抛出任何错误。</P><P> 如果<TT CLASS="REPLACEABLE"><I>label</I></TT>被附加到<TT CLASS="LITERAL">FOR</TT>循环，那么整数循环变量
+可以使用<TT CLASS="REPLACEABLE"><I>label</I></TT>引用适当名称。</P></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="PLPGSQL-RECORDS-ITERATING">40.6.4. 遍历命令结果</A></H2><P>
+使用不同类型的<TT CLASS="LITERAL">FOR</TT>循环，
+你可以遍历一个命令的结果并且对其进行相应的操作。语法是：
+</P><PRE CLASS="SYNOPSIS">[<SPAN
+CLASS="OPTIONAL"
+> &lt;&lt;<TT
+CLASS="REPLACEABLE"
+><I
+>label</I
+></TT
+>&gt;&gt; </SPAN
+>]
+FOR <TT
+CLASS="REPLACEABLE"
+><I
+>target</I
+></TT
+> IN <TT
+CLASS="REPLACEABLE"
+><I
+>query</I
+></TT
+> LOOP
+    <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+>
+END LOOP [<SPAN
+CLASS="OPTIONAL"
+> <TT
+CLASS="REPLACEABLE"
+><I
+>label</I
+></TT
+> </SPAN
+>];</PRE><P>
+<TT CLASS="REPLACEABLE"><I>target</I></TT>是一个记录变量、
+行变量、逗号分隔的标量变量列表<TT CLASS="REPLACEABLE"><I>target</I></TT>
+被连续不断赋予所有来自<TT CLASS="REPLACEABLE"><I>query</I></TT>的行，
+并且循环体将为每行执行一次。
+下面是一个例子：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION cs_refresh_mviews() RETURNS integer AS $$
+DECLARE
+    mviews RECORD;
+BEGIN
+    RAISE NOTICE 'Refreshing materialized views...';
+
+    FOR mviews IN SELECT * FROM cs_materialized_views ORDER BY sort_key LOOP
+        
+-- 现在"mviews"里有了一条来自 cs_materialized_views 的记录 
+
+        RAISE NOTICE 'Refreshing materialized view %s ...', quote_ident(mviews.mv_name);
+        EXECUTE 'TRUNCATE TABLE ' || quote_ident(mviews.mv_name);
+        EXECUTE 'INSERT INTO '
+                   || quote_ident(mviews.mv_name) || ' '
+                   || mviews.mv_query;
+    END LOOP;
+
+    RAISE NOTICE 'Done refreshing materialized views.';
+    RETURN 1;
+END;
+$$ LANGUAGE plpgsql;</PRE><P>
+如果循环是用一个<TT CLASS="LITERAL">EXIT</TT>语句终止的，
+那么在循环之后你仍然可以访问最后赋值的行。
+</P><P> <TT CLASS="LITERAL">FOR</TT>语句中使用的这种<TT CLASS="REPLACEABLE"><I>query</I></TT>可以是任何返回行的SQL命令，
+通常是<TT CLASS="COMMAND">SELECT</TT>，不过带有<TT CLASS="LITERAL">RETURNING</TT>子句的<TT CLASS="COMMAND">INSERT</TT>, <TT CLASS="COMMAND">UPDATE</TT>
+或<TT CLASS="COMMAND">DELETE</TT>也是可以的，
+一些诸如<TT CLASS="COMMAND">EXPLAIN</TT>之类的命令也可以。</P><P> <SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>变量代替查询文本，并且查询计划为了重新使用被缓存，正如
+<A HREF="plpgsql-implementation.html#PLPGSQL-VAR-SUBST">第 40.10.1 &#33410;</A>和<A HREF="plpgsql-implementation.html#PLPGSQL-PLAN-CACHING">第 40.10.2 &#33410;</A>。</P><P>
+<TT CLASS="LITERAL">FOR-IN-EXECUTE</TT>语句是遍历所有行的另外一种方法：
+</P><PRE CLASS="SYNOPSIS">[<SPAN
+CLASS="OPTIONAL"
+> &lt;&lt;<TT
+CLASS="REPLACEABLE"
+><I
+>label</I
+></TT
+>&gt;&gt; </SPAN
+>]
+FOR <TT
+CLASS="REPLACEABLE"
+><I
+>target</I
+></TT
+> IN EXECUTE <TT
+CLASS="REPLACEABLE"
+><I
+>text_expression</I
+></TT
+> [<SPAN
+CLASS="OPTIONAL"
+> USING <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> [<SPAN
+CLASS="OPTIONAL"
+>, ... </SPAN
+>] </SPAN
+>] LOOP
+    <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+>
+END LOOP [<SPAN
+CLASS="OPTIONAL"
+> <TT
+CLASS="REPLACEABLE"
+><I
+>label</I
+></TT
+> </SPAN
+>];</PRE><P>
+这个例子类似前面的形式，只不过源查询语句声明为了一个字符串表达式，
+这样它在每次进入<TT CLASS="LITERAL">FOR</TT>循环的时候都会重新计算和生成执行计划。
+这样就允许程序员在一个预先规划好了的命令所获得的速度和一个动态命令所获得的灵活性
+(就像一个简单的<TT CLASS="COMMAND">EXECUTE</TT>语句那样)之间进行选择。
+当使用<TT CLASS="COMMAND">EXECUTE</TT>时，
+可以通过<TT CLASS="LITERAL">USING</TT>将参数值插入到动态命令中。
+</P><P> 对于一个需要将结果迭代的查询，
+另外一个声明的方法是将它定义为游标（cursor），
+可参阅<A HREF="plpgsql-cursors.html#PLPGSQL-CURSOR-FOR-LOOP">第 40.7.4 &#33410;</A>。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="PLPGSQL-FOREACH-ARRAY">40.6.5. 遍历数组</A></H2><P>
+<TT CLASS="LITERAL">FOREACH</TT>循环类似于<TT CLASS="LITERAL">FOR</TT>循环，
+但不是遍历SQL查询返回的行，它遍历数组值元素。
+（一般而言，<TT CLASS="LITERAL">FOREACH</TT>是遍历复合值表达式组成部分；
+循环遍历除数组外的复合值变量将来可以被添加。）
+<TT CLASS="LITERAL">FOREACH</TT>语句循环数组是：
+</P><PRE CLASS="SYNOPSIS">[<SPAN
+CLASS="OPTIONAL"
+> &lt;&lt;<TT
+CLASS="REPLACEABLE"
+><I
+>label</I
+></TT
+>&gt;&gt; </SPAN
+>]
+FOREACH <TT
+CLASS="REPLACEABLE"
+><I
+>target</I
+></TT
+> [<SPAN
+CLASS="OPTIONAL"
+> SLICE <TT
+CLASS="REPLACEABLE"
+><I
+>number</I
+></TT
+> </SPAN
+>] IN ARRAY <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> LOOP
+    <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+>
+END LOOP [<SPAN
+CLASS="OPTIONAL"
+> <TT
+CLASS="REPLACEABLE"
+><I
+>label</I
+></TT
+> </SPAN
+>];</PRE><P>
+</P><P>
+没有<TT CLASS="LITERAL">SLICE</TT>，或者如果声明<TT CLASS="LITERAL">SLICE 0</TT>，则
+循环遍历通过评估<TT CLASS="REPLACEABLE"><I>expression</I></TT>产生的数组的单个元素。
+<TT CLASS="REPLACEABLE"><I>target</I></TT>变量分配每个
+序列中的元素值，并为每个元素执行循环体。
+这里是遍历整数数组元素的一个例子：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION sum(int[]) RETURNS int8 AS $$
+DECLARE
+  s int8 := 0;
+  x int;
+BEGIN
+  FOREACH x IN ARRAY $1
+  LOOP
+    s := s + x;
+  END LOOP;
+  RETURN s;
+END;
+$$ LANGUAGE plpgsql;</PRE><P>
+元素以存储顺序进行访问，不论数组维数的数量。尽管<TT CLASS="REPLACEABLE"><I>target</I></TT>
+通常只是一个单一的变量，当循环复合值的数组（记录）时，它可以是一个变量列表，
+在这种情况下，每个数组元素，从连续的复合值列中分配变量。
+</P><P>
+以正数<TT CLASS="LITERAL">SLICE</TT>值，<TT CLASS="LITERAL">FOREACH</TT>遍历数组的元素部分，而不是单一元素。
+<TT CLASS="LITERAL">SLICE</TT>的值必须是不大于数组维数的整数常数。
+<TT CLASS="REPLACEABLE"><I>target</I></TT>变量必须是一个数组，
+并且它接收数组值的连续片段，而每个片段
+是通过<TT CLASS="LITERAL">SLICE</TT>指定的维数。这里是遍历一维切片的一个例子：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION scan_rows(int[]) RETURNS void AS $$
+DECLARE
+  x int[];
+BEGIN
+  FOREACH x SLICE 1 IN ARRAY $1
+  LOOP
+    RAISE NOTICE 'row = %', x;
+  END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+
+SELECT scan_rows(ARRAY[[1,2,3],[4,5,6],[7,8,9],[10,11,12]]);
+
+NOTICE:  row = {1,2,3}
+NOTICE:  row = {4,5,6}
+NOTICE:  row = {7,8,9}
+NOTICE:  row = {10,11,12}</PRE><P>
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="PLPGSQL-ERROR-TRAPPING">40.6.6. 捕获错误</A></H2><P>
+缺省时，一个在<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>函数里发生的错误退出函数的执行，
+并且实际上其周围的事务也会退出。
+你可以使用一个带有<TT CLASS="LITERAL">EXCEPTION</TT>子句的<TT CLASS="COMMAND">BEGIN</TT>块捕获错误并且从中恢复。
+其语法是正常的<TT CLASS="COMMAND">BEGIN</TT>块语法的一个扩展：
+</P><PRE CLASS="SYNOPSIS">[<SPAN
+CLASS="OPTIONAL"
+> &lt;&lt;<TT
+CLASS="REPLACEABLE"
+><I
+>label</I
+></TT
+>&gt;&gt; </SPAN
+>]
+[<SPAN
+CLASS="OPTIONAL"
+> DECLARE
+    <TT
+CLASS="REPLACEABLE"
+><I
+>declarations</I
+></TT
+> </SPAN
+>]
+BEGIN
+    <TT
+CLASS="REPLACEABLE"
+><I
+>statements</I
+></TT
+>
+EXCEPTION
+    WHEN <TT
+CLASS="REPLACEABLE"
+><I
+>condition</I
+></TT
+> [<SPAN
+CLASS="OPTIONAL"
+> OR <TT
+CLASS="REPLACEABLE"
+><I
+>condition</I
+></TT
+> ... </SPAN
+>] THEN
+        <TT
+CLASS="REPLACEABLE"
+><I
+>handler_statements</I
+></TT
+>
+    [<SPAN
+CLASS="OPTIONAL"
+> WHEN <TT
+CLASS="REPLACEABLE"
+><I
+>condition</I
+></TT
+> [<SPAN
+CLASS="OPTIONAL"
+> OR <TT
+CLASS="REPLACEABLE"
+><I
+>condition</I
+></TT
+> ... </SPAN
+>] THEN
+          <TT
+CLASS="REPLACEABLE"
+><I
+>handler_statements</I
+></TT
+>
+      ... </SPAN
+>]
+END;</PRE><P>
+</P><P> 如果没有发生错误，这种形式的块只是简单地执行所有<TT CLASS="REPLACEABLE"><I>statements</I></TT>，
+然后转到下一个<TT CLASS="LITERAL">END</TT>之后的语句。
+但是如果在<TT CLASS="REPLACEABLE"><I>statements</I></TT>内部发生了一个错误，
+则对<TT CLASS="REPLACEABLE"><I>statements</I></TT>的进一步处理将废弃，然后转到<TT CLASS="LITERAL">EXCEPTION</TT>列表。
+系统搜索这个列表，寻找匹配错误的第一个<TT CLASS="REPLACEABLE"><I>condition</I></TT>。
+如果找到匹配，则执行对应的<TT CLASS="REPLACEABLE"><I>handler_statements</I></TT>，
+然后转到<TT CLASS="LITERAL">END</TT>之后的下一个语句。如果没有找到匹配，该错误就会广播出去，
+就好像根本没有<TT CLASS="LITERAL">EXCEPTION</TT>子句一样：
+该错误可以被一个包围块用<TT CLASS="LITERAL">EXCEPTION</TT>捕获，
+如果没有包围块，则退出函数的处理。</P><P>
+<TT CLASS="REPLACEABLE"><I>condition</I></TT>的名字可以是<A HREF="http://school.yunwei.edu/manual/PostgreSQL/errcodes-appendix.html">&#38468;&#24405; A</A>里显示的任何名字。
+一个范畴名匹配任意该范畴里的错误。
+特殊的条件名<TT CLASS="LITERAL">OTHERS</TT>匹配除了<TT CLASS="LITERAL">QUERY_CANCELED</TT>之外的所有错误类型。
+可以用名字捕获<TT CLASS="LITERAL">QUERY_CANCELED</TT>，不过通常是不明智的。
+条件名是大小写无关的。同时也可以通过<TT CLASS="LITERAL">SQLSTATE</TT>来声明一个错误条件，
+例如：
+</P><PRE CLASS="PROGRAMLISTING">WHEN division_by_zero THEN ...
+WHEN SQLSTATE '22012' THEN ...</PRE><P>
+</P><P> 如果在选中的<TT CLASS="REPLACEABLE"><I>handler_statements</I></TT>里发生了新错误，
+那么它不能被这个<TT CLASS="LITERAL">EXCEPTION</TT>子句捕获，而是传播出去。
+一个外层的<TT CLASS="LITERAL">EXCEPTION</TT>子句可以捕获它。</P><P>
+如果一个错误被<TT CLASS="LITERAL">EXCEPTION</TT>捕获，<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>函数的局部变量保持错误发生时的原值，
+但是所有该块中想固化在数据库中的状态都回滚。
+作为一个例子，让我们看看下面片断:
+</P><PRE CLASS="PROGRAMLISTING">INSERT INTO mytab(firstname, lastname) VALUES('Tom', 'Jones');
+BEGIN
+    UPDATE mytab SET firstname = 'Joe' WHERE lastname = 'Jones';
+    x := x + 1;
+    y := x / 0;
+EXCEPTION
+    WHEN division_by_zero THEN
+        RAISE NOTICE 'caught division_by_zero';
+        RETURN x;
+END;</PRE><P>
+当控制到达给<TT CLASS="LITERAL">y</TT>赋值的地方时，
+它会带着一个<TT CLASS="LITERAL">division_by_zero</TT>错误失败。
+这个错误将被<TT CLASS="LITERAL">EXCEPTION</TT>子句捕获。
+而在<TT CLASS="COMMAND">RETURN</TT>语句里返回的数值将是<TT CLASS="LITERAL">x</TT>的增量值。
+但是<TT CLASS="COMMAND">UPDATE</TT>已经被回滚。然而，在该块之前的<TT CLASS="COMMAND">INSERT</TT>将不会回滚，
+因此最终的结果是数据库包含<TT CLASS="LITERAL">Tom Jones</TT>而不是<TT CLASS="LITERAL">Joe Jones</TT>。
+</P><DIV CLASS="TIP"><BLOCKQUOTE CLASS="TIP"><P><B>&#25552;&#31034;: </B> 进入和退出一个包含<TT CLASS="LITERAL">EXCEPTION</TT>子句的块要比不包含的块开销大的多。
+因此，不必要的时候不要使用<TT CLASS="LITERAL">EXCEPTION</TT>。</P></BLOCKQUOTE></DIV><DIV CLASS="EXAMPLE"><A NAME="PLPGSQL-UPSERT-EXAMPLE"></A><P><B>&#20363; 40-2. <TT CLASS="COMMAND">UPDATE</TT>/<TT CLASS="COMMAND">INSERT</TT>异常</B></P><P>
+这个例子根据使用异常处理器执行恰当的<TT CLASS="COMMAND">UPDATE</TT>或者<TT CLASS="COMMAND">INSERT</TT>。
+</P><PRE CLASS="PROGRAMLISTING">CREATE TABLE db (a INT PRIMARY KEY, b TEXT);
+
+CREATE FUNCTION merge_db(key INT, data TEXT) RETURNS VOID AS
+$$
+BEGIN
+    LOOP
+    
+-- 第一次尝试更新key
+        UPDATE db SET b = data WHERE a = key;
+        IF found THEN
+            RETURN;
+        END IF;
+-- 不存在，所以尝试插入key,如果其他人同时插入相同的key，我们可能得到唯一key失败。
+        BEGIN
+            INSERT INTO db(a,b) VALUES (key, data);
+            RETURN;
+        EXCEPTION WHEN unique_violation THEN
+    -- 什么也不做，并且循环尝试再次更新。
+        END;
+    END LOOP;
+END;
+$$
+LANGUAGE plpgsql;
+
+SELECT merge_db(1, 'david');
+SELECT merge_db(1, 'dennis');</PRE><P>
+这个代码假设通过<TT CLASS="COMMAND">INSERT</TT>不是说表上触发器函数中的<TT CLASS="COMMAND">INSERT</TT>
+产生<TT CLASS="LITERAL">unique_violation</TT>错误，如果表上有超过一个以上的唯一索引，它可能行为不端，
+因为将重试操作不论哪个索引产生错误。
+可以通过特性讨论下一步检查捕获的错误是预期的来获取更高的安全性。
+</P></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="PLPGSQL-EXCEPTION-DIAGNOSTICS">40.6.6.1. 获得有关错误的信息</A></H3><P> 异常处理程序经常需要确定发生的具体错误。有两种方法来获得
+当前<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>异常：
+特殊变量和<TT CLASS="COMMAND">GET STACKED DIAGNOSTICS</TT>命令
+的有关信息。</P><P> 在一个异常处理程序中，特殊变量
+<TT CLASS="VARNAME">SQLSTATE</TT>包含相当于发生异常的错误代码
+（参考<A HREF="http://school.yunwei.edu/manual/PostgreSQL/errcodes-appendix.html#ERRCODES-TABLE">&#34920; A-1</A>获得可能错误代码列）。
+特殊变量<TT CLASS="VARNAME">SQLERRM</TT>包含与异常有关的错误消息。
+这些变量是在异常处理外未被定义的。</P><P>
+在一个异常处理程序中，也可以检索关于使用<TT CLASS="COMMAND">GET STACKED DIAGNOSTICS</TT>命令的当前异常信息，形成了：
+</P><PRE CLASS="SYNOPSIS">GET STACKED DIAGNOSTICS <TT
+CLASS="REPLACEABLE"
+><I
+>variable</I
+></TT
+> = <TT
+CLASS="REPLACEABLE"
+><I
+>item</I
+></TT
+> [<SPAN
+CLASS="OPTIONAL"
+> , ... </SPAN
+>];</PRE><P>
+每个<TT CLASS="REPLACEABLE"><I>item</I></TT>是识别被分配到指定变量的状态值（应该是接收它的正确数据类型）的一个关键字。
+目前可用的状态显示在<A HREF="plpgsql-control-structures.html#PLPGSQL-EXCEPTION-DIAGNOSTICS-VALUES">&#34920; 40-1</A>中。
+</P><DIV CLASS="TABLE"><A NAME="PLPGSQL-EXCEPTION-DIAGNOSTICS-VALUES"></A><P><B>&#34920; 40-1. 错误诊断值</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><THEAD><TR><TH>名字</TH><TH>类型</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD><TT CLASS="LITERAL">RETURNED_SQLSTATE</TT></TD><TD>text</TD><TD>异常的SQLSTATE错误代码</TD></TR><TR><TD><TT CLASS="LITERAL">COLUMN_NAME</TT></TD><TD>text</TD><TD>与异常相关的列名</TD></TR><TR><TD><TT CLASS="LITERAL">CONSTRAINT_NAME</TT></TD><TD>text</TD><TD>与异常相关的约束名</TD></TR><TR><TD><TT CLASS="LITERAL">PG_DATATYPE_NAME</TT></TD><TD>text</TD><TD>与异常相关的数据类型名</TD></TR><TR><TD><TT CLASS="LITERAL">MESSAGE_TEXT</TT></TD><TD>text</TD><TD>异常的主要消息文本</TD></TR><TR><TD><TT CLASS="LITERAL">TABLE_NAME</TT></TD><TD>text</TD><TD>与异常相关的表名</TD></TR><TR><TD><TT CLASS="LITERAL">SCHEMA_NAME</TT></TD><TD>text</TD><TD>与异常相关的模式名</TD></TR><TR><TD><TT CLASS="LITERAL">PG_EXCEPTION_DETAIL</TT></TD><TD>text</TD><TD>异常的详细信息文本，如果任何</TD></TR><TR><TD><TT CLASS="LITERAL">PG_EXCEPTION_HINT</TT></TD><TD>text</TD><TD>异常的提示信息文本，如果任何</TD></TR><TR><TD><TT CLASS="LITERAL">PG_EXCEPTION_CONTEXT</TT></TD><TD>text</TD><TD>描述调用堆栈的文本线程</TD></TR></TBODY></TABLE></DIV><P> 如果异常没有设置项值，则返回空字符串。</P><P>
+例子：
+</P><PRE CLASS="PROGRAMLISTING">DECLARE
+  text_var1 text;
+  text_var2 text;
+  text_var3 text;
+BEGIN
+  
+  -- 一些处理可能引起异常
+  ...
+EXCEPTION WHEN OTHERS THEN
+  GET STACKED DIAGNOSTICS text_var1 = MESSAGE_TEXT,
+                          text_var2 = PG_EXCEPTION_DETAIL,
+                          text_var3 = PG_EXCEPTION_HINT;
+END;</PRE><P>
+</P></DIV></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="plpgsql-statements.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="plpgsql-cursors.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">基本语句</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plpgsql.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">游标</TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,825 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>自动引用计数 | 3.0 更新说明</title>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="description" content="">
+<meta name="generator" content="GitBook 2.6.7">
+<meta name="HandheldFriendly" content="true"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+<link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="../gitbook/style.css">
+<link rel="stylesheet" href="../gitbook/plugins/gitbook-plugin-highlight/website.css">
+<link rel="stylesheet" href="../gitbook/plugins/gitbook-plugin-search/search.css">
+<link rel="stylesheet" href="../gitbook/plugins/gitbook-plugin-fontsettings/website.css">
+<link rel="next" href="17_Optional_Chaining.html" />
+<link rel="prev" href="15_Deinitialization.html" />
+</head>
+<body>
+<div class="book" data-level="2.16" data-chapter-title="自动引用计数" data-filepath="chapter2/16_Automatic_Reference_Counting.md" data-basepath=".." data-revision="Mon Jan 09 2017 10:59:56 GMT+0800 (CST)" data-innerlanguage="">
+<div class="book-summary">
+<nav role="navigation">
+<ul class="summary">
+<li class="chapter " data-level="0" data-path="index.html">
+<a href="../index.html">
+<i class="fa fa-check"></i>
+Introduction
+</a>
+</li>
+<li class="chapter " data-level="1" data-path="chapter1/chapter1.html">
+<a href="../chapter1/chapter1.html">
+<i class="fa fa-check"></i>
+<b>1.</b>
+欢迎使用 Swift
+</a>
+<ul class="articles">
+<li class="chapter " data-level="1.1" data-path="chapter1/01_swift.html">
+<a href="../chapter1/01_swift.html">
+<i class="fa fa-check"></i>
+<b>1.1.</b>
+关于 Swift
+</a>
+</li>
+<li class="chapter " data-level="1.2" data-path="chapter1/02_a_swift_tour.html">
+<a href="../chapter1/02_a_swift_tour.html">
+<i class="fa fa-check"></i>
+<b>1.2.</b>
+Swift 初见
+</a>
+</li>
+<li class="chapter " data-level="1.3" data-path="chapter1/03_revision_history.html">
+<a href="../chapter1/03_revision_history.html">
+<i class="fa fa-check"></i>
+<b>1.3.</b>
+Swift 版本历史记录
+</a>
+</li>
+<li class="chapter " data-level="1.4" data-path="v1.0.html">
+<a href="../v1.0.html">
+<i class="fa fa-check"></i>
+<b>1.4.</b>
+Swift 1.0 发布内容
+</a>
+</li>
+</ul>
+</li>
+<li class="chapter " data-level="2" data-path="chapter2/chapter2.html">
+<a href="chapter2.html">
+<i class="fa fa-check"></i>
+<b>2.</b>
+Swift 教程
+</a>
+<ul class="articles">
+<li class="chapter " data-level="2.1" data-path="chapter2/01_The_Basics.html">
+<a href="01_The_Basics.html">
+<i class="fa fa-check"></i>
+<b>2.1.</b>
+基础部分
+</a>
+</li>
+<li class="chapter " data-level="2.2" data-path="chapter2/02_Basic_Operators.html">
+<a href="02_Basic_Operators.html">
+<i class="fa fa-check"></i>
+<b>2.2.</b>
+基本运算符
+</a>
+</li>
+<li class="chapter " data-level="2.3" data-path="chapter2/03_Strings_and_Characters.html">
+<a href="03_Strings_and_Characters.html">
+<i class="fa fa-check"></i>
+<b>2.3.</b>
+字符串和字符
+</a>
+</li>
+<li class="chapter " data-level="2.4" data-path="chapter2/04_Collection_Types.html">
+<a href="04_Collection_Types.html">
+<i class="fa fa-check"></i>
+<b>2.4.</b>
+集合类型
+</a>
+</li>
+<li class="chapter " data-level="2.5" data-path="chapter2/05_Control_Flow.html">
+<a href="05_Control_Flow.html">
+<i class="fa fa-check"></i>
+<b>2.5.</b>
+控制流
+</a>
+</li>
+<li class="chapter " data-level="2.6" data-path="chapter2/06_Functions.html">
+<a href="06_Functions.html">
+<i class="fa fa-check"></i>
+<b>2.6.</b>
+函数
+</a>
+</li>
+<li class="chapter " data-level="2.7" data-path="chapter2/07_Closures.html">
+<a href="07_Closures.html">
+<i class="fa fa-check"></i>
+<b>2.7.</b>
+闭包
+</a>
+</li>
+<li class="chapter " data-level="2.8" data-path="chapter2/08_Enumerations.html">
+<a href="08_Enumerations.html">
+<i class="fa fa-check"></i>
+<b>2.8.</b>
+枚举
+</a>
+</li>
+<li class="chapter " data-level="2.9" data-path="chapter2/09_Classes_and_Structures.html">
+<a href="09_Classes_and_Structures.html">
+<i class="fa fa-check"></i>
+<b>2.9.</b>
+类和结构体
+</a>
+</li>
+<li class="chapter " data-level="2.10" data-path="chapter2/10_Properties.html">
+<a href="10_Properties.html">
+<i class="fa fa-check"></i>
+<b>2.10.</b>
+属性
+</a>
+</li>
+<li class="chapter " data-level="2.11" data-path="chapter2/11_Methods.html">
+<a href="11_Methods.html">
+<i class="fa fa-check"></i>
+<b>2.11.</b>
+方法
+</a>
+</li>
+<li class="chapter " data-level="2.12" data-path="chapter2/12_Subscripts.html">
+<a href="12_Subscripts.html">
+<i class="fa fa-check"></i>
+<b>2.12.</b>
+下标
+</a>
+</li>
+<li class="chapter " data-level="2.13" data-path="chapter2/13_Inheritance.html">
+<a href="13_Inheritance.html">
+<i class="fa fa-check"></i>
+<b>2.13.</b>
+继承
+</a>
+</li>
+<li class="chapter " data-level="2.14" data-path="chapter2/14_Initialization.html">
+<a href="14_Initialization.html">
+<i class="fa fa-check"></i>
+<b>2.14.</b>
+构造过程
+</a>
+</li>
+<li class="chapter " data-level="2.15" data-path="chapter2/15_Deinitialization.html">
+<a href="15_Deinitialization.html">
+<i class="fa fa-check"></i>
+<b>2.15.</b>
+析构过程
+</a>
+</li>
+<li class="chapter active" data-level="2.16" data-path="chapter2/16_Automatic_Reference_Counting.html">
+<a href="16_Automatic_Reference_Counting.html">
+<i class="fa fa-check"></i>
+<b>2.16.</b>
+自动引用计数
+</a>
+</li>
+<li class="chapter " data-level="2.17" data-path="chapter2/17_Optional_Chaining.html">
+<a href="17_Optional_Chaining.html">
+<i class="fa fa-check"></i>
+<b>2.17.</b>
+可选链
+</a>
+</li>
+<li class="chapter " data-level="2.18" data-path="chapter2/18_Error_Handling.html">
+<a href="18_Error_Handling.html">
+<i class="fa fa-check"></i>
+<b>2.18.</b>
+错误处理
+</a>
+</li>
+<li class="chapter " data-level="2.19" data-path="chapter2/19_Type_Casting.html">
+<a href="19_Type_Casting.html">
+<i class="fa fa-check"></i>
+<b>2.19.</b>
+类型转换
+</a>
+</li>
+<li class="chapter " data-level="2.20" data-path="chapter2/20_Nested_Types.html">
+<a href="20_Nested_Types.html">
+<i class="fa fa-check"></i>
+<b>2.20.</b>
+嵌套类型
+</a>
+</li>
+<li class="chapter " data-level="2.21" data-path="chapter2/21_Extensions.html">
+<a href="21_Extensions.html">
+<i class="fa fa-check"></i>
+<b>2.21.</b>
+扩展
+</a>
+</li>
+<li class="chapter " data-level="2.22" data-path="chapter2/22_Protocols.html">
+<a href="22_Protocols.html">
+<i class="fa fa-check"></i>
+<b>2.22.</b>
+协议
+</a>
+</li>
+<li class="chapter " data-level="2.23" data-path="chapter2/23_Generics.html">
+<a href="23_Generics.html">
+<i class="fa fa-check"></i>
+<b>2.23.</b>
+泛型
+</a>
+</li>
+<li class="chapter " data-level="2.24" data-path="chapter2/24_Access_Control.html">
+<a href="24_Access_Control.html">
+<i class="fa fa-check"></i>
+<b>2.24.</b>
+访问控制
+</a>
+</li>
+<li class="chapter " data-level="2.25" data-path="chapter2/25_Advanced_Operators.html">
+<a href="25_Advanced_Operators.html">
+<i class="fa fa-check"></i>
+<b>2.25.</b>
+高级运算符
+</a>
+</li>
+</ul>
+</li>
+<li class="chapter " data-level="3">
+<span><b>3.</b> 语言参考</span>
+<ul class="articles">
+<li class="chapter " data-level="3.1" data-path="chapter3/01_About_the_Language_Reference.html">
+<a href="../chapter3/01_About_the_Language_Reference.html">
+<i class="fa fa-check"></i>
+<b>3.1.</b>
+关于语言参考
+</a>
+</li>
+<li class="chapter " data-level="3.2" data-path="chapter3/02_Lexical_Structure.html">
+<a href="../chapter3/02_Lexical_Structure.html">
+<i class="fa fa-check"></i>
+<b>3.2.</b>
+词法结构
+</a>
+</li>
+<li class="chapter " data-level="3.3" data-path="chapter3/03_Types.html">
+<a href="../chapter3/03_Types.html">
+<i class="fa fa-check"></i>
+<b>3.3.</b>
+类型
+</a>
+</li>
+<li class="chapter " data-level="3.4" data-path="chapter3/04_Expressions.html">
+<a href="../chapter3/04_Expressions.html">
+<i class="fa fa-check"></i>
+<b>3.4.</b>
+表达式
+</a>
+</li>
+<li class="chapter " data-level="3.5" data-path="chapter3/10_Statements.html">
+<a href="../chapter3/10_Statements.html">
+<i class="fa fa-check"></i>
+<b>3.5.</b>
+语句
+</a>
+</li>
+<li class="chapter " data-level="3.6" data-path="chapter3/05_Declarations.html">
+<a href="../chapter3/05_Declarations.html">
+<i class="fa fa-check"></i>
+<b>3.6.</b>
+声明
+</a>
+</li>
+<li class="chapter " data-level="3.7" data-path="chapter3/06_Attributes.html">
+<a href="../chapter3/06_Attributes.html">
+<i class="fa fa-check"></i>
+<b>3.7.</b>
+特性
+</a>
+</li>
+<li class="chapter " data-level="3.8" data-path="chapter3/07_Patterns.html">
+<a href="../chapter3/07_Patterns.html">
+<i class="fa fa-check"></i>
+<b>3.8.</b>
+模式
+</a>
+</li>
+<li class="chapter " data-level="3.9" data-path="chapter3/08_Generic_Parameters_and_Arguments.html">
+<a href="../chapter3/08_Generic_Parameters_and_Arguments.html">
+<i class="fa fa-check"></i>
+<b>3.9.</b>
+泛型参数
+</a>
+</li>
+<li class="chapter " data-level="3.10" data-path="chapter3/09_Summary_of_the_Grammar.html">
+<a href="../chapter3/09_Summary_of_the_Grammar.html">
+<i class="fa fa-check"></i>
+<b>3.10.</b>
+语法总结
+</a>
+</li>
+</ul>
+</li>
+<li class="chapter " data-level="4">
+<span><b>4.</b> 苹果官方Blog官方翻译</span>
+<ul class="articles">
+<li class="chapter " data-level="4.1" data-path="chapter4/01_Access_Control.html">
+<a href="../chapter4/01_Access_Control.html">
+<i class="fa fa-check"></i>
+<b>4.1.</b>
+Access Control 权限控制的黑与白
+</a>
+</li>
+<li class="chapter " data-level="4.2" data-path="chapter4/02_Type_Custom.html">
+<a href="../chapter4/02_Type_Custom.html">
+<i class="fa fa-check"></i>
+<b>4.2.</b>
+造个类型不是梦-白话Swift类型创建
+</a>
+</li>
+<li class="chapter " data-level="4.3" data-path="chapter4/03_Ballons.html">
+<a href="../chapter4/03_Ballons.html">
+<i class="fa fa-check"></i>
+<b>4.3.</b>
+WWDC里面的那个“大炮打气球”
+</a>
+</li>
+<li class="chapter " data-level="4.4" data-path="chapter4/04_Interacting_with_C_Pointers.html">
+<a href="../chapter4/04_Interacting_with_C_Pointers.html">
+<i class="fa fa-check"></i>
+<b>4.4.</b>
+Swift与C语言指针友好合作
+</a>
+</li>
+<li class="chapter " data-level="4.5" data-path="chapter4/05_Value_and_Reference_Types.html">
+<a href="../chapter4/05_Value_and_Reference_Types.html">
+<i class="fa fa-check"></i>
+<b>4.5.</b>
+引用类型和值类型的恩怨
+</a>
+</li>
+<li class="chapter " data-level="4.6" data-path="chapter4/06_Access_Control_and_Protected.html">
+<a href="../chapter4/06_Access_Control_and_Protected.html">
+<i class="fa fa-check"></i>
+<b>4.6.</b>
+访问控制和Protected
+</a>
+</li>
+<li class="chapter " data-level="4.7" data-path="chapter4/07_Optional_Case_Study.html">
+<a href="../chapter4/07_Optional_Case_Study.html">
+<i class="fa fa-check"></i>
+<b>4.7.</b>
+可选类型完美解决占位问题
+</a>
+</li>
+</ul>
+</li>
+<li class="divider"></li>
+<li>
+<a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+Published with GitBook
+</a>
+</li>
+</ul>
+</nav>
+</div>
+<div class="book-body">
+<div class="body-inner">
+<div class="book-header" role="navigation">
+<h1>
+<i class="fa fa-circle-o-notch fa-spin"></i>
+<a href="../index.html">3.0 更新说明</a>
+</h1>
+</div>
+<div class="page-wrapper" tabindex="-1" role="main">
+<div class="page-inner">
+<section class="normal" id="section-">
+<h1 id="&#x81EA;&#x52A8;&#x5F15;&#x7528;&#x8BA1;&#x6570;">&#x81EA;&#x52A8;&#x5F15;&#x7528;&#x8BA1;&#x6570;</h1>
+<hr>
+<blockquote>
+<p>1.0
+&#x7FFB;&#x8BD1;&#xFF1A;<a href="https://github.com/TimothyYe" target="_blank">TimothyYe</a>
+&#x6821;&#x5BF9;&#xFF1A;<a href="https://github.com/Hawstein" target="_blank">Hawstein</a></p>
+<p>2.0
+&#x7FFB;&#x8BD1;+&#x6821;&#x5BF9;&#xFF1A;<a href="https://github.com/Channe" target="_blank">Channe</a></p>
+<p>2.1
+&#x7FFB;&#x8BD1;&#xFF1A;<a href="https://github.com/Channe" target="_blank">Channe</a>
+&#x6821;&#x5BF9;&#xFF1A;<a href="http://codebuild.me" target="_blank">shanks</a>&#xFF0C;<a href="https://github.com/Realank" target="_blank">Realank</a> &#xFF0C;2016-01-23 </p>
+<p>2.2
+&#x7FFB;&#x8BD1;+&#x6821;&#x5BF9;&#xFF1A;<a href="https://github.com/SketchK" target="_blank">SketchK</a> 2016-05-14<br>3.0.1&#xFF0C;shanks&#xFF0C;2016-11-13</p>
+</blockquote>
+<p>&#x672C;&#x9875;&#x5305;&#x542B;&#x5185;&#x5BB9;&#xFF1A;</p>
+<ul>
+<li><a href="16_Automatic_Reference_Counting.html#how_arc_works">&#x81EA;&#x52A8;&#x5F15;&#x7528;&#x8BA1;&#x6570;&#x7684;&#x5DE5;&#x4F5C;&#x673A;&#x5236;</a></li>
+<li><a href="16_Automatic_Reference_Counting.html#arc_in_action">&#x81EA;&#x52A8;&#x5F15;&#x7528;&#x8BA1;&#x6570;&#x5B9E;&#x8DF5;</a></li>
+<li><a href="16_Automatic_Reference_Counting.html#strong_reference_cycles_between_class_instances">&#x7C7B;&#x5B9E;&#x4F8B;&#x4E4B;&#x95F4;&#x7684;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;</a></li>
+<li><a href="16_Automatic_Reference_Counting.html#resolving_strong_reference_cycles_between_class_instances">&#x89E3;&#x51B3;&#x5B9E;&#x4F8B;&#x4E4B;&#x95F4;&#x7684;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;</a></li>
+<li><a href="16_Automatic_Reference_Counting.html#strong_reference_cycles_for_closures">&#x95ED;&#x5305;&#x5F15;&#x8D77;&#x7684;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;</a></li>
+<li><a href="16_Automatic_Reference_Counting.html#resolving_strong_reference_cycles_for_closures">&#x89E3;&#x51B3;&#x95ED;&#x5305;&#x5F15;&#x8D77;&#x7684;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;</a></li>
+</ul>
+<p>Swift &#x4F7F;&#x7528;<em>&#x81EA;&#x52A8;&#x5F15;&#x7528;&#x8BA1;&#x6570;&#xFF08;ARC&#xFF09;</em>&#x673A;&#x5236;&#x6765;&#x8DDF;&#x8E2A;&#x548C;&#x7BA1;&#x7406;&#x4F60;&#x7684;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x7684;&#x5185;&#x5B58;&#x3002;&#x901A;&#x5E38;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;Swift &#x5185;&#x5B58;&#x7BA1;&#x7406;&#x673A;&#x5236;&#x4F1A;&#x4E00;&#x76F4;&#x8D77;&#x4F5C;&#x7528;&#xFF0C;&#x4F60;&#x65E0;&#x987B;&#x81EA;&#x5DF1;&#x6765;&#x8003;&#x8651;&#x5185;&#x5B58;&#x7684;&#x7BA1;&#x7406;&#x3002;ARC &#x4F1A;&#x5728;&#x7C7B;&#x7684;&#x5B9E;&#x4F8B;&#x4E0D;&#x518D;&#x88AB;&#x4F7F;&#x7528;&#x65F6;&#xFF0C;&#x81EA;&#x52A8;&#x91CA;&#x653E;&#x5176;&#x5360;&#x7528;&#x7684;&#x5185;&#x5B58;&#x3002;</p>
+<p>&#x7136;&#x800C;&#x5728;&#x5C11;&#x6570;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x4E3A;&#x4E86;&#x80FD;&#x5E2E;&#x52A9;&#x4F60;&#x7BA1;&#x7406;&#x5185;&#x5B58;&#xFF0C;ARC &#x9700;&#x8981;&#x66F4;&#x591A;&#x7684;&#xFF0C;&#x4EE3;&#x7801;&#x4E4B;&#x95F4;&#x5173;&#x7CFB;&#x7684;&#x4FE1;&#x606F;&#x3002;&#x672C;&#x7AE0;&#x63CF;&#x8FF0;&#x4E86;&#x8FD9;&#x4E9B;&#x60C5;&#x51B5;&#xFF0C;&#x5E76;&#x4E14;&#x4E3A;&#x4F60;&#x793A;&#x8303;&#x600E;&#x6837;&#x624D;&#x80FD;&#x4F7F; ARC &#x6765;&#x7BA1;&#x7406;&#x4F60;&#x7684;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x7684;&#x6240;&#x6709;&#x5185;&#x5B58;&#x3002;&#x5728; Swift &#x4F7F;&#x7528; ARC &#x4E0E;&#x5728; Obejctive-C &#x4E2D;&#x4F7F;&#x7528; ARC &#x975E;&#x5E38;&#x7C7B;&#x4F3C;&#xFF0C;&#x5177;&#x4F53;&#x8BF7;&#x53C2;&#x8003;<a href="https://developer.apple.com/library/content/releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html#//apple_ref/doc/uid/TP40011226" target="_blank">&#x8FC7;&#x6E21;&#x5230; ARC &#x7684;&#x53D1;&#x5E03;&#x8BF4;&#x660E;</a></p>
+<blockquote>
+<p>&#x6CE8;&#x610F;<br>&#x5F15;&#x7528;&#x8BA1;&#x6570;&#x4EC5;&#x4EC5;&#x5E94;&#x7528;&#x4E8E;&#x7C7B;&#x7684;&#x5B9E;&#x4F8B;&#x3002;&#x7ED3;&#x6784;&#x4F53;&#x548C;&#x679A;&#x4E3E;&#x7C7B;&#x578B;&#x662F;&#x503C;&#x7C7B;&#x578B;&#xFF0C;&#x4E0D;&#x662F;&#x5F15;&#x7528;&#x7C7B;&#x578B;&#xFF0C;&#x4E5F;&#x4E0D;&#x662F;&#x901A;&#x8FC7;&#x5F15;&#x7528;&#x7684;&#x65B9;&#x5F0F;&#x5B58;&#x50A8;&#x548C;&#x4F20;&#x9012;&#x3002;</p>
+</blockquote>
+<p><a name="how_arc_works"></a></p>
+<h2 id="&#x81EA;&#x52A8;&#x5F15;&#x7528;&#x8BA1;&#x6570;&#x7684;&#x5DE5;&#x4F5C;&#x673A;&#x5236;">&#x81EA;&#x52A8;&#x5F15;&#x7528;&#x8BA1;&#x6570;&#x7684;&#x5DE5;&#x4F5C;&#x673A;&#x5236;</h2>
+<p>&#x5F53;&#x4F60;&#x6BCF;&#x6B21;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x7C7B;&#x7684;&#x65B0;&#x7684;&#x5B9E;&#x4F8B;&#x7684;&#x65F6;&#x5019;&#xFF0C;ARC &#x4F1A;&#x5206;&#x914D;&#x4E00;&#x5757;&#x5185;&#x5B58;&#x6765;&#x50A8;&#x5B58;&#x8BE5;&#x5B9E;&#x4F8B;&#x4FE1;&#x606F;&#x3002;&#x5185;&#x5B58;&#x4E2D;&#x4F1A;&#x5305;&#x542B;&#x5B9E;&#x4F8B;&#x7684;&#x7C7B;&#x578B;&#x4FE1;&#x606F;&#xFF0C;&#x4EE5;&#x53CA;&#x8FD9;&#x4E2A;&#x5B9E;&#x4F8B;&#x6240;&#x6709;&#x76F8;&#x5173;&#x7684;&#x5B58;&#x50A8;&#x578B;&#x5C5E;&#x6027;&#x7684;&#x503C;&#x3002;</p>
+<p>&#x6B64;&#x5916;&#xFF0C;&#x5F53;&#x5B9E;&#x4F8B;&#x4E0D;&#x518D;&#x88AB;&#x4F7F;&#x7528;&#x65F6;&#xFF0C;ARC &#x91CA;&#x653E;&#x5B9E;&#x4F8B;&#x6240;&#x5360;&#x7528;&#x7684;&#x5185;&#x5B58;&#xFF0C;&#x5E76;&#x8BA9;&#x91CA;&#x653E;&#x7684;&#x5185;&#x5B58;&#x80FD;&#x632A;&#x4F5C;&#x4ED6;&#x7528;&#x3002;&#x8FD9;&#x786E;&#x4FDD;&#x4E86;&#x4E0D;&#x518D;&#x88AB;&#x4F7F;&#x7528;&#x7684;&#x5B9E;&#x4F8B;&#xFF0C;&#x4E0D;&#x4F1A;&#x4E00;&#x76F4;&#x5360;&#x7528;&#x5185;&#x5B58;&#x7A7A;&#x95F4;&#x3002;</p>
+<p>&#x7136;&#x800C;&#xFF0C;&#x5F53; ARC &#x6536;&#x56DE;&#x548C;&#x91CA;&#x653E;&#x4E86;&#x6B63;&#x5728;&#x88AB;&#x4F7F;&#x7528;&#x4E2D;&#x7684;&#x5B9E;&#x4F8B;&#xFF0C;&#x8BE5;&#x5B9E;&#x4F8B;&#x7684;&#x5C5E;&#x6027;&#x548C;&#x65B9;&#x6CD5;&#x5C06;&#x4E0D;&#x80FD;&#x518D;&#x88AB;&#x8BBF;&#x95EE;&#x548C;&#x8C03;&#x7528;&#x3002;&#x5B9E;&#x9645;&#x4E0A;&#xFF0C;&#x5982;&#x679C;&#x4F60;&#x8BD5;&#x56FE;&#x8BBF;&#x95EE;&#x8FD9;&#x4E2A;&#x5B9E;&#x4F8B;&#xFF0C;&#x4F60;&#x7684;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x5F88;&#x53EF;&#x80FD;&#x4F1A;&#x5D29;&#x6E83;&#x3002;</p>
+<p>&#x4E3A;&#x4E86;&#x786E;&#x4FDD;&#x4F7F;&#x7528;&#x4E2D;&#x7684;&#x5B9E;&#x4F8B;&#x4E0D;&#x4F1A;&#x88AB;&#x9500;&#x6BC1;&#xFF0C;ARC &#x4F1A;&#x8DDF;&#x8E2A;&#x548C;&#x8BA1;&#x7B97;&#x6BCF;&#x4E00;&#x4E2A;&#x5B9E;&#x4F8B;&#x6B63;&#x5728;&#x88AB;&#x591A;&#x5C11;&#x5C5E;&#x6027;&#xFF0C;&#x5E38;&#x91CF;&#x548C;&#x53D8;&#x91CF;&#x6240;&#x5F15;&#x7528;&#x3002;&#x54EA;&#x6015;&#x5B9E;&#x4F8B;&#x7684;&#x5F15;&#x7528;&#x6570;&#x4E3A;1&#xFF0C;ARC&#x90FD;&#x4E0D;&#x4F1A;&#x9500;&#x6BC1;&#x8FD9;&#x4E2A;&#x5B9E;&#x4F8B;&#x3002;</p>
+<p>&#x4E3A;&#x4E86;&#x4F7F;&#x4E0A;&#x8FF0;&#x6210;&#x4E3A;&#x53EF;&#x80FD;&#xFF0C;&#x65E0;&#x8BBA;&#x4F60;&#x5C06;&#x5B9E;&#x4F8B;&#x8D4B;&#x503C;&#x7ED9;&#x5C5E;&#x6027;&#x3001;&#x5E38;&#x91CF;&#x6216;&#x53D8;&#x91CF;&#xFF0C;&#x5B83;&#x4EEC;&#x90FD;&#x4F1A;&#x521B;&#x5EFA;&#x6B64;&#x5B9E;&#x4F8B;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#x3002;&#x4E4B;&#x6240;&#x4EE5;&#x79F0;&#x4E4B;&#x4E3A;&#x201C;&#x5F3A;&#x201D;&#x5F15;&#x7528;&#xFF0C;&#x662F;&#x56E0;&#x4E3A;&#x5B83;&#x4F1A;&#x5C06;&#x5B9E;&#x4F8B;&#x7262;&#x7262;&#x5730;&#x4FDD;&#x6301;&#x4F4F;&#xFF0C;&#x53EA;&#x8981;&#x5F3A;&#x5F15;&#x7528;&#x8FD8;&#x5728;&#xFF0C;&#x5B9E;&#x4F8B;&#x662F;&#x4E0D;&#x5141;&#x8BB8;&#x88AB;&#x9500;&#x6BC1;&#x7684;&#x3002;</p>
+<p><a name="arc_in_action"></a></p>
+<h2 id="&#x81EA;&#x52A8;&#x5F15;&#x7528;&#x8BA1;&#x6570;&#x5B9E;&#x8DF5;">&#x81EA;&#x52A8;&#x5F15;&#x7528;&#x8BA1;&#x6570;&#x5B9E;&#x8DF5;</h2>
+<p>&#x4E0B;&#x9762;&#x7684;&#x4F8B;&#x5B50;&#x5C55;&#x793A;&#x4E86;&#x81EA;&#x52A8;&#x5F15;&#x7528;&#x8BA1;&#x6570;&#x7684;&#x5DE5;&#x4F5C;&#x673A;&#x5236;&#x3002;&#x4F8B;&#x5B50;&#x4EE5;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;<code>Person</code>&#x7C7B;&#x5F00;&#x59CB;&#xFF0C;&#x5E76;&#x5B9A;&#x4E49;&#x4E86;&#x4E00;&#x4E2A;&#x53EB;<code>name</code>&#x7684;&#x5E38;&#x91CF;&#x5C5E;&#x6027;&#xFF1A;</p>
+<pre><code class="lang-swift"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span> </span>{
+    <span class="hljs-keyword">let</span> name: <span class="hljs-type">String</span>
+    <span class="hljs-keyword">init</span>(name: <span class="hljs-type">String</span>) {
+        <span class="hljs-keyword">self</span>.name = name
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;<span class="hljs-subst">\(name)</span> is being initialized&quot;</span>)
+    }
+    <span class="hljs-keyword">deinit</span> {
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;<span class="hljs-subst">\(name)</span> is being deinitialized&quot;</span>)
+    }
+}
+</code></pre>
+<p><code>Person</code>&#x7C7B;&#x6709;&#x4E00;&#x4E2A;&#x6784;&#x9020;&#x51FD;&#x6570;&#xFF0C;&#x6B64;&#x6784;&#x9020;&#x51FD;&#x6570;&#x4E3A;&#x5B9E;&#x4F8B;&#x7684;<code>name</code>&#x5C5E;&#x6027;&#x8D4B;&#x503C;&#xFF0C;&#x5E76;&#x6253;&#x5370;&#x4E00;&#x6761;&#x6D88;&#x606F;&#x4EE5;&#x8868;&#x660E;&#x521D;&#x59CB;&#x5316;&#x8FC7;&#x7A0B;&#x751F;&#x6548;&#x3002;<code>Person</code>&#x7C7B;&#x4E5F;&#x62E5;&#x6709;&#x4E00;&#x4E2A;&#x6790;&#x6784;&#x51FD;&#x6570;&#xFF0C;&#x8FD9;&#x4E2A;&#x6790;&#x6784;&#x51FD;&#x6570;&#x4F1A;&#x5728;&#x5B9E;&#x4F8B;&#x88AB;&#x9500;&#x6BC1;&#x65F6;&#x6253;&#x5370;&#x4E00;&#x6761;&#x6D88;&#x606F;&#x3002;</p>
+<p>&#x63A5;&#x4E0B;&#x6765;&#x7684;&#x4EE3;&#x7801;&#x7247;&#x6BB5;&#x5B9A;&#x4E49;&#x4E86;&#x4E09;&#x4E2A;&#x7C7B;&#x578B;&#x4E3A;<code>Person?</code>&#x7684;&#x53D8;&#x91CF;&#xFF0C;&#x7528;&#x6765;&#x6309;&#x7167;&#x4EE3;&#x7801;&#x7247;&#x6BB5;&#x4E2D;&#x7684;&#x987A;&#x5E8F;&#xFF0C;&#x4E3A;&#x65B0;&#x7684;<code>Person</code>&#x5B9E;&#x4F8B;&#x5EFA;&#x7ACB;&#x591A;&#x4E2A;&#x5F15;&#x7528;&#x3002;&#x7531;&#x4E8E;&#x8FD9;&#x4E9B;&#x53D8;&#x91CF;&#x662F;&#x88AB;&#x5B9A;&#x4E49;&#x4E3A;&#x53EF;&#x9009;&#x7C7B;&#x578B;&#xFF08;<code>Person?</code>&#xFF0C;&#x800C;&#x4E0D;&#x662F;<code>Person</code>&#xFF09;&#xFF0C;&#x5B83;&#x4EEC;&#x7684;&#x503C;&#x4F1A;&#x88AB;&#x81EA;&#x52A8;&#x521D;&#x59CB;&#x5316;&#x4E3A;<code>nil</code>&#xFF0C;&#x76EE;&#x524D;&#x8FD8;&#x4E0D;&#x4F1A;&#x5F15;&#x7528;&#x5230;<code>Person</code>&#x7C7B;&#x7684;&#x5B9E;&#x4F8B;&#x3002;</p>
+<pre><code class="lang-swift"><span class="hljs-keyword">var</span> reference1: <span class="hljs-type">Person</span>?
+<span class="hljs-keyword">var</span> reference2: <span class="hljs-type">Person</span>?
+<span class="hljs-keyword">var</span> reference3: <span class="hljs-type">Person</span>?
+</code></pre>
+<p>&#x73B0;&#x5728;&#x4F60;&#x53EF;&#x4EE5;&#x521B;&#x5EFA;<code>Person</code>&#x7C7B;&#x7684;&#x65B0;&#x5B9E;&#x4F8B;&#xFF0C;&#x5E76;&#x4E14;&#x5C06;&#x5B83;&#x8D4B;&#x503C;&#x7ED9;&#x4E09;&#x4E2A;&#x53D8;&#x91CF;&#x4E2D;&#x7684;&#x4E00;&#x4E2A;&#xFF1A;</p>
+<pre><code class="lang-swift">reference1 = <span class="hljs-type">Person</span>(name: <span class="hljs-string">&quot;John Appleseed&quot;</span>)
+<span class="hljs-comment">// &#x6253;&#x5370; &quot;John Appleseed is being initialized&#x201D;</span>
+</code></pre>
+<p>&#x5E94;&#x5F53;&#x6CE8;&#x610F;&#x5230;&#x5F53;&#x4F60;&#x8C03;&#x7528;<code>Person</code>&#x7C7B;&#x7684;&#x6784;&#x9020;&#x51FD;&#x6570;&#x7684;&#x65F6;&#x5019;&#xFF0C;<code>&#x201C;John Appleseed is being initialized&#x201D;</code>&#x4F1A;&#x88AB;&#x6253;&#x5370;&#x51FA;&#x6765;&#x3002;&#x7531;&#x6B64;&#x53EF;&#x4EE5;&#x786E;&#x5B9A;&#x6784;&#x9020;&#x51FD;&#x6570;&#x88AB;&#x6267;&#x884C;&#x3002;</p>
+<p>&#x7531;&#x4E8E;<code>Person</code>&#x7C7B;&#x7684;&#x65B0;&#x5B9E;&#x4F8B;&#x88AB;&#x8D4B;&#x503C;&#x7ED9;&#x4E86;<code>reference1</code>&#x53D8;&#x91CF;&#xFF0C;&#x6240;&#x4EE5;<code>reference1</code>&#x5230;<code>Person</code>&#x7C7B;&#x7684;&#x65B0;&#x5B9E;&#x4F8B;&#x4E4B;&#x95F4;&#x5EFA;&#x7ACB;&#x4E86;&#x4E00;&#x4E2A;&#x5F3A;&#x5F15;&#x7528;&#x3002;&#x6B63;&#x662F;&#x56E0;&#x4E3A;&#x8FD9;&#x4E00;&#x4E2A;&#x5F3A;&#x5F15;&#x7528;&#xFF0C;ARC &#x4F1A;&#x4FDD;&#x8BC1;<code>Person</code>&#x5B9E;&#x4F8B;&#x88AB;&#x4FDD;&#x6301;&#x5728;&#x5185;&#x5B58;&#x4E2D;&#x4E0D;&#x88AB;&#x9500;&#x6BC1;&#x3002;</p>
+<p>&#x5982;&#x679C;&#x4F60;&#x5C06;&#x540C;&#x4E00;&#x4E2A;<code>Person</code>&#x5B9E;&#x4F8B;&#x4E5F;&#x8D4B;&#x503C;&#x7ED9;&#x5176;&#x4ED6;&#x4E24;&#x4E2A;&#x53D8;&#x91CF;&#xFF0C;&#x8BE5;&#x5B9E;&#x4F8B;&#x53C8;&#x4F1A;&#x591A;&#x51FA;&#x4E24;&#x4E2A;&#x5F3A;&#x5F15;&#x7528;&#xFF1A;</p>
+<pre><code class="lang-swift">reference2 = reference1
+reference3 = reference1
+</code></pre>
+<p>&#x73B0;&#x5728;&#x8FD9;&#x4E00;&#x4E2A;<code>Person</code>&#x5B9E;&#x4F8B;&#x5DF2;&#x7ECF;&#x6709;&#x4E09;&#x4E2A;&#x5F3A;&#x5F15;&#x7528;&#x4E86;&#x3002;</p>
+<p>&#x5982;&#x679C;&#x4F60;&#x901A;&#x8FC7;&#x7ED9;&#x5176;&#x4E2D;&#x4E24;&#x4E2A;&#x53D8;&#x91CF;&#x8D4B;&#x503C;<code>nil</code>&#x7684;&#x65B9;&#x5F0F;&#x65AD;&#x5F00;&#x4E24;&#x4E2A;&#x5F3A;&#x5F15;&#x7528;&#xFF08;&#x5305;&#x62EC;&#x6700;&#x5148;&#x7684;&#x90A3;&#x4E2A;&#x5F3A;&#x5F15;&#x7528;&#xFF09;&#xFF0C;&#x53EA;&#x7559;&#x4E0B;&#x4E00;&#x4E2A;&#x5F3A;&#x5F15;&#x7528;&#xFF0C;<code>Person</code>&#x5B9E;&#x4F8B;&#x4E0D;&#x4F1A;&#x88AB;&#x9500;&#x6BC1;&#xFF1A;</p>
+<pre><code class="lang-swift">reference1 = <span class="hljs-literal">nil</span>
+reference2 = <span class="hljs-literal">nil</span>
+</code></pre>
+<p>&#x5728;&#x4F60;&#x6E05;&#x695A;&#x5730;&#x8868;&#x660E;&#x4E0D;&#x518D;&#x4F7F;&#x7528;&#x8FD9;&#x4E2A;<code>Person</code>&#x5B9E;&#x4F8B;&#x65F6;&#xFF0C;&#x5373;&#x7B2C;&#x4E09;&#x4E2A;&#x4E5F;&#x5C31;&#x662F;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x5F3A;&#x5F15;&#x7528;&#x88AB;&#x65AD;&#x5F00;&#x65F6;&#xFF0C;ARC &#x4F1A;&#x9500;&#x6BC1;&#x5B83;&#xFF1A;</p>
+<pre><code class="lang-swift">reference3 = <span class="hljs-literal">nil</span>
+<span class="hljs-comment">// &#x6253;&#x5370; &#x201C;John Appleseed is being deinitialized&#x201D;</span>
+</code></pre>
+<p><a name="strong_reference_cycles_between_class_instances"></a></p>
+<h2 id="&#x7C7B;&#x5B9E;&#x4F8B;&#x4E4B;&#x95F4;&#x7684;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;">&#x7C7B;&#x5B9E;&#x4F8B;&#x4E4B;&#x95F4;&#x7684;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;</h2>
+<p>&#x5728;&#x4E0A;&#x9762;&#x7684;&#x4F8B;&#x5B50;&#x4E2D;&#xFF0C;ARC &#x4F1A;&#x8DDF;&#x8E2A;&#x4F60;&#x6240;&#x65B0;&#x521B;&#x5EFA;&#x7684;<code>Person</code>&#x5B9E;&#x4F8B;&#x7684;&#x5F15;&#x7528;&#x6570;&#x91CF;&#xFF0C;&#x5E76;&#x4E14;&#x4F1A;&#x5728;<code>Person</code>&#x5B9E;&#x4F8B;&#x4E0D;&#x518D;&#x88AB;&#x9700;&#x8981;&#x65F6;&#x9500;&#x6BC1;&#x5B83;&#x3002;</p>
+<p>&#x7136;&#x800C;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x80FD;&#x4F1A;&#x5199;&#x51FA;&#x4E00;&#x4E2A;&#x7C7B;&#x5B9E;&#x4F8B;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#x6570;<em>&#x6C38;&#x8FDC;&#x4E0D;&#x80FD;</em>&#x53D8;&#x6210;<code>0</code>&#x7684;&#x4EE3;&#x7801;&#x3002;&#x5982;&#x679C;&#x4E24;&#x4E2A;&#x7C7B;&#x5B9E;&#x4F8B;&#x4E92;&#x76F8;&#x6301;&#x6709;&#x5BF9;&#x65B9;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#xFF0C;&#x56E0;&#x800C;&#x6BCF;&#x4E2A;&#x5B9E;&#x4F8B;&#x90FD;&#x8BA9;&#x5BF9;&#x65B9;&#x4E00;&#x76F4;&#x5B58;&#x5728;&#xFF0C;&#x5C31;&#x662F;&#x8FD9;&#x79CD;&#x60C5;&#x51B5;&#x3002;&#x8FD9;&#x5C31;&#x662F;&#x6240;&#x8C13;&#x7684;<em>&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;</em>&#x3002;</p>
+<p>&#x4F60;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x5B9A;&#x4E49;&#x7C7B;&#x4E4B;&#x95F4;&#x7684;&#x5173;&#x7CFB;&#x4E3A;&#x5F31;&#x5F15;&#x7528;&#x6216;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#xFF0C;&#x4EE5;&#x66FF;&#x4EE3;&#x5F3A;&#x5F15;&#x7528;&#xFF0C;&#x4ECE;&#x800C;&#x89E3;&#x51B3;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x7684;&#x95EE;&#x9898;&#x3002;&#x5177;&#x4F53;&#x7684;&#x8FC7;&#x7A0B;&#x5728;<a href="16_Automatic_Reference_Counting.html#resolving_strong_reference_cycles_between_class_instances">&#x89E3;&#x51B3;&#x7C7B;&#x5B9E;&#x4F8B;&#x4E4B;&#x95F4;&#x7684;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;</a>&#x4E2D;&#x6709;&#x63CF;&#x8FF0;&#x3002;&#x4E0D;&#x7BA1;&#x600E;&#x6837;&#xFF0C;&#x5728;&#x4F60;&#x5B66;&#x4E60;&#x600E;&#x6837;&#x89E3;&#x51B3;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x4E4B;&#x524D;&#xFF0C;&#x5F88;&#x6709;&#x5FC5;&#x8981;&#x4E86;&#x89E3;&#x4E00;&#x4E0B;&#x5B83;&#x662F;&#x600E;&#x6837;&#x4EA7;&#x751F;&#x7684;&#x3002;</p>
+<p>&#x4E0B;&#x9762;&#x5C55;&#x793A;&#x4E86;&#x4E00;&#x4E2A;&#x4E0D;&#x7ECF;&#x610F;&#x4EA7;&#x751F;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x7684;&#x4F8B;&#x5B50;&#x3002;&#x4F8B;&#x5B50;&#x5B9A;&#x4E49;&#x4E86;&#x4E24;&#x4E2A;&#x7C7B;&#xFF1A;<code>Person</code>&#x548C;<code>Apartment</code>&#xFF0C;&#x7528;&#x6765;&#x5EFA;&#x6A21;&#x516C;&#x5BD3;&#x548C;&#x5B83;&#x5176;&#x4E2D;&#x7684;&#x5C45;&#x6C11;&#xFF1A;</p>
+<pre><code class="lang-swift"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span> </span>{
+    <span class="hljs-keyword">let</span> name: <span class="hljs-type">String</span>
+    <span class="hljs-keyword">init</span>(name: <span class="hljs-type">String</span>) { <span class="hljs-keyword">self</span>.name = name }
+    <span class="hljs-keyword">var</span> apartment: <span class="hljs-type">Apartment</span>?
+    <span class="hljs-keyword">deinit</span> { <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;<span class="hljs-subst">\(name)</span> is being deinitialized&quot;</span>) }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Apartment</span> </span>{
+    <span class="hljs-keyword">let</span> unit: <span class="hljs-type">String</span>
+    <span class="hljs-keyword">init</span>(unit: <span class="hljs-type">String</span>) { <span class="hljs-keyword">self</span>.unit = unit }
+    <span class="hljs-keyword">var</span> tenant: <span class="hljs-type">Person</span>?
+    <span class="hljs-keyword">deinit</span> { <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Apartment <span class="hljs-subst">\(unit)</span> is being deinitialized&quot;</span>) }
+}
+</code></pre>
+<p>&#x6BCF;&#x4E00;&#x4E2A;<code>Person</code>&#x5B9E;&#x4F8B;&#x6709;&#x4E00;&#x4E2A;&#x7C7B;&#x578B;&#x4E3A;<code>String</code>&#xFF0C;&#x540D;&#x5B57;&#x4E3A;<code>name</code>&#x7684;&#x5C5E;&#x6027;&#xFF0C;&#x5E76;&#x6709;&#x4E00;&#x4E2A;&#x53EF;&#x9009;&#x7684;&#x521D;&#x59CB;&#x5316;&#x4E3A;<code>nil</code>&#x7684;<code>apartment</code>&#x5C5E;&#x6027;&#x3002;<code>apartment</code>&#x5C5E;&#x6027;&#x662F;&#x53EF;&#x9009;&#x7684;&#xFF0C;&#x56E0;&#x4E3A;&#x4E00;&#x4E2A;&#x4EBA;&#x5E76;&#x4E0D;&#x603B;&#x662F;&#x62E5;&#x6709;&#x516C;&#x5BD3;&#x3002;</p>
+<p>&#x7C7B;&#x4F3C;&#x7684;&#xFF0C;&#x6BCF;&#x4E2A;<code>Apartment</code>&#x5B9E;&#x4F8B;&#x6709;&#x4E00;&#x4E2A;&#x53EB;<code>unit</code>&#xFF0C;&#x7C7B;&#x578B;&#x4E3A;<code>String</code>&#x7684;&#x5C5E;&#x6027;&#xFF0C;&#x5E76;&#x6709;&#x4E00;&#x4E2A;&#x53EF;&#x9009;&#x7684;&#x521D;&#x59CB;&#x5316;&#x4E3A;<code>nil</code>&#x7684;<code>tenant</code>&#x5C5E;&#x6027;&#x3002;<code>tenant</code>&#x5C5E;&#x6027;&#x662F;&#x53EF;&#x9009;&#x7684;&#xFF0C;&#x56E0;&#x4E3A;&#x4E00;&#x680B;&#x516C;&#x5BD3;&#x5E76;&#x4E0D;&#x603B;&#x662F;&#x6709;&#x5C45;&#x6C11;&#x3002;</p>
+<p>&#x8FD9;&#x4E24;&#x4E2A;&#x7C7B;&#x90FD;&#x5B9A;&#x4E49;&#x4E86;&#x6790;&#x6784;&#x51FD;&#x6570;&#xFF0C;&#x7528;&#x4EE5;&#x5728;&#x7C7B;&#x5B9E;&#x4F8B;&#x88AB;&#x6790;&#x6784;&#x7684;&#x65F6;&#x5019;&#x8F93;&#x51FA;&#x4FE1;&#x606F;&#x3002;&#x8FD9;&#x8BA9;&#x4F60;&#x80FD;&#x591F;&#x77E5;&#x6653;<code>Person</code>&#x548C;<code>Apartment</code>&#x7684;&#x5B9E;&#x4F8B;&#x662F;&#x5426;&#x50CF;&#x9884;&#x671F;&#x7684;&#x90A3;&#x6837;&#x88AB;&#x9500;&#x6BC1;&#x3002;</p>
+<p>&#x63A5;&#x4E0B;&#x6765;&#x7684;&#x4EE3;&#x7801;&#x7247;&#x6BB5;&#x5B9A;&#x4E49;&#x4E86;&#x4E24;&#x4E2A;&#x53EF;&#x9009;&#x7C7B;&#x578B;&#x7684;&#x53D8;&#x91CF;<code>john</code>&#x548C;<code>unit4A</code>&#xFF0C;&#x5E76;&#x5206;&#x522B;&#x88AB;&#x8BBE;&#x5B9A;&#x4E3A;&#x4E0B;&#x9762;&#x7684;<code>Apartment</code>&#x548C;<code>Person</code>&#x7684;&#x5B9E;&#x4F8B;&#x3002;&#x8FD9;&#x4E24;&#x4E2A;&#x53D8;&#x91CF;&#x90FD;&#x88AB;&#x521D;&#x59CB;&#x5316;&#x4E3A;<code>nil</code>&#xFF0C;&#x8FD9;&#x6B63;&#x662F;&#x53EF;&#x9009;&#x7C7B;&#x578B;&#x7684;&#x4F18;&#x70B9;&#xFF1A;</p>
+<pre><code class="lang-swift"><span class="hljs-keyword">var</span> john: <span class="hljs-type">Person</span>?
+<span class="hljs-keyword">var</span> unit4A: <span class="hljs-type">Apartment</span>?
+</code></pre>
+<p>&#x73B0;&#x5728;&#x4F60;&#x53EF;&#x4EE5;&#x521B;&#x5EFA;&#x7279;&#x5B9A;&#x7684;<code>Person</code>&#x548C;<code>Apartment</code>&#x5B9E;&#x4F8B;&#x5E76;&#x5C06;&#x8D4B;&#x503C;&#x7ED9;<code>john</code>&#x548C;<code>unit4A</code>&#x53D8;&#x91CF;&#xFF1A;</p>
+<pre><code class="lang-swift">john = <span class="hljs-type">Person</span>(name: <span class="hljs-string">&quot;John Appleseed&quot;</span>)
+unit4A = <span class="hljs-type">Apartment</span>(unit: <span class="hljs-string">&quot;4A&quot;</span>)
+</code></pre>
+<p>&#x5728;&#x4E24;&#x4E2A;&#x5B9E;&#x4F8B;&#x88AB;&#x521B;&#x5EFA;&#x548C;&#x8D4B;&#x503C;&#x540E;&#xFF0C;&#x4E0B;&#x56FE;&#x8868;&#x73B0;&#x4E86;&#x5F3A;&#x5F15;&#x7528;&#x7684;&#x5173;&#x7CFB;&#x3002;&#x53D8;&#x91CF;<code>john</code>&#x73B0;&#x5728;&#x6709;&#x4E00;&#x4E2A;&#x6307;&#x5411;<code>Person</code>&#x5B9E;&#x4F8B;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#xFF0C;&#x800C;&#x53D8;&#x91CF;<code>unit4A</code>&#x6709;&#x4E00;&#x4E2A;&#x6307;&#x5411;<code>Apartment</code>&#x5B9E;&#x4F8B;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#xFF1A;</p>
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/referenceCycle01_2x.png" alt=""></p>
+<p>&#x73B0;&#x5728;&#x4F60;&#x80FD;&#x591F;&#x5C06;&#x8FD9;&#x4E24;&#x4E2A;&#x5B9E;&#x4F8B;&#x5173;&#x8054;&#x5728;&#x4E00;&#x8D77;&#xFF0C;&#x8FD9;&#x6837;&#x4EBA;&#x5C31;&#x80FD;&#x6709;&#x516C;&#x5BD3;&#x4F4F;&#x4E86;&#xFF0C;&#x800C;&#x516C;&#x5BD3;&#x4E5F;&#x6709;&#x4E86;&#x623F;&#x5BA2;&#x3002;&#x6CE8;&#x610F;&#x611F;&#x53F9;&#x53F7;&#x662F;&#x7528;&#x6765;&#x5C55;&#x5F00;&#x548C;&#x8BBF;&#x95EE;&#x53EF;&#x9009;&#x53D8;&#x91CF;<code>john</code>&#x548C;<code>unit4A</code>&#x4E2D;&#x7684;&#x5B9E;&#x4F8B;&#xFF0C;&#x8FD9;&#x6837;&#x5B9E;&#x4F8B;&#x7684;&#x5C5E;&#x6027;&#x624D;&#x80FD;&#x88AB;&#x8D4B;&#x503C;&#xFF1A;</p>
+<pre><code class="lang-swift">john!.apartment = unit4A
+unit4A!.tenant = john
+</code></pre>
+<p>&#x5728;&#x5C06;&#x4E24;&#x4E2A;&#x5B9E;&#x4F8B;&#x8054;&#x7CFB;&#x5728;&#x4E00;&#x8D77;&#x4E4B;&#x540E;&#xFF0C;&#x5F3A;&#x5F15;&#x7528;&#x7684;&#x5173;&#x7CFB;&#x5982;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/referenceCycle02_2x.png" alt=""></p>
+<p>&#x4E0D;&#x5E78;&#x7684;&#x662F;&#xFF0C;&#x8FD9;&#x4E24;&#x4E2A;&#x5B9E;&#x4F8B;&#x5173;&#x8054;&#x540E;&#x4F1A;&#x4EA7;&#x751F;&#x4E00;&#x4E2A;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x3002;<code>Person</code>&#x5B9E;&#x4F8B;&#x73B0;&#x5728;&#x6709;&#x4E86;&#x4E00;&#x4E2A;&#x6307;&#x5411;<code>Apartment</code>&#x5B9E;&#x4F8B;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#xFF0C;&#x800C;<code>Apartment</code>&#x5B9E;&#x4F8B;&#x4E5F;&#x6709;&#x4E86;&#x4E00;&#x4E2A;&#x6307;&#x5411;<code>Person</code>&#x5B9E;&#x4F8B;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#x3002;&#x56E0;&#x6B64;&#xFF0C;&#x5F53;&#x4F60;&#x65AD;&#x5F00;<code>john</code>&#x548C;<code>unit4A</code>&#x53D8;&#x91CF;&#x6240;&#x6301;&#x6709;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#x65F6;&#xFF0C;&#x5F15;&#x7528;&#x8BA1;&#x6570;&#x5E76;&#x4E0D;&#x4F1A;&#x964D;&#x4E3A;<code>0</code>&#xFF0C;&#x5B9E;&#x4F8B;&#x4E5F;&#x4E0D;&#x4F1A;&#x88AB; ARC &#x9500;&#x6BC1;&#xFF1A;</p>
+<pre><code class="lang-swift">john = <span class="hljs-literal">nil</span>
+unit4A = <span class="hljs-literal">nil</span>
+</code></pre>
+<p>&#x6CE8;&#x610F;&#xFF0C;&#x5F53;&#x4F60;&#x628A;&#x8FD9;&#x4E24;&#x4E2A;&#x53D8;&#x91CF;&#x8BBE;&#x4E3A;<code>nil</code>&#x65F6;&#xFF0C;&#x6CA1;&#x6709;&#x4EFB;&#x4F55;&#x4E00;&#x4E2A;&#x6790;&#x6784;&#x51FD;&#x6570;&#x88AB;&#x8C03;&#x7528;&#x3002;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x4F1A;&#x4E00;&#x76F4;&#x963B;&#x6B62;<code>Person</code>&#x548C;<code>Apartment</code>&#x7C7B;&#x5B9E;&#x4F8B;&#x7684;&#x9500;&#x6BC1;&#xFF0C;&#x8FD9;&#x5C31;&#x5728;&#x4F60;&#x7684;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x4E2D;&#x9020;&#x6210;&#x4E86;&#x5185;&#x5B58;&#x6CC4;&#x6F0F;&#x3002;</p>
+<p>&#x5728;&#x4F60;&#x5C06;<code>john</code>&#x548C;<code>unit4A</code>&#x8D4B;&#x503C;&#x4E3A;<code>nil</code>&#x540E;&#xFF0C;&#x5F3A;&#x5F15;&#x7528;&#x5173;&#x7CFB;&#x5982;&#x4E0B;&#x56FE;&#xFF1A;</p>
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/referenceCycle03_2x.png" alt=""></p>
+<p><code>Person</code>&#x548C;<code>Apartment</code>&#x5B9E;&#x4F8B;&#x4E4B;&#x95F4;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#x5173;&#x7CFB;&#x4FDD;&#x7559;&#x4E86;&#x4E0B;&#x6765;&#x5E76;&#x4E14;&#x4E0D;&#x4F1A;&#x88AB;&#x65AD;&#x5F00;&#x3002;</p>
+<p><a name="resolving_strong_reference_cycles_between_class_instances"></a></p>
+<h2 id="&#x89E3;&#x51B3;&#x5B9E;&#x4F8B;&#x4E4B;&#x95F4;&#x7684;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;">&#x89E3;&#x51B3;&#x5B9E;&#x4F8B;&#x4E4B;&#x95F4;&#x7684;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;</h2>
+<p>Swift &#x63D0;&#x4F9B;&#x4E86;&#x4E24;&#x79CD;&#x529E;&#x6CD5;&#x7528;&#x6765;&#x89E3;&#x51B3;&#x4F60;&#x5728;&#x4F7F;&#x7528;&#x7C7B;&#x7684;&#x5C5E;&#x6027;&#x65F6;&#x6240;&#x9047;&#x5230;&#x7684;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x95EE;&#x9898;&#xFF1A;&#x5F31;&#x5F15;&#x7528;&#xFF08;weak reference&#xFF09;&#x548C;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#xFF08;unowned reference&#xFF09;&#x3002;</p>
+<p>&#x5F31;&#x5F15;&#x7528;&#x548C;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#x5141;&#x8BB8;&#x5FAA;&#x73AF;&#x5F15;&#x7528;&#x4E2D;&#x7684;&#x4E00;&#x4E2A;&#x5B9E;&#x4F8B;&#x5F15;&#x7528;&#x800C;&#x53E6;&#x5916;&#x4E00;&#x4E2A;&#x5B9E;&#x4F8B;<em>&#x4E0D;</em>&#x4FDD;&#x6301;&#x5F3A;&#x5F15;&#x7528;&#x3002;&#x8FD9;&#x6837;&#x5B9E;&#x4F8B;&#x80FD;&#x591F;&#x4E92;&#x76F8;&#x5F15;&#x7528;&#x800C;&#x4E0D;&#x4EA7;&#x751F;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x3002;</p>
+<p>&#x5F53;&#x5176;&#x4ED6;&#x7684;&#x5B9E;&#x4F8B;&#x6709;&#x66F4;&#x77ED;&#x7684;&#x751F;&#x547D;&#x5468;&#x671F;&#x65F6;&#xFF0C;&#x4F7F;&#x7528;&#x5F31;&#x5F15;&#x7528;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#xFF0C;&#x5F53;&#x5176;&#x4ED6;&#x5B9E;&#x4F8B;&#x6790;&#x6784;&#x5728;&#x5148;&#x65F6;&#x3002;&#x5728;&#x4E0A;&#x9762;&#x516C;&#x5BD3;&#x7684;&#x4F8B;&#x5B50;&#x4E2D;&#xFF0C;&#x5F88;&#x663E;&#x7136;&#x4E00;&#x4E2A;&#x516C;&#x5BD3;&#x5728;&#x5B83;&#x7684;&#x751F;&#x547D;&#x5468;&#x671F;&#x5185;&#x4F1A;&#x5728;&#x67D0;&#x4E2A;&#x65F6;&#x95F4;&#x6BB5;&#x6CA1;&#x6709;&#x5B83;&#x7684;&#x4E3B;&#x4EBA;&#xFF0C;&#x6240;&#x4EE5;&#x4E00;&#x4E2A;&#x5F31;&#x5F15;&#x7528;&#x5C31;&#x52A0;&#x5728;&#x516C;&#x5BD3;&#x7C7B;&#x91CC;&#x9762;&#xFF0C;&#x907F;&#x514D;&#x5FAA;&#x73AF;&#x5F15;&#x7528;&#x3002;&#x76F8;&#x6BD4;&#x4E4B;&#x4E0B;&#xFF0C;&#x5F53;&#x5176;&#x4ED6;&#x5B9E;&#x4F8B;&#x6709;&#x76F8;&#x540C;&#x7684;&#x6216;&#x8005;&#x66F4;&#x957F;&#x751F;&#x547D;&#x5468;&#x671F;&#x65F6;&#xFF0C;&#x8BF7;&#x4F7F;&#x7528;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#x3002;</p>
+<p><a name="weak_references"></a></p>
+<h3 id="&#x5F31;&#x5F15;&#x7528;">&#x5F31;&#x5F15;&#x7528;</h3>
+<p><em>&#x5F31;&#x5F15;&#x7528;</em>&#x4E0D;&#x4F1A;&#x5BF9;&#x5176;&#x5F15;&#x7528;&#x7684;&#x5B9E;&#x4F8B;&#x4FDD;&#x6301;&#x5F3A;&#x5F15;&#x7528;&#xFF0C;&#x56E0;&#x800C;&#x4E0D;&#x4F1A;&#x963B;&#x6B62; ARC &#x9500;&#x6BC1;&#x88AB;&#x5F15;&#x7528;&#x7684;&#x5B9E;&#x4F8B;&#x3002;&#x8FD9;&#x4E2A;&#x7279;&#x6027;&#x963B;&#x6B62;&#x4E86;&#x5F15;&#x7528;&#x53D8;&#x4E3A;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x3002;&#x58F0;&#x660E;&#x5C5E;&#x6027;&#x6216;&#x8005;&#x53D8;&#x91CF;&#x65F6;&#xFF0C;&#x5728;&#x524D;&#x9762;&#x52A0;&#x4E0A;<code>weak</code>&#x5173;&#x952E;&#x5B57;&#x8868;&#x660E;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x5F31;&#x5F15;&#x7528;&#x3002;</p>
+<p>&#x56E0;&#x4E3A;&#x5F31;&#x5F15;&#x7528;&#x4E0D;&#x4F1A;&#x4FDD;&#x6301;&#x6240;&#x5F15;&#x7528;&#x7684;&#x5B9E;&#x4F8B;&#xFF0C;&#x5373;&#x4F7F;&#x5F15;&#x7528;&#x5B58;&#x5728;&#xFF0C;&#x5B9E;&#x4F8B;&#x4E5F;&#x6709;&#x53EF;&#x80FD;&#x88AB;&#x9500;&#x6BC1;&#x3002;&#x56E0;&#x6B64;&#xFF0C;ARC &#x4F1A;&#x5728;&#x5F15;&#x7528;&#x7684;&#x5B9E;&#x4F8B;&#x88AB;&#x9500;&#x6BC1;&#x540E;&#x81EA;&#x52A8;&#x5C06;&#x5176;&#x8D4B;&#x503C;&#x4E3A;<code>nil</code>&#x3002;&#x5E76;&#x4E14;&#x56E0;&#x4E3A;&#x5F31;&#x5F15;&#x7528;&#x53EF;&#x4EE5;&#x5141;&#x8BB8;&#x5B83;&#x4EEC;&#x7684;&#x503C;&#x5728;&#x8FD0;&#x884C;&#x65F6;&#x88AB;&#x8D4B;&#x503C;&#x4E3A;<code>nil</code>&#xFF0C;&#x6240;&#x4EE5;&#x5B83;&#x4EEC;&#x4F1A;&#x88AB;&#x5B9A;&#x4E49;&#x4E3A;&#x53EF;&#x9009;&#x7C7B;&#x578B;&#x53D8;&#x91CF;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x5E38;&#x91CF;&#x3002;</p>
+<p>&#x4F60;&#x53EF;&#x4EE5;&#x50CF;&#x5176;&#x4ED6;&#x53EF;&#x9009;&#x503C;&#x4E00;&#x6837;&#xFF0C;&#x68C0;&#x67E5;&#x5F31;&#x5F15;&#x7528;&#x7684;&#x503C;&#x662F;&#x5426;&#x5B58;&#x5728;&#xFF0C;&#x4F60;&#x5C06;&#x6C38;&#x8FDC;&#x4E0D;&#x4F1A;&#x8BBF;&#x95EE;&#x5DF2;&#x9500;&#x6BC1;&#x7684;&#x5B9E;&#x4F8B;&#x7684;&#x5F15;&#x7528;&#x3002;</p>
+<blockquote>
+<p>&#x6CE8;&#x610F;<br>&#x5F53; ARC &#x8BBE;&#x7F6E;&#x5F31;&#x5F15;&#x7528;&#x4E3A;<code>nil</code>&#x65F6;&#xFF0C;&#x5C5E;&#x6027;&#x89C2;&#x5BDF;&#x4E0D;&#x4F1A;&#x88AB;&#x89E6;&#x53D1;&#x3002; </p>
+</blockquote>
+<p>&#x4E0B;&#x9762;&#x7684;&#x4F8B;&#x5B50;&#x8DDF;&#x4E0A;&#x9762;<code>Person</code>&#x548C;<code>Apartment</code>&#x7684;&#x4F8B;&#x5B50;&#x4E00;&#x81F4;&#xFF0C;&#x4F46;&#x662F;&#x6709;&#x4E00;&#x4E2A;&#x91CD;&#x8981;&#x7684;&#x533A;&#x522B;&#x3002;&#x8FD9;&#x4E00;&#x6B21;&#xFF0C;<code>Apartment</code>&#x7684;<code>tenant</code>&#x5C5E;&#x6027;&#x88AB;&#x58F0;&#x660E;&#x4E3A;&#x5F31;&#x5F15;&#x7528;&#xFF1A;</p>
+<pre><code class="lang-swift"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Person</span> </span>{
+    <span class="hljs-keyword">let</span> name: <span class="hljs-type">String</span>
+    <span class="hljs-keyword">init</span>(name: <span class="hljs-type">String</span>) { <span class="hljs-keyword">self</span>.name = name }
+    <span class="hljs-keyword">var</span> apartment: <span class="hljs-type">Apartment</span>?
+    <span class="hljs-keyword">deinit</span> { <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;<span class="hljs-subst">\(name)</span> is being deinitialized&quot;</span>) }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Apartment</span> </span>{
+    <span class="hljs-keyword">let</span> unit: <span class="hljs-type">String</span>
+    <span class="hljs-keyword">init</span>(unit: <span class="hljs-type">String</span>) { <span class="hljs-keyword">self</span>.unit = unit }
+    <span class="hljs-keyword">weak</span> <span class="hljs-keyword">var</span> tenant: <span class="hljs-type">Person</span>?
+    <span class="hljs-keyword">deinit</span> { <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Apartment <span class="hljs-subst">\(unit)</span> is being deinitialized&quot;</span>) }
+}
+</code></pre>
+<p>&#x7136;&#x540E;&#x8DDF;&#x4E4B;&#x524D;&#x4E00;&#x6837;&#xFF0C;&#x5EFA;&#x7ACB;&#x4E24;&#x4E2A;&#x53D8;&#x91CF;&#xFF08;<code>john</code>&#x548C;<code>unit4A</code>&#xFF09;&#x4E4B;&#x95F4;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#xFF0C;&#x5E76;&#x5173;&#x8054;&#x4E24;&#x4E2A;&#x5B9E;&#x4F8B;&#xFF1A;</p>
+<pre><code class="lang-swift"><span class="hljs-keyword">var</span> john: <span class="hljs-type">Person</span>?
+<span class="hljs-keyword">var</span> unit4A: <span class="hljs-type">Apartment</span>?
+
+john = <span class="hljs-type">Person</span>(name: <span class="hljs-string">&quot;John Appleseed&quot;</span>)
+unit4A = <span class="hljs-type">Apartment</span>(unit: <span class="hljs-string">&quot;4A&quot;</span>)
+
+john!.apartment = unit4A
+unit4A!.tenant = john
+</code></pre>
+<p>&#x73B0;&#x5728;&#xFF0C;&#x4E24;&#x4E2A;&#x5173;&#x8054;&#x5728;&#x4E00;&#x8D77;&#x7684;&#x5B9E;&#x4F8B;&#x7684;&#x5F15;&#x7528;&#x5173;&#x7CFB;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/weakReference01_2x.png" alt=""></p>
+<p><code>Person</code>&#x5B9E;&#x4F8B;&#x4F9D;&#x7136;&#x4FDD;&#x6301;&#x5BF9;<code>Apartment</code>&#x5B9E;&#x4F8B;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#xFF0C;&#x4F46;&#x662F;<code>Apartment</code>&#x5B9E;&#x4F8B;&#x53EA;&#x6301;&#x6709;&#x5BF9;<code>Person</code>&#x5B9E;&#x4F8B;&#x7684;&#x5F31;&#x5F15;&#x7528;&#x3002;&#x8FD9;&#x610F;&#x5473;&#x7740;&#x5F53;&#x4F60;&#x65AD;&#x5F00;<code>john</code>&#x53D8;&#x91CF;&#x6240;&#x4FDD;&#x6301;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#x65F6;&#xFF0C;&#x518D;&#x4E5F;&#x6CA1;&#x6709;&#x6307;&#x5411;<code>Person</code>&#x5B9E;&#x4F8B;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#x4E86;&#xFF1A;</p>
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/weakReference02_2x.png" alt=""></p>
+<p>&#x7531;&#x4E8E;&#x518D;&#x4E5F;&#x6CA1;&#x6709;&#x6307;&#x5411;<code>Person</code>&#x5B9E;&#x4F8B;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#xFF0C;&#x8BE5;&#x5B9E;&#x4F8B;&#x4F1A;&#x88AB;&#x9500;&#x6BC1;&#xFF1A;</p>
+<pre><code class="lang-swift">john = <span class="hljs-literal">nil</span>
+<span class="hljs-comment">// &#x6253;&#x5370; &#x201C;John Appleseed is being deinitialized&#x201D;</span>
+</code></pre>
+<p>&#x552F;&#x4E00;&#x5269;&#x4E0B;&#x7684;&#x6307;&#x5411;<code>Apartment</code>&#x5B9E;&#x4F8B;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#x6765;&#x81EA;&#x4E8E;&#x53D8;&#x91CF;<code>unit4A</code>&#x3002;&#x5982;&#x679C;&#x4F60;&#x65AD;&#x5F00;&#x8FD9;&#x4E2A;&#x5F3A;&#x5F15;&#x7528;&#xFF0C;&#x518D;&#x4E5F;&#x6CA1;&#x6709;&#x6307;&#x5411;<code>Apartment</code>&#x5B9E;&#x4F8B;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#x4E86;&#xFF1A;</p>
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/weakReference03_2x.png" alt=""></p>
+<p>&#x7531;&#x4E8E;&#x518D;&#x4E5F;&#x6CA1;&#x6709;&#x6307;&#x5411;<code>Apartment</code>&#x5B9E;&#x4F8B;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#xFF0C;&#x8BE5;&#x5B9E;&#x4F8B;&#x4E5F;&#x4F1A;&#x88AB;&#x9500;&#x6BC1;&#xFF1A;</p>
+<pre><code class="lang-swift">unit4A = <span class="hljs-literal">nil</span>
+<span class="hljs-comment">// &#x6253;&#x5370; &#x201C;Apartment 4A is being deinitialized&#x201D;</span>
+</code></pre>
+<p>&#x4E0A;&#x9762;&#x7684;&#x4E24;&#x6BB5;&#x4EE3;&#x7801;&#x5C55;&#x793A;&#x4E86;&#x53D8;&#x91CF;<code>john</code>&#x548C;<code>unit4A</code>&#x5728;&#x88AB;&#x8D4B;&#x503C;&#x4E3A;<code>nil</code>&#x540E;&#xFF0C;<code>Person</code>&#x5B9E;&#x4F8B;&#x548C;<code>Apartment</code>&#x5B9E;&#x4F8B;&#x7684;&#x6790;&#x6784;&#x51FD;&#x6570;&#x90FD;&#x6253;&#x5370;&#x51FA;&#x201C;&#x9500;&#x6BC1;&#x201D;&#x7684;&#x4FE1;&#x606F;&#x3002;&#x8FD9;&#x8BC1;&#x660E;&#x4E86;&#x5F15;&#x7528;&#x5FAA;&#x73AF;&#x88AB;&#x6253;&#x7834;&#x4E86;&#x3002;</p>
+<blockquote>
+<p>&#x6CE8;&#x610F;<br> &#x5728;&#x4F7F;&#x7528;&#x5783;&#x573E;&#x6536;&#x96C6;&#x7684;&#x7CFB;&#x7EDF;&#x91CC;&#xFF0C;&#x5F31;&#x6307;&#x9488;&#x6709;&#x65F6;&#x7528;&#x6765;&#x5B9E;&#x73B0;&#x7B80;&#x5355;&#x7684;&#x7F13;&#x51B2;&#x673A;&#x5236;&#xFF0C;&#x56E0;&#x4E3A;&#x6CA1;&#x6709;&#x5F3A;&#x5F15;&#x7528;&#x7684;&#x5BF9;&#x8C61;&#x53EA;&#x4F1A;&#x5728;&#x5185;&#x5B58;&#x538B;&#x529B;&#x89E6;&#x53D1;&#x5783;&#x573E;&#x6536;&#x96C6;&#x65F6;&#x624D;&#x88AB;&#x9500;&#x6BC1;&#x3002;&#x4F46;&#x662F;&#x5728; ARC &#x4E2D;&#xFF0C;&#x4E00;&#x65E6;&#x503C;&#x7684;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x5F3A;&#x5F15;&#x7528;&#x88AB;&#x79FB;&#x9664;&#xFF0C;&#x5C31;&#x4F1A;&#x88AB;&#x7ACB;&#x5373;&#x9500;&#x6BC1;&#xFF0C;&#x8FD9;&#x5BFC;&#x81F4;&#x5F31;&#x5F15;&#x7528;&#x5E76;&#x4E0D;&#x9002;&#x5408;&#x4E0A;&#x9762;&#x7684;&#x7528;&#x9014;&#x3002;</p>
+</blockquote>
+<p><a name="unowned_references"></a></p>
+<h3 id="&#x65E0;&#x4E3B;&#x5F15;&#x7528;">&#x65E0;&#x4E3B;&#x5F15;&#x7528;</h3>
+<p>&#x548C;&#x5F31;&#x5F15;&#x7528;&#x7C7B;&#x4F3C;&#xFF0C;<em>&#x65E0;&#x4E3B;&#x5F15;&#x7528;</em>&#x4E0D;&#x4F1A;&#x7262;&#x7262;&#x4FDD;&#x6301;&#x4F4F;&#x5F15;&#x7528;&#x7684;&#x5B9E;&#x4F8B;&#x3002;&#x548C;&#x5F31;&#x5F15;&#x7528;&#x4E0D;&#x540C;&#x7684;&#x662F;&#xFF0C;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#x5728;&#x5176;&#x4ED6;&#x5B9E;&#x4F8B;&#x6709;&#x76F8;&#x540C;&#x6216;&#x8005;&#x66F4;&#x957F;&#x7684;&#x751F;&#x547D;&#x5468;&#x671F;&#x65F6;&#x4F7F;&#x7528;&#x3002;&#x4F60;&#x53EF;&#x4EE5;&#x5728;&#x58F0;&#x660E;&#x5C5E;&#x6027;&#x6216;&#x8005;&#x53D8;&#x91CF;&#x65F6;&#xFF0C;&#x5728;&#x524D;&#x9762;&#x52A0;&#x4E0A;&#x5173;&#x952E;&#x5B57;<code>unowned</code>&#x8868;&#x793A;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#x3002;</p>
+<p>&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#x901A;&#x5E38;&#x90FD;&#x88AB;&#x671F;&#x671B;&#x62E5;&#x6709;&#x503C;&#x3002;&#x4E0D;&#x8FC7; ARC &#x65E0;&#x6CD5;&#x5728;&#x5B9E;&#x4F8B;&#x88AB;&#x9500;&#x6BC1;&#x540E;&#x5C06;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#x8BBE;&#x4E3A;<code>nil</code>&#xFF0C;&#x56E0;&#x4E3A;&#x975E;&#x53EF;&#x9009;&#x7C7B;&#x578B;&#x7684;&#x53D8;&#x91CF;&#x4E0D;&#x5141;&#x8BB8;&#x88AB;&#x8D4B;&#x503C;&#x4E3A;<code>nil</code>&#x3002;</p>
+<blockquote>
+<p>&#x91CD;&#x8981;<br>&#x4F7F;&#x7528;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#xFF0C;&#x4F60;<em>&#x5FC5;&#x987B;</em>&#x786E;&#x4FDD;&#x5F15;&#x7528;&#x59CB;&#x7EC8;&#x6307;&#x5411;&#x4E00;&#x4E2A;&#x672A;&#x9500;&#x6BC1;&#x7684;&#x5B9E;&#x4F8B;&#x3002;<br>&#x5982;&#x679C;&#x4F60;&#x8BD5;&#x56FE;&#x5728;&#x5B9E;&#x4F8B;&#x88AB;&#x9500;&#x6BC1;&#x540E;&#xFF0C;&#x8BBF;&#x95EE;&#x8BE5;&#x5B9E;&#x4F8B;&#x7684;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#xFF0C;&#x4F1A;&#x89E6;&#x53D1;&#x8FD0;&#x884C;&#x65F6;&#x9519;&#x8BEF;&#x3002;</p>
+</blockquote>
+<p>&#x4E0B;&#x9762;&#x7684;&#x4F8B;&#x5B50;&#x5B9A;&#x4E49;&#x4E86;&#x4E24;&#x4E2A;&#x7C7B;&#xFF0C;<code>Customer</code>&#x548C;<code>CreditCard</code>&#xFF0C;&#x6A21;&#x62DF;&#x4E86;&#x94F6;&#x884C;&#x5BA2;&#x6237;&#x548C;&#x5BA2;&#x6237;&#x7684;&#x4FE1;&#x7528;&#x5361;&#x3002;&#x8FD9;&#x4E24;&#x4E2A;&#x7C7B;&#x4E2D;&#xFF0C;&#x6BCF;&#x4E00;&#x4E2A;&#x90FD;&#x5C06;&#x53E6;&#x5916;&#x4E00;&#x4E2A;&#x7C7B;&#x7684;&#x5B9E;&#x4F8B;&#x4F5C;&#x4E3A;&#x81EA;&#x8EAB;&#x7684;&#x5C5E;&#x6027;&#x3002;&#x8FD9;&#x79CD;&#x5173;&#x7CFB;&#x53EF;&#x80FD;&#x4F1A;&#x9020;&#x6210;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x3002;</p>
+<p><code>Customer</code>&#x548C;<code>CreditCard</code>&#x4E4B;&#x95F4;&#x7684;&#x5173;&#x7CFB;&#x4E0E;&#x524D;&#x9762;&#x5F31;&#x5F15;&#x7528;&#x4F8B;&#x5B50;&#x4E2D;<code>Apartment</code>&#x548C;<code>Person</code>&#x7684;&#x5173;&#x7CFB;&#x7565;&#x5FAE;&#x4E0D;&#x540C;&#x3002;&#x5728;&#x8FD9;&#x4E2A;&#x6570;&#x636E;&#x6A21;&#x578B;&#x4E2D;&#xFF0C;&#x4E00;&#x4E2A;&#x5BA2;&#x6237;&#x53EF;&#x80FD;&#x6709;&#x6216;&#x8005;&#x6CA1;&#x6709;&#x4FE1;&#x7528;&#x5361;&#xFF0C;&#x4F46;&#x662F;&#x4E00;&#x5F20;&#x4FE1;&#x7528;&#x5361;&#x603B;&#x662F;&#x5173;&#x8054;&#x7740;&#x4E00;&#x4E2A;&#x5BA2;&#x6237;&#x3002;&#x4E3A;&#x4E86;&#x8868;&#x793A;&#x8FD9;&#x79CD;&#x5173;&#x7CFB;&#xFF0C;<code>Customer</code>&#x7C7B;&#x6709;&#x4E00;&#x4E2A;&#x53EF;&#x9009;&#x7C7B;&#x578B;&#x7684;<code>card</code>&#x5C5E;&#x6027;&#xFF0C;&#x4F46;&#x662F;<code>CreditCard</code>&#x7C7B;&#x6709;&#x4E00;&#x4E2A;&#x975E;&#x53EF;&#x9009;&#x7C7B;&#x578B;&#x7684;<code>customer</code>&#x5C5E;&#x6027;&#x3002;</p>
+<p>&#x6B64;&#x5916;&#xFF0C;&#x53EA;&#x80FD;&#x901A;&#x8FC7;&#x5C06;&#x4E00;&#x4E2A;<code>number</code>&#x503C;&#x548C;<code>customer</code>&#x5B9E;&#x4F8B;&#x4F20;&#x9012;&#x7ED9;<code>CreditCard</code>&#x6784;&#x9020;&#x51FD;&#x6570;&#x7684;&#x65B9;&#x5F0F;&#x6765;&#x521B;&#x5EFA;<code>CreditCard</code>&#x5B9E;&#x4F8B;&#x3002;&#x8FD9;&#x6837;&#x53EF;&#x4EE5;&#x786E;&#x4FDD;&#x5F53;&#x521B;&#x5EFA;<code>CreditCard</code>&#x5B9E;&#x4F8B;&#x65F6;&#x603B;&#x662F;&#x6709;&#x4E00;&#x4E2A;<code>customer</code>&#x5B9E;&#x4F8B;&#x4E0E;&#x4E4B;&#x5173;&#x8054;&#x3002;</p>
+<p>&#x7531;&#x4E8E;&#x4FE1;&#x7528;&#x5361;&#x603B;&#x662F;&#x5173;&#x8054;&#x7740;&#x4E00;&#x4E2A;&#x5BA2;&#x6237;&#xFF0C;&#x56E0;&#x6B64;&#x5C06;<code>customer</code>&#x5C5E;&#x6027;&#x5B9A;&#x4E49;&#x4E3A;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#xFF0C;&#x7528;&#x4EE5;&#x907F;&#x514D;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#xFF1A;</p>
+<pre><code class="lang-swift"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Customer</span> </span>{
+    <span class="hljs-keyword">let</span> name: <span class="hljs-type">String</span>
+    <span class="hljs-keyword">var</span> card: <span class="hljs-type">CreditCard</span>?
+    <span class="hljs-keyword">init</span>(name: <span class="hljs-type">String</span>) {
+        <span class="hljs-keyword">self</span>.name = name
+    }
+    <span class="hljs-keyword">deinit</span> { <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;<span class="hljs-subst">\(name)</span> is being deinitialized&quot;</span>) }
+}
+</code></pre>
+<pre><code class="lang-swift"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CreditCard</span> </span>{
+    <span class="hljs-keyword">let</span> number: <span class="hljs-type">UInt64</span>
+    <span class="hljs-keyword">unowned</span> <span class="hljs-keyword">let</span> customer: <span class="hljs-type">Customer</span>
+    <span class="hljs-keyword">init</span>(number: <span class="hljs-type">UInt64</span>, customer: <span class="hljs-type">Customer</span>) {
+        <span class="hljs-keyword">self</span>.number = number
+        <span class="hljs-keyword">self</span>.customer = customer
+    }
+    <span class="hljs-keyword">deinit</span> { <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Card #<span class="hljs-subst">\(number)</span> is being deinitialized&quot;</span>) }
+}
+</code></pre>
+<blockquote>
+<p>&#x6CE8;&#x610F;<br><code>CreditCard</code>&#x7C7B;&#x7684;<code>number</code>&#x5C5E;&#x6027;&#x88AB;&#x5B9A;&#x4E49;&#x4E3A;<code>UInt64</code>&#x7C7B;&#x578B;&#x800C;&#x4E0D;&#x662F;<code>Int</code>&#x7C7B;&#x578B;&#xFF0C;&#x4EE5;&#x786E;&#x4FDD;<code>number</code>&#x5C5E;&#x6027;&#x7684;&#x5B58;&#x50A8;&#x91CF;&#x5728; 32 &#x4F4D;&#x548C; 64 &#x4F4D;&#x7CFB;&#x7EDF;&#x4E0A;&#x90FD;&#x80FD;&#x8DB3;&#x591F;&#x5BB9;&#x7EB3; 16 &#x4F4D;&#x7684;&#x5361;&#x53F7;&#x3002;</p>
+</blockquote>
+<p>&#x4E0B;&#x9762;&#x7684;&#x4EE3;&#x7801;&#x7247;&#x6BB5;&#x5B9A;&#x4E49;&#x4E86;&#x4E00;&#x4E2A;&#x53EB;<code>john</code>&#x7684;&#x53EF;&#x9009;&#x7C7B;&#x578B;<code>Customer</code>&#x53D8;&#x91CF;&#xFF0C;&#x7528;&#x6765;&#x4FDD;&#x5B58;&#x67D0;&#x4E2A;&#x7279;&#x5B9A;&#x5BA2;&#x6237;&#x7684;&#x5F15;&#x7528;&#x3002;&#x7531;&#x4E8E;&#x662F;&#x53EF;&#x9009;&#x7C7B;&#x578B;&#xFF0C;&#x6240;&#x4EE5;&#x53D8;&#x91CF;&#x88AB;&#x521D;&#x59CB;&#x5316;&#x4E3A;<code>nil</code>&#xFF1A;</p>
+<pre><code class="lang-swift"><span class="hljs-keyword">var</span> john: <span class="hljs-type">Customer</span>?
+</code></pre>
+<p>&#x73B0;&#x5728;&#x4F60;&#x53EF;&#x4EE5;&#x521B;&#x5EFA;<code>Customer</code>&#x7C7B;&#x7684;&#x5B9E;&#x4F8B;&#xFF0C;&#x7528;&#x5B83;&#x521D;&#x59CB;&#x5316;<code>CreditCard</code>&#x5B9E;&#x4F8B;&#xFF0C;&#x5E76;&#x5C06;&#x65B0;&#x521B;&#x5EFA;&#x7684;<code>CreditCard</code>&#x5B9E;&#x4F8B;&#x8D4B;&#x503C;&#x4E3A;&#x5BA2;&#x6237;&#x7684;<code>card</code>&#x5C5E;&#x6027;&#xFF1A;</p>
+<pre><code class="lang-swift">john = <span class="hljs-type">Customer</span>(name: <span class="hljs-string">&quot;John Appleseed&quot;</span>)
+john!.card = <span class="hljs-type">CreditCard</span>(number: <span class="hljs-number">1234_5678_9012_3456</span>, customer: john!)
+</code></pre>
+<p>&#x5728;&#x4F60;&#x5173;&#x8054;&#x4E24;&#x4E2A;&#x5B9E;&#x4F8B;&#x540E;&#xFF0C;&#x5B83;&#x4EEC;&#x7684;&#x5F15;&#x7528;&#x5173;&#x7CFB;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/unownedReference01_2x.png" alt=""></p>
+<p><code>Customer</code>&#x5B9E;&#x4F8B;&#x6301;&#x6709;&#x5BF9;<code>CreditCard</code>&#x5B9E;&#x4F8B;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#xFF0C;&#x800C;<code>CreditCard</code>&#x5B9E;&#x4F8B;&#x6301;&#x6709;&#x5BF9;<code>Customer</code>&#x5B9E;&#x4F8B;&#x7684;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#x3002;</p>
+<p>&#x7531;&#x4E8E;<code>customer</code>&#x7684;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#xFF0C;&#x5F53;&#x4F60;&#x65AD;&#x5F00;<code>john</code>&#x53D8;&#x91CF;&#x6301;&#x6709;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#x65F6;&#xFF0C;&#x518D;&#x4E5F;&#x6CA1;&#x6709;&#x6307;&#x5411;<code>Customer</code>&#x5B9E;&#x4F8B;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#x4E86;&#xFF1A;</p>
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/unownedReference02_2x.png" alt=""></p>
+<p>&#x7531;&#x4E8E;&#x518D;&#x4E5F;&#x6CA1;&#x6709;&#x6307;&#x5411;<code>Customer</code>&#x5B9E;&#x4F8B;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#xFF0C;&#x8BE5;&#x5B9E;&#x4F8B;&#x88AB;&#x9500;&#x6BC1;&#x4E86;&#x3002;&#x5176;&#x540E;&#xFF0C;&#x518D;&#x4E5F;&#x6CA1;&#x6709;&#x6307;&#x5411;<code>CreditCard</code>&#x5B9E;&#x4F8B;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#xFF0C;&#x8BE5;&#x5B9E;&#x4F8B;&#x4E5F;&#x968F;&#x4E4B;&#x88AB;&#x9500;&#x6BC1;&#x4E86;&#xFF1A;</p>
+<pre><code class="lang-swift">john = <span class="hljs-literal">nil</span>
+<span class="hljs-comment">// &#x6253;&#x5370; &#x201C;John Appleseed is being deinitialized&#x201D;</span>
+<span class="hljs-comment">// &#x6253;&#x5370; &#x201D;Card #1234567890123456 is being deinitialized&#x201D;</span>
+</code></pre>
+<p>&#x6700;&#x540E;&#x7684;&#x4EE3;&#x7801;&#x5C55;&#x793A;&#x4E86;&#x5728;<code>john</code>&#x53D8;&#x91CF;&#x88AB;&#x8BBE;&#x4E3A;<code>nil</code>&#x540E;<code>Customer</code>&#x5B9E;&#x4F8B;&#x548C;<code>CreditCard</code>&#x5B9E;&#x4F8B;&#x7684;&#x6784;&#x9020;&#x51FD;&#x6570;&#x90FD;&#x6253;&#x5370;&#x51FA;&#x4E86;&#x201C;&#x9500;&#x6BC1;&#x201D;&#x7684;&#x4FE1;&#x606F;&#x3002;</p>
+<blockquote>
+<p>&#x6CE8;&#x610F;<br>&#x4E0A;&#x9762;&#x7684;&#x4F8B;&#x5B50;&#x5C55;&#x793A;&#x4E86;&#x5982;&#x4F55;&#x4F7F;&#x7528;&#x5B89;&#x5168;&#x7684;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#x3002;&#x5BF9;&#x4E8E;&#x9700;&#x8981;&#x7981;&#x7528;&#x8FD0;&#x884C;&#x65F6;&#x7684;&#x5B89;&#x5168;&#x68C0;&#x67E5;&#x7684;&#x60C5;&#x51B5;&#xFF08;&#x4F8B;&#x5982;&#xFF0C;&#x51FA;&#x4E8E;&#x6027;&#x80FD;&#x65B9;&#x9762;&#x7684;&#x539F;&#x56E0;&#xFF09;&#xFF0C;Swift&#x8FD8;&#x63D0;&#x4F9B;&#x4E86;&#x4E0D;&#x5B89;&#x5168;&#x7684;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#x3002;&#x4E0E;&#x6240;&#x6709;&#x4E0D;&#x5B89;&#x5168;&#x7684;&#x64CD;&#x4F5C;&#x4E00;&#x6837;&#xFF0C;&#x4F60;&#x9700;&#x8981;&#x8D1F;&#x8D23;&#x68C0;&#x67E5;&#x4EE3;&#x7801;&#x4EE5;&#x786E;&#x4FDD;&#x5176;&#x5B89;&#x5168;&#x6027;&#x3002;
+&#x4F60;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;<code>unowned(unsafe)</code>&#x6765;&#x58F0;&#x660E;&#x4E0D;&#x5B89;&#x5168;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#x3002;&#x5982;&#x679C;&#x4F60;&#x8BD5;&#x56FE;&#x5728;&#x5B9E;&#x4F8B;&#x88AB;&#x9500;&#x6BC1;&#x540E;&#xFF0C;&#x8BBF;&#x95EE;&#x8BE5;&#x5B9E;&#x4F8B;&#x7684;&#x4E0D;&#x5B89;&#x5168;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#xFF0C;&#x4F60;&#x7684;&#x7A0B;&#x5E8F;&#x4F1A;&#x5C1D;&#x8BD5;&#x8BBF;&#x95EE;&#x8BE5;&#x5B9E;&#x4F8B;&#x4E4B;&#x524D;&#x6240;&#x5728;&#x7684;&#x5185;&#x5B58;&#x5730;&#x5740;&#xFF0C;&#x8FD9;&#x662F;&#x4E00;&#x4E2A;&#x4E0D;&#x5B89;&#x5168;&#x7684;&#x64CD;&#x4F5C;&#x3002;</p>
+</blockquote>
+<p><a name="unowned_references_and_implicitly_unwrapped_optional_properties"></a></p>
+<h3 id="&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#x4EE5;&#x53CA;&#x9690;&#x5F0F;&#x89E3;&#x6790;&#x53EF;&#x9009;&#x5C5E;&#x6027;">&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#x4EE5;&#x53CA;&#x9690;&#x5F0F;&#x89E3;&#x6790;&#x53EF;&#x9009;&#x5C5E;&#x6027;</h3>
+<p>&#x4E0A;&#x9762;&#x5F31;&#x5F15;&#x7528;&#x548C;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#x7684;&#x4F8B;&#x5B50;&#x6DB5;&#x76D6;&#x4E86;&#x4E24;&#x79CD;&#x5E38;&#x7528;&#x7684;&#x9700;&#x8981;&#x6253;&#x7834;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x7684;&#x573A;&#x666F;&#x3002;</p>
+<p><code>Person</code>&#x548C;<code>Apartment</code>&#x7684;&#x4F8B;&#x5B50;&#x5C55;&#x793A;&#x4E86;&#x4E24;&#x4E2A;&#x5C5E;&#x6027;&#x7684;&#x503C;&#x90FD;&#x5141;&#x8BB8;&#x4E3A;<code>nil</code>&#xFF0C;&#x5E76;&#x4F1A;&#x6F5C;&#x5728;&#x7684;&#x4EA7;&#x751F;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x3002;&#x8FD9;&#x79CD;&#x573A;&#x666F;&#x6700;&#x9002;&#x5408;&#x7528;&#x5F31;&#x5F15;&#x7528;&#x6765;&#x89E3;&#x51B3;&#x3002;</p>
+<p><code>Customer</code>&#x548C;<code>CreditCard</code>&#x7684;&#x4F8B;&#x5B50;&#x5C55;&#x793A;&#x4E86;&#x4E00;&#x4E2A;&#x5C5E;&#x6027;&#x7684;&#x503C;&#x5141;&#x8BB8;&#x4E3A;<code>nil</code>&#xFF0C;&#x800C;&#x53E6;&#x4E00;&#x4E2A;&#x5C5E;&#x6027;&#x7684;&#x503C;&#x4E0D;&#x5141;&#x8BB8;&#x4E3A;<code>nil</code>&#xFF0C;&#x8FD9;&#x4E5F;&#x53EF;&#x80FD;&#x4F1A;&#x4EA7;&#x751F;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x3002;&#x8FD9;&#x79CD;&#x573A;&#x666F;&#x6700;&#x9002;&#x5408;&#x901A;&#x8FC7;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#x6765;&#x89E3;&#x51B3;&#x3002;</p>
+<p>&#x7136;&#x800C;&#xFF0C;&#x5B58;&#x5728;&#x7740;&#x7B2C;&#x4E09;&#x79CD;&#x573A;&#x666F;&#xFF0C;&#x5728;&#x8FD9;&#x79CD;&#x573A;&#x666F;&#x4E2D;&#xFF0C;&#x4E24;&#x4E2A;&#x5C5E;&#x6027;&#x90FD;&#x5FC5;&#x987B;&#x6709;&#x503C;&#xFF0C;&#x5E76;&#x4E14;&#x521D;&#x59CB;&#x5316;&#x5B8C;&#x6210;&#x540E;&#x6C38;&#x8FDC;&#x4E0D;&#x4F1A;&#x4E3A;<code>nil</code>&#x3002;&#x5728;&#x8FD9;&#x79CD;&#x573A;&#x666F;&#x4E2D;&#xFF0C;&#x9700;&#x8981;&#x4E00;&#x4E2A;&#x7C7B;&#x4F7F;&#x7528;&#x65E0;&#x4E3B;&#x5C5E;&#x6027;&#xFF0C;&#x800C;&#x53E6;&#x5916;&#x4E00;&#x4E2A;&#x7C7B;&#x4F7F;&#x7528;&#x9690;&#x5F0F;&#x89E3;&#x6790;&#x53EF;&#x9009;&#x5C5E;&#x6027;&#x3002;</p>
+<p>&#x8FD9;&#x4F7F;&#x4E24;&#x4E2A;&#x5C5E;&#x6027;&#x5728;&#x521D;&#x59CB;&#x5316;&#x5B8C;&#x6210;&#x540E;&#x80FD;&#x88AB;&#x76F4;&#x63A5;&#x8BBF;&#x95EE;&#xFF08;&#x4E0D;&#x9700;&#x8981;&#x53EF;&#x9009;&#x5C55;&#x5F00;&#xFF09;&#xFF0C;&#x540C;&#x65F6;&#x907F;&#x514D;&#x4E86;&#x5FAA;&#x73AF;&#x5F15;&#x7528;&#x3002;&#x8FD9;&#x4E00;&#x8282;&#x5C06;&#x4E3A;&#x4F60;&#x5C55;&#x793A;&#x5982;&#x4F55;&#x5EFA;&#x7ACB;&#x8FD9;&#x79CD;&#x5173;&#x7CFB;&#x3002;</p>
+<p>&#x4E0B;&#x9762;&#x7684;&#x4F8B;&#x5B50;&#x5B9A;&#x4E49;&#x4E86;&#x4E24;&#x4E2A;&#x7C7B;&#xFF0C;<code>Country</code>&#x548C;<code>City</code>&#xFF0C;&#x6BCF;&#x4E2A;&#x7C7B;&#x5C06;&#x53E6;&#x5916;&#x4E00;&#x4E2A;&#x7C7B;&#x7684;&#x5B9E;&#x4F8B;&#x4FDD;&#x5B58;&#x4E3A;&#x5C5E;&#x6027;&#x3002;&#x5728;&#x8FD9;&#x4E2A;&#x6A21;&#x578B;&#x4E2D;&#xFF0C;&#x6BCF;&#x4E2A;&#x56FD;&#x5BB6;&#x5FC5;&#x987B;&#x6709;&#x9996;&#x90FD;&#xFF0C;&#x6BCF;&#x4E2A;&#x57CE;&#x5E02;&#x5FC5;&#x987B;&#x5C5E;&#x4E8E;&#x4E00;&#x4E2A;&#x56FD;&#x5BB6;&#x3002;&#x4E3A;&#x4E86;&#x5B9E;&#x73B0;&#x8FD9;&#x79CD;&#x5173;&#x7CFB;&#xFF0C;<code>Country</code>&#x7C7B;&#x62E5;&#x6709;&#x4E00;&#x4E2A;<code>capitalCity</code>&#x5C5E;&#x6027;&#xFF0C;&#x800C;<code>City</code>&#x7C7B;&#x6709;&#x4E00;&#x4E2A;<code>country</code>&#x5C5E;&#x6027;&#xFF1A;</p>
+<pre><code class="lang-swift"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Country</span> </span>{
+    <span class="hljs-keyword">let</span> name: <span class="hljs-type">String</span>
+    <span class="hljs-keyword">var</span> capitalCity: <span class="hljs-type">City</span>!
+    <span class="hljs-keyword">init</span>(name: <span class="hljs-type">String</span>, capitalName: <span class="hljs-type">String</span>) {
+        <span class="hljs-keyword">self</span>.name = name
+        <span class="hljs-keyword">self</span>.capitalCity = <span class="hljs-type">City</span>(name: capitalName, country: <span class="hljs-keyword">self</span>)
+    }
+}
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">City</span> </span>{
+    <span class="hljs-keyword">let</span> name: <span class="hljs-type">String</span>
+    <span class="hljs-keyword">unowned</span> <span class="hljs-keyword">let</span> country: <span class="hljs-type">Country</span>
+    <span class="hljs-keyword">init</span>(name: <span class="hljs-type">String</span>, country: <span class="hljs-type">Country</span>) {
+        <span class="hljs-keyword">self</span>.name = name
+        <span class="hljs-keyword">self</span>.country = country
+    }
+}
+</code></pre>
+<p>&#x4E3A;&#x4E86;&#x5EFA;&#x7ACB;&#x4E24;&#x4E2A;&#x7C7B;&#x7684;&#x4F9D;&#x8D56;&#x5173;&#x7CFB;&#xFF0C;<code>City</code>&#x7684;&#x6784;&#x9020;&#x51FD;&#x6570;&#x63A5;&#x53D7;&#x4E00;&#x4E2A;<code>Country</code>&#x5B9E;&#x4F8B;&#x4F5C;&#x4E3A;&#x53C2;&#x6570;&#xFF0C;&#x5E76;&#x4E14;&#x5C06;&#x5B9E;&#x4F8B;&#x4FDD;&#x5B58;&#x5230;<code>country</code>&#x5C5E;&#x6027;&#x3002;</p>
+<p><code>Country</code>&#x7684;&#x6784;&#x9020;&#x51FD;&#x6570;&#x8C03;&#x7528;&#x4E86;<code>City</code>&#x7684;&#x6784;&#x9020;&#x51FD;&#x6570;&#x3002;&#x7136;&#x800C;&#xFF0C;&#x53EA;&#x6709;<code>Country</code>&#x7684;&#x5B9E;&#x4F8B;&#x5B8C;&#x5168;&#x521D;&#x59CB;&#x5316;&#x540E;&#xFF0C;<code>Country</code>&#x7684;&#x6784;&#x9020;&#x51FD;&#x6570;&#x624D;&#x80FD;&#x628A;<code>self</code>&#x4F20;&#x7ED9;<code>City</code>&#x7684;&#x6784;&#x9020;&#x51FD;&#x6570;&#x3002;&#x5728;<a href="14_Initialization.html#two_phase_initialization">&#x4E24;&#x6BB5;&#x5F0F;&#x6784;&#x9020;&#x8FC7;&#x7A0B;</a>&#x4E2D;&#x6709;&#x5177;&#x4F53;&#x63CF;&#x8FF0;&#x3002;</p>
+<p>&#x4E3A;&#x4E86;&#x6EE1;&#x8DB3;&#x8FD9;&#x79CD;&#x9700;&#x6C42;&#xFF0C;&#x901A;&#x8FC7;&#x5728;&#x7C7B;&#x578B;&#x7ED3;&#x5C3E;&#x5904;&#x52A0;&#x4E0A;&#x611F;&#x53F9;&#x53F7;&#xFF08;<code>City!</code>&#xFF09;&#x7684;&#x65B9;&#x5F0F;&#xFF0C;&#x5C06;<code>Country</code>&#x7684;<code>capitalCity</code>&#x5C5E;&#x6027;&#x58F0;&#x660E;&#x4E3A;&#x9690;&#x5F0F;&#x89E3;&#x6790;&#x53EF;&#x9009;&#x7C7B;&#x578B;&#x7684;&#x5C5E;&#x6027;&#x3002;&#x8FD9;&#x610F;&#x5473;&#x7740;&#x50CF;&#x5176;&#x4ED6;&#x53EF;&#x9009;&#x7C7B;&#x578B;&#x4E00;&#x6837;&#xFF0C;<code>capitalCity</code>&#x5C5E;&#x6027;&#x7684;&#x9ED8;&#x8BA4;&#x503C;&#x4E3A;<code>nil</code>&#xFF0C;&#x4F46;&#x662F;&#x4E0D;&#x9700;&#x8981;&#x5C55;&#x5F00;&#x5B83;&#x7684;&#x503C;&#x5C31;&#x80FD;&#x8BBF;&#x95EE;&#x5B83;&#x3002;&#x5728;<a href="01_The_Basics.html#implicityly_unwrapped_optionals">&#x9690;&#x5F0F;&#x89E3;&#x6790;&#x53EF;&#x9009;&#x7C7B;&#x578B;</a>&#x4E2D;&#x6709;&#x63CF;&#x8FF0;&#x3002;</p>
+<p>&#x7531;&#x4E8E;<code>capitalCity</code>&#x9ED8;&#x8BA4;&#x503C;&#x4E3A;<code>nil</code>&#xFF0C;&#x4E00;&#x65E6;<code>Country</code>&#x7684;&#x5B9E;&#x4F8B;&#x5728;&#x6784;&#x9020;&#x51FD;&#x6570;&#x4E2D;&#x7ED9;<code>name</code>&#x5C5E;&#x6027;&#x8D4B;&#x503C;&#x540E;&#xFF0C;&#x6574;&#x4E2A;&#x521D;&#x59CB;&#x5316;&#x8FC7;&#x7A0B;&#x5C31;&#x5B8C;&#x6210;&#x4E86;&#x3002;&#x8FD9;&#x610F;&#x5473;&#x7740;&#x4E00;&#x65E6;<code>name</code>&#x5C5E;&#x6027;&#x88AB;&#x8D4B;&#x503C;&#x540E;&#xFF0C;<code>Country</code>&#x7684;&#x6784;&#x9020;&#x51FD;&#x6570;&#x5C31;&#x80FD;&#x5F15;&#x7528;&#x5E76;&#x4F20;&#x9012;&#x9690;&#x5F0F;&#x7684;<code>self</code>&#x3002;<code>Country</code>&#x7684;&#x6784;&#x9020;&#x51FD;&#x6570;&#x5728;&#x8D4B;&#x503C;<code>capitalCity</code>&#x65F6;&#xFF0C;&#x5C31;&#x80FD;&#x5C06;<code>self</code>&#x4F5C;&#x4E3A;&#x53C2;&#x6570;&#x4F20;&#x9012;&#x7ED9;<code>City</code>&#x7684;&#x6784;&#x9020;&#x51FD;&#x6570;&#x3002;</p>
+<p>&#x4EE5;&#x4E0A;&#x7684;&#x610F;&#x4E49;&#x5728;&#x4E8E;&#x4F60;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x4E00;&#x6761;&#x8BED;&#x53E5;&#x540C;&#x65F6;&#x521B;&#x5EFA;<code>Country</code>&#x548C;<code>City</code>&#x7684;&#x5B9E;&#x4F8B;&#xFF0C;&#x800C;&#x4E0D;&#x4EA7;&#x751F;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#xFF0C;&#x5E76;&#x4E14;<code>capitalCity</code>&#x7684;&#x5C5E;&#x6027;&#x80FD;&#x88AB;&#x76F4;&#x63A5;&#x8BBF;&#x95EE;&#xFF0C;&#x800C;&#x4E0D;&#x9700;&#x8981;&#x901A;&#x8FC7;&#x611F;&#x53F9;&#x53F7;&#x6765;&#x5C55;&#x5F00;&#x5B83;&#x7684;&#x53EF;&#x9009;&#x503C;&#xFF1A;</p>
+<pre><code class="lang-swift"><span class="hljs-keyword">var</span> country = <span class="hljs-type">Country</span>(name: <span class="hljs-string">&quot;Canada&quot;</span>, capitalName: <span class="hljs-string">&quot;Ottawa&quot;</span>)
+<span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;<span class="hljs-subst">\(country.name)</span>&apos;s capital city is called <span class="hljs-subst">\(country.capitalCity.name)</span>&quot;</span>)
+<span class="hljs-comment">// &#x6253;&#x5370; &#x201C;Canada&apos;s capital city is called Ottawa&#x201D;</span>
+</code></pre>
+<p>&#x5728;&#x4E0A;&#x9762;&#x7684;&#x4F8B;&#x5B50;&#x4E2D;&#xFF0C;&#x4F7F;&#x7528;&#x9690;&#x5F0F;&#x89E3;&#x6790;&#x53EF;&#x9009;&#x503C;&#x610F;&#x5473;&#x7740;&#x6EE1;&#x8DB3;&#x4E86;&#x7C7B;&#x7684;&#x6784;&#x9020;&#x51FD;&#x6570;&#x7684;&#x4E24;&#x4E2A;&#x6784;&#x9020;&#x9636;&#x6BB5;&#x7684;&#x8981;&#x6C42;&#x3002;<code>capitalCity</code>&#x5C5E;&#x6027;&#x5728;&#x521D;&#x59CB;&#x5316;&#x5B8C;&#x6210;&#x540E;&#xFF0C;&#x80FD;&#x50CF;&#x975E;&#x53EF;&#x9009;&#x503C;&#x4E00;&#x6837;&#x4F7F;&#x7528;&#x548C;&#x5B58;&#x53D6;&#xFF0C;&#x540C;&#x65F6;&#x8FD8;&#x907F;&#x514D;&#x4E86;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x3002;</p>
+<p><a name="strong_reference_cycles_for_closures"></a></p>
+<h2 id="&#x95ED;&#x5305;&#x5F15;&#x8D77;&#x7684;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;">&#x95ED;&#x5305;&#x5F15;&#x8D77;&#x7684;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;</h2>
+<p>&#x524D;&#x9762;&#x6211;&#x4EEC;&#x770B;&#x5230;&#x4E86;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x662F;&#x5728;&#x4E24;&#x4E2A;&#x7C7B;&#x5B9E;&#x4F8B;&#x5C5E;&#x6027;&#x4E92;&#x76F8;&#x4FDD;&#x6301;&#x5BF9;&#x65B9;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#x65F6;&#x4EA7;&#x751F;&#x7684;&#xFF0C;&#x8FD8;&#x77E5;&#x9053;&#x4E86;&#x5982;&#x4F55;&#x7528;&#x5F31;&#x5F15;&#x7528;&#x548C;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#x6765;&#x6253;&#x7834;&#x8FD9;&#x4E9B;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x3002;</p>
+<p>&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x8FD8;&#x4F1A;&#x53D1;&#x751F;&#x5728;&#x5F53;&#x4F60;&#x5C06;&#x4E00;&#x4E2A;&#x95ED;&#x5305;&#x8D4B;&#x503C;&#x7ED9;&#x7C7B;&#x5B9E;&#x4F8B;&#x7684;&#x67D0;&#x4E2A;&#x5C5E;&#x6027;&#xFF0C;&#x5E76;&#x4E14;&#x8FD9;&#x4E2A;&#x95ED;&#x5305;&#x4F53;&#x4E2D;&#x53C8;&#x4F7F;&#x7528;&#x4E86;&#x8FD9;&#x4E2A;&#x7C7B;&#x5B9E;&#x4F8B;&#x65F6;&#x3002;&#x8FD9;&#x4E2A;&#x95ED;&#x5305;&#x4F53;&#x4E2D;&#x53EF;&#x80FD;&#x8BBF;&#x95EE;&#x4E86;&#x5B9E;&#x4F8B;&#x7684;&#x67D0;&#x4E2A;&#x5C5E;&#x6027;&#xFF0C;&#x4F8B;&#x5982;<code>self.someProperty</code>&#xFF0C;&#x6216;&#x8005;&#x95ED;&#x5305;&#x4E2D;&#x8C03;&#x7528;&#x4E86;&#x5B9E;&#x4F8B;&#x7684;&#x67D0;&#x4E2A;&#x65B9;&#x6CD5;&#xFF0C;&#x4F8B;&#x5982;<code>self.someMethod()</code>&#x3002;&#x8FD9;&#x4E24;&#x79CD;&#x60C5;&#x51B5;&#x90FD;&#x5BFC;&#x81F4;&#x4E86;&#x95ED;&#x5305;&#x201C;&#x6355;&#x83B7;&#x201D;<code>self</code>&#xFF0C;&#x4ECE;&#x800C;&#x4EA7;&#x751F;&#x4E86;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x3002;</p>
+<p>&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x7684;&#x4EA7;&#x751F;&#xFF0C;&#x662F;&#x56E0;&#x4E3A;&#x95ED;&#x5305;&#x548C;&#x7C7B;&#x76F8;&#x4F3C;&#xFF0C;&#x90FD;&#x662F;&#x5F15;&#x7528;&#x7C7B;&#x578B;&#x3002;&#x5F53;&#x4F60;&#x628A;&#x4E00;&#x4E2A;&#x95ED;&#x5305;&#x8D4B;&#x503C;&#x7ED9;&#x67D0;&#x4E2A;&#x5C5E;&#x6027;&#x65F6;&#xFF0C;&#x4F60;&#x662F;&#x5C06;&#x8FD9;&#x4E2A;&#x95ED;&#x5305;&#x7684;&#x5F15;&#x7528;&#x8D4B;&#x503C;&#x7ED9;&#x4E86;&#x5C5E;&#x6027;&#x3002;&#x5B9E;&#x8D28;&#x4E0A;&#xFF0C;&#x8FD9;&#x8DDF;&#x4E4B;&#x524D;&#x7684;&#x95EE;&#x9898;&#x662F;&#x4E00;&#x6837;&#x7684;&#x2014;&#x2014;&#x4E24;&#x4E2A;&#x5F3A;&#x5F15;&#x7528;&#x8BA9;&#x5F7C;&#x6B64;&#x4E00;&#x76F4;&#x6709;&#x6548;&#x3002;&#x4F46;&#x662F;&#xFF0C;&#x548C;&#x4E24;&#x4E2A;&#x7C7B;&#x5B9E;&#x4F8B;&#x4E0D;&#x540C;&#xFF0C;&#x8FD9;&#x6B21;&#x4E00;&#x4E2A;&#x662F;&#x7C7B;&#x5B9E;&#x4F8B;&#xFF0C;&#x53E6;&#x4E00;&#x4E2A;&#x662F;&#x95ED;&#x5305;&#x3002;</p>
+<p>Swift &#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x79CD;&#x4F18;&#x96C5;&#x7684;&#x65B9;&#x6CD5;&#x6765;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x79F0;&#x4E4B;&#x4E3A;<code>&#x95ED;&#x5305;&#x6355;&#x83B7;&#x5217;&#x8868;</code>&#xFF08;closure capture list&#xFF09;&#x3002;&#x540C;&#x6837;&#x7684;&#xFF0C;&#x5728;&#x5B66;&#x4E60;&#x5982;&#x4F55;&#x7528;&#x95ED;&#x5305;&#x6355;&#x83B7;&#x5217;&#x8868;&#x6253;&#x7834;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x4E4B;&#x524D;&#xFF0C;&#x5148;&#x6765;&#x4E86;&#x89E3;&#x4E00;&#x4E0B;&#x8FD9;&#x91CC;&#x7684;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x662F;&#x5982;&#x4F55;&#x4EA7;&#x751F;&#x7684;&#xFF0C;&#x8FD9;&#x5BF9;&#x6211;&#x4EEC;&#x5F88;&#x6709;&#x5E2E;&#x52A9;&#x3002;</p>
+<p>&#x4E0B;&#x9762;&#x7684;&#x4F8B;&#x5B50;&#x4E3A;&#x4F60;&#x5C55;&#x793A;&#x4E86;&#x5F53;&#x4E00;&#x4E2A;&#x95ED;&#x5305;&#x5F15;&#x7528;&#x4E86;<code>self</code>&#x540E;&#x662F;&#x5982;&#x4F55;&#x4EA7;&#x751F;&#x4E00;&#x4E2A;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x7684;&#x3002;&#x4F8B;&#x5B50;&#x4E2D;&#x5B9A;&#x4E49;&#x4E86;&#x4E00;&#x4E2A;&#x53EB;<code>HTMLElement</code>&#x7684;&#x7C7B;&#xFF0C;&#x7528;&#x4E00;&#x79CD;&#x7B80;&#x5355;&#x7684;&#x6A21;&#x578B;&#x8868;&#x793A; HTML &#x6587;&#x6863;&#x4E2D;&#x7684;&#x4E00;&#x4E2A;&#x5355;&#x72EC;&#x7684;&#x5143;&#x7D20;&#xFF1A;</p>
+<pre><code class="lang-swift"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HTMLElement</span> </span>{
+
+    <span class="hljs-keyword">let</span> name: <span class="hljs-type">String</span>
+    <span class="hljs-keyword">let</span> text: <span class="hljs-type">String</span>?
+
+    lazy <span class="hljs-keyword">var</span> asHTML: <span class="hljs-type">Void</span> -&gt; <span class="hljs-type">String</span> = {
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">let</span> text = <span class="hljs-keyword">self</span>.text {
+            <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&lt;<span class="hljs-subst">\(<span class="hljs-keyword">self</span>.name)</span>&gt;<span class="hljs-subst">\(text)</span>&lt;/<span class="hljs-subst">\(<span class="hljs-keyword">self</span>.name)</span>&gt;&quot;</span>
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&lt;<span class="hljs-subst">\(<span class="hljs-keyword">self</span>.name)</span> /&gt;&quot;</span>
+        }
+    }
+
+    <span class="hljs-keyword">init</span>(name: <span class="hljs-type">String</span>, text: <span class="hljs-type">String</span>? = <span class="hljs-literal">nil</span>) {
+        <span class="hljs-keyword">self</span>.name = name
+        <span class="hljs-keyword">self</span>.text = text
+    }
+
+    <span class="hljs-keyword">deinit</span> {
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;<span class="hljs-subst">\(name)</span> is being deinitialized&quot;</span>)
+    }
+
+}
+</code></pre>
+<p><code>HTMLElement</code>&#x7C7B;&#x5B9A;&#x4E49;&#x4E86;&#x4E00;&#x4E2A;<code>name</code>&#x5C5E;&#x6027;&#x6765;&#x8868;&#x793A;&#x8FD9;&#x4E2A;&#x5143;&#x7D20;&#x7684;&#x540D;&#x79F0;&#xFF0C;&#x4F8B;&#x5982;&#x4EE3;&#x8868;&#x5934;&#x90E8;&#x5143;&#x7D20;&#x7684;<code>&quot;h1&quot;</code>&#xFF0C;&#x4EE3;&#x8868;&#x6BB5;&#x843D;&#x7684;<code>&#x201C;p&#x201D;</code>&#xFF0C;&#x6216;&#x8005;&#x4EE3;&#x8868;&#x6362;&#x884C;&#x7684;<code>&#x201C;br&#x201D;</code>&#x3002;<code>HTMLElement</code>&#x8FD8;&#x5B9A;&#x4E49;&#x4E86;&#x4E00;&#x4E2A;&#x53EF;&#x9009;&#x5C5E;&#x6027;<code>text</code>&#xFF0C;&#x7528;&#x6765;&#x8BBE;&#x7F6E; HTML &#x5143;&#x7D20;&#x5448;&#x73B0;&#x7684;&#x6587;&#x672C;&#x3002;</p>
+<p>&#x9664;&#x4E86;&#x4E0A;&#x9762;&#x7684;&#x4E24;&#x4E2A;&#x5C5E;&#x6027;&#xFF0C;<code>HTMLElement</code>&#x8FD8;&#x5B9A;&#x4E49;&#x4E86;&#x4E00;&#x4E2A;<code>lazy</code>&#x5C5E;&#x6027;<code>asHTML</code>&#x3002;&#x8FD9;&#x4E2A;&#x5C5E;&#x6027;&#x5F15;&#x7528;&#x4E86;&#x4E00;&#x4E2A;&#x5C06;<code>name</code>&#x548C;<code>text</code>&#x7EC4;&#x5408;&#x6210; HTML &#x5B57;&#x7B26;&#x4E32;&#x7247;&#x6BB5;&#x7684;&#x95ED;&#x5305;&#x3002;&#x8BE5;&#x5C5E;&#x6027;&#x662F;<code>Void -&gt; String</code>&#x7C7B;&#x578B;&#xFF0C;&#x6216;&#x8005;&#x53EF;&#x4EE5;&#x7406;&#x89E3;&#x4E3A;&#x201C;&#x4E00;&#x4E2A;&#x6CA1;&#x6709;&#x53C2;&#x6570;&#xFF0C;&#x8FD4;&#x56DE;<code>String</code>&#x7684;&#x51FD;&#x6570;&#x201D;&#x3002;</p>
+<p>&#x9ED8;&#x8BA4;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x95ED;&#x5305;&#x8D4B;&#x503C;&#x7ED9;&#x4E86;<code>asHTML</code>&#x5C5E;&#x6027;&#xFF0C;&#x8FD9;&#x4E2A;&#x95ED;&#x5305;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x4EE3;&#x8868; HTML &#x6807;&#x7B7E;&#x7684;&#x5B57;&#x7B26;&#x4E32;&#x3002;&#x5982;&#x679C;<code>text</code>&#x503C;&#x5B58;&#x5728;&#xFF0C;&#x8BE5;&#x6807;&#x7B7E;&#x5C31;&#x5305;&#x542B;&#x53EF;&#x9009;&#x503C;<code>text</code>&#xFF1B;&#x5982;&#x679C;<code>text</code>&#x4E0D;&#x5B58;&#x5728;&#xFF0C;&#x8BE5;&#x6807;&#x7B7E;&#x5C31;&#x4E0D;&#x5305;&#x542B;&#x6587;&#x672C;&#x3002;&#x5BF9;&#x4E8E;&#x6BB5;&#x843D;&#x5143;&#x7D20;&#xFF0C;&#x6839;&#x636E;<code>text</code>&#x662F;<code>&#x201C;some text&#x201D;</code>&#x8FD8;&#x662F;<code>nil</code>&#xFF0C;&#x95ED;&#x5305;&#x4F1A;&#x8FD4;&#x56DE;<code>&quot;&lt;p&gt;some text&lt;/p&gt;&quot;</code>&#x6216;&#x8005;<code>&quot;&lt;p /&gt;&quot;</code>&#x3002;</p>
+<p>&#x53EF;&#x4EE5;&#x50CF;&#x5B9E;&#x4F8B;&#x65B9;&#x6CD5;&#x90A3;&#x6837;&#x53BB;&#x547D;&#x540D;&#x3001;&#x4F7F;&#x7528;<code>asHTML</code>&#x5C5E;&#x6027;&#x3002;&#x7136;&#x800C;&#xFF0C;&#x7531;&#x4E8E;<code>asHTML</code>&#x662F;&#x95ED;&#x5305;&#x800C;&#x4E0D;&#x662F;&#x5B9E;&#x4F8B;&#x65B9;&#x6CD5;&#xFF0C;&#x5982;&#x679C;&#x4F60;&#x60F3;&#x6539;&#x53D8;&#x7279;&#x5B9A; HTML &#x5143;&#x7D20;&#x7684;&#x5904;&#x7406;&#x65B9;&#x5F0F;&#x7684;&#x8BDD;&#xFF0C;&#x53EF;&#x4EE5;&#x7528;&#x81EA;&#x5B9A;&#x4E49;&#x7684;&#x95ED;&#x5305;&#x6765;&#x53D6;&#x4EE3;&#x9ED8;&#x8BA4;&#x503C;&#x3002;</p>
+<p>&#x4F8B;&#x5982;&#xFF0C;&#x53EF;&#x4EE5;&#x5C06;&#x4E00;&#x4E2A;&#x95ED;&#x5305;&#x8D4B;&#x503C;&#x7ED9;<code>asHTML</code>&#x5C5E;&#x6027;&#xFF0C;&#x8FD9;&#x4E2A;&#x95ED;&#x5305;&#x80FD;&#x5728;<code>text</code>&#x5C5E;&#x6027;&#x662F;<code>nil</code>&#x65F6;&#x4F7F;&#x7528;&#x9ED8;&#x8BA4;&#x6587;&#x672C;&#xFF0C;&#x8FD9;&#x662F;&#x4E3A;&#x4E86;&#x907F;&#x514D;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x7A7A;&#x7684; HTML &#x6807;&#x7B7E;&#xFF1A;</p>
+<pre><code class="lang-swift"><span class="hljs-keyword">let</span> heading = <span class="hljs-type">HTMLElement</span>(name: <span class="hljs-string">&quot;h1&quot;</span>)
+<span class="hljs-keyword">let</span> defaultText = <span class="hljs-string">&quot;some default text&quot;</span>
+heading.asHTML = {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&lt;<span class="hljs-subst">\(heading.name)</span>&gt;<span class="hljs-subst">\(heading.text ?? defaultText)</span>&lt;/<span class="hljs-subst">\(heading.name)</span>&gt;&quot;</span>
+}
+<span class="hljs-built_in">print</span>(heading.asHTML())
+<span class="hljs-comment">// &#x6253;&#x5370; &#x201C;&lt;h1&gt;some default text&lt;/h1&gt;&#x201D;</span>
+</code></pre>
+<blockquote>
+<p>&#x6CE8;&#x610F;<br><code>asHTML</code>&#x58F0;&#x660E;&#x4E3A;<code>lazy</code>&#x5C5E;&#x6027;&#xFF0C;&#x56E0;&#x4E3A;&#x53EA;&#x6709;&#x5F53;&#x5143;&#x7D20;&#x786E;&#x5B9E;&#x9700;&#x8981;&#x88AB;&#x5904;&#x7406;&#x4E3A; HTML &#x8F93;&#x51FA;&#x7684;&#x5B57;&#x7B26;&#x4E32;&#x65F6;&#xFF0C;&#x624D;&#x9700;&#x8981;&#x4F7F;&#x7528;<code>asHTML</code>&#x3002;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#xFF0C;&#x5728;&#x9ED8;&#x8BA4;&#x7684;&#x95ED;&#x5305;&#x4E2D;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;<code>self</code>&#xFF0C;&#x56E0;&#x4E3A;&#x53EA;&#x6709;&#x5F53;&#x521D;&#x59CB;&#x5316;&#x5B8C;&#x6210;&#x4EE5;&#x53CA;<code>self</code>&#x786E;&#x5B9E;&#x5B58;&#x5728;&#x540E;&#xFF0C;&#x624D;&#x80FD;&#x8BBF;&#x95EE;<code>lazy</code>&#x5C5E;&#x6027;&#x3002;</p>
+</blockquote>
+<p><code>HTMLElement</code>&#x7C7B;&#x53EA;&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x4E2A;&#x6784;&#x9020;&#x51FD;&#x6570;&#xFF0C;&#x901A;&#x8FC7;<code>name</code>&#x548C;<code>text</code>&#xFF08;&#x5982;&#x679C;&#x6709;&#x7684;&#x8BDD;&#xFF09;&#x53C2;&#x6570;&#x6765;&#x521D;&#x59CB;&#x5316;&#x4E00;&#x4E2A;&#x65B0;&#x5143;&#x7D20;&#x3002;&#x8BE5;&#x7C7B;&#x4E5F;&#x5B9A;&#x4E49;&#x4E86;&#x4E00;&#x4E2A;&#x6790;&#x6784;&#x51FD;&#x6570;&#xFF0C;&#x5F53;<code>HTMLElement</code>&#x5B9E;&#x4F8B;&#x88AB;&#x9500;&#x6BC1;&#x65F6;&#xFF0C;&#x6253;&#x5370;&#x4E00;&#x6761;&#x6D88;&#x606F;&#x3002;</p>
+<p>&#x4E0B;&#x9762;&#x7684;&#x4EE3;&#x7801;&#x5C55;&#x793A;&#x4E86;&#x5982;&#x4F55;&#x7528;<code>HTMLElement</code>&#x7C7B;&#x521B;&#x5EFA;&#x5B9E;&#x4F8B;&#x5E76;&#x6253;&#x5370;&#x6D88;&#x606F;&#xFF1A;</p>
+<pre><code class="lang-swift"><span class="hljs-keyword">var</span> paragraph: <span class="hljs-type">HTMLElement</span>? = <span class="hljs-type">HTMLElement</span>(name: <span class="hljs-string">&quot;p&quot;</span>, text: <span class="hljs-string">&quot;hello, world&quot;</span>)
+<span class="hljs-built_in">print</span>(paragraph!.asHTML())
+<span class="hljs-comment">// &#x6253;&#x5370; &#x201C;&lt;p&gt;hello, world&lt;/p&gt;&#x201D;</span>
+</code></pre>
+<blockquote>
+<p>&#x6CE8;&#x610F;<br>&#x4E0A;&#x9762;&#x7684;<code>paragraph</code>&#x53D8;&#x91CF;&#x5B9A;&#x4E49;&#x4E3A;&#x53EF;&#x9009;&#x7C7B;&#x578B;&#x7684;<code>HTMLElement</code>&#xFF0C;&#x56E0;&#x6B64;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x8D4B;&#x503C;<code>nil</code>&#x7ED9;&#x5B83;&#x6765;&#x6F14;&#x793A;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x3002;</p>
+</blockquote>
+<p>&#x4E0D;&#x5E78;&#x7684;&#x662F;&#xFF0C;&#x4E0A;&#x9762;&#x5199;&#x7684;<code>HTMLElement</code>&#x7C7B;&#x4EA7;&#x751F;&#x4E86;&#x7C7B;&#x5B9E;&#x4F8B;&#x548C;&#x4F5C;&#x4E3A;<code>asHTML</code>&#x9ED8;&#x8BA4;&#x503C;&#x7684;&#x95ED;&#x5305;&#x4E4B;&#x95F4;&#x7684;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x3002;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/closureReferenceCycle01_2x.png" alt=""></p>
+<p>&#x5B9E;&#x4F8B;&#x7684;<code>asHTML</code>&#x5C5E;&#x6027;&#x6301;&#x6709;&#x95ED;&#x5305;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#x3002;&#x4F46;&#x662F;&#xFF0C;&#x95ED;&#x5305;&#x5728;&#x5176;&#x95ED;&#x5305;&#x4F53;&#x5185;&#x4F7F;&#x7528;&#x4E86;<code>self</code>&#xFF08;&#x5F15;&#x7528;&#x4E86;<code>self.name</code>&#x548C;<code>self.text</code>&#xFF09;&#xFF0C;&#x56E0;&#x6B64;&#x95ED;&#x5305;&#x6355;&#x83B7;&#x4E86;<code>self</code>&#xFF0C;&#x8FD9;&#x610F;&#x5473;&#x7740;&#x95ED;&#x5305;&#x53C8;&#x53CD;&#x8FC7;&#x6765;&#x6301;&#x6709;&#x4E86;<code>HTMLElement</code>&#x5B9E;&#x4F8B;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#x3002;&#x8FD9;&#x6837;&#x4E24;&#x4E2A;&#x5BF9;&#x8C61;&#x5C31;&#x4EA7;&#x751F;&#x4E86;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x3002;&#xFF08;&#x66F4;&#x591A;&#x5173;&#x4E8E;&#x95ED;&#x5305;&#x6355;&#x83B7;&#x503C;&#x7684;&#x4FE1;&#x606F;&#xFF0C;&#x8BF7;&#x53C2;&#x8003;<a href="07_Closures.html#capturing_values">&#x503C;&#x6355;&#x83B7;</a>&#xFF09;&#x3002;</p>
+<blockquote>
+<p>&#x6CE8;&#x610F;<br>&#x867D;&#x7136;&#x95ED;&#x5305;&#x591A;&#x6B21;&#x4F7F;&#x7528;&#x4E86;<code>self</code>&#xFF0C;&#x5B83;&#x53EA;&#x6355;&#x83B7;<code>HTMLElement</code>&#x5B9E;&#x4F8B;&#x7684;&#x4E00;&#x4E2A;&#x5F3A;&#x5F15;&#x7528;&#x3002;</p>
+</blockquote>
+<p>&#x5982;&#x679C;&#x8BBE;&#x7F6E;<code>paragraph</code>&#x53D8;&#x91CF;&#x4E3A;<code>nil</code>&#xFF0C;&#x6253;&#x7834;&#x5B83;&#x6301;&#x6709;&#x7684;<code>HTMLElement</code>&#x5B9E;&#x4F8B;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#xFF0C;<code>HTMLElement</code>&#x5B9E;&#x4F8B;&#x548C;&#x5B83;&#x7684;&#x95ED;&#x5305;&#x90FD;&#x4E0D;&#x4F1A;&#x88AB;&#x9500;&#x6BC1;&#xFF0C;&#x4E5F;&#x662F;&#x56E0;&#x4E3A;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#xFF1A;</p>
+<pre><code class="lang-swift">paragraph = <span class="hljs-literal">nil</span>
+</code></pre>
+<p>&#x6CE8;&#x610F;&#xFF0C;<code>HTMLElement</code>&#x7684;&#x6790;&#x6784;&#x51FD;&#x6570;&#x4E2D;&#x7684;&#x6D88;&#x606F;&#x5E76;&#x6CA1;&#x6709;&#x88AB;&#x6253;&#x5370;&#xFF0C;&#x8BC1;&#x660E;&#x4E86;<code>HTMLElement</code>&#x5B9E;&#x4F8B;&#x5E76;&#x6CA1;&#x6709;&#x88AB;&#x9500;&#x6BC1;&#x3002;</p>
+<p><a name="resolving_strong_reference_cycles_for_closures"></a></p>
+<h2 id="&#x89E3;&#x51B3;&#x95ED;&#x5305;&#x5F15;&#x8D77;&#x7684;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;">&#x89E3;&#x51B3;&#x95ED;&#x5305;&#x5F15;&#x8D77;&#x7684;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;</h2>
+<p>&#x5728;&#x5B9A;&#x4E49;&#x95ED;&#x5305;&#x65F6;&#x540C;&#x65F6;&#x5B9A;&#x4E49;&#x6355;&#x83B7;&#x5217;&#x8868;&#x4F5C;&#x4E3A;&#x95ED;&#x5305;&#x7684;&#x4E00;&#x90E8;&#x5206;&#xFF0C;&#x901A;&#x8FC7;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x53EF;&#x4EE5;&#x89E3;&#x51B3;&#x95ED;&#x5305;&#x548C;&#x7C7B;&#x5B9E;&#x4F8B;&#x4E4B;&#x95F4;&#x7684;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x3002;&#x6355;&#x83B7;&#x5217;&#x8868;&#x5B9A;&#x4E49;&#x4E86;&#x95ED;&#x5305;&#x4F53;&#x5185;&#x6355;&#x83B7;&#x4E00;&#x4E2A;&#x6216;&#x8005;&#x591A;&#x4E2A;&#x5F15;&#x7528;&#x7C7B;&#x578B;&#x7684;&#x89C4;&#x5219;&#x3002;&#x8DDF;&#x89E3;&#x51B3;&#x4E24;&#x4E2A;&#x7C7B;&#x5B9E;&#x4F8B;&#x95F4;&#x7684;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x4E00;&#x6837;&#xFF0C;&#x58F0;&#x660E;&#x6BCF;&#x4E2A;&#x6355;&#x83B7;&#x7684;&#x5F15;&#x7528;&#x4E3A;&#x5F31;&#x5F15;&#x7528;&#x6216;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x5F3A;&#x5F15;&#x7528;&#x3002;&#x5E94;&#x5F53;&#x6839;&#x636E;&#x4EE3;&#x7801;&#x5173;&#x7CFB;&#x6765;&#x51B3;&#x5B9A;&#x4F7F;&#x7528;&#x5F31;&#x5F15;&#x7528;&#x8FD8;&#x662F;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#x3002;</p>
+<blockquote>
+<p>&#x6CE8;&#x610F;<br>Swift &#x6709;&#x5982;&#x4E0B;&#x8981;&#x6C42;&#xFF1A;&#x53EA;&#x8981;&#x5728;&#x95ED;&#x5305;&#x5185;&#x4F7F;&#x7528;<code>self</code>&#x7684;&#x6210;&#x5458;&#xFF0C;&#x5C31;&#x8981;&#x7528;<code>self.someProperty</code>&#x6216;&#x8005;<code>self.someMethod()</code>&#xFF08;&#x800C;&#x4E0D;&#x53EA;&#x662F;<code>someProperty</code>&#x6216;<code>someMethod()</code>&#xFF09;&#x3002;&#x8FD9;&#x63D0;&#x9192;&#x4F60;&#x53EF;&#x80FD;&#x4F1A;&#x4E00;&#x4E0D;&#x5C0F;&#x5FC3;&#x5C31;&#x6355;&#x83B7;&#x4E86;<code>self</code>&#x3002;</p>
+</blockquote>
+<p><a name="defining_a_capture_list"></a></p>
+<h3 id="&#x5B9A;&#x4E49;&#x6355;&#x83B7;&#x5217;&#x8868;">&#x5B9A;&#x4E49;&#x6355;&#x83B7;&#x5217;&#x8868;</h3>
+<p>&#x6355;&#x83B7;&#x5217;&#x8868;&#x4E2D;&#x7684;&#x6BCF;&#x4E00;&#x9879;&#x90FD;&#x7531;&#x4E00;&#x5BF9;&#x5143;&#x7D20;&#x7EC4;&#x6210;&#xFF0C;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#x662F;<code>weak</code>&#x6216;<code>unowned</code>&#x5173;&#x952E;&#x5B57;&#xFF0C;&#x53E6;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#x662F;&#x7C7B;&#x5B9E;&#x4F8B;&#x7684;&#x5F15;&#x7528;&#xFF08;&#x4F8B;&#x5982;<code>self</code>&#xFF09;&#x6216;&#x521D;&#x59CB;&#x5316;&#x8FC7;&#x7684;&#x53D8;&#x91CF;&#xFF08;&#x5982;<code>delegate = self.delegate!</code>&#xFF09;&#x3002;&#x8FD9;&#x4E9B;&#x9879;&#x5728;&#x65B9;&#x62EC;&#x53F7;&#x4E2D;&#x7528;&#x9017;&#x53F7;&#x5206;&#x5F00;&#x3002;</p>
+<p>&#x5982;&#x679C;&#x95ED;&#x5305;&#x6709;&#x53C2;&#x6570;&#x5217;&#x8868;&#x548C;&#x8FD4;&#x56DE;&#x7C7B;&#x578B;&#xFF0C;&#x628A;&#x6355;&#x83B7;&#x5217;&#x8868;&#x653E;&#x5728;&#x5B83;&#x4EEC;&#x524D;&#x9762;&#xFF1A;</p>
+<pre><code class="lang-swift">lazy <span class="hljs-keyword">var</span> someClosure: (<span class="hljs-type">Int</span>, <span class="hljs-type">String</span>) -&gt; <span class="hljs-type">String</span> = {
+    [<span class="hljs-keyword">unowned</span> <span class="hljs-keyword">self</span>, <span class="hljs-keyword">weak</span> delegate = <span class="hljs-keyword">self</span>.delegate!] (index: <span class="hljs-type">Int</span>, stringToProcess: <span class="hljs-type">String</span>) -&gt; <span class="hljs-type">String</span> <span class="hljs-keyword">in</span>
+    <span class="hljs-comment">// &#x8FD9;&#x91CC;&#x662F;&#x95ED;&#x5305;&#x7684;&#x51FD;&#x6570;&#x4F53;</span>
+}
+</code></pre>
+<p>&#x5982;&#x679C;&#x95ED;&#x5305;&#x6CA1;&#x6709;&#x6307;&#x660E;&#x53C2;&#x6570;&#x5217;&#x8868;&#x6216;&#x8005;&#x8FD4;&#x56DE;&#x7C7B;&#x578B;&#xFF0C;&#x5373;&#x5B83;&#x4EEC;&#x4F1A;&#x901A;&#x8FC7;&#x4E0A;&#x4E0B;&#x6587;&#x63A8;&#x65AD;&#xFF0C;&#x90A3;&#x4E48;&#x53EF;&#x4EE5;&#x628A;&#x6355;&#x83B7;&#x5217;&#x8868;&#x548C;&#x5173;&#x952E;&#x5B57;<code>in</code>&#x653E;&#x5728;&#x95ED;&#x5305;&#x6700;&#x5F00;&#x59CB;&#x7684;&#x5730;&#x65B9;&#xFF1A;</p>
+<pre><code class="lang-swift">lazy <span class="hljs-keyword">var</span> someClosure: <span class="hljs-type">Void</span> -&gt; <span class="hljs-type">String</span> = {
+    [<span class="hljs-keyword">unowned</span> <span class="hljs-keyword">self</span>, <span class="hljs-keyword">weak</span> delegate = <span class="hljs-keyword">self</span>.delegate!] <span class="hljs-keyword">in</span>
+    <span class="hljs-comment">// &#x8FD9;&#x91CC;&#x662F;&#x95ED;&#x5305;&#x7684;&#x51FD;&#x6570;&#x4F53;</span>
+}
+</code></pre>
+<p><a name="weak_and_unowned_references"></a></p>
+<h3 id="&#x5F31;&#x5F15;&#x7528;&#x548C;&#x65E0;&#x4E3B;&#x5F15;&#x7528;">&#x5F31;&#x5F15;&#x7528;&#x548C;&#x65E0;&#x4E3B;&#x5F15;&#x7528;</h3>
+<p>&#x5728;&#x95ED;&#x5305;&#x548C;&#x6355;&#x83B7;&#x7684;&#x5B9E;&#x4F8B;&#x603B;&#x662F;&#x4E92;&#x76F8;&#x5F15;&#x7528;&#x5E76;&#x4E14;&#x603B;&#x662F;&#x540C;&#x65F6;&#x9500;&#x6BC1;&#x65F6;&#xFF0C;&#x5C06;&#x95ED;&#x5305;&#x5185;&#x7684;&#x6355;&#x83B7;&#x5B9A;&#x4E49;&#x4E3A;<code>&#x65E0;&#x4E3B;&#x5F15;&#x7528;</code>&#x3002;</p>
+<p>&#x76F8;&#x53CD;&#x7684;&#xFF0C;&#x5728;&#x88AB;&#x6355;&#x83B7;&#x7684;&#x5F15;&#x7528;&#x53EF;&#x80FD;&#x4F1A;&#x53D8;&#x4E3A;<code>nil</code>&#x65F6;&#xFF0C;&#x5C06;&#x95ED;&#x5305;&#x5185;&#x7684;&#x6355;&#x83B7;&#x5B9A;&#x4E49;&#x4E3A;<code>&#x5F31;&#x5F15;&#x7528;</code>&#x3002;&#x5F31;&#x5F15;&#x7528;&#x603B;&#x662F;&#x53EF;&#x9009;&#x7C7B;&#x578B;&#xFF0C;&#x5E76;&#x4E14;&#x5F53;&#x5F15;&#x7528;&#x7684;&#x5B9E;&#x4F8B;&#x88AB;&#x9500;&#x6BC1;&#x540E;&#xFF0C;&#x5F31;&#x5F15;&#x7528;&#x7684;&#x503C;&#x4F1A;&#x81EA;&#x52A8;&#x7F6E;&#x4E3A;<code>nil</code>&#x3002;&#x8FD9;&#x4F7F;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5728;&#x95ED;&#x5305;&#x4F53;&#x5185;&#x68C0;&#x67E5;&#x5B83;&#x4EEC;&#x662F;&#x5426;&#x5B58;&#x5728;&#x3002;</p>
+<blockquote>
+<p>&#x6CE8;&#x610F;<br>&#x5982;&#x679C;&#x88AB;&#x6355;&#x83B7;&#x7684;&#x5F15;&#x7528;&#x7EDD;&#x5BF9;&#x4E0D;&#x4F1A;&#x53D8;&#x4E3A;<code>nil</code>&#xFF0C;&#x5E94;&#x8BE5;&#x7528;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x5F31;&#x5F15;&#x7528;&#x3002;</p>
+</blockquote>
+<p>&#x524D;&#x9762;&#x7684;<code>HTMLElement</code>&#x4F8B;&#x5B50;&#x4E2D;&#xFF0C;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#x662F;&#x6B63;&#x786E;&#x7684;&#x89E3;&#x51B3;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#x7684;&#x65B9;&#x6CD5;&#x3002;&#x8FD9;&#x6837;&#x7F16;&#x5199;<code>HTMLElement</code>&#x7C7B;&#x6765;&#x907F;&#x514D;&#x5FAA;&#x73AF;&#x5F3A;&#x5F15;&#x7528;&#xFF1A;</p>
+<pre><code class="lang-swift"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">HTMLElement</span> </span>{
+
+    <span class="hljs-keyword">let</span> name: <span class="hljs-type">String</span>
+    <span class="hljs-keyword">let</span> text: <span class="hljs-type">String</span>?
+
+    lazy <span class="hljs-keyword">var</span> asHTML: <span class="hljs-type">Void</span> -&gt; <span class="hljs-type">String</span> = {
+        [<span class="hljs-keyword">unowned</span> <span class="hljs-keyword">self</span>] <span class="hljs-keyword">in</span>
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">let</span> text = <span class="hljs-keyword">self</span>.text {
+            <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&lt;<span class="hljs-subst">\(<span class="hljs-keyword">self</span>.name)</span>&gt;<span class="hljs-subst">\(text)</span>&lt;/<span class="hljs-subst">\(<span class="hljs-keyword">self</span>.name)</span>&gt;&quot;</span>
+        } <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;&lt;<span class="hljs-subst">\(<span class="hljs-keyword">self</span>.name)</span> /&gt;&quot;</span>
+        }
+    }
+
+    <span class="hljs-keyword">init</span>(name: <span class="hljs-type">String</span>, text: <span class="hljs-type">String</span>? = <span class="hljs-literal">nil</span>) {
+        <span class="hljs-keyword">self</span>.name = name
+        <span class="hljs-keyword">self</span>.text = text
+    }
+
+    <span class="hljs-keyword">deinit</span> {
+        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;<span class="hljs-subst">\(name)</span> is being deinitialized&quot;</span>)
+    }
+
+}
+</code></pre>
+<p>&#x4E0A;&#x9762;&#x7684;<code>HTMLElement</code>&#x5B9E;&#x73B0;&#x548C;&#x4E4B;&#x524D;&#x7684;&#x5B9E;&#x73B0;&#x4E00;&#x81F4;&#xFF0C;&#x9664;&#x4E86;&#x5728;<code>asHTML</code>&#x95ED;&#x5305;&#x4E2D;&#x591A;&#x4E86;&#x4E00;&#x4E2A;&#x6355;&#x83B7;&#x5217;&#x8868;&#x3002;&#x8FD9;&#x91CC;&#xFF0C;&#x6355;&#x83B7;&#x5217;&#x8868;&#x662F;<code>[unowned self]</code>&#xFF0C;&#x8868;&#x793A;&#x201C;&#x5C06;<code>self</code>&#x6355;&#x83B7;&#x4E3A;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#x800C;&#x4E0D;&#x662F;&#x5F3A;&#x5F15;&#x7528;&#x201D;&#x3002;</p>
+<p>&#x548C;&#x4E4B;&#x524D;&#x4E00;&#x6837;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x521B;&#x5EFA;&#x5E76;&#x6253;&#x5370;<code>HTMLElement</code>&#x5B9E;&#x4F8B;&#xFF1A;</p>
+<pre><code class="lang-swift"><span class="hljs-keyword">var</span> paragraph: <span class="hljs-type">HTMLElement</span>? = <span class="hljs-type">HTMLElement</span>(name: <span class="hljs-string">&quot;p&quot;</span>, text: <span class="hljs-string">&quot;hello, world&quot;</span>)
+<span class="hljs-built_in">print</span>(paragraph!.asHTML())
+<span class="hljs-comment">// &#x6253;&#x5370; &#x201C;&lt;p&gt;hello, world&lt;/p&gt;&#x201D;</span>
+</code></pre>
+<p>&#x4F7F;&#x7528;&#x6355;&#x83B7;&#x5217;&#x8868;&#x540E;&#x5F15;&#x7528;&#x5173;&#x7CFB;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+<p><img src="https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/Swift_Programming_Language/Art/closureReferenceCycle02_2x.png" alt=""></p>
+<p>&#x8FD9;&#x4E00;&#x6B21;&#xFF0C;&#x95ED;&#x5305;&#x4EE5;&#x65E0;&#x4E3B;&#x5F15;&#x7528;&#x7684;&#x5F62;&#x5F0F;&#x6355;&#x83B7;<code>self</code>&#xFF0C;&#x5E76;&#x4E0D;&#x4F1A;&#x6301;&#x6709;<code>HTMLElement</code>&#x5B9E;&#x4F8B;&#x7684;&#x5F3A;&#x5F15;&#x7528;&#x3002;&#x5982;&#x679C;&#x5C06;<code>paragraph</code>&#x8D4B;&#x503C;&#x4E3A;<code>nil</code>&#xFF0C;<code>HTMLElement</code>&#x5B9E;&#x4F8B;&#x5C06;&#x4F1A;&#x88AB;&#x9500;&#x6BC1;&#xFF0C;&#x5E76;&#x80FD;&#x770B;&#x5230;&#x5B83;&#x7684;&#x6790;&#x6784;&#x51FD;&#x6570;&#x6253;&#x5370;&#x51FA;&#x7684;&#x6D88;&#x606F;&#xFF1A;</p>
+<pre><code class="lang-swift">paragraph = <span class="hljs-literal">nil</span>
+<span class="hljs-comment">// &#x6253;&#x5370; &#x201C;p is being deinitialized&#x201D;</span>
+</code></pre>
+<p>&#x4F60;&#x53EF;&#x4EE5;&#x67E5;&#x770B;<a href="../chapter3/04_Expressions.html">&#x6355;&#x83B7;&#x5217;&#x8868;</a>&#x7AE0;&#x8282;&#xFF0C;&#x83B7;&#x53D6;&#x66F4;&#x591A;&#x5173;&#x4E8E;&#x6355;&#x83B7;&#x5217;&#x8868;&#x7684;&#x4FE1;&#x606F;&#x3002;</p>
+</section>
+</div>
+</div>
+</div>
+<a href="15_Deinitialization.html" class="navigation navigation-prev " aria-label="Previous page: 析构过程"><i class="fa fa-angle-left"></i></a>
+<a href="17_Optional_Chaining.html" class="navigation navigation-next " aria-label="Next page: 可选链"><i class="fa fa-angle-right"></i></a>
+</div>
+</div>
+<script src="../gitbook/app.js"></script>
+<script src="../gitbook/plugins/gitbook-plugin-search/lunr.min.js"></script>
+<script src="../gitbook/plugins/gitbook-plugin-search/search.js"></script>
+<script src="../gitbook/plugins/gitbook-plugin-sharing/buttons.js"></script>
+<script src="../gitbook/plugins/gitbook-plugin-fontsettings/buttons.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+    var config = {"highlight":{},"search":{"maxIndexSize":1000000},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"fontsettings":{"theme":"white","family":"sans","size":2}};
+    gitbook.start(config);
+});
+</script>
+</body>
+</html>

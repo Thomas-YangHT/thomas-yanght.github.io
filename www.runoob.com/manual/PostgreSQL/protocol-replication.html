@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>流复制协议</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="前/后端协议" HREF="http://school.yunwei.edu/manual/PostgreSQL/protocol.html"><LINK REL="PREVIOUS" TITLE="消息流" HREF="protocol-flow.html"><LINK REL="NEXT" TITLE="消息数据类型" HREF="protocol-message-types.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/protocol.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="消息流" HREF="protocol-flow.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/protocol.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 48. 前/后端协议</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="消息数据类型" HREF="protocol-message-types.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="PROTOCOL-REPLICATION">48.3. 流复制协议</A></H1><P>为了初始化流复制，前端需要发送带<TT CLASS="LITERAL">replication</TT>参数的startup消息。
+这告诉后端进入walsender模式，在这个模式下可以发送数量不多的复制命令集而不是通常的SQL命令。
+并且在walsender模式下，只能使用简单查询协议。
+walsender模式下可以接受的命令如下:
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT>IDENTIFY_SYSTEM</DT><DD><P>请求服务端标识自己。服务端会应答一个只有一行的结果集，包含3个字段。
+</P><P> <P></P></P><DIV CLASS="VARIABLELIST"><DL><DT>systemid</DT><DD><P>标识数据库集群的唯一的系统标识符。
+这个可以用于检查初始化备机用的基础备份来自同一个数据库集群。
+</P></DD><DT>timeline</DT><DD><P>当前的时间线ID(TimelineID)。
+同样可用于检查备机和主机的一致性。
+</P></DD><DT>xlogpos</DT><DD><P>当前的xlog的写入位置。
+可用于获得在事务日志中流从哪而开始的已知的位置信息。
+</P></DD></DL></DIV><P>
+</P></DD><DT>TIMELINE_HISTORY <TT CLASS="REPLACEABLE"><I>tli</I></TT></DT><DD><P>请求服务端为时间线<TT CLASS="REPLACEABLE"><I>tli</I></TT>发送时间线历史文件。
+服务端会应答一个只有一行的结果集，包含3个字段。
+</P><P> <P></P></P><DIV CLASS="VARIABLELIST"><DL><DT>filename</DT><DD><P>时间线历史文件的文件名，比如00000002.history。
+</P></DD><DT>content</DT><DD><P>时间线历史文件的内容。
+</P></DD></DL></DIV><P>
+</P></DD><DT>START_REPLICATION <TT CLASS="REPLACEABLE"><I>XXX/XXX</I></TT> TIMELINE <TT CLASS="REPLACEABLE"><I>tli</I></TT></DT><DD><P>指示服务端从时间线<TT CLASS="REPLACEABLE"><I>tli</I></TT>上的WAL位置<TT CLASS="REPLACEABLE"><I>XXX/XXX</I></TT>开始WAL流。
+服务端可能会回应一个错误，比如，如果在请求的WAL段已经被回收的情况下。
+如果成功，服务端响应一个CopyBothResponse消息，然后开启到前端的WAL流。
+</P><P>如果客户端请求的时间线不是最新的，但是是服务端历史的一部分，服务端将会传送从请求的开始点开始直到服务端切换到另一个时间线为止这个时间线上的所有WAL。
+如果客户端请求的流正好在旧时间线的终点上，服务端会立即响应一个CommandComplete而不进入COPY模式。
+</P><P>传送完这个非最新的时间线上的所有WAL后，服务端退出COPY模式结束流。
+当客户端也以退出COPY模式作为应答，服务端发送一个只有一行的结果集，包含2的字段，指示在这个服务器上的下一个时间线。
+第一列是下一个时间线的ID，第二列是发生切换的XLOG位置。
+通常切换点是已经传送的WAL流的终点，但是在极端的情况下，服务端发送的WAL可能来自自己升级前还没有回放的旧的时间线。
+最终服务端发送CommandComplete消息并准备接收新的命令。
+</P><P>WAL数据作为一系列的CopyData消息发送。
+（这允许混合其它信息，具体而言服务端在开始流之后发生了失败可以发送ErrorResponse消息。）
+每个从服务端到客户端的CopyData消息的装载数据中包含下面的格式的消息：
+</P><P> <P></P></P><DIV CLASS="VARIABLELIST"><DL><DT>XLogData (B)</DT><DD><P> <P></P></P><DIV CLASS="VARIABLELIST"><DL><DT>Byte1('w')</DT><DD><P>标识消息是一个WAL数据。
+</P></DD><DT>Int64</DT><DD><P>消息内的WAL数据开始点。
+</P></DD><DT>Int64</DT><DD><P>当前服务端上的WAL終点。
+</P></DD><DT>Int64</DT><DD><P>传送时服务端上的系统时间，是从2000-01-01午夜开始的微秒数。
+</P></DD><DT>Byte<TT CLASS="REPLACEABLE"><I>n</I></TT></DT><DD><P>WAL数据流的片段。
+</P><P>单个的WAL记录一定不会被分割成2个XLogData消息。
+当一个WAL记录跨越WAL页的边界，并且因此已经被连续的记录分割了，可以在页边界上分割。
+换句话说，第一个主要的WAL记录和它后续的记录可能以不同XLogData消息传送。
+</P></DD></DL></DIV><P>
+</P></DD><DT>主keepalive消息 (B)</DT><DD><P> <P></P></P><DIV CLASS="VARIABLELIST"><DL><DT>Byte1('k')</DT><DD><P>标识这是一个发送者的keepalive消息。
+</P></DD><DT>Int64</DT><DD><P>服务端上当前的WAL终点。
+</P></DD><DT>Int64</DT><DD><P>传送时服务端上的系统时间，是从2000-01-01午夜开始的微秒数。
+</P></DD><DT>Byte1</DT><DD><P>
+1意味着客户端应该尽可能快的应答这个消息，以防止超时切断连接。0的意思相反。
+</P></DD></DL></DIV><P>
+</P></DD></DL></DIV><P>
+</P><P>
+接受进程可以在任何时间使用以下消息格式(同样作为CopyData消息的装载数据)应答发送者：
+</P><P> <P></P></P><DIV CLASS="VARIABLELIST"><DL><DT>备机状态更新(F)</DT><DD><P> <P></P></P><DIV CLASS="VARIABLELIST"><DL><DT>Byte1('r')</DT><DD><P>标识这是一个接受者的状态更新消息。
+</P></DD><DT>Int64</DT><DD><P>备机上接受并写入磁盘的上次的WAL字节+1的位置。
+</P></DD><DT>Int64</DT><DD><P>备机上刷新到磁盘的上次的WAL字节+1的位置。
+</P></DD><DT>Int64</DT><DD><P>
+备机上已经应用的上次的WAL字节+1的位置。
+</P></DD><DT>Int64</DT><DD><P>传送时客户端上的系统时间，是从2000-01-01午夜开始的微秒数。
+</P></DD><DT>Byte1</DT><DD><P>如果是1，客户端请求服务端立即应答这个消息。
+这用于ping服务端以测试连接是否还健康。
+</P></DD></DL></DIV><P>
+</P></DD></DL></DIV><P>
+</P><P> <P></P></P><DIV CLASS="VARIABLELIST"><DL><DT>热备机的反馈消息(F)</DT><DD><P> <P></P></P><DIV CLASS="VARIABLELIST"><DL><DT>Byte1('h')</DT><DD><P>标识这是一个热备机的反馈消息。
+</P></DD><DT>Int64</DT><DD><P>传送时客户端上的系统时间，是从2000-01-01午夜开始的微秒数。
+</P></DD><DT>Int32</DT><DD><P>备机上现在的xmin。如果备机正在传送热备机反馈将不再发到这个连接上的通知，这个值可能为0。之后非零的消息可能再初始化反馈机制。
+</P></DD><DT>Int32</DT><DD><P>备机的当前时间戳。
+</P></DD></DL></DIV><P>
+</P></DD></DL></DIV><P>
+</P></DD><DT>BASE_BACKUP [<TT CLASS="LITERAL">LABEL</TT> <TT CLASS="REPLACEABLE"><I>'label'</I></TT>] [<TT CLASS="LITERAL">PROGRESS</TT>] [<TT CLASS="LITERAL">FAST</TT>] [<TT CLASS="LITERAL">WAL</TT>] [<TT CLASS="LITERAL">NOWAIT</TT>]</DT><DD><P>指示服务器开始一个基础备份的流。系统将在备份开始前自动进入备份模式，并且在备份完成后回到原来的状态。
+可以接受以下选项:
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL">LABEL</TT> <TT CLASS="REPLACEABLE"><I>'label'</I></TT></DT><DD><P>设定备份的标签。
+如果没有指定，则使用<TT CLASS="LITERAL">base backup</TT>。
+标签的引号使用规则与<A HREF="runtime-config-compatible.html#GUC-STANDARD-CONFORMING-STRINGS">standard_conforming_strings</A>开关打开时的标准SQL字符串相同。
+</P></DD><DT><TT CLASS="LITERAL">PROGRESS</TT></DT><DD><P>请求产生进度报告时要用的信息。
+这将在每个表空间的头部发回一个近似的大小，用于计算到流结束还有多少距离。
+这个大小是在传输前通过一次性统计所有文件的大小获取的，可能会产生性能上的冲击 - 实际上在传送第一个流前可能会花比较长的时间。
+既然数据库文件可能在备份过程中改变，这个大小只是近似的，并且在估算和实际发送文件之间可能增长和收缩。
+</P></DD><DT><TT CLASS="LITERAL">FAST</TT></DT><DD><P>请求一个快速的检查点(checkpoint)。
+</P></DD><DT><TT CLASS="LITERAL">WAL</TT></DT><DD><P>包含这个备份所必要的WAL段。将包括在备份开始和结束期间<TT CLASS="FILENAME">pg_xlog</TT>目录下的所有base目录tar文件。
+</P></DD><DT><TT CLASS="LITERAL">NOWAIT</TT></DT><DD><P>缺省时备份会等待最后一个需要的xlog段被归档，或者在没有启用归档的情况下发出一个警告。
+指定<TT CLASS="LITERAL">NOWAIT</TT>可以把等待和警告无效，让客户端负责确认需要的日志是否有效。
+</P></DD></DL></DIV><P>
+</P><P>备份开始时，服务端首先发送2个通常的结果集，然后是1个以上的CopyResponse结果。
+</P><P>最初的通常的结果集里，包含由2列构成的单一行的备份位置。
+第一个列是XLogRecPtr形式的开始位置，第二列是对应的时间线ID。
+</P><P>第二个通常的结果集里各个表空间一行数据。
+每行包含的字段如下:
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT>spcoid</DT><DD><P>表空间的oid。
+base目录的情况下则为<TT CLASS="LITERAL">NULL</TT>。
+</P></DD><DT>spclocation</DT><DD><P>表空间目录的完全路径。base目录的情况下则为<TT CLASS="LITERAL">NULL</TT>。
+</P></DD><DT>size</DT><DD><P>要求进度状况报告的情况下，表空间的估算容量。
+没有要求的情况下为<TT CLASS="LITERAL">NULL</TT>。
+</P></DD></DL></DIV><P>
+</P><P>第二个通常结果集之后被送过来的是一个以上的CopyResponse结果。
+一个是PGDATA用的，其余的则是每个<TT CLASS="LITERAL">pg_default</TT>、<TT CLASS="LITERAL">pg_global</TT>以外的追加表空间都有一个。
+CopyResponse结果内的数据是表空间内容的tar形式（遵照POSIX 1003.1-2008规定的<SPAN CLASS="QUOTE">"ustar交换形式"</SPAN>）的转储(dump)。
+但是，标准规定的最后的2个零数据块被省掉了。
+tar数据结束后，和开始位置的形式相同，是包含备份终了位置的最终的结果集。
+</P><P>为data目录和每个表空间做的tar归档包含目录下的所有文件，不管它们是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 的文件还是相同目录下的其它在文件。
+但是以下文件被排除在外:
+<P></P></P><UL COMPACT="COMPACT"><LI STYLE="list-style-type: disc"><P> <TT CLASS="FILENAME">postmaster.pid</TT>
+</P></LI><LI STYLE="list-style-type: disc"><P> <TT CLASS="FILENAME">postmaster.opts</TT>
+</P></LI><LI STYLE="list-style-type: disc"><P><TT CLASS="FILENAME">pg_xlog</TT>，包含子目录。如果备份是包含WAL执行的，将包含一个合成版的<TT CLASS="FILENAME">pg_xlog</TT>。
+它只包含对于备份工作必须的文件而没有其余的内容。
+</P></LI></UL><P>
+如果服务器的文件系统支持的话，所有者，组和文件模式会被设置。
+</P><P>所有的表空间被传送完后，发送最终的通常结果集。
+这个结果集里包含单一行单一列的XLogRecPtr格式的备份结束位置。
+</P></DD></DL></DIV><P>&#13;</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="protocol-flow.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="protocol-message-types.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">消息流</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/protocol.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">消息数据类型</TD></TR></TABLE></DIV></BODY></HTML>

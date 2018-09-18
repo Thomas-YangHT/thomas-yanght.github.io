@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>函数重载</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="扩展SQL" HREF="http://school.yunwei.edu/manual/PostgreSQL/extend.html"><LINK REL="PREVIOUS" TITLE="查询语言(SQL)函数" HREF="xfunc-sql.html"><LINK REL="NEXT" TITLE="函数易失性范畴" HREF="xfunc-volatility.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/xfunc.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="查询语言(SQL)函数" HREF="xfunc-sql.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/extend.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 35. 扩展<ACRONYM CLASS="ACRONYM">SQL</ACRONYM></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="函数易失性范畴" HREF="xfunc-volatility.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="XFUNC-OVERLOAD">35.5. 函数重载</A></H1><P> 多个函数可以定义成同样的SQL名字，只要它们接受的参数不同。
+换句话说，函数名可以<I CLASS="FIRSTTERM">重载</I>。在执行一个查询的时候，
+服务器会从提供的参数类型和个数上判断应该调用哪个函数。
+重载也可以用于模拟数目不定(有上限)的参数。</P><P>
+在创建一族重载函数的时候，我们应该小心避免歧义。比如，对于下面的函数:
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION test(int, real) RETURNS ...
+CREATE FUNCTION test(smallint, double precision) RETURNS ...</PRE><P>
+如果给出一些简单的输入，比如<TT CLASS="LITERAL">test(1, 1.5)</TT>，
+系统要想判断应该调用哪个函数可不是一件很容易的事情。
+目前实现的解析规则在<A HREF="http://school.yunwei.edu/manual/PostgreSQL/typeconv.html">第 10 &#31456;</A>里描述，
+但是设计一个隐含依赖这些行为的系统是不明智的。
+</P><P> 一个接受单个复合类型参数的函数通常不应该和该类型或该类型的任何属性(字段)同名。
+<TT CLASS="LITERAL">attribute(table)</TT>被认为等效于<TT CLASS="LITERAL">table.attribute</TT>。
+在这种情况下，一个复合类型上的函数会和一个复合类型的属性有歧义(总是使用属性)。
+我们可以通过使用模式来修饰函数名(也就是<TT CLASS="LITERAL">schema.func(table)</TT>)以绕开这个限制，
+但最好还是通过使用无冲突的名字来避免这个问题。</P><P> 另一个可能的冲突是可变的和非可变参数之间的函数关系。
+例如，它可以创建<TT CLASS="LITERAL">foo(numeric)</TT>和
+<TT CLASS="LITERAL">foo(VARIADIC numeric[])</TT>。在这种情况下，目前还不清楚哪一个
+应匹配提供一个数字参数的调用，如
+<TT CLASS="LITERAL">foo(10.1)</TT>。规则是函数早期出现在使用的搜索路径中，
+或者如果两个函数都在同样的模式下，非-可变参数优先。 </P><P>
+在重载C语言函数的时候，还有一个额外的限制：
+重载族的每个函数的C名字必须和所有其它函数的C名字不同，
+其它函数包括内部的和动态加载的。如果违反这条规则，
+那么行为是不可移植的。你可能会得到一个运行时的链接错误，
+或者是其中一个函数被调用(通常是内部的那个)。
+<TT CLASS="COMMAND">CREATE FUNCTION</TT>命令可选的<TT CLASS="LITERAL">AS</TT>子句
+把SQL函数名和C源代码中的函数名分离开。
+比如:
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION test(int) RETURNS int
+    AS '<TT
+CLASS="REPLACEABLE"
+><I
+>filename</I
+></TT
+>', 'test_1arg'
+    LANGUAGE C;
+CREATE FUNCTION test(int, int) RETURNS int
+    AS '<TT
+CLASS="REPLACEABLE"
+><I
+>filename</I
+></TT
+>', 'test_2arg'
+    LANGUAGE C;</PRE><P>
+这里的C函数名代表许多可能的惯例之一。
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="xfunc-sql.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="xfunc-volatility.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">查询语言(<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>)函数</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/extend.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">函数易失性范畴</TD></TR></TABLE></DIV></BODY></HTML>

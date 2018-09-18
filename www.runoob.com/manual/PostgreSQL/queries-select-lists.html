@@ -1,0 +1,80 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>选择列表</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="查询" HREF="http://school.yunwei.edu/manual/PostgreSQL/queries.html"><LINK REL="PREVIOUS" TITLE="表表达式" HREF="queries-table-expressions.html"><LINK REL="NEXT" TITLE="组合查询" HREF="queries-union.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/queries.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="表表达式" HREF="queries-table-expressions.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/queries.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 7. 查询</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="组合查询" HREF="queries-union.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="QUERIES-SELECT-LISTS">7.3. 选择列表</A></H1><P>如前面的小节说明的那样，在<TT CLASS="COMMAND">SELECT</TT>命令中的表表达式通过组合表、
+视图、删除行、分组等构造了一个中介性的虚拟表。这个表最后传递给<I CLASS="FIRSTTERM">选择列表</I>处理。
+选择列表判断最终实际输出虚拟表的哪些<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">字段</I></SPAN>。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="QUERIES-SELECT-LIST-ITEMS">7.3.1. 选择列表项</A></H2><P>最简单的选择列表是<TT CLASS="LITERAL">*</TT>，它输出表表达式生成的所有字段。
+否则，一个选择列表是一个逗号分隔的值表达式的列表(和在<A HREF="sql-expressions.html">第 4.2 &#33410;</A>
+里定义的一样)。比如，它可能是一个字段名列表：
+</P><PRE CLASS="PROGRAMLISTING">SELECT a, b, c FROM ...</PRE><P>
+字段名<TT CLASS="LITERAL">a</TT>, <TT CLASS="LITERAL">b</TT>,<TT CLASS="LITERAL">c</TT>要么是在<TT CLASS="LITERAL">FROM</TT>
+子句里引用的表中字段的实际名字，要么是<A HREF="queries-table-expressions.html#QUERIES-TABLE-ALIASES">第 7.2.1.2 &#33410;</A>
+里解释的别名。选择列表中的名字空间和<TT CLASS="LITERAL">WHERE</TT>子句中的名字空间是一样的，
+除非你使用了分组，否则它和<TT CLASS="LITERAL">HAVING</TT>子句中的名字空间也一样。
+</P><P>如果多个表有重复的字段名，那么你还必须给出表名字，例如：
+</P><PRE CLASS="PROGRAMLISTING">SELECT tbl1.a, tbl2.a, tbl1.b FROM ...</PRE><P>
+当使用多个表时，给出表名还有助于引用该表的所有字段：
+</P><PRE CLASS="PROGRAMLISTING">SELECT tbl1.*, tbl2.a FROM ...</PRE><P>
+又见<A HREF="queries-table-expressions.html#QUERIES-WHERE">第 7.2.2 &#33410;</A>。
+</P><P>如果将值表达式用于选择列表，那么它在概念上向返回的表中增加了一个新的虚拟字段。
+值表达式为结果中的每一行进行一次计算，计算之前用该行的数值替换任何表达式里引用的字段。
+不过选择列表中的这个表达式并非一定要引用来自<TT CLASS="LITERAL">FROM</TT>子句中表表达式里面的字段，
+比如，它也可以是任意常量算术表达式。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="QUERIES-COLUMN-LABELS">7.3.2. 字段标签</A></H2><P>
+选择列表中的列表项可以赋予名字，以便于进一步的处理。
+例如在<TT CLASS="LITERAL">ORDER BY</TT>子句中的使用或通过客户端应用程序显示。比如：
+</P><PRE CLASS="PROGRAMLISTING">SELECT a AS value, b + c AS sum FROM ...</PRE><P>
+</P><P>如果没有使用<TT CLASS="LITERAL">AS</TT>声明字段名字，那么系统将赋予一个缺省值。
+对于简单的字段引用，它是该字段的名字。对于函数调用，它是该函数的名字。
+对于复杂表达式，系统会生成一个通用的名字。</P><P>
+只有当新列名与任何<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+关键字不匹配时<TT CLASS="LITERAL">AS</TT>关键字是可选的（见<A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-keywords-appendix.html">&#38468;&#24405; C</A>），
+您可以给列名加上双引号来避免意外匹配关键字。例如，<TT CLASS="LITERAL">VALUE</TT>是一个关键字，
+所以这样是不起作用的：
+</P><PRE CLASS="PROGRAMLISTING">SELECT a value, b + c AS sum FROM ...</PRE><P>
+但这样可以:
+</P><PRE CLASS="PROGRAMLISTING">SELECT a "value", b + c AS sum FROM ...</PRE><P>
+为了防止和未来补充的关键字发生冲突，建议您要么写<TT CLASS="LITERAL">AS</TT>，
+要么为输出列名加双引号标记。
+</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>输出字段的命名和在<TT CLASS="LITERAL">FROM</TT>子句里的命名是不一样的(参阅<A HREF="queries-table-expressions.html#QUERIES-TABLE-ALIASES">第 7.2.1.2 &#33410;</A>)。
+这样就允许你对同一个字段命名两次，FROM 子句里的名字将被选择列表使用，
+而选择列表中新取的名字将被最终输出。</P></BLOCKQUOTE></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="QUERIES-DISTINCT">7.3.3. <TT CLASS="LITERAL">DISTINCT</TT></A></H2><P>在处理完选择列表之后，生成的表可以删除重复行。直接在<TT CLASS="LITERAL">SELECT</TT>
+后面写上<TT CLASS="LITERAL">DISTINCT</TT>关键字即可：
+</P><PRE CLASS="SYNOPSIS">SELECT DISTINCT <TT
+CLASS="REPLACEABLE"
+><I
+>select_list</I
+></TT
+> ...</PRE><P>
+如果不用<TT CLASS="LITERAL">DISTINCT</TT>你可以用<TT CLASS="LITERAL">ALL</TT>声明保留所有行的缺省行为。
+</P><P>显然，如果两行里至少有一个字段值不同，那么我们认为这两行是独立的。
+NULL 在这里被认为是相同的。</P><P>另外，我们还可以用表达式来判断什么样的行可以认为是独立的：
+</P><PRE CLASS="SYNOPSIS">SELECT DISTINCT ON (<TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> [<SPAN
+CLASS="OPTIONAL"
+>, <TT
+CLASS="REPLACEABLE"
+><I
+>expression</I
+></TT
+> ...</SPAN
+>]) <TT
+CLASS="REPLACEABLE"
+><I
+>select_list</I
+></TT
+> ...</PRE><P>
+这里的<TT CLASS="REPLACEABLE"><I>expression</I></TT>是一个值表达式，
+它为每一行计算。如果一组行计算出的该表达式的值都相同，那么就认为这些行是重复的，
+并只输出第一行。请注意这里的<SPAN CLASS="QUOTE">"第一行"</SPAN>是不可预料的，
+除非你在足够多的字段上对该查询进行了排序，保证到达<TT CLASS="LITERAL">DISTINCT</TT>
+过滤器时行的顺序是唯一的(<TT CLASS="LITERAL">DISTINCT ON</TT>将在<TT CLASS="LITERAL">ORDER BY</TT>排序之后处理)。
+</P><P><TT CLASS="LITERAL">DISTINCT ON</TT>子句不是 SQL 标准的一部分，有时候被认为是一个糟糕的风格，
+因为它的结果是不可判定的。如果用有可选的<TT CLASS="LITERAL">GROUP BY</TT>和在<TT CLASS="LITERAL">FROM</TT>
+中的子查询可以达到目的，那么我们可以避免使用这个构造，但是通常它是更方便的方法。</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="queries-table-expressions.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="queries-union.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">表表达式</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/queries.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">组合查询</TD></TR></TABLE></DIV></BODY></HTML>

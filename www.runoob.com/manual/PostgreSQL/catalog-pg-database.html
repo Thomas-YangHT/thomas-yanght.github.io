@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>pg_database</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="系统表" HREF="http://school.yunwei.edu/manual/PostgreSQL/catalogs.html"><LINK REL="PREVIOUS" TITLE="pg_conversion" HREF="catalog-pg-conversion.html"><LINK REL="NEXT" TITLE="pg_db_role_setting" HREF="catalog-pg-db-role-setting.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/catalogs.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="pg_conversion" HREF="catalog-pg-conversion.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/catalogs.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 47. 系统表</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="pg_db_role_setting" HREF="catalog-pg-db-role-setting.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="CATALOG-PG-DATABASE">47.16. <TT CLASS="STRUCTNAME">pg_database</TT></A></H1><P><TT CLASS="STRUCTNAME">pg_database</TT>表存储关于可用数据库的信息。数据库是用
+<A HREF="sql-createdatabase.html">CREATE DATABASE</A>创建的。参考<A HREF="http://school.yunwei.edu/manual/PostgreSQL/managing-databases.html">第 21 &#31456;</A>
+获取一些参数的详细含义。</P><P>和大多数系统表不同，<TT CLASS="STRUCTNAME">pg_database</TT>是在一个集群里的所有数据库共享的：
+每个集群只有一份<TT CLASS="STRUCTNAME">pg_database</TT>拷贝，而不是每个数据库一份。</P><DIV CLASS="TABLE"><A NAME="AEN92915"></A><P><B>&#34920; 47-16. <TT CLASS="STRUCTNAME">pg_database</TT> 字段</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><COL><THEAD><TR><TH>名字</TH><TH>类型</TH><TH>引用</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD><TT CLASS="STRUCTFIELD">oid</TT></TD><TD><TT CLASS="TYPE">oid</TT></TD><TD>&nbsp;</TD><TD>行标识符(隐藏属性; 必须明确选择)</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">datname</TT></TD><TD><TT CLASS="TYPE">name</TT></TD><TD>&nbsp;</TD><TD>数据库名字</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">datdba</TT></TD><TD><TT CLASS="TYPE">oid</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-authid.html"><TT CLASS="STRUCTNAME">pg_authid</TT></A>.oid</TT></TD><TD>数据库所有人，通常为其创建者</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">encoding</TT></TD><TD><TT CLASS="TYPE">int4</TT></TD><TD>&nbsp;</TD><TD>数据库的字符编码方式(<CODE CLASS="FUNCTION">pg_encoding_to_char()</CODE>
+能够将这个数字转换为相应的编码名称)</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">datcollate</TT></TD><TD><TT CLASS="TYPE">name</TT></TD><TD>&nbsp;</TD><TD>这个数据库的LC_COLLATE</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">datctype</TT></TD><TD><TT CLASS="TYPE">name</TT></TD><TD>&nbsp;</TD><TD>这个数据库的LC_CTYPE</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">datistemplate</TT></TD><TD><TT CLASS="TYPE">bool</TT></TD><TD>&nbsp;</TD><TD>
+如果为真则此数据库可以用于<TT CLASS="COMMAND">CREATE DATABASE</TT>的
+<TT CLASS="LITERAL">TEMPLATE</TT>子句，把新数据库创建为此数据库的克隆。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">datallowconn</TT></TD><TD><TT CLASS="TYPE">bool</TT></TD><TD>&nbsp;</TD><TD>
+如果为假则没有人可以连接到这个数据库。这个字段用于保护<TT CLASS="LITERAL">template0</TT>数据库不被更改。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">datconnlimit</TT></TD><TD><TT CLASS="TYPE">int4</TT></TD><TD>&nbsp;</TD><TD>
+设置该数据库上允许的最大并发连接数，-1 表示无限制。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">datlastsysoid</TT></TD><TD><TT CLASS="TYPE">oid</TT></TD><TD>&nbsp;</TD><TD>
+数据库里最后一个系统 OID ；对<SPAN CLASS="APPLICATION">pg_dump</SPAN>特别有用。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">datfrozenxid</TT></TD><TD><TT CLASS="TYPE">xid</TT></TD><TD>&nbsp;</TD><TD>
+该数据库中中所有在这个之前的事务 ID 已经被一个固定的(<SPAN CLASS="QUOTE">"frozen"</SPAN>)
+事务 ID 替换。这用于跟踪该数据库是否需要为了防止事务 ID 重叠或者允许收缩
+<TT CLASS="LITERAL">pg_clog</TT>而进行清理。它是针对每个表的<TT CLASS="STRUCTNAME">pg_class</TT>.<TT CLASS="STRUCTFIELD">relfrozenxid</TT>
+中的最小值。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">datminmxid</TT></TD><TD><TT CLASS="TYPE">xid</TT></TD><TD>&nbsp;</TD><TD>
+该数据库中中所有在这个之前的多事务 ID 已经被一个事务 ID 替换。
+这用于跟踪该数据库是否需要为了防止事务 ID 重叠或者允许收缩
+<TT CLASS="LITERAL">pg_clog</TT>而进行清理。它是针对每个表的<TT CLASS="STRUCTNAME">pg_class</TT>.<TT CLASS="STRUCTFIELD">relfrozenxid</TT>
+中的最小值。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">dattablespace</TT></TD><TD><TT CLASS="TYPE">oid</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-tablespace.html"><TT CLASS="STRUCTNAME">pg_tablespace</TT></A>.oid</TT></TD><TD>
+该数据库的缺省表空间。在这个数据库里，所有<TT CLASS="STRUCTNAME">pg_class</TT>.<TT CLASS="STRUCTFIELD">reltablespace</TT>
+为零的表都将保存在这个表空间里；特别要指出的是，所有非共享的系统表也都存放在这里。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">datacl</TT></TD><TD><TT CLASS="TYPE">aclitem[]</TT></TD><TD>&nbsp;</TD><TD>
+访问权限，参阅<A HREF="sql-grant.html">GRANT</A>和<A HREF="sql-revoke.html">REVOKE</A>获取详细信息。
+</TD></TR></TBODY></TABLE></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="catalog-pg-conversion.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="catalog-pg-db-role-setting.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><TT CLASS="STRUCTNAME">pg_conversion</TT></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/catalogs.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><TT CLASS="STRUCTNAME">pg_db_role_setting</TT></TD></TR></TABLE></DIV></BODY></HTML>

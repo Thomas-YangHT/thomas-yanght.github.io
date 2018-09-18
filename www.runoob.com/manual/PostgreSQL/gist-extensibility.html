@@ -1,0 +1,345 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>扩展性</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="GiST索引" HREF="http://school.yunwei.edu/manual/PostgreSQL/gist.html"><LINK REL="PREVIOUS" TITLE="介绍" HREF="gist-intro.html"><LINK REL="NEXT" TITLE="实现" HREF="gist-implementation.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/gist.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="介绍" HREF="gist-intro.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/gist.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 55. GiST索引</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="实现" HREF="gist-implementation.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="GIST-EXTENSIBILITY">55.2. 扩展性</A></H1><P>传统上，实现一种新的索引访问方法意味着大量的艰苦工作。必须理解数据库的内部工作机制，比如锁的机制和预写日志。
+<ACRONYM CLASS="ACRONYM">GiST</ACRONYM>接口有一个高层的抽像，只要求访问方法的实现者实现被访问的数据类型的语意。
+<ACRONYM CLASS="ACRONYM">GiST</ACRONYM>层本身会处理并发，日志和搜索树结构等任务。
+</P><P>不要把这个扩展性和其它标准搜索树的扩展性混淆在一起，比如它们所能处理的数据等方面。
+比如，<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>支持可扩展的 B-trees和哈希索引。
+这就意味着可以用<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>在任意你需要的数据类型上建立 B-tree或哈希 。
+但是 B-trees 只支持范围谓词(<TT CLASS="LITERAL">&lt;</TT>、<TT CLASS="LITERAL">=</TT>、<TT CLASS="LITERAL">&gt;</TT>),而哈希仅支持相等查询。
+</P><P>所以，如果你用<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> B-tree 索引了一个图像集，那么你就只能发出类似
+<SPAN CLASS="QUOTE">"图像 x 和图像 y 相等吗"</SPAN>、<SPAN CLASS="QUOTE">"图像 x 是不是比图像 y 小"</SPAN>、<SPAN CLASS="QUOTE">"图像 x 是否大于图像 y"</SPAN>这样的查询。
+依赖于你在这个环境下定义的<SPAN CLASS="QUOTE">"等于"</SPAN>、<SPAN CLASS="QUOTE">"小于"</SPAN>、<SPAN CLASS="QUOTE">"大于"</SPAN>的含义，上面这些查询可能有意义。
+但是，使用一个基于<ACRONYM CLASS="ACRONYM">GiST</ACRONYM>的索引，你可以创建一些方法来提出和领域相关的问题，比如<SPAN CLASS="QUOTE">"找出所有马的图像"</SPAN>或者<SPAN CLASS="QUOTE">"找出所有曝光过头的图像"</SPAN>。
+</P><P>要让一种<ACRONYM CLASS="ACRONYM">GiST</ACRONYM>访问方法跑起来只要实现几个用户定义方法，这些方法定义了树里面的键字的行为。
+当然，为了支持那些怪异的查询，这些方法也会相当怪异，但是对于所有标准的查询(B-tree，R-tree 等)，他们是相当直接的。
+简单说，<ACRONYM CLASS="ACRONYM">GiST</ACRONYM>组合了扩展性和通用性，以及代码复用和一个干净的界面。
+</P><P><ACRONYM CLASS="ACRONYM">GiST</ACRONYM>用的索引操作符类必须提供7个方法，第8个方法是可选的。
+索引的正确性通过正确的实现<CODE CLASS="FUNCTION">same</CODE>, <CODE CLASS="FUNCTION">consistent</CODE>和<CODE CLASS="FUNCTION">union</CODE>方法来确保,而索引的效率(大小和速度)依赖于<CODE CLASS="FUNCTION">penalty</CODE>和<CODE CLASS="FUNCTION">picksplit</CODE>。
+剩下的2个方法是<CODE CLASS="FUNCTION">compress</CODE>和<CODE CLASS="FUNCTION">decompress</CODE>，它们允许索引持有的内部数据和它索引的对象数据的类型不同。
+叶子节点的类型必须和被索引数据相同，而其他节点可以是任意C结构(但是，这里仍然必须遵守<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>中数据类型的规则，对可变大小数据请参考<TT CLASS="LITERAL">varlena</TT>)。
+如果树的内部数据类型在SQL级别存在，可以在<TT CLASS="COMMAND">CREATE OPERATOR CLASS</TT>命令中使用<TT CLASS="LITERAL">STORAGE</TT>选项。
+可选的第8个方法是<CODE CLASS="FUNCTION">distance</CODE>,如果希望操作符类支持排序的扫描（最邻近搜索），就需要提供这个方法。
+</P><P></P><DIV CLASS="VARIABLELIST"><DL><DT><CODE CLASS="FUNCTION">consistent</CODE></DT><DD><P>给定一个索引项<TT CLASS="LITERAL">p</TT>和查询值<TT CLASS="LITERAL">q</TT>，这个函数决定是否索引项和查询<SPAN CLASS="QUOTE">"一致"</SPAN>；
+也即是，对任何该索引项代表的行，谓词 <SPAN CLASS="QUOTE">"<TT CLASS="REPLACEABLE"><I>indexed_column</I></TT><TT CLASS="REPLACEABLE"><I>indexable_operator</I></TT> <TT CLASS="LITERAL">q</TT>"</SPAN>是否可能为真？
+对叶子索引项这等价于测试索引条件，对内部树节点它指示是否有必要扫描该节点代表的索引子树。
+当结果为<TT CLASS="LITERAL">true</TT>，必须还要返回<TT CLASS="LITERAL">recheck</TT>标志位。这指示了谓词是精确为真还是只是可能为真。
+如果<TT CLASS="LITERAL">recheck</TT> = <TT CLASS="LITERAL">false</TT>，索引已经精确地测试了谓词条件，
+如果<TT CLASS="LITERAL">recheck</TT>= <TT CLASS="LITERAL">true</TT>，相应的行仅仅是一个候选匹配。
+这种情况下，系统还将自动对实际的行值进行评价<TT CLASS="REPLACEABLE"><I>indexable_operator</I></TT>以检查是否真的匹配。
+这一规则允许<ACRONYM CLASS="ACRONYM">GiST</ACRONYM>同时支持无损索引和有损索引。
+</P><P>这个函数的<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>声明必须按照如下方式。
+</P><PRE CLASS="PROGRAMLISTING">CREATE OR REPLACE FUNCTION my_consistent(internal, data_type, smallint, oid, internal)
+RETURNS bool
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT;</PRE><P>
+C模块中的对应代码可以参考下面的骨架代码。
+</P><PRE CLASS="PROGRAMLISTING">Datum       my_consistent(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(my_consistent);
+
+Datum
+my_consistent(PG_FUNCTION_ARGS)
+{
+    GISTENTRY  *entry = (GISTENTRY *) PG_GETARG_POINTER(0);
+    data_type  *query = PG_GETARG_DATA_TYPE_P(1);
+    StrategyNumber strategy = (StrategyNumber) PG_GETARG_UINT16(2);
+    /* Oid subtype = PG_GETARG_OID(3); */
+    bool       *recheck = (bool *) PG_GETARG_POINTER(4);
+    data_type  *key = DatumGetDataType(entry-&gt;key);
+    bool        retval;
+
+    /*
+     * 根据strategy,key和query决定返回值。
+     *
+     * 使用GIST_LEAF(entry)可以感知函数在索引树的什么位置被调用，比如这在支持=操作符时很方便
+     * （可以在非叶子节点检查非空的union()和在叶子节点检测等价性)。
+     */
+
+    *recheck = true;        /* 如果是精确检查则为假 */
+
+    PG_RETURN_BOOL(retval);
+}</PRE><P>
+这里<TT CLASS="VARNAME">key</TT>是索引中的一个元素，而<TT CLASS="VARNAME">query</TT>是要在索引中查找的值。
+<TT CLASS="LITERAL">StrategyNumber</TT>参数指示要应用操作符类中的哪个操作符，
+它必须是<TT CLASS="COMMAND">CREATE OPERATOR CLASS</TT>命令指定的操作符编号之一。
+依赖于在操作符类中包含的操作符，<TT CLASS="VARNAME">query</TT>的数据类型可能和操作符不同，但是上面的骨架代码假设不是这种情况。
+</P></DD><DT><CODE CLASS="FUNCTION">union</CODE></DT><DD><P>这个方法用于合并树中的信息。输入一个项目的集合，这个函数生成一个代表所有给定项目的新的索引项目。
+</P><P>
+这个函数的<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>声明必须按照如下方式。
+</P><PRE CLASS="PROGRAMLISTING">CREATE OR REPLACE FUNCTION my_union(internal, internal)
+RETURNS internal
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT;</PRE><P>
+C模块中的对应代码可以参考下面的骨架代码。
+</P><PRE CLASS="PROGRAMLISTING">Datum       my_union(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(my_union);
+
+Datum
+my_union(PG_FUNCTION_ARGS)
+{
+    GistEntryVector *entryvec = (GistEntryVector *) PG_GETARG_POINTER(0);
+    GISTENTRY  *ent = entryvec-&gt;vector;
+    data_type  *out,
+               *tmp,
+               *old;
+    int         numranges,
+                i = 0;
+
+    numranges = entryvec-&gt;n;
+    tmp = DatumGetDataType(ent[0].key);
+    out = tmp;
+
+    if (numranges == 1)
+    {
+        out = data_type_deep_copy(tmp);
+
+        PG_RETURN_DATA_TYPE_P(out);
+    }
+
+    for (i = 1; i &lt; numranges; i++)
+    {
+        old = out;
+        tmp = DatumGetDataType(ent[i].key);
+        out = my_union_implementation(out, tmp);
+    }
+
+    PG_RETURN_DATA_TYPE_P(out);
+}</PRE><P>
+</P><P>正如你看到的，这个骨架代码中我们处理了符合<TT CLASS="LITERAL">union(X, Y, Z) = union(union(X, Y), Z)</TT>的数据类型。
+在<ACRONYM CLASS="ACRONYM">GiST</ACRONYM>支持方法中实现适当的union算法也可以很容易地支持其它不符合这一条件的数据类型。
+</P><P><CODE CLASS="FUNCTION">union</CODE>的实现函数应该返回一个由<CODE CLASS="FUNCTION">palloc()</CODE>分配的内存的指针。
+不能简单地直接返回输入的东西。
+</P></DD><DT><CODE CLASS="FUNCTION">compress</CODE></DT><DD><P>把数据项转换为适合在索引页中存储的格式。
+</P><P>这个函数的<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>声明必须按照如下方式。
+</P><PRE CLASS="PROGRAMLISTING">CREATE OR REPLACE FUNCTION my_compress(internal)
+RETURNS internal
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT;</PRE><P>
+C模块中的对应代码可以参考下面的骨架代码。
+</P><PRE CLASS="PROGRAMLISTING">Datum       my_compress(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(my_compress);
+
+Datum
+my_compress(PG_FUNCTION_ARGS)
+{
+    GISTENTRY  *entry = (GISTENTRY *) PG_GETARG_POINTER(0);
+    GISTENTRY  *retval;
+
+    if (entry-&gt;leafkey)
+    {
+        /* 把entry-&gt;key替换为压缩的版本 */
+        compressed_data_type *compressed_data = palloc(sizeof(compressed_data_type));
+
+        /* 从entry-&gt;key填充*compressed_data */
+
+        retval = palloc(sizeof(GISTENTRY));
+        gistentryinit(*retval, PointerGetDatum(compressed_data),
+                      entry-&gt;rel, entry-&gt;page, entry-&gt;offset, FALSE);
+    }
+    else
+    {
+        /* 通常不需要对非叶子节点做任何处理 */
+        retval = entry;
+    }
+
+    PG_RETURN_POINTER(retval);
+}</PRE><P>
+</P><P>当然，为了压缩叶子节点，你需要把<TT CLASS="REPLACEABLE"><I>compressed_data_type</I></TT>适配到特定的数据类型。
+</P><P>根据你的需求，可能还需要关心如何压缩<TT CLASS="LITERAL">NULL</TT>值，例如存储为<TT CLASS="LITERAL">(Datum) 0</TT>，就像<TT CLASS="LITERAL">gist_circle_compress</TT>那样。
+</P></DD><DT><CODE CLASS="FUNCTION">decompress</CODE></DT><DD><P>与<CODE CLASS="FUNCTION">compress</CODE>函数正好相反。
+把数据项的索引表现转换为可以被数据库处理的格式。
+</P><P>这个函数的<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>声明必须按照如下方式。
+</P><PRE CLASS="PROGRAMLISTING">CREATE OR REPLACE FUNCTION my_decompress(internal)
+RETURNS internal
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT;</PRE><P>
+C模块中的对应代码可以参考下面的骨架代码。
+</P><PRE CLASS="PROGRAMLISTING">Datum       my_decompress(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(my_decompress);
+
+Datum
+my_decompress(PG_FUNCTION_ARGS)
+{
+    PG_RETURN_POINTER(PG_GETARG_POINTER(0));
+}</PRE><P>
+上面的骨架代码适合不需要解压缩的场合。
+</P></DD><DT><CODE CLASS="FUNCTION">penalty</CODE></DT><DD><P>返回插入新项目到特定分支的<SPAN CLASS="QUOTE">"代价"</SPAN>值。
+项目将会被插入到树中<CODE CLASS="FUNCTION">penalty</CODE>最小的路径。
+<CODE CLASS="FUNCTION">penalty</CODE>的返回值应该是非负数。
+如果返回了负数将会被当作0处理。
+</P><P>
+这个函数的<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>声明必须按照如下方式。
+</P><PRE CLASS="PROGRAMLISTING">CREATE OR REPLACE FUNCTION my_penalty(internal, internal, internal)
+RETURNS internal
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT;  -- in some cases penalty functions need not be strict</PRE><P>
+C模块中的对应代码可以参考下面的骨架代码。
+</P><PRE CLASS="PROGRAMLISTING">Datum       my_penalty(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(my_penalty);
+
+Datum
+my_penalty(PG_FUNCTION_ARGS)
+{
+    GISTENTRY  *origentry = (GISTENTRY *) PG_GETARG_POINTER(0);
+    GISTENTRY  *newentry = (GISTENTRY *) PG_GETARG_POINTER(1);
+    float      *penalty = (float *) PG_GETARG_POINTER(2);
+    data_type  *orig = DatumGetDataType(origentry-&gt;key);
+    data_type  *new = DatumGetDataType(newentry-&gt;key);
+
+    *penalty = my_penalty_implementation(orig, new);
+    PG_RETURN_POINTER(penalty);
+}</PRE><P>
+</P><P><CODE CLASS="FUNCTION">penalty</CODE>函数对索引的性能非常重要。
+在插入阶段，它可以用来决定把新增加项目插入到哪个分支。
+在查询阶段，越平衡的索引，检索速度越快。
+</P></DD><DT><CODE CLASS="FUNCTION">picksplit</CODE></DT><DD><P>如果需要分裂一个索引页面的时候，这个函数决定页面中哪些项目保存在旧页面里，哪些移动到新页面里。
+</P><P>这个函数的<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>声明必须按照如下方式。
+</P><PRE CLASS="PROGRAMLISTING">CREATE OR REPLACE FUNCTION my_picksplit(internal, internal)
+RETURNS internal
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT;</PRE><P>
+C模块中的对应代码可以参考下面的骨架代码。
+</P><PRE CLASS="PROGRAMLISTING">Datum       my_picksplit(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(my_picksplit);
+
+Datum
+my_picksplit(PG_FUNCTION_ARGS)
+{
+    GistEntryVector *entryvec = (GistEntryVector *) PG_GETARG_POINTER(0);
+    OffsetNumber maxoff = entryvec-&gt;n - 1;
+    GISTENTRY  *ent = entryvec-&gt;vector;
+    GIST_SPLITVEC *v = (GIST_SPLITVEC *) PG_GETARG_POINTER(1);
+    int         i,
+                nbytes;
+    OffsetNumber *left,
+               *right;
+    data_type  *tmp_union;
+    data_type  *unionL;
+    data_type  *unionR;
+    GISTENTRY **raw_entryvec;
+
+    maxoff = entryvec-&gt;n - 1;
+    nbytes = (maxoff + 1) * sizeof(OffsetNumber);
+
+    v-&gt;spl_left = (OffsetNumber *) palloc(nbytes);
+    left = v-&gt;spl_left;
+    v-&gt;spl_nleft = 0;
+
+    v-&gt;spl_right = (OffsetNumber *) palloc(nbytes);
+    right = v-&gt;spl_right;
+    v-&gt;spl_nright = 0;
+
+    unionL = NULL;
+    unionR = NULL;
+
+    /* 初始化项目数组 */
+    raw_entryvec = (GISTENTRY **) malloc(entryvec-&gt;n * sizeof(void *));
+    for (i = FirstOffsetNumber; i &lt;= maxoff; i = OffsetNumberNext(i))
+        raw_entryvec[i] = &amp;(entryvec-&gt;vector[i]);
+
+    for (i = FirstOffsetNumber; i &lt;= maxoff; i = OffsetNumberNext(i))
+    {
+        int         real_index = raw_entryvec[i] - entryvec-&gt;vector;
+
+        tmp_union = DatumGetDataType(entryvec-&gt;vector[real_index].key);
+        Assert(tmp_union != NULL);
+
+        /*
+         * 选择放置索引项目的位置，并相应地更新unionL和unionR。
+         * 追加项目到v_spl_left或者v_spl_right，并注意处理计数器。
+         */
+
+        if (my_choice_is_left(unionL, curl, unionR, curr))
+        {
+            if (unionL == NULL)
+                unionL = tmp_union;
+            else
+                unionL = my_union_implementation(unionL, tmp_union);
+
+            *left = real_index;
+            ++left;
+            ++(v-&gt;spl_nleft);
+        }
+        else
+        {
+            /*
+             * 右边做相同处理
+             */
+        }
+    }
+
+    v-&gt;spl_ldatum = DataTypeGetDatum(unionL);
+    v-&gt;spl_rdatum = DataTypeGetDatum(unionR);
+    PG_RETURN_POINTER(v);
+}</PRE><P>
+</P><P>像<CODE CLASS="FUNCTION">penalty</CODE>一样，<CODE CLASS="FUNCTION">picksplit</CODE>函数对索引的性能也非常重要，
+设计合适的<CODE CLASS="FUNCTION">penalty</CODE>和<CODE CLASS="FUNCTION">picksplit</CODE>函数直接关系到实现良好性能的<ACRONYM CLASS="ACRONYM">GiST</ACRONYM>索引。
+</P></DD><DT><CODE CLASS="FUNCTION">same</CODE></DT><DD><P>2个索引项目等价时为真，否则为假。
+</P><P>这个函数的<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>声明必须按照如下方式。
+</P><PRE CLASS="PROGRAMLISTING">CREATE OR REPLACE FUNCTION my_same(internal, internal, internal)
+RETURNS internal
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT;</PRE><P>
+C模块中的对应代码可以参考下面的骨架代码。
+</P><PRE CLASS="PROGRAMLISTING">Datum       my_same(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(my_same);
+
+Datum
+my_same(PG_FUNCTION_ARGS)
+{
+    prefix_range *v1 = PG_GETARG_PREFIX_RANGE_P(0);
+    prefix_range *v2 = PG_GETARG_PREFIX_RANGE_P(1);
+    bool       *result = (bool *) PG_GETARG_POINTER(2);
+
+    *result = my_eq(v1, v2);
+    PG_RETURN_POINTER(result);
+}</PRE><P>
+由于历史的原因，<CODE CLASS="FUNCTION">same</CODE>函数并不是单纯地返回布尔值，
+而是将标志位存储到由第3个参数指向的位置。
+</P></DD><DT><CODE CLASS="FUNCTION">distance</CODE></DT><DD><P>给定一个索引项目<TT CLASS="LITERAL">p</TT>和查询值<TT CLASS="LITERAL">q</TT>，这个函数决定这2者之间的<SPAN CLASS="QUOTE">"距离"</SPAN>。
+如果操作符类包含任何排序的操作符，必须要提供这个函数。
+通过先返回最小<SPAN CLASS="QUOTE">"距离"</SPAN>值的索引项目，可以实现使用了排序操作符的查询，因此结果必须和操作符的语义一致。
+对一个叶子索引项目，结果只是到索引项目的距离；对内部项目，结果必须是任何子节点项目的最小距离。
+</P><P>这个函数的<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>声明必须按照如下方式。
+</P><PRE CLASS="PROGRAMLISTING">CREATE OR REPLACE FUNCTION my_distance(internal, data_type, smallint, oid)
+RETURNS float8
+AS 'MODULE_PATHNAME'
+LANGUAGE C STRICT;</PRE><P>
+C模块中的对应代码可以参考下面的骨架代码。
+</P><PRE CLASS="PROGRAMLISTING">Datum       my_distance(PG_FUNCTION_ARGS);
+PG_FUNCTION_INFO_V1(my_distance);
+
+Datum
+my_distance(PG_FUNCTION_ARGS)
+{
+    GISTENTRY  *entry = (GISTENTRY *) PG_GETARG_POINTER(0);
+    data_type  *query = PG_GETARG_DATA_TYPE_P(1);
+    StrategyNumber strategy = (StrategyNumber) PG_GETARG_UINT16(2);
+    /* Oid subtype = PG_GETARG_OID(3); */
+    data_type  *key = DatumGetDataType(entry-&gt;key);
+    double      retval;
+
+    /*
+     * determine return value as a function of strategy, key and query.
+     */
+
+    PG_RETURN_FLOAT8(retval);
+}</PRE><P>
+<CODE CLASS="FUNCTION">distance</CODE>函数的参数，除了recheck标志位，其他和<CODE CLASS="FUNCTION">consistent</CODE>函数相同。
+一个叶子节点的距离值必须是精确的，因为一旦返回了元组就没有办法再进行排序了。
+对内部节点允许一定程度的近似，只要不大于任何一个子节点的实际距离。
+比如，在地理应用中到矩形边界的距离就足够了。
+结果值可以是任何有限的<TT CLASS="TYPE">float8</TT>类型值。
+（无穷和负无穷用于在内部作为空等情况使用，因此，不建议<CODE CLASS="FUNCTION">distance</CODE>返回这些值。）
+</P></DD></DL></DIV><P>所有的GiST支持方法通常在短周期内存上下文中被调用，也就是说，在每个元组被处理后<TT CLASS="VARNAME">CurrentMemoryContext</TT>都会被重置。
+因此不太需要担心pfree被palloc出来的所有东西。
+然而，有些情况下，需要支持方法在多次调用间缓存数据。
+为了实现这个目的，需要在<TT CLASS="LITERAL">fcinfo-&gt;flinfo-&gt;fn_mcxt</TT>中分配长生命周期的数据，
+并且在<TT CLASS="LITERAL">fcinfo-&gt;flinfo-&gt;fn_extra</TT>中保存其指针。
+这样的数据在索引操作(比如:单个的GiST索引扫描，索引创建或索引元组插入)完成后仍然有效。
+在覆盖<TT CLASS="LITERAL">fn_extra</TT>的值前要小心的pfree掉先前的值，否则在操作期间内存泄漏会越积越多。
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="gist-intro.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="gist-implementation.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">介绍</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/gist.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">实现</TD></TR></TABLE></DIV></BODY></HTML>

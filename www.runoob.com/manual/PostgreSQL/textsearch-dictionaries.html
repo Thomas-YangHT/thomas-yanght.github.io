@@ -1,0 +1,268 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>词典</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="全文检索" HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html"><LINK REL="PREVIOUS" TITLE="解析器" HREF="textsearch-parsers.html"><LINK REL="NEXT" TITLE="配置实例" HREF="textsearch-configuration.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/textsearch.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="解析器" HREF="textsearch-parsers.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 12. 全文检索</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="配置实例" HREF="textsearch-configuration.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="TEXTSEARCH-DICTIONARIES">12.6. 词典</A></H1><P> 词典用于删除那些不在搜索范围内的词（<I CLASS="FIRSTTERM">屏蔽词</I>），并且为了<I CLASS="FIRSTTERM">规范化</I>，将匹配同一个词的不同形式。
+一个成功的规范化的词叫<I CLASS="FIRSTTERM">词位</I>。除了提高检索质量外，屏蔽词的规范化和删除可以减少文档<TT CLASS="TYPE">tsvector</TT>形式的大小，
+从而提高性能。规范化并不总是有语言学意义，通常取决于应用程序的环境。</P><P>
+一些规范化的例子：
+<P></P></P><UL COMPACT="COMPACT"><LI STYLE="list-style-type: disc"><P>
+语言的-Ispell词典尽量减少输入字的正规形式；词干词典去掉词尾
+</P></LI><LI STYLE="list-style-type: disc"><P>
+<ACRONYM CLASS="ACRONYM">URL</ACRONYM>位置可以使等效URL匹配被规范化：
+<P></P></P><UL COMPACT="COMPACT"><LI STYLE="list-style-type: disc"><P> http://www.pgsql.ru/db/mw/index.html
+</P></LI><LI STYLE="list-style-type: disc"><P> http://www.pgsql.ru/db/mw/</P></LI><LI STYLE="list-style-type: disc"><P> http://www.pgsql.ru/db/../db/mw/index.html</P></LI></UL><P>
+</P></LI><LI STYLE="list-style-type: disc"><P> 颜色名称可以由他们的十六进制值替换，比如：<TT CLASS="LITERAL">red, green, blue, magenta -&#62; FF0000, 00FF00, 0000FF, FF00FF</TT></P></LI><LI STYLE="list-style-type: disc"><P> 如果索引数字，我们可以删除一些小数位数，减少可能数字的范围，例如如果保留小数点后两位小数，
+则<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">3.14</I></SPAN>159265359,<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">3.14</I></SPAN>15926将归一化为一样的<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">3.14</I></SPAN> </P></LI></UL><P>
+</P><P>
+字典是一个程序，它接受标记作为输入和返回：
+<P></P></P><UL COMPACT="COMPACT"><LI STYLE="list-style-type: disc"><P>
+词条数组如果输入标记是已知的词典（注意，一个标记可以产生一个以上的词）
+</P></LI><LI STYLE="list-style-type: disc"><P> 用<TT CLASS="LITERAL">TSL_FILTER</TT>标志设置的单词，与被传递到随后的词典的新的标记代替原来的（称这是<I CLASS="FIRSTTERM">过滤词典</I>）</P></LI><LI STYLE="list-style-type: disc"><P> 如果词典认为标记是空数组，但它是一个屏蔽词。</P></LI><LI STYLE="list-style-type: disc"><P> 如果词典不能识别输入标记，则为<TT CLASS="LITERAL">空</TT></P></LI></UL><P>
+</P><P> <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>提供了多种语言的预定义字典。也有几个预定义的模板，可用于创建自定义参数的新词典。
+每个预定义的字典模板描述如下。如果没有现成的模板是合适的，它可以创建一个新的；
+参见<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>发布的<TT CLASS="FILENAME">contrib/</TT>部分例子</P><P> 文本搜索配置将解析器和处理解析器输出标记绑定在一起。为了每个标记类型，
+返回解析器，单独的词典列表通过配置指定。当标记类型是由解析器发现时，
+列表中的每个字典依次查阅，直到一些词典作为一个已知的单词识别它。如果它被确定为一个屏蔽词，
+或者如果没有词典识别标记，它将被丢弃，并且没有索引或搜索。通常，返回一个非-<TT CLASS="LITERAL">空</TT>输出的第一个词典将决定结果，
+并且不查阅任何剩余的词典；但过滤词典可以替换带有修饰词的给定词，然后被传递给后继词典。</P><P> 配置一个字典列表的一般规则是放在第一个最窄的，最具体的词典中，然后是更一般的词典，
+整理一个非常普遍的词典，像<SPAN CLASS="APPLICATION">Snowball</SPAN>词干或<TT CLASS="LITERAL">simple</TT>可以识别一切。例如，
+一个天文学的特定搜索（<TT CLASS="LITERAL">astro_en</TT>配置）可以将标记类型<TT CLASS="TYPE">asciiword</TT>（ASCII字）绑定到天文术语的同义词词典，
+一般英语词典和<SPAN CLASS="APPLICATION">Snowball</SPAN> 英文词干分析器：
+</P><PRE CLASS="PROGRAMLISTING">ALTER TEXT SEARCH CONFIGURATION astro_en
+    ADD MAPPING FOR asciiword WITH astrosyn, english_ispell, english_stem;</PRE><P>&#13;</P><P> 过滤词典可以放置在列表中的任何地方，除了在结束的地方会是无用的。
+过滤词典部分规范化词以简化后继词典的任务是非常有用的。
+例如，过滤词典可以用来从重音字母中删除重音，按照<A HREF="unaccent.html">unaccent</A>模块执行。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TEXTSEARCH-STOPWORDS">12.6.1. 屏蔽词</A></H2><P> 屏蔽词是很常见的词，出现在几乎每一个文档中，并且没有区分值。因此，他们可以在全文搜索的环境中被忽视的。
+例如，每个英文文本包含像<TT CLASS="LITERAL">a</TT> 和 <TT CLASS="LITERAL">the</TT>的单词，因此它们在索引中存储无效。然而，屏蔽词影响在<TT CLASS="TYPE">tsvector</TT>中的位置，
+这反过来也影响相关度：
+</P><PRE CLASS="SCREEN">SELECT to_tsvector('english','in the list of stop words');
+        to_tsvector
+----------------------------
+ 'list':3 'stop':5 'word':6</PRE><P>
+丢失位置1,2,4是因为屏蔽词。带有和没有屏蔽词的文档排序计算是完全不同的：
+</P><PRE CLASS="SCREEN">SELECT ts_rank_cd (to_tsvector('english','in the list of stop words'), to_tsquery('list &amp; stop'));
+ ts_rank_cd
+------------
+       0.05
+
+SELECT ts_rank_cd (to_tsvector('english','list stop words'), to_tsquery('list &amp; stop'));
+ ts_rank_cd
+------------
+        0.1</PRE><P>&#13;</P><P> 如何处理屏蔽词，它是由特定词典决定的。例如，<TT CLASS="LITERAL">ispell</TT>词典首先规范词，然后查看屏蔽词列表，
+而<TT CLASS="LITERAL">Snowball</TT>词干首先检查屏蔽词列表。这个不同操作的原因是为了减少噪音。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TEXTSEARCH-SIMPLE-DICTIONARY">12.6.2. Simple 词典</A></H2><P> <TT CLASS="LITERAL">simple</TT>字典模板通过转换输入标记为小写字母进行，并且屏蔽词文件前检查它。
+如果在文档中找到并返回空数组，则丢弃这个标记。如果没有，单词的小写字母形式作为归一化的词返回。
+另外，词典可以为报告未识别的非屏蔽词进行配置，允许将它们传递到列表中的后继词典中。</P><P>
+这有使用<TT CLASS="LITERAL">simple</TT>模板的词典定义的例子：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TEXT SEARCH DICTIONARY public.simple_dict (
+    TEMPLATE = pg_catalog.simple,
+    STOPWORDS = english
+);</PRE><P>
+在这里，<TT CLASS="LITERAL">english</TT>是一种屏蔽词文件的基础名称。文档的全名为<TT CLASS="FILENAME">$SHAREDIR/tsearch_data/english.stop</TT>，
+这里的<TT CLASS="LITERAL">$SHAREDIR</TT>是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>安装的共享数据目录，经常使用<TT CLASS="FILENAME">/usr/local/share/postgresql</TT>（如果你不确定，
+则使用<TT CLASS="COMMAND">pg_config --sharedir</TT>来决定）。文档格式是一个简单的单词列表，每行一个。忽略空白行和空格，
+并且大写字母转换成小写字母，但对文档内容没有其他的处理方式。
+</P><P>
+现在我们可以测试我们的词典：
+</P><PRE CLASS="SCREEN">SELECT ts_lexize('public.simple_dict','YeS');
+ ts_lexize
+-----------
+ {yes}
+
+SELECT ts_lexize('public.simple_dict','The');
+ ts_lexize
+-----------
+ {}</PRE><P>
+</P><P>
+如果没在屏蔽词文件中找到，我们也可以选择返回<TT CLASS="LITERAL">NULL</TT>，而不是小写字母单词。
+这种行为是通过设置字典的<TT CLASS="LITERAL">Accept</TT>参数为<TT CLASS="LITERAL">false</TT>选择的。继续例子：
+</P><PRE CLASS="SCREEN">ALTER TEXT SEARCH DICTIONARY public.simple_dict ( Accept = false );
+
+SELECT ts_lexize('public.simple_dict','YeS');
+ ts_lexize
+-----------
+
+
+SELECT ts_lexize('public.simple_dict','The');
+ ts_lexize
+-----------
+ {}</PRE><P>
+</P><P>
+随着缺省设置<TT CLASS="LITERAL">Accept</TT> = <TT CLASS="LITERAL">true</TT>，它把<TT CLASS="LITERAL">simple</TT>词典放在词典列表末尾的时候是很有用的，
+因为它不会传递任何标记给后继词典。相反，当至少有一个后继词典时，<TT CLASS="LITERAL">Accept</TT> = <TT CLASS="LITERAL">false</TT>是唯一有用的。</P><DIV CLASS="CAUTION"><P></P><TABLE CLASS="CAUTION" BORDER="1" WIDTH="100%"><TR><TD ALIGN="CENTER"><B>&#23567;&#24515;</B></TD></TR><TR><TD ALIGN="LEFT"><P> 词典大部分类型依赖于配置文档，如屏蔽词文件。这些文件<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">必须</I></SPAN>存储在UTF-8编码中。
+当他们读到服务器中，如果是不同的，他们将被转化为实际的数据库编码。</P></TD></TR></TABLE></DIV><DIV CLASS="CAUTION"><P></P><TABLE CLASS="CAUTION" BORDER="1" WIDTH="100%"><TR><TD ALIGN="CENTER"><B>&#23567;&#24515;</B></TD></TR><TR><TD ALIGN="LEFT"><P> 通常情况下，当它在会话中第一次使用时，数据库会话将只读一次词典的配置文档，
+如果你修改一个配置文档，想强制现有会话获取新的内容，则在词典中使用命令<TT CLASS="COMMAND">ALTER TEXT SEARCH DICTIONARY</TT>。
+这是一个<SPAN CLASS="QUOTE">"虚拟"</SPAN>的更新，实际上并没有改变任何参数值。</P></TD></TR></TABLE></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TEXTSEARCH-SYNONYM-DICTIONARY">12.6.3. 同义词词典</A></H2><P>
+这个字典模板用于创建替代词和同义词的词典。不支持短语（使用同义词库模板（节<A HREF="textsearch-dictionaries.html#TEXTSEARCH-THESAURUS">第 12.6.4 &#33410;</A>）。
+一个同义词词典可以用来克服语言上的问题，例如，防止英语词干词典使单词<SPAN CLASS="QUOTE">"Paris"</SPAN>变成<SPAN CLASS="QUOTE">"pari"</SPAN>。
+这足以在同义词词典中有<TT CLASS="LITERAL">Paris paris</TT>行并且放在<TT CLASS="LITERAL">english_stem</TT>词典之前。比如：
+</P><PRE CLASS="SCREEN">SELECT * FROM ts_debug('english', 'Paris');
+   alias   |   description   | token |  dictionaries  |  dictionary  | lexemes 
+-----------+-----------------+-------+----------------+--------------+---------
+ asciiword | Word, all ASCII | Paris | {english_stem} | english_stem | {pari}
+
+CREATE TEXT SEARCH DICTIONARY my_synonym (
+    TEMPLATE = synonym,
+    SYNONYMS = my_synonyms
+);
+
+ALTER TEXT SEARCH CONFIGURATION english
+    ALTER MAPPING FOR asciiword
+    WITH my_synonym, english_stem;
+
+SELECT * FROM ts_debug('english', 'Paris');
+   alias   |   description   | token |       dictionaries        | dictionary | lexemes 
+-----------+-----------------+-------+---------------------------+------------+---------
+ asciiword | Word, all ASCII | Paris | {my_synonym,english_stem} | my_synonym | {paris}</PRE><P>
+</P><P> <TT CLASS="LITERAL">synonym</TT>模版要求的唯一的参数是<TT CLASS="LITERAL">SYNONYMS</TT>，这是它的配置文件的基础名称&mdash;上面例子中<TT CLASS="LITERAL">my_synonyms</TT>。
+文件的全名为<TT CLASS="FILENAME">$SHAREDIR/tsearch_data/my_synonyms.syn</TT>（<TT CLASS="LITERAL">$SHAREDIR</TT>是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>安装的共享数据目录）。
+文件格式是每一行的每个字被取代，带有这个词的同义词，用空格分隔。忽略空白行和空格。</P><P> <TT CLASS="LITERAL">synonym</TT>模版也有一个可选的参数<TT CLASS="LITERAL">CaseSensitive</TT>，缺省是<TT CLASS="LITERAL">false</TT>。当<TT CLASS="LITERAL">CaseSensitive</TT>是<TT CLASS="LITERAL">false</TT>时，
+同义词文件中的词转换成小写字母，正如输入标记。
+比较而言，当它是<TT CLASS="LITERAL">true</TT>时，词语和标记不转换成小写字母</P><P>
+星号（<TT CLASS="LITERAL">*</TT>）可以被放置在配置文件中的同义词结尾。这表明，同义词是一个前缀。
+当在<CODE CLASS="FUNCTION">to_tsvector()</CODE>中使用记录时，忽略星号。但当它被用在<CODE CLASS="FUNCTION">to_tsquery()</CODE>中时，
+结果将是带前缀匹配标记的查询记录（参见节<A HREF="textsearch-controls.html#TEXTSEARCH-PARSING-QUERIES">第 12.3.2 &#33410;</A>）。例如，假设我们在<TT CLASS="FILENAME">$SHAREDIR/tsearch_data/synonym_sample.syn</TT>中有这些记录。
+</P><PRE CLASS="PROGRAMLISTING">postgres        pgsql
+postgresql      pgsql
+postgre pgsql
+gogle   googl
+indices index*</PRE><P>
+然后我们将得到这些结果：
+</P><PRE CLASS="SCREEN">mydb=# CREATE TEXT SEARCH DICTIONARY syn (template=synonym, synonyms='synonym_sample');
+mydb=# SELECT ts_lexize('syn','indices');
+ ts_lexize
+-----------
+ {index}
+(1 row)
+
+mydb=# CREATE TEXT SEARCH CONFIGURATION tst (copy=simple);
+mydb=# ALTER TEXT SEARCH CONFIGURATION tst ALTER MAPPING FOR asciiword WITH syn;
+mydb=# SELECT to_tsvector('tst','indices');
+ to_tsvector
+-------------
+ 'index':1
+(1 row)
+
+mydb=# SELECT to_tsquery('tst','indices');
+ to_tsquery
+------------
+ 'index':*
+(1 row)
+
+mydb=# SELECT 'indexes are very useful'::tsvector;
+            tsvector             
+---------------------------------
+ 'are' 'indexes' 'useful' 'very'
+(1 row)
+
+mydb=# SELECT 'indexes are very useful'::tsvector @@ to_tsquery('tst','indices');
+ ?column?
+----------
+ t
+(1 row)</PRE><P>
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TEXTSEARCH-THESAURUS">12.6.4. 同义词词典库</A></H2><P> 同义词词库（有时简称<ACRONYM CLASS="ACRONYM">TZ</ACRONYM>）是一个单词的组合，包括单词和短语的关系信息，
+比如，更广泛术语（<ACRONYM CLASS="ACRONYM">BT</ACRONYM>），更窄的术语（<ACRONYM CLASS="ACRONYM">NT</ACRONYM>），首选术语，非优先术语，相关术语等。</P><P> 基本上同义词词库通过一个首选的术语替换所有非优先术语，另外，也保留索引的原术语。
+同义词词典<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的当前实现是带有附加<I CLASS="FIRSTTERM">短语</I>支持的同义词词典的扩展。同义词词典需要下列格式的配置文件：
+</P><PRE CLASS="PROGRAMLISTING"># this is a comment
+sample word(s) : indexed word(s)
+more sample word(s) : more indexed word(s)
+...</PRE><P>
+冒号（<TT CLASS="SYMBOL">:</TT>）符号作为短语和其替代物之间的分隔符。</P><P> 同义词词典检查短语匹配之前使用一个<I CLASS="FIRSTTERM">子词典</I>（这是在字典的配置中指定）规范输入文本。
+它选择一个子词典是可能的。如果子词典无法识别单词，报告一个错误。在这种情况下，
+你应该删除这个词或训练子词典。你可以在一个索引字跳过应用子词典的开头放一个星号（<TT CLASS="SYMBOL">*</TT>），
+但是所有简单的词<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">必须</I></SPAN>是子词典已知的。</P><P> 如果有多个短语匹配输入，同义词词典选择最长的匹配。并且使用最后一个定义分离关系。</P><P> 通过子词典识别的具体屏蔽词不能被指定；而使用<TT CLASS="LITERAL">?</TT>标记任何屏蔽词出现的位置。
+例如，假设<TT CLASS="LITERAL">a</TT>和<TT CLASS="LITERAL">the</TT>是依据子词典的屏蔽词：
+</P><PRE CLASS="PROGRAMLISTING">? one ? two : swsw</PRE><P>
+匹配<TT CLASS="LITERAL">a one the two</TT>和<TT CLASS="LITERAL">the one a two</TT>；两者都会被<TT CLASS="LITERAL">swsw</TT>替代。 </P><P> 由于同义词词典有能力识别短语，它必须记住其状态并且与分析器交互。同义词词典使用这些任务检查它是否应该处理下一个词，
+或停止积累。同义词词典必须小心配置。例如，如果字典词库分配只处理<TT CLASS="LITERAL">asciiword</TT>标记，那么像<TT CLASS="LITERAL">one 7</TT>的同义词词典定义将不工作，
+因为标记类型<TT CLASS="LITERAL">uint</TT>不分配给同义词词典。</P><DIV CLASS="CAUTION"><P></P><TABLE CLASS="CAUTION" BORDER="1" WIDTH="100%"><TR><TD ALIGN="CENTER"><B>&#23567;&#24515;</B></TD></TR><TR><TD ALIGN="LEFT"><P> 索引中使用词典，同义词词典的任何参数变化都<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">需要</I></SPAN>重新索引。对于大多数其他词典类型，
+小的变化，比如添加或去除屏蔽词不强迫重新索引。</P></TD></TR></TABLE></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="TEXTSEARCH-THESAURUS-CONFIG">12.6.4.1. 同义词词典配置</A></H3><P>
+使用<TT CLASS="LITERAL">thesaurus</TT>模板定义一个新的同义词词库。比如:
+</P><PRE CLASS="PROGRAMLISTING">CREATE TEXT SEARCH DICTIONARY thesaurus_simple (
+    TEMPLATE = thesaurus,
+    DictFile = mythesaurus,
+    Dictionary = pg_catalog.english_stem
+);</PRE><P>
+这里：
+<P></P></P><UL COMPACT="COMPACT"><LI STYLE="list-style-type: disc"><P>
+<TT CLASS="LITERAL">thesaurus_simple</TT>是新词典的名称。
+</P></LI><LI STYLE="list-style-type: disc"><P> <TT CLASS="LITERAL">mythesaurus</TT>是同义词配置文件的基础名称。
+（全名为<TT CLASS="FILENAME">$SHAREDIR/tsearch_data/mythesaurus.ths</TT>，这里<TT CLASS="LITERAL">$SHAREDIR</TT>是安装的共享数据目录）</P></LI><LI STYLE="list-style-type: disc"><P> <TT CLASS="LITERAL">pg_catalog.english_stem</TT>是用于词规范化的子词典（这的Snowball英文词干）。
+注意，子词典将有自己的配置（例如，屏蔽词），不显示在这里。</P></LI></UL><P>
+现在它在配置中可能将同义词词典<TT CLASS="LITERAL">thesaurus_simple</TT>绑定到所需的标记类型中，例如：
+</P><PRE CLASS="PROGRAMLISTING">ALTER TEXT SEARCH CONFIGURATION russian
+    ALTER MAPPING FOR asciiword, asciihword, hword_asciipart
+    WITH thesaurus_simple;</PRE><P>
+</P></DIV><DIV CLASS="SECT3"><H3 CLASS="SECT3"><A NAME="TEXTSEARCH-THESAURUS-EXAMPLES">12.6.4.2. 同义词词典例子</A></H3><P> 考虑一个简单的天文词典<TT CLASS="LITERAL">thesaurus_astro</TT>，其中包含了一些天文组合词：
+</P><PRE CLASS="PROGRAMLISTING">supernovae stars : sn
+crab nebulae : crab</PRE><P>
+下面我们创建一个词典并且绑定标记类型的一些天文词库和英文词干分析器:
+</P><PRE CLASS="PROGRAMLISTING">CREATE TEXT SEARCH DICTIONARY thesaurus_astro (
+    TEMPLATE = thesaurus,
+    DictFile = thesaurus_astro,
+    Dictionary = english_stem
+);
+
+ALTER TEXT SEARCH CONFIGURATION russian
+    ALTER MAPPING FOR asciiword, asciihword, hword_asciipart
+    WITH thesaurus_astro, english_stem;</PRE><P>
+现在我们可以看到它是如何工作的。<CODE CLASS="FUNCTION">ts_lexize</CODE>对测试一个词库没有很大帮助，因为它把输入作为一个标记。
+相反，我们可以使用<CODE CLASS="FUNCTION">plainto_tsquery</CODE>和<CODE CLASS="FUNCTION">to_tsvector</CODE>，将它们的输入字符串分离成多个标记：
+</P><PRE CLASS="SCREEN">SELECT plainto_tsquery('supernova star');
+ plainto_tsquery
+-----------------
+ 'sn'
+
+SELECT to_tsvector('supernova star');
+ to_tsvector
+-------------
+ 'sn':1</PRE><P>
+原则上，如果你引用参数，可以使用<CODE CLASS="FUNCTION">to_tsquery</CODE>:
+</P><PRE CLASS="SCREEN">SELECT to_tsquery('''supernova star''');
+ to_tsquery
+------------
+ 'sn'</PRE><P>
+注意<TT CLASS="LITERAL">supernova star</TT>与<TT CLASS="LITERAL">supernovae stars</TT>在<TT CLASS="LITERAL">thesaurus_astro</TT>中匹配，因为我们在词典的定义中指定了<TT CLASS="LITERAL">english_stem</TT>词干分析器。
+词干分析器删除<TT CLASS="LITERAL">e</TT>和<TT CLASS="LITERAL">s</TT>。</P><P> 为了索引原句以及替代词，只是将它包括在定义的右边部分：
+</P><PRE CLASS="SCREEN">supernovae stars : sn supernovae stars
+
+SELECT plainto_tsquery('supernova star');
+       plainto_tsquery
+-----------------------------
+ 'sn' &amp; 'supernova' &amp; 'star'</PRE><P>&#13;</P></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TEXTSEARCH-ISPELL-DICTIONARY">12.6.5. <SPAN CLASS="APPLICATION">Ispell</SPAN>词典</A></H2><P> <SPAN CLASS="APPLICATION">Ispell</SPAN>词典模版支持<I CLASS="FIRSTTERM">形态学的词典</I>，它可以将一个单词的许多不同的语言形式标准化为一个词。
+例如，英语<SPAN CLASS="APPLICATION">Ispell</SPAN>词典可以匹配所有词尾变化和搜索词<TT CLASS="LITERAL">bank</TT>的组合，
+例如，<TT CLASS="LITERAL">banking</TT>, <TT CLASS="LITERAL">banked</TT>, <TT CLASS="LITERAL">banks</TT>,
+<TT CLASS="LITERAL">banks'</TT>和<TT CLASS="LITERAL">bank's</TT>。</P><P> 标准的<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>发布不包括任何<SPAN CLASS="APPLICATION">Ispell</SPAN>配置文件。大量的语言字典可以从<A HREF="http://ficus-www.cs.ucla.edu/geoff/ispell.html" TARGET="_top">Ispell</A>获得。
+同时，&mdash; <A HREF="http://en.wikipedia.org/wiki/MySpell" TARGET="_top">MySpell</A> (OO &lt; 2.0.1)
+和<A HREF="http://sourceforge.net/projects/hunspell/" TARGET="_top">Hunspell</A>(OO &gt;= 2.0.2)支持一些更现代的词典文件格式。
+大的词典列表在<A HREF="http://wiki.services.openoffice.org/wiki/Dictionaries" TARGET="_top">OpenOffice Wiki</A>中可用。</P><P> 使用内置的<TT CLASS="LITERAL">ispell</TT>模板创建<SPAN CLASS="APPLICATION">Ispell</SPAN> 词典，并指定几个参数：</P><PRE CLASS="PROGRAMLISTING">CREATE TEXT SEARCH DICTIONARY english_ispell (
+    TEMPLATE = ispell,
+    DictFile = english,
+    AffFile = english,
+    StopWords = english
+);</PRE><P> 这里，<TT CLASS="LITERAL">DictFile</TT>, <TT CLASS="LITERAL">AffFile</TT>和<TT CLASS="LITERAL">StopWords</TT>指定词典基础的名字，词缀，和屏蔽词文件。
+屏蔽词文件具有和上面解释的<TT CLASS="LITERAL">simple</TT>词典类型相同的格式。其它文件的格式不在这里指定，
+但可以从上面提到的网站获取。</P><P> Ispell词典通常识别有限的一组词，所以他们应该遵循另一个更广泛的词典；
+例如，一个Snowball词典，它可以识别一切。</P><P> Ispell词典支持分裂复合词；一个有用的功能。请注意，
+词缀文件应使用<TT CLASS="LITERAL">compound words controlled</TT>语句指定一个特殊标记，
+标记可以参与复合信息的词典单词：
+</P><PRE CLASS="PROGRAMLISTING">compoundwords  controlled z</PRE><P>
+这有一些Norwegian语言的例子：
+</P><PRE CLASS="PROGRAMLISTING">SELECT ts_lexize('norwegian_ispell', 'overbuljongterningpakkmesterassistent');
+   {over,buljong,terning,pakk,mester,assistent}
+SELECT ts_lexize('norwegian_ispell', 'sjokoladefabrikk');
+   {sjokoladefabrikk,sjokolade,fabrikk}</PRE><P>&#13;</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B> 注意：<SPAN CLASS="APPLICATION">MySpell</SPAN>不支持复合词。<SPAN CLASS="APPLICATION">Hunspell</SPAN>对复合词有复杂支持。
+目前，<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>只实现了Hunspell的基本复合词操作。</P></BLOCKQUOTE></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TEXTSEARCH-SNOWBALL-DICTIONARY">12.6.6. <SPAN CLASS="APPLICATION">Snowball</SPAN>词典</A></H2><P> <SPAN CLASS="APPLICATION">Snowball</SPAN>词典模板是基于Martin Porter的项目，他是英语语言的著名的Porter的词干提取算法的发明者。
+现在Snowball提供了许多语言的词干提取算法（更多信息请见<A HREF="http://snowball.tartarus.org" TARGET="_top">Snowball
+site</A>）。
+每个算法都知道如何改变词到基础，或词根，或其语言拼写的常见变异形式。
+一个Snowball词典需要<TT CLASS="LITERAL">language</TT>参数标识要使用的词干，并且可以指定一个删除词的列表的<TT CLASS="LITERAL">stopword</TT>文件名。
+（<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的标准的屏蔽词列表也由Snowball项目提供）例如，有一个等价的内置定义。
+</P><PRE CLASS="PROGRAMLISTING">CREATE TEXT SEARCH DICTIONARY english_stem (
+    TEMPLATE = snowball,
+    Language = english,
+    StopWords = english
+);</PRE><P>
+屏蔽词的文件格式和已经解释过的一样。</P><P> 一个<SPAN CLASS="APPLICATION">Snowball</SPAN>词典可以识别一切，是否能够简化字，所以它应该放在词典列表的末尾。
+它放在任何其他的词典之前都是无用的，因为一个标记将不会经过它到下一个词典。</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="textsearch-parsers.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="textsearch-configuration.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">解析器</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/textsearch.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">配置实例</TD></TR></TABLE></DIV></BODY></HTML>

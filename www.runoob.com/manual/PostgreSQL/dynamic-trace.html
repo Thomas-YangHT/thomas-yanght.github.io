@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>动态跟踪</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="监控数据库的活动" HREF="http://school.yunwei.edu/manual/PostgreSQL/monitoring.html"><LINK REL="PREVIOUS" TITLE="查看锁" HREF="monitoring-locks.html"><LINK REL="NEXT" TITLE="监控磁盘使用情况" HREF="http://school.yunwei.edu/manual/PostgreSQL/diskusage.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/monitoring.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="查看锁" HREF="monitoring-locks.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/monitoring.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 27. 监控数据库的活动</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="监控磁盘使用情况" HREF="http://school.yunwei.edu/manual/PostgreSQL/diskusage.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="DYNAMIC-TRACE">27.4. 动态跟踪</A></H1><P> <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>允许对数据库服务器进行动态跟踪。
+这样就允许在代码内特定的点上调用外部工具来跟踪执行过程。</P><P> 许多跟踪点(也被称为"探头")已经插入在源代码中了，
+这些探针的目的是被用于数据库开发者和管理员，默认情况下，
+探头不编译成<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>；
+用户必须运行配置脚本时明确启用它们。 </P><P> 目前，只有<A HREF="https://en.wikipedia.org/wiki/DTrace" TARGET="_top">DTrace</A>支持实用工具，在写这的时候，
+它可在Solaris, Mac OS X, FreeBSD, NetBSD和Oracle Linux上使用。
+<A HREF="http://sourceware.org/systemtap/" TARGET="_top">SystemTap</A>
+项目为Linux还提供了一个DTrace的等效并且也是可用的。
+通过改变<TT CLASS="FILENAME">src/include/utils/probes.h</TT>
+中的宏命令定义为支持其他的动态跟踪工具在理论上是可能的 。 &#13;</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="COMPILING-FOR-TRACE">27.4.1. 编译动态跟踪支持</A></H2><P> 跟踪点是默认禁止的，你必须明确告诉配置脚本以使得<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>中的探头可用。
+使用<TT CLASS="OPTION">--enable-dtrace</TT>选项来启用DTrace支持。
+参见<A HREF="install-procedure.html">第 15.4 &#33410;</A>获取更多信息。 </P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="TRACE-POINTS">27.4.2. 内置跟踪点</A></H2><P> <A HREF="dynamic-trace.html#DTRACE-PROBE-POINT-TABLE">&#34920; 27-15</A>显示的是在源代码中提供的标准跟踪点，
+<A HREF="dynamic-trace.html#TYPEDEFS-TABLE">&#34920; 27-16</A>显示探测中使用的类型。
+更多探测可以被添加以提高<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的观测性。</P><DIV CLASS="TABLE"><A NAME="DTRACE-PROBE-POINT-TABLE"></A><P><B>&#34920; 27-15. 内置DTrace跟踪</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><THEAD><TR><TH>名字</TH><TH>参数</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD>transaction-start</TD><TD>(LocalTransactionId)</TD><TD>开始新的事务触发探测器。arg0是事务ID。</TD></TR><TR><TD>transaction-commit</TD><TD>(LocalTransactionId)</TD><TD>当事务成功完成时触发探测器，arg0是事务ID。</TD></TR><TR><TD>transaction-abort</TD><TD>(LocalTransactionId)</TD><TD>当事务未成功完成时触发探测器，arg0是事务ID。</TD></TR><TR><TD>query-start</TD><TD>(const char *)</TD><TD>开始查询处理时触发探测器，arg0是查询字符串。</TD></TR><TR><TD>query-done</TD><TD>(const char *)</TD><TD>当完成查询处理时触发探测器，arg0是查询字符串。</TD></TR><TR><TD>query-parse-start</TD><TD>(const char *)</TD><TD>当开始查询解析时触发探测器，arg0是查询字符串。</TD></TR><TR><TD>query-parse-done</TD><TD>(const char *)</TD><TD>查询解析完成时触发探测器，arg0是查询字符串。</TD></TR><TR><TD>query-rewrite-start</TD><TD>(const char *)</TD><TD>启动查询重写时触发探测器。arg0是查询字符串。</TD></TR><TR><TD>query-rewrite-done</TD><TD>(const char *)</TD><TD>当查询重写完成时触发探测器，arg0是查询字符串。</TD></TR><TR><TD>query-plan-start</TD><TD>()</TD><TD>查询规划开始时触发探测器。</TD></TR><TR><TD>query-plan-done</TD><TD>()</TD><TD>查询规划完成时触发探测器。</TD></TR><TR><TD>query-execute-start</TD><TD>()</TD><TD>执行规划开始时将触发的探测器</TD></TR><TR><TD>query-execute-done</TD><TD>()</TD><TD>执行规划完成时将触发的探测器</TD></TR><TR><TD>statement-status</TD><TD>(const char *)</TD><TD>服务进程随时更新<TT CLASS="STRUCTNAME">pg_stat_activity</TT>.<TT CLASS="STRUCTFIELD">status</TT>时触发的探测器。
+arg0是一个新的状态字符串</TD></TR><TR><TD>checkpoint-start</TD><TD>(int)</TD><TD>检查点开始时触发的探测器。arg0可以逐位标记以区分不同的检查点类型，
+如；shutdown，immediate，或force。</TD></TR><TR><TD>checkpoint-done</TD><TD>(int, int, int, int, int)</TD><TD>检查点完成时触发的探测器（触发探测器列出检查点处理过程序列中的下一个探测器）。
+arg0表示要写入的缓冲区的数目。arg1表示总的缓冲区的数目。
+arg2，arg3和arg4包含了增加，删除和循环回收的xlog文件的数目。
+</TD></TR><TR><TD>clog-checkpoint-start</TD><TD>(bool)</TD><TD>一个检查点的CLOG部分开始时触发的探测器。
+arg0对正常检查点是真，对关闭检查点是假。
+</TD></TR><TR><TD>clog-checkpoint-done</TD><TD>(bool)</TD><TD>当一个检查点的CLOG部分完成时触发的探测器。
+arg0的含义与CLOG-checkpoint-start一样。</TD></TR><TR><TD>subtrans-checkpoint-start</TD><TD>(bool)</TD><TD>当一个检查点的SUBTRANS部分开始时触发的探测器。
+arg0对正常检查点是真，对关闭检查点是假。</TD></TR><TR><TD>subtrans-checkpoint-done</TD><TD>(bool)</TD><TD>当一个检查点的SUBTRANS部分完成时触发的探测器。
+arg0的含义与SUBTRANS-checkpoint-start一样。</TD></TR><TR><TD>multixact-checkpoint-start</TD><TD>(bool)</TD><TD>当一个检查点的MultiXact部分开始时触发探测器。
+arg0对正常检查点表示真，对关闭检查点表示假。</TD></TR><TR><TD>multixact-checkpoint-done</TD><TD>(bool)</TD><TD>当一个检查点的MultiXact部分完成时触发的探测器，
+arg0的含义与multixact-checkpoint-start一样。</TD></TR><TR><TD>buffer-checkpoint-start</TD><TD>(int)</TD><TD>开始一个检查点的缓冲区写部分时触发的探测器。
+arg0持有逐位标识以区分不同的检查点类型，如shutdown，immediate或force。</TD></TR><TR><TD>buffer-sync-start</TD><TD>(int, int)</TD><TD>检查点期间，开始写脏缓冲区时触发的探测器（在识别出那个缓冲区必须写之后）。
+arg0表示总缓冲区数，arg1表示当前脏的，需要写的缓冲区数。</TD></TR><TR><TD>buffer-sync-written</TD><TD>(int)</TD><TD>在检查点期间，每个缓冲区都被写了之后触发的探测器，arg0表示缓冲区的ID号。</TD></TR><TR><TD>buffer-sync-done</TD><TD>(int, int, int)</TD><TD>当所有脏缓冲被写之后触发的探测器。
+arg0表示总缓冲区的数目。
+arg1表示检查点进程实际写的缓冲区数。
+arg2表示期望写的数目(arg1的buffer-sync-start)；
+任何的不同会导致另一个进程在检查点发生时刷新缓冲区。</TD></TR><TR><TD>buffer-checkpoint-sync-start</TD><TD>()</TD><TD>当完成将脏缓冲区写入到内核，并且还没有发出fsync请求之前触发的探测器。</TD></TR><TR><TD>buffer-checkpoint-done</TD><TD>()</TD><TD>当同步缓冲区到磁盘完成时触发的探测器</TD></TR><TR><TD>twophase-checkpoint-start</TD><TD>()</TD><TD>当一个检查点的两相阶段状态部分开始时触发的探测器。</TD></TR><TR><TD>twophase-checkpoint-done</TD><TD>()</TD><TD>当一个检查点的两相阶段状态部分完成时触发的探测器。</TD></TR><TR><TD>buffer-read-start</TD><TD>(ForkNumber, BlockNumber, Oid, Oid, Oid, int, bool)</TD><TD>当开始一次缓冲区读时触发的探测器。
+arg0和arg1包含page块的锁和派生的子进程数（如果是一个关系扩展请求，arg1会是-1）。
+arg2，arg3和arg4包含表空间，数据库和关系OID，以识别关系。
+arg5是为局部缓冲创建临时关系时后端ID，或者共享缓冲区InvalidBackendId (-1)。
+arg6对关系扩展请求表示真，对正常读表示假。</TD></TR><TR><TD>buffer-read-done</TD><TD>(ForkNumber, BlockNumber, Oid, Oid, Oid, int, bool, bool)</TD><TD>当完成一次缓冲区读时触发的探测器。
+arg0和arg1包含page块的锁和派生的子进程数
+（如果是一个关系扩展请求，arg1会表示新增锁的数目）。
+arg2，arg3和arg4包含表空间，数据库和关系OID，以识别关系。
+arg5是为局部缓冲创建临时关系时后端ID，或者共享缓冲区InvalidBackendId (-1)。
+arg6对关系扩展请求表示真，
+对正常读表示假。如果池中有缓冲区，
+则arg7表示真，反之表示假。</TD></TR><TR><TD>buffer-flush-start</TD><TD>(ForkNumber, BlockNumber, Oid, Oid, Oid)</TD><TD>在发出共享缓冲区的任意写入请求时触发的探测器。
+arg0和arg1包含分叉和页中块数。
+arg2，arg3和arg4包含表空间，数据库和关系OID，以识别关系。</TD></TR><TR><TD>buffer-flush-done</TD><TD>(ForkNumber, BlockNumber, Oid, Oid, Oid)</TD><TD>当完成一条写要求时触发的探测器。 需要注意的是，
+它只影响将数据传递到内核参数的时间；
+实际上，它不会写到磁盘上。这个参数与buffer-flush-start一致。</TD></TR><TR><TD>buffer-write-dirty-start</TD><TD>(ForkNumber, BlockNumber, Oid, Oid, Oid)</TD><TD> 当服务器进程开始写脏缓冲区时触发的探测器。
+如果经常发生，表示<A HREF="runtime-config-resource.html#GUC-SHARED-BUFFERS">shared_buffers</A>太小，
+或需要调整bgwriter控制参数。
+arg0和arg1包含分叉和页中的块数。
+arg2，arg3和arg4包含表空间，
+数据库和关系OID，以识别关系。
+</TD></TR><TR><TD>buffer-write-dirty-done</TD><TD>(ForkNumber, BlockNumber, Oid, Oid, Oid)</TD><TD>当完成脏缓冲区写时触发的探测器。参数与buffer-write-dirty-start一样。</TD></TR><TR><TD>wal-buffer-write-dirty-start</TD><TD>()</TD><TD>当服务器进程开始写脏WAL缓冲时触发的探测器（此时WAL缓冲区已满）。
+如果经常发生，应该是<A HREF="runtime-config-wal.html#GUC-WAL-BUFFERS">wal_buffers</A>设置的太小了。</TD></TR><TR><TD>wal-buffer-write-dirty-done</TD><TD>()</TD><TD>当完成一次脏WAL写时触发的探测器。</TD></TR><TR><TD>xlog-insert</TD><TD>(unsigned char, unsigned char)</TD><TD>当插入一条WAL记录时触发的探测器。 arg0表示记录的rm id。 arg1包含信息标志。</TD></TR><TR><TD>xlog-switch</TD><TD>()</TD><TD>当要求进行WAL切换时触发的探测器。</TD></TR><TR><TD>smgr-md-read-start</TD><TD>(ForkNumber, BlockNumber, Oid, Oid, Oid, int)</TD><TD>开始从一个关系中读取锁时触发的探测器。
+arg0和arg1包含page块的锁和派生的子进程数。
+arg2，arg3和arg4包含表空间，数据库和关系OID，
+以识别关系。arg5是为局部缓冲创建临时关系时的后端ID，或者共享缓冲InvalidBackendId (-1)</TD></TR><TR><TD>smgr-md-read-done</TD><TD>(ForkNumber, BlockNumber, Oid, Oid, Oid, int, int, int)</TD><TD>当一个锁读取完成时触发的探测器。
+arg0和arg1包含page块的锁和派生的子进程数。
+arg2，arg3和arg4包含表空间，
+数据库和关系OID，以识别关系。
+arg5是为局部缓冲创建临时关系时的后端ID，或者共享缓冲InvalidBackendId (-1)，
+而arg6表示实际读取的字节数，而arg7是要求数（如果不一样会报错）</TD></TR><TR><TD>smgr-md-write-start</TD><TD>(ForkNumber, BlockNumber, Oid, Oid, Oid, int)</TD><TD>当向一个关系中写入锁时触发的探测器。
+arg0和arg1包含page块的锁和派生的子进程数。
+arg2，arg3和arg4包含表空间，数据库和关系OID，以识别关系。
+arg5是为局部缓冲创建临时关系时的后端ID，或者共享缓冲InvalidBackendId (-1)。
+</TD></TR><TR><TD>smgr-md-write-done</TD><TD>(ForkNumber, BlockNumber, Oid, Oid, Oid, int, int, int)</TD><TD>当一个锁写进程完成时触发的探测器。
+arg0和arg1表示page块的锁和派生的子进程数。
+arg2，arg3和arg4包含表空间，数据库和关系OID，以识别关系。
+arg5表示为局部缓冲创建临时关系时的后端ID，或者共享缓冲InvalidBackendId (-1)，
+而arg6表示实际读取的字节数，而arg7是要求数（如果不一样会报错）。</TD></TR><TR><TD>sort-start</TD><TD>(int, bool, int, int, bool)</TD><TD>排序操作开始时触发的探测器。
+arg0表示堆，索引或者基准点。
+arg1对强制唯一值表示真。arg2表示键列的数目。
+arg3表示允许使用的内存数目（以千字节为单位）。
+如果要求随机访问排序结果，那么arg4表示真。</TD></TR><TR><TD>sort-done</TD><TD>(bool, long)</TD><TD>排序操作结束时触发的探测器。
+arg0对外部排序表示真，内部排序表示假。
+arg1表示用于一个外部排序的磁盘锁的数目，
+或用于一个内部排序的，以千字节为单位的内存数目。</TD></TR><TR><TD>lwlock-acquire</TD><TD>(LWLockId, LWLockMode)</TD><TD>当成功获得一个LWLock时触发的探测器。
+arg0是LWLock的ID号，arg1表明请求的锁模式，要么独占要么共享</TD></TR><TR><TD>lwlock-release</TD><TD>(LWLockId)</TD><TD>LWLock释放时触发的探测器
+(但是请注意任何发布的等待者还未觉醒)。
+arg0表示LWLock的ID号</TD></TR><TR><TD>lwlock-wait-start</TD><TD>(LWLockId, LWLockMode)</TD><TD>当不能立即获得LWLock锁，同时服务进程进入等待时触发的探测器。
+arg0是LWLock的ID号，arg1表明请求的锁模式，要么独占要么共享。</TD></TR><TR><TD>lwlock-wait-done</TD><TD>(LWLockId, LWLockMode)</TD><TD>当从一个LWLock锁中释放服务进程时触发的探测器（实际上没有进行锁）。
+arg0是LWLock的ID号，arg1表明请求的锁模式，要么独占要么共享。</TD></TR><TR><TD>lwlock-condacquire</TD><TD>(LWLockId, LWLockMode)</TD><TD>当成功获得一个LWLock时触发的探测器（已声明调用无需等待）。
+arg0是LWLock的ID号，arg1表明请求的锁的模式，要么独占要么共享。</TD></TR><TR><TD>lwlock-condacquire-fail</TD><TD>(LWLockId, LWLockMode)</TD><TD>当没有成功获得一个LWLock时触发的探测器（已声明调用无需等待）。
+arg0是LWLock的ID号，arg1表明请求的锁的模式，要么独占要么共享。</TD></TR><TR><TD>lock-wait-start</TD><TD>(unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, LOCKMODE)</TD><TD>当一个重量级锁（lmgr锁）的请求开始等待（因为无法获得锁）时触发的探测器。
+arg0到arg3是辨别被锁定对象的标签字段。arg4指出被锁对象的类型。
+arg5表示请求的锁类型。</TD></TR><TR><TD>lock-wait-done</TD><TD>(unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, LOCKMODE)</TD><TD>当一个重量级锁（lmgr锁）的请求结束等待时触发的探测器，
+参数与lock-wait-start一样。</TD></TR><TR><TD>deadlock-found</TD><TD>()</TD><TD>当死锁探测器发现死锁时触发的探测器</TD></TR></TBODY></TABLE></DIV><DIV CLASS="TABLE"><A NAME="TYPEDEFS-TABLE"></A><P><B>&#34920; 27-16. 定义用于探测器参数的类型</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><THEAD><TR><TH>类型</TH><TH>定义</TH></TR></THEAD><TBODY><TR><TD>LocalTransactionId</TD><TD>unsigned int</TD></TR><TR><TD>LWLockId</TD><TD>int</TD></TR><TR><TD>LWLockMode</TD><TD>int</TD></TR><TR><TD>LOCKMODE</TD><TD>int</TD></TR><TR><TD>BlockNumber</TD><TD>unsigned int</TD></TR><TR><TD>Oid</TD><TD>unsigned int</TD></TR><TR><TD>ForkNumber</TD><TD>int</TD></TR><TR><TD>bool</TD><TD>char</TD></TR></TBODY></TABLE></DIV></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="USING-TRACE-POINTS">27.4.3. 使用跟踪点</A></H2><P>
+下面的例子显示了一个分析事务次数的DTrace脚本，
+可以用来代替性能测试之前和之后的<TT CLASS="STRUCTNAME">pg_stat_database</TT>快照。
+</P><PRE CLASS="PROGRAMLISTING">#!/usr/sbin/dtrace -qs
+
+postgresql$1:::transaction-start
+{
+      @start["Start"] = count();
+      self-&#62;ts  = timestamp;
+}
+
+postgresql$1:::transaction-abort
+{
+      @abort["Abort"] = count();
+}
+
+postgresql$1:::transaction-commit
+/self-&#62;ts/
+{
+      @commit["Commit"] = count();
+      @time["Total time (ns)"] = sum(timestamp - self-&#62;ts);
+      self-&#62;ts=0;
+}</PRE><P>
+例如示范D脚本执行时，如输出：
+</P><PRE CLASS="SCREEN"># ./txn_count.d `pgrep -n postgres` or ./txn_count.d &lt;PID&gt;
+^C
+
+Start                                          71
+Commit                                         70
+Total time (ns)                        2312105013</PRE><P>
+</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B> SystemTap为跟踪脚本使用一个不同的标记而不是Dtrace，
+即使底层的跟踪点是兼容的。有一点需要注意，
+在这样写的时候，SystemTap脚本必须使用双下划线代替连字符来指向探测器名。
+希望在未来SystemTap的版本中修复。</P></BLOCKQUOTE></DIV><P> 你应该记住DTrace脚本需要仔细的编写和充分的调试，
+否则收集到的跟踪信息可能毫无意义。
+大多数情况下问题是手段是错误的而不是底层系统。
+在讨论使用动态跟踪发现的信息时，应确保包含允许检查和讨论使用的脚本。</P><P> 更多的示例脚本可以在PgFoundry <A HREF="http://pgfoundry.org/projects/dtrace/" TARGET="_top">dtrace project</A>
+中找到。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="DEFINING-TRACE-POINTS">27.4.4. 定义新的跟踪点</A></H2><P> 开发者可以在代码中任意位置定义新的跟踪点，
+当然这要重新编译之后才能生效。下面是用于新探测器插入步骤：</P><DIV CLASS="PROCEDURE"><OL TYPE="1"><LI CLASS="STEP"><P> 通过探头决定探头名字和可利用数据。</P></LI><LI CLASS="STEP"><P> 新增探头定义为<TT CLASS="FILENAME">src/backend/utils/probes.d</TT></P></LI><LI CLASS="STEP"><P> 包括<TT CLASS="FILENAME">pg_trace.h</TT>，如果已经不在模块中包含探测点，
+并且在所需源代码中期望的位置插入<TT CLASS="LITERAL">TRACE_POSTGRESQL</TT>探测宏。</P></LI><LI CLASS="STEP"><P> 重新编译和验证新探头是可用的。</P></LI></OL></DIV><DIV CLASS="FORMALPARA"><P><B>例子: </B> 下面是一个例子，你将如何添加一个探头通过事务ID追踪所有新的事务。</P></DIV><DIV CLASS="PROCEDURE"><OL TYPE="1"><LI CLASS="STEP"><P> 决定探测器将被命名为<TT CLASS="LITERAL">transaction-start</TT>并且需要LocalTransactionId类型参数。 </P></LI><LI CLASS="STEP"><P>
+新增探头定义为<TT CLASS="FILENAME">src/backend/utils/probes.d</TT>:
+</P><PRE CLASS="PROGRAMLISTING">probe transaction__start(LocalTransactionId);</PRE><P>
+注意探测器名字中的双下划线的使用。在使用探测器的DTrace脚本中，
+需要用一个连字符来替换双下划线，
+因此，对用户而言，<TT CLASS="LITERAL">transaction-start</TT>是文档名。
+</P></LI><LI CLASS="STEP"><P>
+在编译时，<TT CLASS="LITERAL">transaction__start</TT>被转换成一个宏调用
+<TT CLASS="LITERAL">TRACE_POSTGRESQL_TRANSACTION_START</TT>（注意这里是单下划线），
+可以从<TT CLASS="FILENAME">pg_trace.h</TT>中获得。将宏调用放在源代码中的合适位置。
+在这种情况下，类似于下面：
+</P><PRE CLASS="PROGRAMLISTING">TRACE_POSTGRESQL_TRANSACTION_START(vxid.localTransactionId);</PRE><P>
+</P></LI><LI CLASS="STEP"><P>
+在重新编译和运行新的二进制文件之后，
+通过运行下面的DTrace命令来检查新增的探测器是否可用。
+应该得到类似下面的结果：
+</P><PRE CLASS="SCREEN"># dtrace -ln transaction-start
+   ID    PROVIDER          MODULE           FUNCTION NAME
+18705 postgresql49878     postgres     StartTransactionCommand transaction-start
+18755 postgresql49877     postgres     StartTransactionCommand transaction-start
+18805 postgresql49876     postgres     StartTransactionCommand transaction-start
+18855 postgresql49875     postgres     StartTransactionCommand transaction-start
+18986 postgresql49873     postgres     StartTransactionCommand transaction-start</PRE><P>
+</P></LI></OL></DIV><P>
+向C代码中添加跟踪宏时，有一些注意事项，见下文：
+<P></P></P><UL><LI><P>
+需要注意的是，为探测器参数声明的数据类型要匹配宏中可用的数据类型，
+否则会发生编译错误。
+</P></LI><LI><P>
+在大多数平台上，如果编译<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+时带有<TT CLASS="OPTION">--enable-dtrace</TT>选项，
+无论何时通过宏来控制时，都会估算该跟踪宏的参数，
+<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">即使没有进行跟踪</I></SPAN>。通常不需要担心是否你只是报告一些局部变量的值。
+但要注意将重要的函数调用放置在参数中。如果需要这么做，
+考虑通过检查是否真的开启跟踪来保护宏：
+</P><PRE CLASS="PROGRAMLISTING">if (TRACE_POSTGRESQL_TRANSACTION_START_ENABLED())
+    TRACE_POSTGRESQL_TRANSACTION_START(some_function(...));</PRE><P>
+每个跟踪宏都有一个相应的<TT CLASS="LITERAL">ENABLED</TT>宏。
+</P></LI></UL><P>
+</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="monitoring-locks.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/diskusage.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">查看锁</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/monitoring.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">监控磁盘使用情况</TD></TR></TABLE></DIV></BODY></HTML>

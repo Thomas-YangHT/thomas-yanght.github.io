@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>缺省值</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="数据定义" HREF="http://school.yunwei.edu/manual/PostgreSQL/ddl.html"><LINK REL="PREVIOUS" TITLE="表的基本概念" HREF="ddl-basics.html"><LINK REL="NEXT" TITLE="约束" HREF="ddl-constraints.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ddl.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="表的基本概念" HREF="ddl-basics.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/ddl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 5. 数据定义</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="约束" HREF="ddl-constraints.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="DDL-DEFAULT">5.2. 缺省值</A></H1><P>一个字段可以赋予缺省值。如果新创建了一个数据行，而有些字段的数值没有声明，
+那么这些字段将被填充为它们各自的缺省值。
+一条数据修改命令也可以明确地要求把一个字段设置为它的缺省值，而不用事先知道这个缺省值是什么。
+有关数据操作的命令在<A HREF="http://school.yunwei.edu/manual/PostgreSQL/dml.html">第 6 &#31456;</A>。</P><P>&#13;如果没有明确声明缺省值，那么缺省值是 NULL 。这么做通常是合理的，因为 NULL 表示"未知"。</P><P>在一个表定义里，缺省值是在字段数据类型后面列出的。比如：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TABLE products (
+    product_no integer,
+    name text,
+    price numeric <B
+CLASS="EMPHASIS"
+>DEFAULT 9.99</B
+>
+);</PRE><P></P><P>
+缺省值可以是一个表达式，它会在插入缺省值的时候计算(<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">不是</I></SPAN>在创建表的时候)。
+一个常见的例子是一个<TT CLASS="TYPE">timestamp</TT>字段可能有缺省值<TT CLASS="LITERAL">CURRENT_TIMESTAMP</TT>，
+它表示插入行的时刻。另外一个常见的例子是为每一行生成一个<SPAN CLASS="QUOTE">"序列号"</SPAN>。
+在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>里，通常是用类似下面这样的方法生成的：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TABLE products (
+    product_no integer <B
+CLASS="EMPHASIS"
+>DEFAULT nextval('products_product_no_seq')</B
+>,
+    ...
+);</PRE><P>
+这里的<TT CLASS="LITERAL">nextval()</TT>从一个<I CLASS="FIRSTTERM">序列对象</I>(参阅<A HREF="functions-sequence.html">第 9.16 &#33410;</A>)
+提供后继的数值。这种做法非常普遍，以至于我们有一个专门的缩写用于此目的：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TABLE products (
+    product_no <B
+CLASS="EMPHASIS"
+>SERIAL</B
+>,
+    ...
+);</PRE><P>
+<TT CLASS="LITERAL">SERIAL</TT>缩写在<A HREF="datatype-numeric.html#DATATYPE-SERIAL">第 8.1.4 &#33410;</A>里有进一步描述。
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="ddl-basics.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="ddl-constraints.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">表的基本概念</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/ddl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">约束</TD></TR></TABLE></DIV></BODY></HTML>

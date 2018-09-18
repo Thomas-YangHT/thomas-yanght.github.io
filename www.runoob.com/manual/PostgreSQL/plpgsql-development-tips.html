@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>开发PL/pgSQL的一些提示</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="PL/pgSQL - SQL过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/plpgsql.html"><LINK REL="PREVIOUS" TITLE="在后台下的PL/pgSQL" HREF="plpgsql-implementation.html"><LINK REL="NEXT" TITLE="从Oracle PL/SQL进行移植" HREF="plpgsql-porting.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/plpgsql.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="在后台下的PL/pgSQL" HREF="plpgsql-implementation.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plpgsql.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 40. <SPAN CLASS="APPLICATION">PL/pgSQL</SPAN> - <ACRONYM CLASS="ACRONYM">SQL</ACRONYM>过程语言</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="从Oracle PL/SQL进行移植" HREF="plpgsql-porting.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="PLPGSQL-DEVELOPMENT-TIPS">40.11. 开发<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>的一些提示</A></H1><P>
+用<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>做开发的一个好方法是简单地使用文本编辑器创建函数，
+然后在另外一个控制台里，用<SPAN CLASS="APPLICATION">psql</SPAN>加载这些函数。
+如果你用这种方法，那么用<TT CLASS="COMMAND">CREATE OR REPLACE FUNCTION</TT>写函数是个好主意。
+这样，重读文件就可以更新函数定义。比如：
+</P><PRE CLASS="PROGRAMLISTING">CREATE OR REPLACE FUNCTION testfunc(integer) RETURNS integer AS $$
+          ....
+$$ LANGUAGE plpgsql;</PRE><P>
+</P><P>
+在运行<SPAN CLASS="APPLICATION">psql</SPAN>的时候，
+可以用下面命令加载或者重载函数定义文件:
+</P><PRE CLASS="PROGRAMLISTING">\i filename.sql</PRE><P>
+然后马上发出SQL命令测试该函数。
+</P><P> 另外一个开发<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>程序的好方法是使用一种支持
+过程语言开发的GUI工具。
+比如<SPAN CLASS="APPLICATION">pgAdmin</SPAN>，当然还有其它的。这些工具通常提供了一些很有用的功能，
+比如转义单引号使得重建和调试函数更简单等。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="PLPGSQL-QUOTE-TIPS">40.11.1. 引号标记处理</A></H2><P>
+<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>函数的代码都是在
+<TT CLASS="COMMAND">CREATE FUNCTION</TT>里以一个字符串文本的方式声明的。
+如果你用两边包围单引号的常规方式写字符串文本，那么任何函数体内的单引号都必须写双份；
+类似的是反斜杠也必须双份。双份引号非常乏味，在更复杂的场合下，代码可能会让人难以理解，
+因为你很容易发现自己需要半打甚至更多相连的引号。
+建议你用<SPAN CLASS="QUOTE">"dollar-quoted"</SPAN>的字符串文本来写函数体。
+(参阅<A HREF="sql-syntax-lexical.html#SQL-SYNTAX-DOLLAR-QUOTING">第 4.1.2.4 &#33410;</A>)。使用美元符界定的时候，
+你从不需要对任何引号写双份，
+只需要为每层引号包围嵌套选择一个不同的美元符号包围分隔符即可。
+比如，你可能这么写<TT CLASS="COMMAND">CREATE FUNCTION</TT>命令：
+</P><PRE CLASS="PROGRAMLISTING">CREATE OR REPLACE FUNCTION testfunc(integer) RETURNS integer AS $PROC$
+          ....
+$PROC$ LANGUAGE plpgsql;</PRE><P>
+在这个函数体中，可以在SQL命令里使用单引号包围文本字符串，
+用<TT CLASS="LITERAL">$$</TT>分隔那些SQL命令的片断。
+如果你需要对包含<TT CLASS="LITERAL">$$</TT>的文本进行引号包围，可以使用<TT CLASS="LITERAL">$Q$</TT>等等。
+</P><P> 下表展示了不使用美元符界定的时候该如何写单引号。
+把美元符引号之前的引号包围的代码转换成某种可以理解的形式时，
+应该会用得上。</P><P></P><DIV CLASS="VARIABLELIST"><DL><DT>1个单引号</DT><DD><P>
+开始/结束函数体，比如：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION foo() RETURNS integer AS '
+          ....
+' LANGUAGE plpgsql;</PRE><P>
+在函数体内部的任何位置，问号都<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">必须</I></SPAN>成对出现。
+</P></DD><DT>2个单引号</DT><DD><P>
+对于函数体内的字符串文本，比如：
+</P><PRE CLASS="PROGRAMLISTING">a_output := ''Blah'';
+SELECT * FROM users WHERE f_name=''foobar'';</PRE><P>
+在美元符界定的方法里，你只要写:
+</P><PRE CLASS="PROGRAMLISTING">a_output := 'Blah';
+SELECT * FROM users WHERE f_name='foobar';</PRE><P>
+两种情况都是<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>分析器期望看到的东西。
+</P></DD><DT>4个单引号</DT><DD><P>
+如果你在函数体中的字符串里面需要一个单引号，比如：
+</P><PRE CLASS="PROGRAMLISTING">a_output := a_output || '' AND name LIKE ''''foobar'''' AND xyz''</PRE><P>
+<TT CLASS="LITERAL">a_output</TT>的值将是<TT CLASS="LITERAL"> AND name LIKE 'foobar' AND xyz</TT>。
+</P><P>
+使用美元符界定的方法应该这样写:
+</P><PRE CLASS="PROGRAMLISTING">a_output := a_output || $$ AND name LIKE 'foobar' AND xyz$$</PRE><P>
+注意，这样的美元符界定的分隔符并不是只有<TT CLASS="LITERAL">$$</TT>。
+</P></DD><DT>6个单引号</DT><DD><P>
+如果一个在函数体中的字符串内的单引号与该字符串常量结尾前后相连，比如：
+</P><PRE CLASS="PROGRAMLISTING">a_output := a_output || '' AND name LIKE ''''foobar''''''</PRE><P>
+<TT CLASS="LITERAL">a_output</TT>的值将是<TT CLASS="LITERAL"> AND name LIKE 'foobar'</TT>。
+</P><P>
+用美元符界定的方法则为是:
+</P><PRE CLASS="PROGRAMLISTING">a_output := a_output || $$ AND name LIKE 'foobar'$$</PRE><P>
+</P></DD><DT>10个单引号</DT><DD><P>
+如果你想要在字符串常量里有两个单引号(它们在一起是8个了) ，
+并且这两个单引号和该字符串常量的结尾相连(又加2个)。
+可能只有在写一个生成其它函数的函数的时候，
+像<A HREF="plpgsql-porting.html#PLPGSQL-PORTING-EX2">&#20363; 40-9</A>里那样。比如：
+</P><PRE CLASS="PROGRAMLISTING">a_output := a_output || '' if v_'' ||
+    referrer_keys.kind || '' like ''''''''''
+    || referrer_keys.key_string || ''''''''''
+    then return ''''''  || referrer_keys.referrer_type
+    || ''''''; end if;'';</PRE><P>
+<TT CLASS="LITERAL">a_output</TT>的值将是:
+</P><PRE CLASS="PROGRAMLISTING">if v_... like ''...'' then return ''...''; end if;</PRE><P>
+</P><P>
+使用美元符界定的方法应该这样写:
+</P><PRE CLASS="PROGRAMLISTING">a_output := a_output || $$ if v_$$ || referrer_keys.kind || $$ like '$$
+    || referrer_keys.key_string || $$'
+    then return '$$  || referrer_keys.referrer_type
+    || $$'; end if;$$;</PRE><P>
+假设我们只需要在<TT CLASS="LITERAL">a_output</TT>里放单引号，因为在使用前它会被重新引号包围。
+</P></DD></DL></DIV></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="plpgsql-implementation.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="plpgsql-porting.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">在后台下的<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plpgsql.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">从<SPAN CLASS="PRODUCTNAME">Oracle</SPAN> PL/SQL进行移植</TD></TR></TABLE></DIV></BODY></HTML>

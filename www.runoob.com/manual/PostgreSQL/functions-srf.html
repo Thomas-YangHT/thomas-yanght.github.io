@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>返回集合的函数</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="函数和操作符" HREF="http://school.yunwei.edu/manual/PostgreSQL/functions.html"><LINK REL="PREVIOUS" TITLE="行和数组比较" HREF="functions-comparisons.html"><LINK REL="NEXT" TITLE="系统信息函数" HREF="functions-info.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/func.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="行和数组比较" HREF="functions-comparisons.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/functions.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 9. 函数和操作符</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="系统信息函数" HREF="functions-info.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="FUNCTIONS-SRF">9.24. 返回集合的函数</A></H1><P>本节描述那些可能返回多于一行的函数。在这个类中最广泛使用的函数是序列号生成函数，
+如<A HREF="functions-srf.html#FUNCTIONS-SRF-SERIES">&#34920; 9-49</A>和<A HREF="functions-srf.html#FUNCTIONS-SRF-SUBSCRIPTS">&#34920; 9-50</A>所述。
+另外，更专业的集合返回函数在这个手册的其他地方描述。</P><DIV CLASS="TABLE"><A NAME="FUNCTIONS-SRF-SERIES"></A><P><B>&#34920; 9-49. 序列号生成函数</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><COL><THEAD><TR><TH>函数</TH><TH>参数类型</TH><TH>返回类型</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">generate_series(<TT CLASS="PARAMETER">start</TT>, <TT CLASS="PARAMETER">stop</TT>)</CODE></TT></TD><TD><TT CLASS="TYPE">int</TT> 或 <TT CLASS="TYPE">bigint</TT></TD><TD><TT CLASS="TYPE">setof int</TT> 或 <TT CLASS="TYPE">setof bigint</TT> (与参数类型相同)</TD><TD> 生成一个数值序列，从<TT CLASS="PARAMETER">start</TT>到<TT CLASS="PARAMETER">stop</TT>，步长为 1 。
+</TD></TR><TR><TD><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">generate_series(<TT CLASS="PARAMETER">start</TT>, <TT CLASS="PARAMETER">stop</TT>, <TT CLASS="PARAMETER">step</TT>)</CODE></TT></TD><TD><TT CLASS="TYPE">int</TT> 或 <TT CLASS="TYPE">bigint</TT></TD><TD><TT CLASS="TYPE">setof int</TT> 或 <TT CLASS="TYPE">setof bigint</TT> (与参数类型相同)</TD><TD> 生成一个数值序列，从<TT CLASS="PARAMETER">start</TT>到<TT CLASS="PARAMETER">stop</TT>，步长为<TT CLASS="PARAMETER">step</TT>。
+</TD></TR><TR><TD><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">generate_series(<TT CLASS="PARAMETER">start</TT>, <TT CLASS="PARAMETER">stop</TT>, <TT CLASS="PARAMETER">step</TT> <TT CLASS="TYPE">interval</TT>)</CODE></TT></TD><TD><TT CLASS="TYPE">timestamp</TT> 或 <TT CLASS="TYPE">timestamp with time zone</TT></TD><TD><TT CLASS="TYPE">setof timestamp</TT> 或 <TT CLASS="TYPE">setof timestamp with time zone</TT> (与参数类型相同)</TD><TD> 生成一个数值序列，从<TT CLASS="PARAMETER">start</TT>到<TT CLASS="PARAMETER">stop</TT>，步长为<TT CLASS="PARAMETER">step</TT>。
+</TD></TR></TBODY></TABLE></DIV><P>如果<TT CLASS="PARAMETER">step</TT>是正数且<TT CLASS="PARAMETER">start</TT>大于<TT CLASS="PARAMETER">stop</TT>，
+那么返回零行。相反，如果<TT CLASS="PARAMETER">step</TT>是负数且<TT CLASS="PARAMETER">start</TT>
+小于<TT CLASS="PARAMETER">stop</TT>，那么也返回零行。如果输入是<TT CLASS="LITERAL">NULL</TT>，同样产生零行。
+<TT CLASS="PARAMETER">step</TT>为零则是一个错误。下面是一些例子：
+</P><PRE CLASS="PROGRAMLISTING">SELECT * FROM generate_series(2,4);
+ generate_series
+-----------------
+               2
+               3
+               4
+(3 rows)
+
+SELECT * FROM generate_series(5,1,-2);
+ generate_series
+-----------------
+               5
+               3
+               1
+(3 rows)
+
+SELECT * FROM generate_series(4,3);
+ generate_series
+-----------------
+(0 rows)
+
+-- this example relies on the date-plus-integer operator
+SELECT current_date + s.a AS dates FROM generate_series(0,14,7) AS s(a);
+   dates
+------------
+ 2004-02-05
+ 2004-02-12
+ 2004-02-19
+(3 rows)
+
+SELECT * FROM generate_series('2008-03-01 00:00'::timestamp,
+                              '2008-03-04 12:00', '10 hours');
+   generate_series   
+---------------------
+ 2008-03-01 00:00:00
+ 2008-03-01 10:00:00
+ 2008-03-01 20:00:00
+ 2008-03-02 06:00:00
+ 2008-03-02 16:00:00
+ 2008-03-03 02:00:00
+ 2008-03-03 12:00:00
+ 2008-03-03 22:00:00
+ 2008-03-04 08:00:00
+(9 rows)</PRE><P>
+</P><DIV CLASS="TABLE"><A NAME="FUNCTIONS-SRF-SUBSCRIPTS"></A><P><B>&#34920; 9-50. 下标生成函数</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><THEAD><TR><TH>函数</TH><TH>返回类型</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">generate_subscripts(<TT CLASS="PARAMETER">array anyarray</TT>, <TT CLASS="PARAMETER">dim int</TT>)</CODE></TT></TD><TD><TT CLASS="TYPE">setof int</TT></TD><TD> 生成一系列包括给定数组的下标。
+</TD></TR><TR><TD><TT CLASS="LITERAL"><CODE CLASS="FUNCTION">generate_subscripts(<TT CLASS="PARAMETER">array anyarray</TT>, <TT CLASS="PARAMETER">dim int</TT>, <TT CLASS="PARAMETER">reverse boolean</TT>)</CODE></TT></TD><TD><TT CLASS="TYPE">setof int</TT></TD><TD> 生成一系列包括给定数组的下标。当<TT CLASS="PARAMETER">reverse</TT>为真时，
+该系列则以相反的顺序返回。
+</TD></TR></TBODY></TABLE></DIV><P><CODE CLASS="FUNCTION">generate_subscripts</CODE>是一个为给定数组中的指定维度生成有效下标集的便利函数。
+如果数组中没有所请求的维度或者NULL数组，返回0行（但是会给数组元素为空的返回有效下标）。
+下面一些例子：
+</P><PRE CLASS="PROGRAMLISTING">-- basic usage
+SELECT generate_subscripts('{NULL,1,NULL,2}'::int[], 1) AS s;
+ s 
+---
+ 1
+ 2
+ 3
+ 4
+(4 rows)
+
+-- presenting an array, the subscript and the subscripted
+-- value requires a subquery
+SELECT * FROM arrays;
+         a          
+--------------------
+ {-1,-2}
+ {100,200,300}
+(2 rows)
+
+SELECT a AS array, s AS subscript, a[s] AS value
+FROM (SELECT generate_subscripts(a, 1) AS s, a FROM arrays) foo;
+     array     | subscript | value
+---------------+-----------+-------
+ {-1,-2}       |         1 |    -1
+ {-1,-2}       |         2 |    -2
+ {100,200,300} |         1 |   100
+ {100,200,300} |         2 |   200
+ {100,200,300} |         3 |   300
+(5 rows)
+
+-- unnest a 2D array
+CREATE OR REPLACE FUNCTION unnest2(anyarray)
+RETURNS SETOF anyelement AS $$
+select $1[i][j]
+   from generate_subscripts($1,1) g1(i),
+        generate_subscripts($1,2) g2(j);
+$$ LANGUAGE sql IMMUTABLE;
+CREATE FUNCTION
+postgres=# SELECT * FROM unnest2(ARRAY[[1,2],[3,4]]);
+ unnest2 
+---------
+       1
+       2
+       3
+       4
+(4 rows)</PRE><P>
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="functions-comparisons.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="functions-info.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">行和数组比较</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/functions.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">系统信息函数</TD></TR></TABLE></DIV></BODY></HTML>

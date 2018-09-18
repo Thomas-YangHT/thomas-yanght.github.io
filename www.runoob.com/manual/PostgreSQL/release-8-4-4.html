@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>发布8.4.4</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="发布8.4.5" HREF="release-8-4-5.html"><LINK REL="NEXT" TITLE="发布8.4.3" HREF="release-8-4-3.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-8.4.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="发布8.4.5" HREF="release-8-4-5.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="发布8.4.3" HREF="release-8-4-3.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-8-4-4">E.49. 发布8.4.4</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>2010-05-17</P></BLOCKQUOTE></DIV><P> 该发布包含来自8.4.3的各种修复。关于8.4主要版本中的新特性的信息，
+请参阅<A HREF="release-8-4.html">第 E.53 &#33410;</A>。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN124758">E.49.1. 迁移到版本8.4.4</A></H2><P> 运行8.4.X不需要备份/恢复。然而，如果你从8.4.2更早版本更新，参阅8.4.2的发布说明。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN124761">E.49.2. 变化</A></H2><P></P><UL><LI><P> 强制<TT CLASS="LITERAL">plperl</TT>中使用opmask限制应用于整个解释器，
+而不是使用<TT CLASS="FILENAME">Safe.pm</TT>(Tim Bunce, Andrew Dunstan)</P><P> 最近发展使我们确信<TT CLASS="FILENAME">Safe.pm</TT>太不安全而不能依靠<TT CLASS="LITERAL">plperl</TT>可信赖。
+此变化删除了<TT CLASS="FILENAME">Safe.pm</TT>的使用，
+有利于使用应用于操作码掩码的一个单独的解析器。
+该变化副作用包括以<TT CLASS="LITERAL">plperl</TT>中一种自然的方式使用Perl的<TT CLASS="LITERAL">strict</TT>编译是可能的，
+并且Perl的<TT CLASS="LITERAL">$a</TT>和<TT CLASS="LITERAL">$b</TT>变量按预期以排序程序执行，而且该函数编译显著更快。</P></LI><LI><P> 阻止PL/Tcl执行来自<TT CLASS="STRUCTNAME">pltcl_modules</TT>的不信任代码(Tom) </P><P> 从一个数据库表中自动加载的Tcl代码的PL/Tcl的功能可以为了特洛伊木马攻击被开发，
+因为对谁可以创建或插入该表是没有限制的。这种变化禁用该功能，
+除非<TT CLASS="STRUCTNAME">pltcl_modules</TT>是由超级用户拥有。
+（然而，不检查该表上的权限，所以真正需要低于安全模块表中的安装仍然可以授予适当的权限给值得信赖的非超级用户）。
+另外，防止加载代码到非限制<SPAN CLASS="QUOTE">"normal"</SPAN> Tcl解释器，除非我们真的要执行<TT CLASS="LITERAL">pltclu</TT>函数。
+</P></LI><LI><P> 修复<TT CLASS="LITERAL">ALTER ... SET TABLESPACE</TT>的WAL回放期间的数据损坏(Tom)</P><P> 当<TT CLASS="VARNAME">archive_mode</TT>是on时，<TT CLASS="LITERAL">ALTER ... SET TABLESPACE</TT>生成WAL记录，其中
+回放逻辑是不正确的。它可以将数据写入错误的地方，从而导致可能的不可恢复的数据损坏。
+如果在提交<TT CLASS="LITERAL">ALTER</TT>之后和下一个检查点之前发生数据库崩溃和恢复，
+数据损坏在备库上随时被观察，并且可能在主库上发生。?????&#13;</P></LI><LI><P> 如果在relcache项重建期间收到缓存复位信息，那么修复可能崩溃(Heikki)</P><P> 当修复相关错误的时候，在8.4.3中介绍这些错误。</P></LI><LI><P> 当为了该函数运行语言验证器的时候，应用每个函数GUC设置(Itagaki Takahiro)</P><P> 这避免了失败，如果该函数的代码没有该设置是无效的;
+一个例子是，如果<TT CLASS="VARNAME">search_path</TT>不正确，SQL函数可能不被解析。</P></LI><LI><P> 当<TT CLASS="VARNAME">constraint_exclusion</TT> = <TT CLASS="LITERAL">partition</TT>的时候，
+为继承<TT CLASS="COMMAND">UPDATE</TT>和<TT CLASS="COMMAND">DELETE</TT>目标表执行约束排除(Tom)
+</P><P> 由于疏忽，该设置以前造成约束排除在<TT CLASS="COMMAND">SELECT</TT>命令中被检查。</P></LI><LI><P> 不允许未经授权的用户重置超级用户唯一的参数设置(Alvaro)</P><P> 以前，如果一个非特权用户为自身运行<TT CLASS="LITERAL">ALTER USER ... RESET ALL</TT>，
+或为所拥有的数据库运行<TT CLASS="LITERAL">ALTER DATABASE ... RESET ALL</TT>，
+这将删除用户或数据库的所有特殊参数设置，
+????? 甚至是那些只应该由超级用户改变的设置。现在，<TT CLASS="COMMAND">ALTER</TT>将只删除该用户有权限改变的参数。</P></LI><LI><P>
+当<TT CLASS="LITERAL">CONTEXT</TT>附加物为日志项时，如果发生宕机，避免后台关机时可能的崩溃(Tom)</P><P> 在某些情况中上下文输出函数可能失败，因为当它打印日志信息的时候，当前事务已经回滚。</P></LI><LI><P> 修复<TT CLASS="VARNAME">recovery_end_command</TT>中<TT CLASS="LITERAL">%r</TT>参数的错误处理(Heikki)</P><P> 该值总是零。</P></LI><LI><P> 确保归档进程尽可能快地响应<TT CLASS="VARNAME">archive_command</TT>中变化(Tom)</P></LI><LI><P> 当case表达式是一个没有返回行的查询时，修复pl/pgsql的<TT CLASS="LITERAL">CASE</TT>
+语句而不失败(Tom)</P></LI><LI><P> 更新pl/perl的<TT CLASS="FILENAME">ppport.h</TT>为现代Perl版本(Andrew)</P></LI><LI><P> 修复pl/python中各种内存泄露(Andreas Freund, Tom)</P></LI><LI><P> 正确处理ecpg中空字符串连接参数(Michael)</P></LI><LI><P> 当扩展引用自身的一个变量时，避免在<SPAN CLASS="APPLICATION">psql</SPAN>中的无限递归(Tom)</P></LI><LI><P> 修复<SPAN CLASS="APPLICATION">psql</SPAN>的<TT CLASS="LITERAL">\copy</TT>而在<TT CLASS="LITERAL">\copy (select ...)</TT>中点周围
+不添加空格(Tom)</P><P> 在数值文字中小数点周围的空格可能导致语法错误。</P></LI><LI><P> 当在上下文环境中运行不匹配<TT CLASS="VARNAME">client_encoding</TT>的时候，
+避免<SPAN CLASS="APPLICATION">psql</SPAN>中格式错误(Tom)</P></LI><LI><P> 为了使用<TT CLASS="FILENAME">contrib/intarray</TT>操作符的不满足条件的查询，
+修复不必要的<SPAN CLASS="QUOTE">"GIN索引不支持全局索引扫描"</SPAN>错误(Tom)
+</P></LI><LI><P> 确保<TT CLASS="FILENAME">contrib/pgstattuple</TT>函数反应及时取消中断(Tatsuhito Kasahara)</P></LI><LI><P> 确保服务器启动正确处理<CODE CLASS="FUNCTION">shmget()</CODE>为已存在的共享内存段
+返回<TT CLASS="LITERAL">EINVAL</TT>(Tom)</P><P> 在包括OS X中的BSD衍生的内核上观察这种操作，
+这导致了抱怨共享内存请求大小过大的完全误导启动错误。 </P></LI><LI><P> 避免Windows上syslogger处理过程中可能的崩溃(Heikki)</P></LI><LI><P> 更有力地处理Windows注册表中不完整的时区信息(Magnus)</P></LI><LI><P> 更新已知的Windows时区名字的设置(Magnus)</P></LI><LI><P> 为了Argentina, Australian Antarctic, Bangladesh,
+Mexico, Morocco, Pakistan, Palestine, Russia, Syria, Tunisia中DST变化规律更新
+时区数据文件到<SPAN CLASS="APPLICATION">tzdata</SPAN>发布2010j。
+同时为Taiwan历史修正。</P><P> 另外，添加<TT CLASS="LITERAL">PKST</TT> (Pakistan Summer Time)到时区缩写的缺省设置中。</P></LI></UL></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-8-4-5.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-8-4-3.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">发布8.4.5</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">发布8.4.3</TD></TR></TABLE></DIV></BODY></HTML>

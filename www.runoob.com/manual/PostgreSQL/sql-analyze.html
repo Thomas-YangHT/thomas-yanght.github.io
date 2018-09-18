@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>ANALYZE</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="ALTER VIEW" HREF="sql-alterview.html"><LINK REL="NEXT" TITLE="BEGIN" HREF="sql-begin.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/analyze.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="ALTER VIEW" HREF="sql-alterview.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="BEGIN" HREF="sql-begin.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-ANALYZE"></A>ANALYZE</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN67855"></A><H2>&#21517;&#31216;</H2>ANALYZE&nbsp;--&nbsp;收集与数据库有关的统计信息</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN67860"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">ANALYZE [ VERBOSE ] [ <TT
+CLASS="REPLACEABLE"
+><I
+>table_name</I
+></TT
+> [ ( <TT
+CLASS="REPLACEABLE"
+><I
+>column_name</I
+></TT
+> [, ...] ) ] ]</PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN67864"></A><H2>描述</H2><P><TT CLASS="COMMAND">ANALYZE</TT>收集数据库中表内容的统计信息，然后把结果保存在系统表<A HREF="catalog-pg-statistic.html"><TT CLASS="STRUCTNAME">pg_statistic</TT></A>里。
+随后，查询规划器就可以使用这些统计帮助判断查询的最佳规划。</P><P>使用本命令时如果不带任何参数，<TT CLASS="COMMAND">ANALYZE</TT>将检查当前数据库里的所有表。
+如果有参数，<TT CLASS="COMMAND">ANALYZE</TT>只检查那个指定的表。
+你还可以指定一些字段的名字，在这种情况下，将只收集那些字段的统计信息。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN67873"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL">VERBOSE</TT></DT><DD><P>显示处理过程的信息。</P></DD><DT><TT CLASS="REPLACEABLE"><I>table_name</I></TT></DT><DD><P>要分析的指定表(可以用模式名修饰)的名字。缺省是当前数据库里所有表（不包含外部数据表）。</P></DD><DT><TT CLASS="REPLACEABLE"><I>column_name</I></TT></DT><DD><P>要分析的指定字段的名字。缺省是所有字段。 </P></DD></DL></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="AEN67891"></A><H2>Outputs</H2><P> 如果使用了<TT CLASS="LITERAL">VERBOSE</TT>选项，那么<TT CLASS="COMMAND">ANALYZE</TT>在执行过程中会显示很多进度信息，表明当前正在处理的是哪个表。
+同时打印有关该表的很多其它信息。 </P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN67896"></A><H2>注意</H2><P>只有在明确指定了外部数据表时，这些表才会被分析处理。也不是所有的外部数据封装器都支持<TT CLASS="COMMAND">ANALYZE</TT>。
+如果表的封装器不支持<TT CLASS="COMMAND">ANALYZE</TT>，在执行此命令时会显示一个警告信息，系统不会做任何处理。</P><P>在默认的<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>配置中，autovacuum守护进程（参见<A HREF="routine-vacuuming.html#AUTOVACUUM">第 23.1.6 &#33410;</A>）负责在初次加载数据时自动分析表。
+因为它们会改变整个常规操作。
+当autovacuum关闭时，周期性地运行<TT CLASS="COMMAND">ANALYZE</TT>，或者在对表的大部分内容做了更改之后马上运行它是个好习惯。
+准确的统计信息将帮助规划器选择最合适的查询规划，并因此改善查询处理的速度。
+对以读取为主要负载的数据库，一种比较经常采用的策略是每天在低负荷的时候运行一次<A HREF="sql-vacuum.html">VACUUM</A>和<TT CLASS="COMMAND">ANALYZE</TT> 。 </P><P><TT CLASS="COMMAND">ANALYZE</TT>只需要在目标表上有一个读取锁，因此它可以和表上的其它活动并发地运行。 </P><P><TT CLASS="COMMAND">ANALYZE</TT>收集的统计信息通常包括每个字段最常用数值的列表以及显示每个字段里数据近似分布的柱状图。
+如果<TT CLASS="COMMAND">ANALYZE</TT>认为它们都没有什么用(比如在一个拥有唯一约束的字段上没有公共的数值)或者是该字段数据类型不支持相关的操作符，那么它们都可以忽略。
+在<A HREF="http://school.yunwei.edu/manual/PostgreSQL/maintenance.html">第 23 &#31456;</A>中有关于统计的更多信息。</P><P>对于大表，<TT CLASS="COMMAND">ANALYZE</TT>采集表内容的一个随机抽样做统计， 而不是检查每一行。
+这样就保证了即使是在很大的表上也只需要很少时间就可以完成分析。
+不过，要注意的是统计只是近似的结果， 而且每次运行<TT CLASS="COMMAND">ANALYZE</TT>时，即使表的内容没有任何变化，分析的结果也可能有稍许差异。
+这也会导致<A HREF="sql-explain.html">EXPLAIN</A>显示的规划器的预期开销有一些小变化。
+在极少的情况下，此非决定论会引发规划器在<TT CLASS="COMMAND">ANALYZE</TT>运行后引发查询 计划更改。
+为了避免这个问题，可以提高<TT CLASS="COMMAND">ANALYZE</TT>收集的统计数量， 像下面描述的那样。 </P><P>分析的广度可以通过用调整<A HREF="runtime-config-query.html#GUC-DEFAULT-STATISTICS-TARGET">default_statistics_target</A>配置参数，
+或者是以每字段为基础通过用<TT CLASS="COMMAND">ALTER TABLE ... ALTER COLUMN ... SET STATISTICS</TT>(参见<A HREF="sql-altertable.html">ALTER TABLE</A>)设置每字段的统计目标来控制。
+目标数值设置最常用数值列表中的记录的最大数目以及柱状图中的最大块数。 缺省的目标数值是100，不过可以调节这个数值获取规划器计算精度和<TT CLASS="COMMAND">ANALYZE</TT>运行所需要的时间以及<TT CLASS="LITERAL">pg_statistic</TT>里面占据的空间数目之间的平衡。
+特别是，把统计目标设置为零就关闭了该字段的统计收集。
+这么做对那些从来不参与到查询的<TT CLASS="LITERAL">WHERE</TT>，<TT CLASS="LITERAL">GROUP BY</TT>或者<TT CLASS="LITERAL">ORDER BY</TT>选项里的字段是很有用的，因为规划器不会使用到这样的字段上的统计。 </P><P> 在被分析的字段中最大的统计目标决定统计采样的行数。 增大目标会导致<TT CLASS="COMMAND">ANALYZE</TT>的时候成比例地增大对时间和空间的需求。 </P><P><TT CLASS="COMMAND">ANALYZE</TT>的一个估计值是出现在每列的不同值的数目。
+因为仅仅行的一个子集被检查,这个估计值有时会很不准确，甚至是对最大可能的统计目标。
+如果这个错误导致了差的查询计划，一个更精确的值可以通过手动确定并且然后通过<TT CLASS="COMMAND">ALTER TABLE ... ALTER COLUMN ... SET (n_distinct = ...)</TT>安装。
+(参见<A HREF="sql-altertable.html">ALTER TABLE</A>)。 </P><P>如果已分析的表有一个或者更多子表，<TT CLASS="COMMAND">ANALYZE</TT>将会收集统计两次： 一次仅仅在父表的行上，第二次是在父表及其所有子表的行上。
+第二次收集的统计数据在查询规划器遍历整个继承树结构时会用到。
+不过，autovacuum守护进程在决定触发一个对一个表的自动分析时，会仅仅考虑在父表上进行插入或者更新。
+如果那个表几乎不插入或者更新，继承的统计数据将不再更新，除非您手动运行<TT CLASS="COMMAND">ANALYZE</TT>。 </P><P>如果拟分析的表成了一个空表，则<TT CLASS="COMMAND">ANALYZE</TT>不会记录该表的统计信息。而原来已有有统计信息则会保留。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN67939"></A><H2>兼容性</H2><P>SQL标准里没有<TT CLASS="COMMAND">ANALYZE</TT>语句。 </P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN67943"></A><H2>参见</H2><A HREF="sql-vacuum.html">VACUUM</A>, <A HREF="app-vacuumdb.html"><SPAN CLASS="APPLICATION">vacuumdb</SPAN></A>, <A HREF="runtime-config-resource.html#RUNTIME-CONFIG-RESOURCE-VACUUM-COST">第 18.4.4 &#33410;</A>, <A HREF="routine-vacuuming.html#AUTOVACUUM">第 23.1.6 &#33410;</A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-alterview.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-begin.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">ALTER VIEW</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">BEGIN</TD></TR></TABLE></DIV></BODY></HTML>

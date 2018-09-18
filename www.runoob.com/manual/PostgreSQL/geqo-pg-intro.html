@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>PostgreSQL 里的基因查询优化(GEQO)</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="基因查询优化器" HREF="http://school.yunwei.edu/manual/PostgreSQL/geqo.html"><LINK REL="PREVIOUS" TITLE="基因算法" HREF="geqo-intro2.html"><LINK REL="NEXT" TITLE="进一步阅读" HREF="geqo-biblio.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/geqo.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="基因算法" HREF="geqo-intro2.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/geqo.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 53. 基因查询优化器</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="进一步阅读" HREF="geqo-biblio.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="GEQO-PG-INTRO">53.3. PostgreSQL 里的基因查询优化(<ACRONYM CLASS="ACRONYM">GEQO</ACRONYM>)</A></H1><P><ACRONYM CLASS="ACRONYM">GEQO</ACRONYM>模块是试图解决类似著名的旅行商问题(TSP)的查询优化问题的。
+可能的查询规划被当作整数字符串进行编码。每个字符串代表查询里面一个关系到下一个关系的连接的顺序。例如，下面的连接树
+</P><PRE CLASS="LITERALLAYOUT">   /\
+  /\ 2
+ /\ 3
+4  1</PRE><P>
+是用整数字符串'4-1-3-2'编码的，这就是说，首先连接关系'4'和'1'，然后'3'，然后是'2'，
+这里的 1, 2, 3, 4 都是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>优化器里的关系标识(ID)。
+</P><P>在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>里的<ACRONYM CLASS="ACRONYM">GEQO</ACRONYM>实现的一些特性是：
+<P></P></P><UL COMPACT="COMPACT"><LI STYLE="list-style-type: disc"><P>使用<I CLASS="FIRSTTERM">稳定状态</I>的 <ACRONYM CLASS="ACRONYM">GA</ACRONYM>(替换全体中最小适应性的个体，而不是整代的替换)
+允许向改进了的查询规划快速逼近。这一点对在合理时间内处理查询是非常重要的；
+</P></LI><LI STYLE="list-style-type: disc"><P><I CLASS="FIRSTTERM">边缘重组交叉</I>的使用特别适于在用<ACRONYM CLASS="ACRONYM">GA</ACRONYM>解决<ACRONYM CLASS="ACRONYM">TSP</ACRONYM>问题时保持边缘损失最低。
+</P></LI><LI STYLE="list-style-type: disc"><P>否决了把突变作为基因操作符的做法，这样生成合法的<ACRONYM CLASS="ACRONYM">TSP</ACRONYM>漫游时不需要修复机制。
+</P></LI></UL><P>
+</P><P><ACRONYM CLASS="ACRONYM">GEQO</ACRONYM>模块的一部分是采用的 D.Whitley 的 Genitor 算法。
+</P><P><ACRONYM CLASS="ACRONYM">GEQO</ACRONYM>模块让<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>查询优化器可以通过非穷举搜索有效地支持大的连接查询。
+</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN101454">53.3.1. <ACRONYM CLASS="ACRONYM">GEQO</ACRONYM>生成的候选规划</A></H2><P><ACRONYM CLASS="ACRONYM">GEQO</ACRONYM>规划过程使用标准的规划器代码生成各个独立表的扫描规划。
+然后用遗传算法生成连接规划。正如上面讲到的，每个候选的连接规划由基本表的连接序列表示。
+在初始阶段， <ACRONYM CLASS="ACRONYM">GEQO</ACRONYM>简单的生成一些随机的连接序列。
+对每个连接序列，调用标准的规划器代码评估以这样的连接序列执行查询的成本。
+（对连接序列的每一个步骤，考虑所有可能的三种连接策略；并且所有初期决定的关系扫描规划也是有效的。
+评估值是所有这些可能性中最廉价的。 ）
+评估成本更低的连接序列被认为比代价高的那些连接序列<SPAN CLASS="QUOTE">"更加合适"</SPAN>。基因算法淘汰那些最不合适的候选。
+然后通过组合最合适的基因生成新的候选，即通过随机选择一部分低成本的连接序列去产生作为候选的新的序列。
+这个过程不断重复直到考虑过的连接序列达到一个预设的值，然后在搜索期间找到的最好的结果作为最终生成的执行计划。
+</P><P>这个过程天生是不确定的，因为在选择初期总群以及随后对最佳候补实施<SPAN CLASS="QUOTE">"突变"</SPAN>时都带有随机性。
+为了避免被选中的计划发生令人惊讶的变化，每次GEQO算法执行都根据当前<A HREF="runtime-config-query.html#GUC-GEQO-SEED">geqo_seed</A>参数的设置开始一个随机数生成器。
+只要<TT CLASS="VARNAME">geqo_seed</TT>以及其他GEQO参数保持固定，对一个给定的查询(以及其他规划器输入，比如统计信息)将生成相同的执行计划。
+如果要尝试不同的搜索路径，可以尝试改变<TT CLASS="VARNAME">geqo_seed</TT>。
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="GEQO-FUTURE">53.3.2. <SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> <ACRONYM CLASS="ACRONYM">GEQO</ACRONYM>未来的实现任务</A></H2><P>还需要一些工作来改进基因算法的参数设置。
+在文件<TT CLASS="FILENAME">src/backend/optimizer/geqo/geqo_main.c</TT>里的过程
+<CODE CLASS="FUNCTION">gimme_pool_size</CODE>和 <CODE CLASS="FUNCTION">gimme_number_generations</CODE>
+在设置参数时不得不为两个竞争需求做出折衷：
+<P></P></P><UL COMPACT="COMPACT"><LI><P>查询规划的优化
+</P></LI><LI><P>计算处理时间
+</P></LI></UL><P>
+</P><P>在当前的实现中，每个候选连接序列的适应性是通过运行标准规划器的连接选择和代价评估代码从头开始评估的。
+当不同的候选使用相似的连接子序列，将有大量的工作会重复。
+通过保持子序列的代价评估值可以显著的提升速度。问题在于要避免为了保持这个状态而不合理的内存扩展。
+</P><P>在最基本的层面上，并不清楚用给 TSP 涉及的 GA 算法解决查询优化的问题是否合适。
+在 TSP 的情况下，与任何子字符串(部分旅游)相关的开销都是独立于旅游的其它部分的，但是目前，这一点对于查询优化是不同的。
+因此，可以怀疑边缘重组交叉是否最有效的突变过程。
+</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="geqo-intro2.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="geqo-biblio.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">基因算法</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/geqo.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">进一步阅读</TD></TR></TABLE></DIV></BODY></HTML>

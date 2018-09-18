@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>概述</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="PL/pgSQL - SQL过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/plpgsql.html"><LINK REL="PREVIOUS" TITLE="PL/pgSQL - SQL过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/plpgsql.html"><LINK REL="NEXT" TITLE="PL/pgSQL的结构" HREF="plpgsql-structure.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/plpgsql.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="PL/pgSQL - SQL过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/plpgsql.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plpgsql.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 40. <SPAN CLASS="APPLICATION">PL/pgSQL</SPAN> - <ACRONYM CLASS="ACRONYM">SQL</ACRONYM>过程语言</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="PL/pgSQL的结构" HREF="plpgsql-structure.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="PLPGSQL-OVERVIEW">40.1. 概述</A></H1><P>
+<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>数据库系统的一个可加载的过程语言。
+<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>的设计目标是创建一种可加载的过程语言，可以
+<P></P></P><UL><LI><P>
+用于创建函数和触发器过程，
+</P></LI><LI><P> 为<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>语言增加控制结构，</P></LI><LI><P> 执行复杂的计算，</P></LI><LI><P> 继承所有用户定义类型、函数、操作符，</P></LI><LI><P> 定义为被服务器信任的语言，</P></LI><LI><P> 容易使用。</P></LI></UL><P>
+</P><P> <SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>创建的函数可以在那些使用内置函数一样的情形下使用。
+比如，可以创建复杂的条件计算函数，并随后将之用于定义操作符或者用于函数索引中。</P><P> 在<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 9.0及其之后的版本中，<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>是默认安装的。
+当然，PL/pgSQL仍然是一个可加载的模块，因此，如果实际安全需要，管理员也可以选择将它卸载掉。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="PLPGSQL-ADVANTAGES">40.1.1. 使用<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>的优点</A></H2><P> <ACRONYM CLASS="ACRONYM">SQL</ACRONYM>是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>和大多数其它关系型数据库的命令语言。
+它是可移植的，并且容易学习使用。但是所有<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>语句都必须由数据库服务器独立地执行。</P><P> 这就意味着你的客户端应用必须把每条命令发送到数据库服务器，
+等待它处理这个命令，接收结果，对结果进行一些处理，
+然后再给服务器发送另外一条命令。
+所有这些东西都会产生进程间通讯，
+并且如果你的客户端在另外一台机器上甚至还会产生网络开销。</P><P> 通过<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>，可以把运算块和一系列命令在数据库服务器<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">内部</I></SPAN>组成一个块，
+这样就拥有了过程语言的能力并且简化 SQL 的使用，
+因而节约了大量的时间，因为不需要进行客户端/服务器通讯。</P><P></P><UL><LI><P> 忽略了客户端和服务器端之间的额外往返行程。</P></LI><LI><P> 客户端不需要的中间结果无需在服务器端和客户端来回传递。</P></LI><LI><P> 不需要多次语法分析步骤。</P></LI></UL><P> 比起不使用存储函数来，这样做能够产生明显的性能提升。</P><P> 同样，在<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>里，仍然可以使用SQL的所有数据类型，操作符和函数。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="PLPGSQL-ARGS-RESULTS">40.1.2. 支持的参数和结果数据类型</A></H2><P> 使用<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>所写的函数能够接受服务器支持的任何标量或数组数据类型作为参数，
+并且同样能够返回这些类型的结果，
+它们还可以接受或者返回任意用名字声明的复合类型(行类型)。
+还可以将一个<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>函数声明为一个返回<TT CLASS="TYPE">record</TT>类型(行类型)，
+表明该结果是一个行类型，这个行的字段是在调用它的查询中指定的，
+就像在<A HREF="queries-table-expressions.html#QUERIES-TABLEFUNCTIONS">第 7.2.1.4 &#33410;</A>里讨论的那样。</P><P> 与声明SQL函数一样，通过使用<TT CLASS="LITERAL">VARIADIC</TT>可以对<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>
+进行声明为能接受可变数目的参数。
+正如在<A HREF="xfunc-sql.html#XFUNC-SQL-VARIADIC-FUNCTIONS">第 35.4.5 &#33410;</A>中讨论的那样。</P><P> <SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>函数还可以声明为接受并返回多态的
+<TT CLASS="TYPE">anyelement</TT>, <TT CLASS="TYPE">anyarray</TT>, <TT CLASS="TYPE">anynonarray</TT>,
+<TT CLASS="TYPE">anyenum</TT>和<TT CLASS="TYPE">anyrange</TT>类型。
+一个多态函数实际操作的数据类型可以在不同的调用环境中变化，
+如在<A HREF="extend-type-system.html#EXTEND-TYPES-POLYMORPHIC">第 35.2.5 &#33410;</A>里讨论的那样。
+<A HREF="plpgsql-declarations.html#PLPGSQL-DECLARATION-PARAMETERS">第 40.3.1 &#33410;</A>是一个使用例子。</P><P> <SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>还可以声明为任何一个单个实例返回的数据类型<SPAN CLASS="QUOTE">"set"</SPAN>，或者表。
+这样的函数通过为结果集每个需要返回的元素执行一个<TT CLASS="COMMAND">RETURN NEXT</TT>生成它的输出，
+或者通过使用<TT CLASS="COMMAND">RETURN QUERY</TT>来输出评估查询的结果。</P><P> 最后，如果返回的结果没有太大的价值，<SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>函数可以声明为返回<TT CLASS="TYPE">void</TT>。</P><P> <SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>函数也可以声明为输出某种类型的参数，
+来代替明确的返回类型声明。 这么做并未给该语言增加任何基础设施，
+只是通常更方便些，特别是返回多行数值的时候。同时，
+也可以用<TT CLASS="LITERAL">RETURNS TABLE</TT>来代替<TT CLASS="LITERAL">RETURNS SETOF</TT>。 </P><P> 具体的例子在<A HREF="plpgsql-declarations.html#PLPGSQL-DECLARATION-PARAMETERS">第 40.3.1 &#33410;</A>和
+<A HREF="plpgsql-control-structures.html#PLPGSQL-STATEMENTS-RETURNING">第 40.6.1 &#33410;</A>中。</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plpgsql.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="plpgsql-structure.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><SPAN CLASS="APPLICATION">PL/pgSQL</SPAN> - <ACRONYM CLASS="ACRONYM">SQL</ACRONYM>过程语言</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plpgsql.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><SPAN CLASS="APPLICATION">PL/pgSQL</SPAN>的结构</TD></TR></TABLE></DIV></BODY></HTML>

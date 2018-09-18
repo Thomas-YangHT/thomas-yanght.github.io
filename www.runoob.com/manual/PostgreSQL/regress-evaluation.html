@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>测试评估</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="回归测试" HREF="http://school.yunwei.edu/manual/PostgreSQL/regress.html"><LINK REL="PREVIOUS" TITLE="运行测试" HREF="regress-run.html"><LINK REL="NEXT" TITLE="平台相关的比较文件" HREF="regress-variant.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/regress.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="运行测试" HREF="regress-run.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/regress.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 30. 回归测试</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="平台相关的比较文件" HREF="regress-variant.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="REGRESS-EVALUATION">30.2. 测试评估</A></H1><P>有一些正确安装并且具有完整功能的<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+可能会在一些回归测试中<SPAN CLASS="QUOTE">"失效"</SPAN>，这主要是因为浮点数的形式和时区支持的问题。
+目前的测试只是简单的用<TT CLASS="COMMAND">diff</TT>与参考系统的输出进行比较，
+因而对一些细小的系统区别很敏感。当一项测试报告<SPAN CLASS="QUOTE">"失败"</SPAN>时，
+只要检查一下预期和实际的结果，你就会发现区别并不大。当然，
+我们仍然在努力维护所有我们支持的平台的准确参考文件，这样我们就可以假定所有测试都通过。</P><P>回归测试的实际输出在<TT CLASS="FILENAME">src/test/regress/results</TT>目录里的文件里。
+测试脚本使用<TT CLASS="COMMAND">diff</TT>比较每个输出文件和存放在<TT CLASS="FILENAME">src/test/regress/expected</TT>
+目录里的参考输出。任何区别都存放在<TT CLASS="FILENAME">src/test/regress/regression.diffs</TT>
+里面供你检查。如果你不喜欢默认的<TT CLASS="COMMAND">diff</TT>选项，设置环境变量
+<TT CLASS="ENVAR">PG_REGRESS_DIFF_OPTS</TT>为<TT CLASS="LITERAL">PG_REGRESS_DIFF_OPTS='-u'</TT>。
+你也可以自己运行<TT CLASS="COMMAND">diff</TT>。</P><P>如果获得一个<SPAN CLASS="QUOTE">"失败"</SPAN>的测试结果，但实际上输出结果是正确的，
+你可以通过添加新的比较文件来抑制错误报告。参见<A HREF="regress-variant.html">第 30.3 &#33410;</A>获取更多细节。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN38269">30.2.1. 错误信息差别</A></H2><P>有一些回归测试涉及到有意的非法输入值。错误信息可能会来自<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+代码或来自主机平台系统过程。对于后者，信息可能在平台之间区别比较大，
+但应该反映相似的信息。这些信息上的差别将会导致一个<SPAN CLASS="QUOTE">"失败"</SPAN>的回归测试，
+我们可以通过检查文件发现这一点。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN38274">30.2.2. 区域差别</A></H2><P>如果你在一台服务器上运行测试，而该服务器是用一种非 C 区域设置初始化的，
+那么可能因为有排序顺序和其它类似的差别导致的失败。
+回归测试套件处理这种问题的方法是提供可选的结果文件，这些文件一起处理一大堆的区域。</P><P>当使用临时安装在一个不同的区域中运行测试时，在<TT CLASS="COMMAND">make</TT>
+命令行传递适当的区域相关的环境变量，例如：
+</P><PRE CLASS="PROGRAMLISTING">gmake check LANG=de_DE.utf8</PRE><P>
+回归测试驱动附件<TT CLASS="ENVAR">LC_ALL</TT>，所以它不使用那个变量选择区域。
+要不使用区域，取消所有区域相关的环境变量（或设置它们为<TT CLASS="LITERAL">C</TT>）
+或使用下列的特殊调用：
+</P><PRE CLASS="PROGRAMLISTING">gmake check NO_LOCALE=1</PRE><P>
+当对一个现有安装运行测试时，区域设置取决于现有安装。要改变它，
+通过传递适当的选项到<TT CLASS="COMMAND">initdb</TT>，用一个不同的区域初始化数据库集群。
+</P><P>通常，作为生产用的区域设置上运行回归测试是明智的，因为这将练习区域和编码相关的代码部分，
+并将实际在生产中使用。取决于操作系统环境，你可能会得到错误，
+但是然后你将至少知道在运行实际应用时，预期什么区域特定的行为。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN38285">30.2.3. 日期和时间差别</A></H2><P>大多数日期和时间测试结果依赖于时区设置。参考文件是为<TT CLASS="LITERAL">PST8PDT</TT>
+时区(伯克利，加州)准备的，因而如果测试没有设置为那个时区是显然会失败的。
+回归测试的驱动器把<TT CLASS="ENVAR">PGTZ</TT>环境变量设置为<TT CLASS="LITERAL">PST8PDT</TT>，
+基本可以保证正确的测试。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN38291">30.2.4. 浮点数差别</A></H2><P>有些测试涉及到对表中的数据列进行 64 位浮点数(<TT CLASS="TYPE">double precision</TT>)计算的问题。
+我们观察了涉及到计算<TT CLASS="TYPE">double precision</TT>字段的数学函数的结果差别。
+<TT CLASS="LITERAL">float8</TT>和<TT CLASS="LITERAL">geometry</TT>测试尤其容易在不同平台，
+或者甚至是不同的编译器最优化设置之间产生小差别。
+这时需要肉眼对这些差别进行比较，以判断这些差别究竟有多大，我们发现是在小数点右边 10 位左右。</P><P>有些系统把负零显示为<TT CLASS="LITERAL">-0</TT>，而其它的只是显示<TT CLASS="LITERAL">0</TT>。</P><P>有些系统在<CODE CLASS="FUNCTION">pow()</CODE>和<CODE CLASS="FUNCTION">exp()</CODE>
+出错时产生的信号与目前<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>代码里期望的机制不一样。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN38305">30.2.5. 行顺序差别</A></H2><P>你可能会看见同样的行以与预期文件的不同的顺序输出。在大多数情况下，严格说来这不算Bug。
+大多数回归测试脚本都不会迂腐到在每个<TT CLASS="LITERAL">SELECT</TT>中都使用<TT CLASS="LITERAL">ORDER BY</TT>的地步，
+因此根据 SQL 规范，它们的结果行顺序并非定义得非常好的。实际上，
+因为我们是在同样的数据上用同样的软件运行同样的查询，所以在所有平台上通常都获得同样的结果，
+因此即使缺少<TT CLASS="LITERAL">ORDER BY</TT>也不算什么大问题。不过有些查询的确存在跨平台的排序问题。
+在测试一台已安装的服务器的时候，排序的差别也可能因为非 C 区域设置，或者非缺省的参数设置，
+比如客户自己设置的<TT CLASS="VARNAME">work_mem</TT>或者规划器开销参数设置受影响。</P><P>因此，如果你看到一个排序差异，应该不是什么要担心的问题(除非明确使用了<TT CLASS="LITERAL">ORDER BY</TT>)。
+不过，如果有这样的现像，请告诉我们，这样我们就可以在那条查询上加一个<TT CLASS="LITERAL">ORDER BY</TT>
+从而在以后的版本里消除这种伪<SPAN CLASS="QUOTE">"失败"</SPAN>。</P><P>你可能会问，为什么我们不对所有回归测试的 SELECT 进行排序以一次性消灭所有这类问题。
+原因是这样做只能让回归测试用处更少，而不是更多，
+因为它们会试图使用那些生成顺序结果的查询规划，而不再使用那些不排序的查询规划。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN38317">30.2.6. 堆栈深度不够</A></H2><P>如果<TT CLASS="LITERAL">errors</TT>测试导致在<TT CLASS="LITERAL">select infinite_recurse()</TT>
+命令的时候服务器崩溃，这就意味着平台对进程堆栈的限制小于
+<A HREF="runtime-config-resource.html#GUC-MAX-STACK-DEPTH">max_stack_depth</A>
+参数值。
+我们可以通过在更高的堆栈限制的数值上运行服务器绕开这个问题(缺省
+<TT CLASS="VARNAME">max_stack_depth</TT>建议值是 4MB)。如果你无法这么做，
+那么另外一个方法是减少<TT CLASS="VARNAME">max_stack_depth</TT>的值。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN38325">30.2.7. <SPAN CLASS="QUOTE">"随机"</SPAN> 测试</A></H2><P><TT CLASS="LITERAL">random</TT>测试脚本的目的是生成随机结果。在很罕见的情况下，
+这会导致回归测试中的随机测试失败。键入：
+</P><PRE CLASS="PROGRAMLISTING">diff results/random.out expected/random.out</PRE><P>
+会产生仅仅一行或几行差别。你不必担心这些，除非随机测试在重复测试中总是失败。
+</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="regress-run.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="regress-variant.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">运行测试</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/regress.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">平台相关的比较文件</TD></TR></TABLE></DIV></BODY></HTML>

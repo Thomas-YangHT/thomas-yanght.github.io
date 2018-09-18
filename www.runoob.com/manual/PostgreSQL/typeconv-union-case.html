@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>UNION, CASE 和相关构造 </TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="类型转换" HREF="http://school.yunwei.edu/manual/PostgreSQL/typeconv.html"><LINK REL="PREVIOUS" TITLE="值存储" HREF="typeconv-query.html"><LINK REL="NEXT" TITLE="索引" HREF="http://school.yunwei.edu/manual/PostgreSQL/indexes.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/typeconv.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="值存储" HREF="typeconv-query.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/typeconv.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 10. 类型转换</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="索引" HREF="http://school.yunwei.edu/manual/PostgreSQL/indexes.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="TYPECONV-UNION-CASE">10.5. <TT CLASS="LITERAL">UNION</TT>, <TT CLASS="LITERAL">CASE</TT> 和相关构造</A></H1><P>SQL <TT CLASS="LITERAL">UNION</TT> 构造必须把那些可能不太相似的类型匹配起来成为一个结果集。
+解析算法分别应用于联合查询的每个输出字段。<TT CLASS="LITERAL">INTERSECT</TT>和<TT CLASS="LITERAL">EXCEPT</TT>
+构造对不相同的类型使用和 <TT CLASS="LITERAL">UNION</TT>相同的算法进行解析。
+<TT CLASS="LITERAL">CASE</TT>, <TT CLASS="LITERAL">ARRAY</TT>, <TT CLASS="LITERAL">VALUES</TT>, <CODE CLASS="FUNCTION">GREATEST</CODE>,
+和<CODE CLASS="FUNCTION">LEAST</CODE>构造也使用同样的算法匹配它的部件表达式并且选择一个结果数据类型。</P><DIV CLASS="PROCEDURE"><P><B><TT CLASS="LITERAL">UNION</TT>, <TT CLASS="LITERAL">CASE</TT>和相关构造的类型解析</B></P><OL TYPE="1"><LI CLASS="STEP"><P>如果所有输入都是相同的类型，并且不是<TT CLASS="TYPE">unknown</TT>类型，那么解析成这种类型。
+否则，用它们潜在的基本类型替换列表中的域类型。</P></LI><LI CLASS="STEP"><P>如果所有输入都是<TT CLASS="TYPE">unknown</TT>类型则解析成<TT CLASS="TYPE">text</TT>类型
+(字符串类型范畴的首选类型)。否则，忽略<TT CLASS="TYPE">unknown</TT>输入。</P></LI><LI CLASS="STEP"><P>如果非 unknown 输入不属于同一个类型范畴，失败。</P></LI><LI CLASS="STEP"><P>如果有，则选取第一个属于该范畴中首选类型的非 unknown 输入类型。</P></LI><LI CLASS="STEP"><P>否则，选择最后一个允许所有前面的非unknown输入隐式转换为它的非unknown输入类型。
+（总是有这么一种类型，因为至少列表上的第一种类型必须适合这种情况。）</P></LI><LI CLASS="STEP"><P>把所有输入转换为所选的类型。如果从给定的输入到所选的类型没有一个转换则失败。</P></LI></OL></DIV><P>下面是一些例子。</P><DIV CLASS="EXAMPLE"><A NAME="AEN21446"></A><P><B>&#20363; 10-8. Union中的待定类型解析</B></P><P></P><PRE CLASS="SCREEN">SELECT text 'a' AS "text" UNION SELECT 'b';
+
+ text
+------
+ a
+ b
+(2 rows)</PRE><P>
+这里，unknown 类型文本<TT CLASS="LITERAL">'b'</TT>将被解析成<TT CLASS="TYPE">text</TT>类型。</P></DIV><DIV CLASS="EXAMPLE"><A NAME="AEN21452"></A><P><B>&#20363; 10-9. 简单Union中的类型解析</B></P><P></P><PRE CLASS="SCREEN">SELECT 1.2 AS "numeric" UNION SELECT 1;
+
+ numeric
+---------
+       1
+     1.2
+(2 rows)</PRE><P>
+文本<TT CLASS="LITERAL">1.2</TT>的类型为<TT CLASS="TYPE">numeric</TT>，而且<TT CLASS="TYPE">integer</TT>类型的<TT CLASS="LITERAL">1</TT>
+可以隐含地转换为<TT CLASS="TYPE">numeric</TT>，因此使用这个类型。</P></DIV><DIV CLASS="EXAMPLE"><A NAME="AEN21461"></A><P><B>&#20363; 10-10. 转置Union中的类型解析</B></P><P></P><PRE CLASS="SCREEN">SELECT 1 AS "real" UNION SELECT CAST('2.2' AS REAL);
+
+ real
+------
+    1
+  2.2
+(2 rows)</PRE><P>
+这里，因为类型<TT CLASS="TYPE">real</TT>不能被隐含转换成<TT CLASS="TYPE">integer</TT>，但是<TT CLASS="TYPE">integer</TT>
+可以隐含转换成<TT CLASS="TYPE">real</TT>，那么联合的结果类型将是<TT CLASS="TYPE">real</TT>。</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="typeconv-query.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/indexes.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">值存储</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/typeconv.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">索引</TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>处理嵌入的SQL程序</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="ECPG - 在C中嵌入SQL" HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html"><LINK REL="PREVIOUS" TITLE="预处理器指令" HREF="ecpg-preproc.html"><LINK REL="NEXT" TITLE="库函数" HREF="ecpg-library.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ecpg.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="预处理器指令" HREF="ecpg-preproc.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 33. <SPAN CLASS="APPLICATION">ECPG</SPAN> - 在C中嵌入<ACRONYM CLASS="ACRONYM">SQL</ACRONYM></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="库函数" HREF="ecpg-library.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="ECPG-PROCESS">33.10. 处理嵌入的SQL程序</A></H1><P> 现在你已知道如何形成嵌入SQL C程序，你可能想要知道如何编译它们。
+编译之前你通过嵌入的<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>
+<ACRONYM CLASS="ACRONYM">C</ACRONYM>预处理器运行文件，这将转换你用于特定函数调用的 <ACRONYM CLASS="ACRONYM">SQL</ACRONYM>
+语句。编译完之后，你必须连接包含所需函数的特殊库。这些函数
+从参数中抓取信息，使用<SPAN CLASS="APPLICATION">libpq</SPAN>接口执行<ACRONYM CLASS="ACRONYM">SQL</ACRONYM>
+命令，将结果放在输出指定的参数中。</P><P>
+预处理程序被称为<TT CLASS="FILENAME">ecpg</TT>，包含在正常<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>安装中。
+嵌入的SQL程序通常以扩展名<TT CLASS="FILENAME">.pgc</TT>命名。
+如果你有<TT CLASS="FILENAME">prog1.pgc</TT>程序文件，你可以通过简单调用处理它。
+</P><PRE CLASS="PROGRAMLISTING">ecpg prog1.pgc</PRE><P>
+这将创建名为<TT CLASS="FILENAME">prog1.c</TT>的文件。如果你的输入文件
+不遵循建议的命名模式，你可以使用<TT CLASS="OPTION">-o</TT>选项明确的指定输出文件。
+</P><P>
+预处理文件可以正常编译，比如：
+</P><PRE CLASS="PROGRAMLISTING">cc -c prog1.c</PRE><P>
+生成的C源文件包含来自<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>安装的头文件，因此
+如果你在缺省不被搜索的地方安装<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>，那么
+你必须添加选项比如<TT CLASS="LITERAL">-I/usr/local/pgsql/include</TT>到
+编译命令行。
+</P><P>
+为了连接嵌入式SQL程序，你需要包含<TT CLASS="FILENAME">libecpg</TT>库，像这样：
+</P><PRE CLASS="PROGRAMLISTING">cc -o myprog prog1.o prog2.o ... -lecpg</PRE><P>
+再次，你可能需要添加像<TT CLASS="LITERAL">-L/usr/local/pgsql/lib</TT>
+到该命令行的选项。
+</P><P> 你可以使用<TT CLASS="COMMAND">pg_config</TT>
+或者<TT CLASS="COMMAND">pkg-config</TT>以及包名<TT CLASS="LITERAL">libecpg</TT>以
+获得安装目录。</P><P>
+如果你使用<SPAN CLASS="APPLICATION">make</SPAN>管理大对象编译过程，
+它可能方便地包含下面你的makefiles中的隐式规则：
+</P><PRE CLASS="PROGRAMLISTING">ECPG = ecpg
+
+%.c: %.pgc
+        $(ECPG) $&lt;</PRE><P>
+</P><P> <TT CLASS="COMMAND">ecpg</TT>命令完整语法在<A HREF="app-ecpg.html"><SPAN CLASS="APPLICATION">ecpg</SPAN></A>中有详细描述。</P><P> <SPAN CLASS="APPLICATION">ecpg</SPAN>库缺省是线程安全的。然而，你可能需要
+使用一些线程命令行选项来编译你的客户端代码。&#13;</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="ecpg-preproc.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="ecpg-library.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">预处理器指令</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/ecpg.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">库函数</TD></TR></TABLE></DIV></BODY></HTML>

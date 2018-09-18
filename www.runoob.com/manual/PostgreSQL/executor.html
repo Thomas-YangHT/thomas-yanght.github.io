@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>执行器</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="PostgreSQL内部概述" HREF="http://school.yunwei.edu/manual/PostgreSQL/overview.html"><LINK REL="PREVIOUS" TITLE="规划器/优化器" HREF="planner-optimizer.html"><LINK REL="NEXT" TITLE="系统表" HREF="http://school.yunwei.edu/manual/PostgreSQL/catalogs.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/arch-dev.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="规划器/优化器" HREF="planner-optimizer.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/overview.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 46. PostgreSQL内部概述</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="系统表" HREF="http://school.yunwei.edu/manual/PostgreSQL/catalogs.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="EXECUTOR">46.6. 执行器</A></H1><P><I CLASS="FIRSTTERM">执行器</I>接收规划器/优化器创建的查询规划然后递归地处理它，
+抽取所需要的行集合。它实际上是一个需求-拉动（demand-pull ）的流水线机制。每次调用一个规划节点，
+它都必须传递至少一行，否则报告它已经完成了行的传递。</P><P>举一个具体的例子，假设顶端节点是一个<TT CLASS="LITERAL">MergeJoin</TT>节点。
+在做任何归并之前，首先要获取两行(每个子规划一行)。
+因此执行器递归地调用自己来处理子规划(它从附着在<TT CLASS="LITERAL">lefttree</TT>上的子规划开始)。
+假设新的顶端节点(左子规划的顶端节点)是一个<TT CLASS="LITERAL">Sort</TT>节点，
+然后还是需要递归地获取一个输入行。<TT CLASS="LITERAL">Sort</TT>节点的子节点可能是一个<TT CLASS="LITERAL">SeqScan</TT>
+节点，代表对一个表的实际读取动作。这个节点的执行导致执行器从表中抓取一行然后把它返回给调用的节点。
+<TT CLASS="LITERAL">Sort</TT>将不断调用它的子节点以获取需要排序的所有行。
+处理完所有输入之后(由子节点返回一个 NULL 而不是一行表示)，由<TT CLASS="LITERAL">Sort</TT>代码执行排序，
+然后就可以返回它的第一个输出行，也就是按照排序顺序输出的第一行，它仍然保持剩下的行的排序状态，
+这样在随后有需求的时候，它就可以按照排序顺序返回这些行。</P><P><TT CLASS="LITERAL">MergeJoin</TT>节点也会类似地要求从它的右边子规划获取第一行。
+然后它比较这两行看它们是否能连接；如果能，则给它的调用者返回一个连接行。
+在下一次调用的时候，或者无法连接当前两行的时候，
+抓取其中一个表的下一行(抓取哪个表取决于比较结果如何)，然后再检查看看两个表是否匹配。
+最后，其中一个子规划的所有行都被处理完，此时<TT CLASS="LITERAL">MergeJoin</TT>返回 NULL ，
+表明无法继续生成更多的连接行。</P><P>复杂的查询可能包含许多层的规划节点，但是一般的过程都是一样的：
+每个节点在每次被调用的时候都计算并返回它的下一个输出行。
+每个节点同样负责应用任何规划器赋予它的选择或者投影表达式。</P><P>执行器机制是用于计算所有四种基本 SQL 查询类型的：<TT CLASS="COMMAND">SELECT</TT>，<TT CLASS="COMMAND">INSERT</TT>，
+<TT CLASS="COMMAND">UPDATE</TT>和<TT CLASS="COMMAND">DELETE</TT>。对于<TT CLASS="COMMAND">SELECT</TT>而言，
+顶层的执行器代码只是需要发送查询规划树返回的每一行给客户端。对于<TT CLASS="COMMAND">INSERT</TT>，
+返回的每一行都插入到<TT CLASS="COMMAND">INSERT</TT>声明的目标表中。也就是在一个名为<TT CLASS="LITERAL">ModifyTable</TT>
+的特殊的顶级规划节点执行。（一个简单的<TT CLASS="COMMAND">INSERT ... VALUES</TT>命令创建一个简单的规划树，
+包含一个<TT CLASS="LITERAL">Result</TT>节点，它只得出一个结果行，由<TT CLASS="LITERAL">ModifyTable</TT>执行插入操作。
+但<TT CLASS="COMMAND">INSERT ... SELECT</TT>可能需要执行器的全部操作。）对于<TT CLASS="COMMAND">UPDATE</TT>，
+规划器安排每个计算出来的行都包括所有更新的字段，加上原来的目标行的<I CLASS="FIRSTTERM">TID</I>(元组ID或行ID)；
+这些数据输入到一个<TT CLASS="LITERAL">ModifyTable</TT>节点，这个节点使用这些信息创建一个新的更新过的行，
+并且将旧行标记删除。对于<TT CLASS="COMMAND">DELETE</TT>，规划器实际上返回的唯一的一个字段是 TID ，
+然后<TT CLASS="LITERAL">ModifyTable</TT>节点简单地使用这个 TID 访问每个目标行，并且把它们标记为已删除。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="planner-optimizer.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/catalogs.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">规划器/优化器</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/overview.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">系统表</TD></TR></TABLE></DIV></BODY></HTML>

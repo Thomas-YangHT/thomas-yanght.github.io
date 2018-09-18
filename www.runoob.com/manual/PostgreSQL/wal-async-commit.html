@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>异步提交</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="可靠性和预写式日志" HREF="http://school.yunwei.edu/manual/PostgreSQL/wal.html"><LINK REL="PREVIOUS" TITLE="预写式日志(WAL)" HREF="wal-intro.html"><LINK REL="NEXT" TITLE="WAL 配置" HREF="wal-configuration.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/wal.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="预写式日志(WAL)" HREF="wal-intro.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/wal.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 29. 可靠性和预写式日志</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="WAL 配置" HREF="wal-configuration.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="WAL-ASYNC-COMMIT">29.3. 异步提交</A></H1><P><I CLASS="FIRSTTERM">异步提交</I>是一个允许事务更快完成的选项，如果数据库崩溃时，最新的事务可能会丢失。
+在大多数应用中这个是可以接受的交易。 </P><P>如在前一节中所述，事务提交通常是<I CLASS="FIRSTTERM">同步的</I>：服务器等待事务的<ACRONYM CLASS="ACRONYM">WAL</ACRONYM>
+记录刷新到永久存储区，然后返回一个成功提示到客户端。客户端因此保证报告提交的事务将被保存，
+即使服务器立即崩溃。然而，对于简短的事务，延迟是总事务时间的主要部分。选择异步提交模式意味着，
+在它产生的<ACRONYM CLASS="ACRONYM">WAL</ACRONYM>记录实际转移到磁盘之前，一旦事务逻辑上完成之后服务器就返回成功。
+这样在小事务的吞吐量上可以提供一个显著的推动作用。</P><P>异步提交引进了数据丢失的风险。在向客户端报告事务完成和事务实际完成的时间点之间有一个很小的时间窗口
+（也就是，保证如果服务器崩溃时不会丢失）。因此如果客户端采取外部动作（前提是假设事务会被记下），
+此时不应使用异步提交。例如，一个银行肯定不会为一个ATM分配现金的事务使用异步提交。但在多数情况下，
+如事件日志记录，不需要这种强力保证。</P><P>使用异步提交的风险在于数据丢失，而不是数据损坏。如果数据库崩溃，那么它会根据刷入的最新的
+<ACRONYM CLASS="ACRONYM">WAL</ACRONYM>记录来进行恢复。因此数据库会被转储到一个一致的状态，
+但任何没有写入到磁盘的事务不能反映在这个状态。因此最后的结果是丢失最新的几个事务。
+因为事务是以提交的顺序进行重放，不会引入非一致状态；例如，如果事务B所做的更改依赖于前一个事务A，
+那么丢失A的效果，而B的效果被保留是不可能的。 </P><P>用户可以为每个事务选择提交模式，因此可以同时使用同步和异步提交事务。
+这样就允许在性能和事务持久性之间做一个灵活的权衡。提交模式是由用户可设定的参数
+<A HREF="runtime-config-wal.html#GUC-SYNCHRONOUS-COMMIT">synchronous_commit</A>控制的，可以用任意配置参数可以设置的方式改变。
+用于任意一个事务的模式依赖于事务提交开始时<TT CLASS="VARNAME">synchronous_commit</TT>的值。 </P><P>某些实用命令，如<TT CLASS="COMMAND">DROP TABLE</TT>，会强制使用同步提交，无论<TT CLASS="VARNAME">synchronous_commit</TT>
+参数是怎么设置的。这是为了保证服务器文件系统和数据库逻辑状态之间的一致性。支持两阶段提交的命令，
+如<TT CLASS="COMMAND">PREPARE TRANSACTION</TT>，也是使用同步提交。 </P><P>如果在一个异步提交和写事务的<ACRONYM CLASS="ACRONYM">WAL</ACRONYM>记录中间时发生数据库崩溃，
+在事务期间的修改<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">将</I></SPAN>会丢失。风险的持续时间会被限制，因为<SPAN CLASS="QUOTE">"WAL writer"</SPAN>
+后台进程会每隔<A HREF="runtime-config-wal.html#GUC-WAL-WRITER-DELAY">wal_writer_delay</A>毫秒就向磁盘刷入未写入的<ACRONYM CLASS="ACRONYM">WAL</ACRONYM>记录。
+风险的实际最大持续时间是三倍的<TT CLASS="VARNAME">wal_writer_delay</TT>，
+因为WAL写进程被设计为支持在繁忙时一次写入所有块。</P><DIV CLASS="CAUTION"><P></P><TABLE CLASS="CAUTION" BORDER="1" WIDTH="100%"><TR><TD ALIGN="CENTER"><B>&#23567;&#24515;</B></TD></TR><TR><TD ALIGN="LEFT"><P>IMMEDIATE模式的关闭等同于服务器崩溃，因此会造成哪些未刷入的异步提交的数据丢失。 </P></TD></TR></TABLE></DIV><P>异步提交不同于设置<A HREF="runtime-config-wal.html#GUC-FSYNC">fsync</A> = off。<TT CLASS="VARNAME">fsync</TT>
+是一个用于更改所有事物行为的服务器端设置。它会禁用所有<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+中尝试向数据库不同部分同步写入的逻辑，因此，一次系统崩溃（硬件或操作系统崩溃，
+而不是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>本身出问题）会导致数据库状态不可预知的崩溃。
+在多数情况下，通过关闭<TT CLASS="VARNAME">fsync</TT>，异步提交会提高性能，但是不会有数据崩溃的风险。 </P><P>看起来，<A HREF="runtime-config-wal.html#GUC-COMMIT-DELAY">commit_delay</A>与异步提交很相似，但实际上它是一种同步提交方法
+（事实上，异步提交时会忽略<TT CLASS="VARNAME">commit_delay</TT>）。在一次异步提交尝试向磁盘刷入
+<ACRONYM CLASS="ACRONYM">WAL</ACRONYM>之前，<TT CLASS="VARNAME">commit_delay</TT>会造成延迟，
+希望在一个这样的事务中执行一个单独的刷入可以用于同一时间的其他事务提交。
+这个设置可以看做一种在可以加入一个关于参与单次刷入的组中的事务中提高时间窗口的方式，
+来分摊多个事务刷新的开销。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="wal-intro.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="wal-configuration.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">预写式日志(<ACRONYM CLASS="ACRONYM">WAL</ACRONYM>)</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/wal.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><ACRONYM CLASS="ACRONYM">WAL</ACRONYM> 配置</TD></TR></TABLE></DIV></BODY></HTML>

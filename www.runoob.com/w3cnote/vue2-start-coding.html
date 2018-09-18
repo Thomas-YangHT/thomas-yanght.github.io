@@ -1,0 +1,1244 @@
+<!Doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta property="qc:admins" content="465267610762567726375" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vue2.0 新手入门 &#8212; 从环境搭建到发布 | 菜鸟教程</title>
+<link rel='dns-prefetch' href='http://s.w.org/' />
+<link rel="canonical" href="vue2-start-coding.html" />
+<meta name="keywords" content="Vue2.0 新手入门 &#8212; 从环境搭建到发布">
+<meta name="description" content="Jinkey原创感谢 showonne、yubang 技术指导Demo 地址: http://demo.jinkey.io/vue2源码:https://github.com/Jinkeycode/vue2-example 什么是 Vue Vue 是一个前端框架，特点是数据绑定  比如你改变一个输入框 Input 标签的值，会自动同步更新到页面上其他绑定该输入框的组件的值￼   组件化 页面上小到一个按钮都可以是一个单独的文件.vue，..">
+<link rel="shortcut icon" href="http://static.runoob.com/images/favicon.ico" mce_href="//static.runoob.com/images/favicon.ico" type="image/x-icon">
+<link rel="stylesheet" href="http://school.yunwei.edu/wp-content/themes/runoob/style.css?v=1.147" type="text/css" media="all" />
+<link rel="stylesheet" href="http://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />
+<!--[if gte IE 9]><!-->
+  <script src="http://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+  <!--<![endif]-->
+<!--[if lt IE 9]>
+     <script src="//cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+  <![endif]-->
+<link rel="apple-touch-icon" href="http://static.runoob.com/images/icon/mobile-icon.png"/>
+<meta name="apple-mobile-web-app-title" content="菜鸟教程">
+</head>
+<body>
+<div class="container logo-search">
+<div class="col search row-search-mobile">
+<form action="http://school.yunwei.edu/w3cnote/index.php">
+<input class="placeholder" placeholder="搜索……" name="s" autocomplete="off">
+</form>
+</div>
+<div class="row">
+<div class="col logo">
+<h1><a href="http://school.yunwei.edu/">菜鸟教程 -- 学的不仅是技术，更是梦想！</a></h1>
+</div>
+<div class="col right-list">
+<button class="btn btn-responsive-nav btn-inverse" data-toggle="collapse" data-target=".nav-main-collapse" id="pull" style=""> <i class="fa fa-navicon"></i> </button>
+</div>
+<div class="col search search-desktop last">
+<form action="http://school.yunwei.edu/" target="_blank">
+<input class="placeholder" id="s" name="s" placeholder="搜索……" autocomplete="off">
+</form>
+</div>
+</div>
+</div>
+<div class="container navigation">
+<div class="row">
+<div class="col nav">
+<ul class="pc-nav" id="note-nav">
+<li><a href="http://school.yunwei.edu/">首页</a></li>
+<li><a href="index.html">笔记首页</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/android" title="Android 基础入门教程">Android</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/net-2" title="互联网">互联网</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/coderlife" title="程序员人生">程序员人生</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/joke" title="程序员笑话">程序员笑话</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/code" title="编程技术">编程技术</a></li>
+</ul>
+<ul class="mobile-nav">
+<li><a href="index.html">首页</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/android" target="_blank" title="Android 基础入门教程">Android</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/coderlife" target="_blank" title="程序员人生">鸡汤</a></li>
+<li><a href="http://school.yunwei.edu/w3cnote_genre/joke" target="_blank" title="程序员笑话">逗乐</a></li>
+<a href="javascript:void(0)" class="search-reveal">Search</a>
+</ul>
+</div>
+</div>
+</div>
+<div class="container main">
+<div class="row">
+<div class="col middle-column big-middle-column">
+<div class="article">
+<div class="article-heading">
+<h2>Vue2.0 新手入门 &#8212; 从环境搭建到发布</h2> <h3><em>分类</em> <a href="http://school.yunwei.edu/w3cnote_genre/code" title="编程技术">编程技术</a> </h3>
+</div>
+<div class="article-body note-body">
+<div class="article-intro">
+<p><img src="../wp-content/uploads/2016/10/1476689796-1178-854231-d682f0bb3d8eee9c.png"></p>
+<blockquote><p>Jinkey原创<br>感谢 <a href="https://github.com/showonne" target="_blank">showonne</a>、<a href="https://github.com/yubang" target="_blank">yubang</a> 技术指导<br><strong>Demo 地址:</strong><br> <a href="http://demo.jinkey.io/vue2" target="_blank">http://demo.jinkey.io/vue2</a><br><strong>源码:</strong><br><a href="https://github.com/Jinkeycode/vue2-example" target="_blank">https://github.com/Jinkeycode/vue2-example</a></p></blockquote><hr>
+<h2>什么是 Vue</h2>
+<p>Vue 是一个前端框架，特点是<br><strong>数据绑定</strong></p>
+<blockquote>
+<p>比如你改变一个输入框 Input 标签的值，会<strong>自动同步</strong>更新到页面上其他绑定该输入框的组件的值<br>￼<br></p>
+<img src="../wp-content/uploads/2016/10/1476690131-6882-854231-4a2d31db6bc25a1a.png"></p>
+</blockquote>
+<h3>组件化</h3>
+<blockquote><p>页面上小到一个按钮都可以是一个单独的文件.vue，这些小组件直接可以像乐高积木一样通过互相引用而组装起来</p></blockquote>
+<p>
+<img src="../wp-content/uploads/2016/10/1476690177-7476-854231-5eeceaec4c7e80ed.jpg"></p>
+<hr>
+<h2>Vue2.0 推荐开发环境</h2>
+<p><img src="../wp-content/uploads/2016/10/1476690217-1155-854231-1d2947692fba4957.png"></p>
+<p>Homebrew 1.0.6(Mac)、Node.js 6.7.0、npm 3.10.3、webpack 1.13.2、vue-cli 2.4.0、Atom 1.10.2</p>
+<hr>
+<h2>环境安装</h2>
+<h3>Mac OS系统安装 brew</h3>
+<p>打开终端运行以下命令: </p>
+<pre>/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+</pre>
+<h3>Mac OS系统安装 nodejs</h3>
+<pre>brew install nodejs</pre>
+<p>用 npm install npm@3.10.3 更新 npm 版本报错:</p>
+<blockquote><p>(node:42) fs: re-evaluating native module sources is not supported.</p></blockquote>
+<p>解决办法:<br>在官网下载6.70的安装包再安装一次(刚刚相当于帮你配置好环境变量，现在再安装一次升级到最新的 npm)</p>
+<blockquote><ul>
+<li>好像以前官网的安装包不会自动配置环境变量的，由于我电脑上之前安装过 nodejs 所以环境变量已经配置好了，不知道现在的安装包会不会自动配置环境变量。</li>
+</ul></blockquote>
+<p>Windows 下直接下载安装包即可</p>
+<p>linux 下可以使用 apt-get（ubuntu） 或 yum（centos） 命令安装。</p>
+<p>具体可参考：<a href="../nodejs/nodejs-install-setup.html" target="_blank">http://school.yunwei.edu/nodejs/nodejs-install-setup.html</a></p>
+<h3>获取nodejs模块安装目录访问权限
+</h3>
+<pre>sudo chmod -R 777 /usr/local/lib/node_modules/</pre>
+<p>安装淘宝镜像</p>
+<p>大家都知道国内直接使用 npm 的官方镜像是非常慢的，这里推荐使用淘宝 NPM 镜像。</p>
+<pre>
+npm install -g cnpm --registry=https://registry.npm.taobao.org
+</pre>
+<p>这样就可以使用 cnpm 命令来安装模块了：</p>
+<pre>
+cnpm install [name]
+</pre>
+<h3>安装webpack</h3>
+<pre>cnpm install webpack -g</pre>
+<h3>安装vue脚手架</h3>
+<pre>
+npm install vue -cli -g
+</pre>
+<h3>在硬盘上找一个文件夹放工程用的，在终端中进入该目录</h3>
+<pre>
+cd 目录路径
+</pre>
+<h3>根据模板创建项目</h3>
+<blockquote><p>vue init webpack-simple 工程名字&lt;工程名字不能用中文&gt;<br>或者创建 vue1.0 的项目<br>vue init webpack-simple#1.0 工程名字&lt;工程名字不能用中文&gt;</p></blockquote>
+<p>会有一些初始化的设置，如下输入:<br><code>Target directory exists. Continue? (Y/n)</code>直接回车默认(然后会下载 vue2.0模板，这里可能需要连代理)<br><code>Project name (vue-test)</code>直接回车默认<br><code>Project description (A Vue.js project)</code> 直接回车默认<br><code>Author</code> 写你自己的名字</p>
+<h3>cd 命令进入创建的工程目录</h3>
+<p>工程目录如图所示:</p>
+<p><img src="../wp-content/uploads/2016/10/1476690721-1278-854231-ea029fb82e865d5d.jpg"></p>
+<hr>
+<h2>安装项目依赖</h2>
+<p>一定要从官方仓库安装，npm 服务器在国外所以这一步安装速度会很慢。</p>
+<pre>
+npm install
+</pre>
+<p><strong>不要从国内镜像cnpm安装</strong>(会导致后面缺了很多依赖库)</p>
+<pre>
+cnpm install
+</pre>
+<h3>安装 vue 路由模块<code>vue-router</code>和网络请求模块<code>vue-resource</code>
+</h3>
+<pre>
+cnpm install vue-router vue-resource --save
+</pre>
+<h3>启动项目</h3>
+<pre>npm run dev</pre>
+<h3>填坑(以下坑可能由于 vue2.0 导致其他相关编译打包工具没更新导致的)</h3>
+<blockquote><p><strong>【重点】后来发现这些坑是由于 npm 不是最新的版本3.10.2， 用 npm 3.9.5就会出现以下坑</strong><br>解决办法: 请运行以下命令<br><strong>npm update -g</strong></p></blockquote>
+<p>报错</p>
+<pre>
+Error: Cannot find module 'opn'
+Error: Cannot find module 'webpack-dev-middleware'
+Error: Cannot find module 'express'
+Error: Cannot find module 'compression'
+Error: Cannot find module 'sockjs'
+Error: Cannot find module 'spdy'
+Error: Cannot find module 'http-proxy-middleware'
+Error: Cannot find module 'serve-index'
+</pre>
+<p>如果你用的是老版本的 vue-cli 还可能报其他错误，需要更新一下 vue-cli</p>
+<pre>npm update vue-cli</pre>
+<p>然后可以查看一下当前全局 vue-cli 的版本</p>
+<pre>
+npm view vue-cli
+</pre>
+<p>安装一下这个依赖到工程开发环境</p>
+<pre>cnpm install opn --save-dev
+cnpm install webpack-dev-middleware --save-dev
+cnpm install express --save-dev
+cnpm install compression --save-dev
+cnpm install sockjs --save-dev
+cnpm install spdy --save-dev
+cnpm install http-proxy-middleware --save-dev
+cnpm install serve-index --save-dev
+cnpm install connect-history-api-fallback --save-dev</pre>
+<p>再启动项目，报错</p>
+<pre>ERROR in ./src/main.js
+Module build failed: Error: Cannot find module 'babel-runtime/helpers/typeof'
+at Function.Module._resolveFilename (module.js:440:15)
+at Function.Module._load (module.js:388:25)
+at Module.require (module.js:468:17)
+at require (internal/module.js:20:19)
+at Object.&lt;anonymous&gt; (/Volumes/MacStorage/Coding/Web/vue-test/node_modules/.6.17.0@babel-core/lib/transformation/file/index.js:6:16)
+at Module._compile (module.js:541:32)
+at Object.Module._extensions..js (module.js:550:10)
+at Module.load (module.js:458:32)
+at tryModuleLoad (module.js:417:12)
+at Function.Module._load (module.js:409:3)
+@ multi main
+ERROR in ./~/.2.1.0-beta.8@webpack-dev-server/client/socket.js
+Module not found: Error: Can't resolve 'sockjs-client' in '/Volumes/MacStorage/Coding/Web/vue-test/node_modules/.2.1.0-beta.8@webpack-dev-server/client'
+@ ./~/.2.1.0-beta.8@webpack-dev-server/client/socket.js 1:13-37
+@ ./~/.2.1.0-beta.8@webpack-dev-server/client?http://localhost:8080</pre>
+<p>安装一下 babel-runtime</p>
+<pre>cnpm install babel-helpers --save-dev</pre>
+<p>启动项目，再次报错</p>
+<pre>
+Module build failed: Error: Cannot find module 'babel-helpers'
+Module build failed: Error: Cannot find module 'babel-traverse'
+Module build failed: Error: Cannot find module 'json5'
+Module build failed: Error: Cannot find module 'babel-generator'
+Module build failed: Error: Cannot find module 'detect-indent'
+Module build failed: Error: Cannot find module 'jsesc'
+</pre>
+<p>找不到依赖那就再安装一下</p>
+<pre>
+cnpm install babel-helpers --save-dev
+cnpm install babel-traverse --save-dev
+cnpm install json5 --save-dev
+...不写了，请把全部把旧的环境全部清除，更新到最新版本
+</pre>
+<hr>
+<h2>解决办法概述</h2>
+<p>遇到</p>
+<pre>Module build failed: Error: Cannot find module '模块名'</pre>
+<p>那就安装</p>
+<pre>
+cnpm install 模块名 --save-dev(关于环境的，表现为npm run dev 启动不了)
+cnpm install 模块名 --save(关于项目的，比如main.js，表现为npm run dev 成功之后控制台报错)
+比如escape-string-regexp、strip-ansi、has-ansi、is-finite、emojis-list
+</pre>
+<h3>终于可以启动项目了</h3>
+<p>输入完命令会自动启动浏览器，如果默认打开 IE 不行</p>
+<pre>
+npm run dev
+</pre>
+<p>自动启动浏览器就会看到这个界面了。<br></p>
+<p><img src="../wp-content/uploads/2016/10/1476691152-5858-854231-1f208cb27858c8ec.png"></p>
+<hr>
+<h2>开始 Vue 之旅</h2>
+<h3>打开 IDE</h3><p>
+推荐 Atom 打开项目，需要安装 Vue 语法高亮的插件</p>
+<img src="../wp-content/uploads/2016/10/1476691201-9307-854231-bc9565e738d4d41e.jpg"></p>
+<h3>使用官网文档学习基础</h3>
+<p>我们来看官网的一个例子，(中文文档请自行上网搜索)</p>
+<p><img src="../wp-content/uploads/2016/10/1476691245-3231-854231-00c7dced26f9c972.jpg"></p>
+<p>打开 工程目录下的 App.vue</p><p>
+template 写 html，script写 js，style写样式
+</p>
+<p><img src="../wp-content/uploads/2016/10/1476691280-8912-854231-22ac84c532a7be20.jpg"></p>
+<p>为了方便叙述，我们把官网例子写在同一个组件内<br>这里有两个坑:<br><strong>第一</strong>。一个组件下只能有一个并列的 div，可以这么写，所以复制官网示例的时候只要复制 div 里面的内容就好。<br></p>
+<p><img src="../wp-content/uploads/2016/10/1476691313-1110-854231-b219f2ef37474fe1.jpg"></p><p>但是不能这样写:￼</p>
+<p><img src="../wp-content/uploads/2016/10/1476691340-5135-854231-4343b062c2b504aa.jpg"></p><p><strong>第二</strong>。数据要写在 return 里面而不是像文档那样子写<br></p>
+<p><img src="../wp-content/uploads/2016/10/1476691387-6051-854231-5da5ffe18910e72f.jpg"></p>
+<p>错误的写法:</p>
+<p><img src="../wp-content/uploads/2016/10/1476691429-8316-854231-9b78747081a19c39.jpg"></p>
+<p>这样子可以自己啃完官网文档组件之前的部分了。<br></p>
+<p><img src="../wp-content/uploads/2016/10/1476691463-8515-854231-55342acee9153c98.png"></p>
+<hr>
+<h2>来玩玩组件</h2>
+<p> 前面讲得基本上都是各种常用组件的数据绑定，下面还得说说的是 Vue 的组件的使用。<br>在工程目录<code>/src</code>下创建<code>component</code>文件夹，并在<code>component</code>文件夹下创建一个 <code>firstcomponent.vue</code>并写仿照 App.vue 的格式和前面学到的知识写一个组件。</p>
+<div class="example">
+<div class="example_code">
+<div class="hl-main"><span class="hl-brackets">&lt;</span><span class="hl-reserved">template</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">div</span><span class="hl-code"> </span><span class="hl-var">id</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">firstcomponent</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">h1</span><span class="hl-brackets">&gt;</span><span class="hl-code">I am a title.</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">h1</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">a</span><span class="hl-brackets">&gt;</span><span class="hl-code"> written by {{ author }} </span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">a</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">div</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">template</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">script</span><span class="hl-code"> </span><span class="hl-var">type</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">text/javascript</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+export default {
+data () {
+return {
+author: &quot;微信公众号 jinkey-love&quot;
+}
+}
+}
+</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">script</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">style</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">style</span><span class="hl-brackets">&gt;</span></div>
+</div>
+</div>
+<p> duang... 不能按官网文档那样子叫我做就做，我得先试试再告诉你，我做完效果是这样子的，希望观众做完也是这样子。(迷之微笑 )<br></p>
+<p><img src="../wp-content/uploads/2016/10/1476691520-7423-854231-bb5a6ba776b17a94.jpg"></p><p>然后在 App.vue 使用组件 ( 因为在 <code>index.html</code> 里面定义了&lt;div id="app"&gt;&lt;/div&gt;所以就以这个组件作为主入口，方便 )<br><strong>第一步，引入</strong>。在<code>&lt;script&gt;&lt;/script&gt;</code>标签内的第一行写</p>
+<pre>
+import firstcomponent from './component/firstcomponent.vue'
+</pre><p><strong>第二步，注册</strong>。在<code>&lt;script&gt;&lt;/script&gt;</code>标签内的 data 代码块后面加上 components: { firstcomponent }。<strong>记得中间加英文逗号!!!</strong></p>
+<pre>
+export default {
+  data () {
+    return {
+      msg: 'Hello Vue!'
+    }
+  },
+  components: { firstcomponent }
+}
+</pre>
+<p><strong>第三步，使用</strong>。<br>在<code>&lt;template&gt;&lt;/template&gt;</code>内加上&lt;firstcomponent&gt;&lt;/firstcomponent&gt;</p>
+<div class="example">
+<div class="example_code">
+<div class="hl-main"><span class="hl-brackets">&lt;</span><span class="hl-reserved">template</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">div</span><span class="hl-code"> </span><span class="hl-var">id</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">app</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">img</span><span class="hl-code"> </span><span class="hl-var">src</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">./assets/logo.png</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">h1</span><span class="hl-brackets">&gt;</span><span class="hl-code">{{ msg }}</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">h1</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">firstcomponent</span><span class="hl-brackets">&gt;</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">firstcomponent</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">div</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">template</span><span class="hl-brackets">&gt;</span></div>
+</div>
+</div>
+<p>完成后的代码：</p>
+<p><img src="../wp-content/uploads/2016/10/1476691599-4231-854231-9151330e194eef69.jpg"></p>
+<p>这时候看看浏览器上的 <code>http://localhost:8080/</code> 页面(之前打开过就会自动刷新)，如果你没看到效果是因为你没有对 <code>App.vue</code> 和 <code>firstcomponent.vue</code> 进行保存操作，保存后页面会自动刷新。<br></p>
+<p><img src="../wp-content/uploads/2016/10/1476691628-6951-854231-03fd1e86031881e6.png"></p><hr>
+<h2>使用路由搭建单页应用</h2>
+<p>之前已经通过命令安装了vue-router</p>
+<pre>
+cnpm install vue-router --save
+</pre>
+<p>在webpack.config.js加入别名</p>
+<pre>
+resolve: {
+&nbsp;&nbsp;&nbsp;&nbsp;alias: {vue: 'vue/dist/vue.js'}
+}
+</pre>
+<p>为什么要加 alias 配置项？其作用可以在文档中有相应的描述:<br></p>
+<p><img src="../wp-content/uploads/2016/10/1476691751-9448-854231-3fb25f5fd8b8c8d2.jpg"></p>
+<p>修改完之后的<code>webpack.config.js</code>是这样子的:</p>
+<div class="example">
+<div class="example_code">
+<div class="hl-main"><span class="hl-reserved">var</span><span class="hl-code"> </span><span class="hl-identifier">path</span><span class="hl-code"> = </span><span class="hl-identifier">require</span><span class="hl-brackets">(</span><span class="hl-quotes">'</span><span class="hl-string">path</span><span class="hl-quotes">'</span><span class="hl-brackets">)</span><span class="hl-code">
+</span><span class="hl-reserved">var</span><span class="hl-code"> </span><span class="hl-identifier">webpack</span><span class="hl-code"> = </span><span class="hl-identifier">require</span><span class="hl-brackets">(</span><span class="hl-quotes">'</span><span class="hl-string">webpack</span><span class="hl-quotes">'</span><span class="hl-brackets">)</span><span class="hl-code">
+</span><span class="hl-identifier">module</span><span class="hl-code">.</span><span class="hl-identifier">exports</span><span class="hl-code"> = </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">entry</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">./src/main.js</span><span class="hl-quotes">'</span><span class="hl-code">,
+</span><span class="hl-identifier">output</span><span class="hl-code">: </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">path</span><span class="hl-code">: </span><span class="hl-identifier">path</span><span class="hl-code">.</span><span class="hl-identifier">resolve</span><span class="hl-brackets">(</span><span class="hl-identifier">__dirname</span><span class="hl-code">, </span><span class="hl-quotes">'</span><span class="hl-string">./dist</span><span class="hl-quotes">'</span><span class="hl-brackets">)</span><span class="hl-code">,
+</span><span class="hl-identifier">publicPath</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">/dist/</span><span class="hl-quotes">'</span><span class="hl-code">,
+</span><span class="hl-identifier">filename</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">build.js</span><span class="hl-quotes">'</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">,
+</span><span class="hl-identifier">resolveLoader</span><span class="hl-code">: </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">root</span><span class="hl-code">: </span><span class="hl-identifier">path</span><span class="hl-code">.</span><span class="hl-identifier">join</span><span class="hl-brackets">(</span><span class="hl-identifier">__dirname</span><span class="hl-code">, </span><span class="hl-quotes">'</span><span class="hl-string">node_modules</span><span class="hl-quotes">'</span><span class="hl-brackets">)</span><span class="hl-code">,
+</span><span class="hl-brackets">}</span><span class="hl-code">,
+</span><span class="hl-identifier">module</span><span class="hl-code">: </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">loaders</span><span class="hl-code">: </span><span class="hl-brackets">[</span><span class="hl-code">
+</span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">test</span><span class="hl-code">: /\\\\\\\\.</span><span class="hl-identifier">vue</span><span class="hl-code">$/,
+</span><span class="hl-identifier">loader</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">vue</span><span class="hl-quotes">'</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">,
+</span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">test</span><span class="hl-code">: /\\\\\\\\.</span><span class="hl-identifier">js</span><span class="hl-code">$/,
+</span><span class="hl-identifier">loader</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">babel</span><span class="hl-quotes">'</span><span class="hl-code">,
+</span><span class="hl-identifier">exclude</span><span class="hl-code">: /</span><span class="hl-identifier">node_modules</span><span class="hl-code">/
+</span><span class="hl-brackets">}</span><span class="hl-code">,
+</span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">test</span><span class="hl-code">: /\\\\\\\\.</span><span class="hl-brackets">(</span><span class="hl-identifier">png</span><span class="hl-code">|</span><span class="hl-identifier">jpg</span><span class="hl-code">|</span><span class="hl-identifier">gif</span><span class="hl-code">|</span><span class="hl-identifier">svg</span><span class="hl-brackets">)</span><span class="hl-code">$/,
+</span><span class="hl-identifier">loader</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">file</span><span class="hl-quotes">'</span><span class="hl-code">,
+</span><span class="hl-identifier">query</span><span class="hl-code">: </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">name</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">[name].[ext]?[hash]</span><span class="hl-quotes">'</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-brackets">]</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">,
+</span><span class="hl-identifier">resolve</span><span class="hl-code">: </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">alias</span><span class="hl-code">: </span><span class="hl-brackets">{</span><span class="hl-identifier">vue</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">vue/dist/vue.js</span><span class="hl-quotes">'</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">,
+</span><span class="hl-identifier">devServer</span><span class="hl-code">: </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">historyApiFallback</span><span class="hl-code">: </span><span class="hl-reserved">true</span><span class="hl-code">,
+</span><span class="hl-identifier">noInfo</span><span class="hl-code">: </span><span class="hl-reserved">true</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">,
+</span><span class="hl-identifier">devtool</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">#eval-source-map</span><span class="hl-quotes">'</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-reserved">if</span><span class="hl-code"> </span><span class="hl-brackets">(</span><span class="hl-identifier">process</span><span class="hl-code">.</span><span class="hl-identifier">env</span><span class="hl-code">.</span><span class="hl-identifier">NODE_ENV</span><span class="hl-code"> === </span><span class="hl-quotes">'</span><span class="hl-string">production</span><span class="hl-quotes">'</span><span class="hl-brackets">)</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">module</span><span class="hl-code">.</span><span class="hl-identifier">exports</span><span class="hl-code">.</span><span class="hl-identifier">devtool</span><span class="hl-code"> = </span><span class="hl-quotes">'</span><span class="hl-string">#source-map</span><span class="hl-quotes">'</span><span class="hl-code">
+</span><span class="hl-comment">//</span><span class="hl-comment"> </span><span class="hl-url">http://vue-loader.vuejs.org/en/workflow/production.html</span><span class="hl-comment"></span><span class="hl-code">
+</span><span class="hl-identifier">module</span><span class="hl-code">.</span><span class="hl-identifier">exports</span><span class="hl-code">.</span><span class="hl-identifier">plugins</span><span class="hl-code"> = </span><span class="hl-brackets">(</span><span class="hl-identifier">module</span><span class="hl-code">.</span><span class="hl-identifier">exports</span><span class="hl-code">.</span><span class="hl-identifier">plugins</span><span class="hl-code"> || </span><span class="hl-brackets">[</span><span class="hl-brackets">]</span><span class="hl-brackets">)</span><span class="hl-code">.</span><span class="hl-identifier">concat</span><span class="hl-brackets">(</span><span class="hl-brackets">[</span><span class="hl-code">
+</span><span class="hl-reserved">new</span><span class="hl-code"> </span><span class="hl-identifier">webpack</span><span class="hl-code">.</span><span class="hl-identifier">DefinePlugin</span><span class="hl-brackets">(</span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-quotes">'</span><span class="hl-string">process.env</span><span class="hl-quotes">'</span><span class="hl-code">: </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">NODE_ENV</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">&quot;production&quot;</span><span class="hl-quotes">'</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-brackets">)</span><span class="hl-code">,
+</span><span class="hl-reserved">new</span><span class="hl-code"> </span><span class="hl-identifier">webpack</span><span class="hl-code">.</span><span class="hl-identifier">optimize</span><span class="hl-code">.</span><span class="hl-identifier">UglifyJsPlugin</span><span class="hl-brackets">(</span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">compress</span><span class="hl-code">: </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">warnings</span><span class="hl-code">: </span><span class="hl-reserved">false</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-brackets">)</span><span class="hl-code">
+</span><span class="hl-brackets">]</span><span class="hl-brackets">)</span><span class="hl-code">
+</span><span class="hl-brackets">}</span></div>
+</div>
+</div>
+<p>再按之前的方法写一个组件 secondcomponent.vue</p>
+<div class="example">
+<div class="example_code">
+<div class="hl-main"><span class="hl-brackets">&lt;</span><span class="hl-reserved">template</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">div</span><span class="hl-code"> </span><span class="hl-var">id</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">secondcomponent</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">h1</span><span class="hl-brackets">&gt;</span><span class="hl-code">I am another page</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">h1</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">a</span><span class="hl-brackets">&gt;</span><span class="hl-code"> written by {{ author }} </span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">a</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">p</span><span class="hl-brackets">&gt;</span><span class="hl-code"> 感谢 </span><span class="hl-brackets">&lt;</span><span class="hl-reserved">a</span><span class="hl-code"> </span><span class="hl-var">href</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">https://github.com/showonne</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">&gt;</span><span class="hl-code">showonne</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">a</span><span class="hl-brackets">&gt;</span><span class="hl-code">大神的技术指导</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">p</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">div</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">template</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">script</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+export default {
+data() {
+return {
+author: &quot;微信公众号 jinkey-love&quot;,
+articles: [],
+}
+}
+}
+}
+</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">script</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">style</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">style</span><span class="hl-brackets">&gt;</span></div>
+</div>
+</div>
+<p>这时候修改 main.js，引入并注册 <code>vue-router</code></p>
+<pre>
+import VueRouter from "vue-router";
+Vue.use(VueRouter);
+</pre><p>并且配置路由规则和 app 启动配置项加上 router，旧版的 router.map 方法在 <code>vue-router 2.0</code> 已经不能用了。修改后的<code>main.js</code>如下:</p>
+<div class="example">
+<div class="example_code">
+<div class="hl-main"><span class="hl-reserved">import</span><span class="hl-code"> </span><span class="hl-identifier">Vue</span><span class="hl-code"> </span><span class="hl-identifier">from</span><span class="hl-code"> </span><span class="hl-quotes">'</span><span class="hl-string">vue</span><span class="hl-quotes">'</span><span class="hl-code">
+</span><span class="hl-reserved">import</span><span class="hl-code"> </span><span class="hl-identifier">App</span><span class="hl-code"> </span><span class="hl-identifier">from</span><span class="hl-code"> </span><span class="hl-quotes">'</span><span class="hl-string">./App.vue</span><span class="hl-quotes">'</span><span class="hl-code">
+</span><span class="hl-reserved">import</span><span class="hl-code"> </span><span class="hl-identifier">VueRouter</span><span class="hl-code"> </span><span class="hl-identifier">from</span><span class="hl-code"> </span><span class="hl-quotes">&quot;</span><span class="hl-string">vue-router</span><span class="hl-quotes">&quot;</span><span class="hl-code">;
+</span><span class="hl-reserved">import</span><span class="hl-code"> </span><span class="hl-identifier">VueResource</span><span class="hl-code"> </span><span class="hl-identifier">from</span><span class="hl-code"> </span><span class="hl-quotes">'</span><span class="hl-string">vue-resource</span><span class="hl-quotes">'</span><span class="hl-code">
+</span><span class="hl-comment">//</span><span class="hl-comment">开启debug模式</span><span class="hl-comment"></span><span class="hl-code">
+</span><span class="hl-identifier">Vue</span><span class="hl-code">.</span><span class="hl-identifier">config</span><span class="hl-code">.</span><span class="hl-identifier">debug</span><span class="hl-code"> = </span><span class="hl-reserved">true</span><span class="hl-code">;
+</span><span class="hl-identifier">Vue</span><span class="hl-code">.</span><span class="hl-identifier">use</span><span class="hl-brackets">(</span><span class="hl-identifier">VueRouter</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-identifier">Vue</span><span class="hl-code">.</span><span class="hl-identifier">use</span><span class="hl-brackets">(</span><span class="hl-identifier">VueResource</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-comment">//</span><span class="hl-comment"> 定义组件, 也可以像教程之前教的方法从别的文件引入</span><span class="hl-comment"></span><span class="hl-code">
+</span><span class="hl-reserved">const</span><span class="hl-code"> </span><span class="hl-identifier">First</span><span class="hl-code"> = </span><span class="hl-brackets">{</span><span class="hl-code"> </span><span class="hl-identifier">template</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">&lt;div&gt;&lt;h2&gt;我是第 1 个子页面&lt;/h2&gt;&lt;/div&gt;</span><span class="hl-quotes">'</span><span class="hl-code"> </span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-reserved">import</span><span class="hl-code"> </span><span class="hl-identifier">secondcomponent</span><span class="hl-code"> </span><span class="hl-identifier">from</span><span class="hl-code"> </span><span class="hl-quotes">'</span><span class="hl-string">./component/secondcomponent.vue</span><span class="hl-quotes">'</span><span class="hl-code">
+</span><span class="hl-comment">//</span><span class="hl-comment"> 创建一个路由器实例</span><span class="hl-comment"></span><span class="hl-code">
+</span><span class="hl-comment">//</span><span class="hl-comment"> 并且配置路由规则</span><span class="hl-comment"></span><span class="hl-code">
+</span><span class="hl-reserved">const</span><span class="hl-code"> </span><span class="hl-identifier">router</span><span class="hl-code"> = </span><span class="hl-reserved">new</span><span class="hl-code"> </span><span class="hl-identifier">VueRouter</span><span class="hl-brackets">(</span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">mode</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">history</span><span class="hl-quotes">'</span><span class="hl-code">,
+</span><span class="hl-identifier">base</span><span class="hl-code">: </span><span class="hl-identifier">__dirname</span><span class="hl-code">,
+</span><span class="hl-identifier">routes</span><span class="hl-code">: </span><span class="hl-brackets">[</span><span class="hl-code">
+</span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">path</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">/first</span><span class="hl-quotes">'</span><span class="hl-code">,
+</span><span class="hl-identifier">component</span><span class="hl-code">: </span><span class="hl-identifier">First</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">,
+</span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">path</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">/second</span><span class="hl-quotes">'</span><span class="hl-code">,
+</span><span class="hl-identifier">component</span><span class="hl-code">: </span><span class="hl-identifier">secondcomponent</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-brackets">]</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-brackets">)</span><span class="hl-code">
+</span><span class="hl-comment">//</span><span class="hl-comment"> 现在我们可以启动应用了！</span><span class="hl-comment"></span><span class="hl-code">
+</span><span class="hl-comment">//</span><span class="hl-comment"> 路由器会创建一个 App 实例，并且挂载到选择符 #app 匹配的元素上。</span><span class="hl-comment"></span><span class="hl-code">
+</span><span class="hl-reserved">const</span><span class="hl-code"> </span><span class="hl-identifier">app</span><span class="hl-code"> = </span><span class="hl-reserved">new</span><span class="hl-code"> </span><span class="hl-identifier">Vue</span><span class="hl-brackets">(</span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">router</span><span class="hl-code">: </span><span class="hl-identifier">router</span><span class="hl-code">,
+</span><span class="hl-identifier">render</span><span class="hl-code">: </span><span class="hl-identifier">h</span><span class="hl-code"> =&gt; </span><span class="hl-identifier">h</span><span class="hl-brackets">(</span><span class="hl-identifier">App</span><span class="hl-brackets">)</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-brackets">)</span><span class="hl-code">.$</span><span class="hl-identifier">mount</span><span class="hl-brackets">(</span><span class="hl-quotes">'</span><span class="hl-string">#app</span><span class="hl-quotes">'</span><span class="hl-brackets">)</span></div>
+</div>
+</div>
+<p>这样子改完再打开浏览器看看。</p>
+<p><img src="../wp-content/uploads/2016/10/1476691880-5461-854231-cf956a57f849e8c3.png"></p>
+<p>点击那两个链接试试，会发现<code>&lt;router-view class="view"&gt;&lt;/router-view&gt;</code>的内容已经展示出来，同时注意<strong>浏览器地址已经变更</strong>。<br></p>
+<p><img src="../wp-content/uploads/2016/10/1476691907-2400-854231-958ea2c6a5933db6.png"></p>
+<p>另外，也可以把 App.vue 的内容写在 main.js 也是可以的不过不建议这么做</p>
+<p><img src="../wp-content/uploads/2016/10/1476691937-2753-854231-6139d6fbb1cbcb69.jpg"></p><p>如果你使用 vue1.0和0.7版本的 vue-router，请参照下面这个教程, 他整个系列都不错的，当然仅限于 vue1.0 :</p>
+<pre>
+http://guowenfh.github.io/2016/03/28/vue-webpack-06-router/
+</pre>
+<hr>
+<h2>给页面加点动态数据</h2><p>这时候的页面都是静态的(数据在写程序的时候已经固定了不能修改)，而每个应用基本上都会请求外部数据以动态改变页面内容。对应有一个库叫 <code>vue-resource</code> 帮我们解决这个问题。<br>使用命令行安装</p>
+<pre>cnpm install vue-resource --save</pre><p>在 main.js 引入并注册 <code>vue-resource</code>:</p>
+<pre>import VueResource from 'vue-resource'
+Vue.use(VueResource);</pre><p>我们在 secondcomponent.vue 上来动态加载数据<br>添加一个列表:</p>
+<pre>
+&lt;ul&gt;
+  &lt;li v-for="article in articles"&gt;
+    {{article.title}}
+  &lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+<p>在 data 里面加入数组 articles 并赋值为[]<br>然后在 data 后面加入加入钩子函数 <code>mounted</code>(详细请参照官方文档关于 vue 生命周期的解析)，<strong>data 和 mount 中间记得记得加逗号</strong></p>
+<div class="example">
+<div class="example_code">
+<div class="hl-main"><span class="hl-identifier">mounted</span><span class="hl-code">: </span><span class="hl-reserved">function</span><span class="hl-brackets">(</span><span class="hl-brackets">)</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-reserved">this</span><span class="hl-code">.$</span><span class="hl-identifier">http</span><span class="hl-code">.</span><span class="hl-identifier">jsonp</span><span class="hl-brackets">(</span><span class="hl-quotes">'</span><span class="hl-string">https://api.douban.com/v2/movie/top250?count=10</span><span class="hl-quotes">'</span><span class="hl-code">, </span><span class="hl-brackets">{</span><span class="hl-brackets">}</span><span class="hl-code">, </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">headers</span><span class="hl-code">: </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">,
+</span><span class="hl-identifier">emulateJSON</span><span class="hl-code">: </span><span class="hl-reserved">true</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-brackets">)</span><span class="hl-code">.</span><span class="hl-identifier">then</span><span class="hl-brackets">(</span><span class="hl-reserved">function</span><span class="hl-brackets">(</span><span class="hl-identifier">response</span><span class="hl-brackets">)</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-comment">//</span><span class="hl-comment"> 这里是处理正确的回调</span><span class="hl-comment"></span><span class="hl-code">
+</span><span class="hl-reserved">this</span><span class="hl-code">.</span><span class="hl-identifier">articles</span><span class="hl-code"> = </span><span class="hl-identifier">response</span><span class="hl-code">.</span><span class="hl-identifier">data</span><span class="hl-code">.</span><span class="hl-identifier">subjects</span><span class="hl-code">
+</span><span class="hl-comment">//</span><span class="hl-comment"> this.articles = response.data[&quot;subjects&quot;] 也可以</span><span class="hl-comment"></span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">, </span><span class="hl-reserved">function</span><span class="hl-brackets">(</span><span class="hl-identifier">response</span><span class="hl-brackets">)</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-comment">//</span><span class="hl-comment"> 这里是处理错误的回调</span><span class="hl-comment"></span><span class="hl-code">
+</span><span class="hl-identifier">console</span><span class="hl-code">.</span><span class="hl-identifier">log</span><span class="hl-brackets">(</span><span class="hl-identifier">response</span><span class="hl-brackets">)</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-brackets">)</span><span class="hl-code">;
+</span><span class="hl-brackets">}</span></div>
+</div>
+</div>
+<p>这里使用的是豆瓣的公开 GET 接口，如果接口是跨域的 POST 请求，则需要在服务器端配置:</p>
+<pre>Access-Control-Allow-Origin: *</pre>
+<p>这时候运行看看。等一会接口返回数据，咦，数据加载出来了，棒棒哒 !<br></p>
+<p><img src="../wp-content/uploads/2016/10/1476692090-4577-854231-4871af2f1af20ca5.png"></p>
+<p>更多 vue-router 的使用方法可以看
+</p>
+<blockquote><p><strong>vue-router 2.0</strong><br><a href="http://router.vuejs.org/zh-cn/index.html" target="_blank">http://router.vuejs.org/zh-cn/index.html</a></p></blockquote>
+<hr>
+<h2>来拯救如此难看的界面</h2>
+<p>组件、双向绑定、路由、数据请求等基本特性都能用了，写到这里一个单页应用基本上成型了。但是，这界面也太 TM 难看了吧。自己写 UI 框架太费劲？那就上网找一个吧。<br>本来想给大家介绍 Vux 的，因为他用的是微信的 WeUI 设计规范，对于开发微信小程序或者微信内的网页非常和谐，但由于写这篇文章的时候 Vux 还不支持 vue2.0，只能用别的框架了。<br>命令行安装 ElementUI (此处某公司的人应该发红包了...)</p>
+<pre>
+cnpm install element-ui@next -S
+</pre><p>然后在 main.js 引入并注册</p>
+<pre>
+import Element from 'element-ui'
+import 'element-ui/lib/theme-default/index.css'
+Vue.use(Element)
+</pre>
+<p>保存，这时候程序报错</p>
+<pre>Uncaught Error: Module parse failed: /Users/**/Desktop/vue2/node_modules/.1.0.0-rc.5@element-ui/lib/theme-default/index.css Unexpected character '@' (1:0)
+You may need an appropriate loader to handle this file type.</pre>
+<p>官网文档又有坑了，安装教程也不跟我们说这一步，当我们都是高手了...<br>报错是由于我们引入了<code>index.css</code>这个 CSS 文件，但是 webpack 打包的时候无法识别并转换成 js，所以就需要配置才能读取 css 和字体文件，运行命令安装下面三个东西(如果之前安装过就不需要了)</p>
+<pre>
+cnpm install style-loader --save-dev
+cnpm install css-loader --save-dev
+cnpm install file-loader --save-dev
+</pre>
+<p>在 webpack.config.js 中的 loaders 数组加入以下配置，记得该加逗号的地方加逗号!</p>
+<div class="example">
+<div class="example_code">
+<div class="hl-main"><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">test</span><span class="hl-code">: /\\\\\\\\.</span><span class="hl-identifier">css</span><span class="hl-code">$/,
+</span><span class="hl-identifier">loader</span><span class="hl-code">: </span><span class="hl-quotes">&quot;</span><span class="hl-string">style!css</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">,
+</span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">test</span><span class="hl-code">: /\\\\\\\\.</span><span class="hl-brackets">(</span><span class="hl-identifier">eot</span><span class="hl-code">|</span><span class="hl-identifier">woff</span><span class="hl-code">|</span><span class="hl-identifier">woff2</span><span class="hl-code">|</span><span class="hl-identifier">ttf</span><span class="hl-brackets">)</span><span class="hl-brackets">(</span><span class="hl-brackets">[</span><span class="hl-code">\\\\\\\\?</span><span class="hl-brackets">]</span><span class="hl-code">?.*</span><span class="hl-brackets">)</span><span class="hl-code">$/,
+</span><span class="hl-identifier">loader</span><span class="hl-code">: </span><span class="hl-quotes">&quot;</span><span class="hl-string">file</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-brackets">}</span></div>
+</div>
+</div>
+<p>修改完的 webpack.config.js 如下</p>
+<div class="example">
+<div class="example_code">
+<div class="hl-main"><span class="hl-reserved">var</span><span class="hl-code"> </span><span class="hl-identifier">path</span><span class="hl-code"> = </span><span class="hl-identifier">require</span><span class="hl-brackets">(</span><span class="hl-quotes">'</span><span class="hl-string">path</span><span class="hl-quotes">'</span><span class="hl-brackets">)</span><span class="hl-code">
+</span><span class="hl-reserved">var</span><span class="hl-code"> </span><span class="hl-identifier">webpack</span><span class="hl-code"> = </span><span class="hl-identifier">require</span><span class="hl-brackets">(</span><span class="hl-quotes">'</span><span class="hl-string">webpack</span><span class="hl-quotes">'</span><span class="hl-brackets">)</span><span class="hl-code">
+</span><span class="hl-identifier">module</span><span class="hl-code">.</span><span class="hl-identifier">exports</span><span class="hl-code"> = </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">entry</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">./src/main.js</span><span class="hl-quotes">'</span><span class="hl-code">,
+</span><span class="hl-identifier">output</span><span class="hl-code">: </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">path</span><span class="hl-code">: </span><span class="hl-identifier">path</span><span class="hl-code">.</span><span class="hl-identifier">resolve</span><span class="hl-brackets">(</span><span class="hl-identifier">__dirname</span><span class="hl-code">, </span><span class="hl-quotes">'</span><span class="hl-string">./dist</span><span class="hl-quotes">'</span><span class="hl-brackets">)</span><span class="hl-code">,
+</span><span class="hl-identifier">publicPath</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">/dist/</span><span class="hl-quotes">'</span><span class="hl-code">,
+</span><span class="hl-identifier">filename</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">build.js</span><span class="hl-quotes">'</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">,
+</span><span class="hl-identifier">resolveLoader</span><span class="hl-code">: </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">root</span><span class="hl-code">: </span><span class="hl-identifier">path</span><span class="hl-code">.</span><span class="hl-identifier">join</span><span class="hl-brackets">(</span><span class="hl-identifier">__dirname</span><span class="hl-code">, </span><span class="hl-quotes">'</span><span class="hl-string">node_modules</span><span class="hl-quotes">'</span><span class="hl-brackets">)</span><span class="hl-code">,
+</span><span class="hl-brackets">}</span><span class="hl-code">,
+</span><span class="hl-identifier">module</span><span class="hl-code">: </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">loaders</span><span class="hl-code">: </span><span class="hl-brackets">[</span><span class="hl-code">
+</span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">test</span><span class="hl-code">: /\\\\\\\\.</span><span class="hl-identifier">vue</span><span class="hl-code">$/,
+</span><span class="hl-identifier">loader</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">vue</span><span class="hl-quotes">'</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">,
+</span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">test</span><span class="hl-code">: /\\\\\\\\.</span><span class="hl-identifier">js</span><span class="hl-code">$/,
+</span><span class="hl-identifier">loader</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">babel</span><span class="hl-quotes">'</span><span class="hl-code">,
+</span><span class="hl-identifier">exclude</span><span class="hl-code">: /</span><span class="hl-identifier">node_modules</span><span class="hl-code">/
+</span><span class="hl-brackets">}</span><span class="hl-code">,
+</span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">test</span><span class="hl-code">: /\\\\\\\\.</span><span class="hl-identifier">css</span><span class="hl-code">$/,
+</span><span class="hl-identifier">loader</span><span class="hl-code">: </span><span class="hl-quotes">&quot;</span><span class="hl-string">style!css</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">,
+</span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">test</span><span class="hl-code">: /\\\\\\\\.</span><span class="hl-brackets">(</span><span class="hl-identifier">eot</span><span class="hl-code">|</span><span class="hl-identifier">woff</span><span class="hl-code">|</span><span class="hl-identifier">woff2</span><span class="hl-code">|</span><span class="hl-identifier">ttf</span><span class="hl-brackets">)</span><span class="hl-brackets">(</span><span class="hl-brackets">[</span><span class="hl-code">\\\\\\\\?</span><span class="hl-brackets">]</span><span class="hl-code">?.*</span><span class="hl-brackets">)</span><span class="hl-code">$/,
+</span><span class="hl-identifier">loader</span><span class="hl-code">: </span><span class="hl-quotes">&quot;</span><span class="hl-string">file</span><span class="hl-quotes">&quot;</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">,
+</span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">test</span><span class="hl-code">: /\\\\\\\\.</span><span class="hl-brackets">(</span><span class="hl-identifier">png</span><span class="hl-code">|</span><span class="hl-identifier">jpg</span><span class="hl-code">|</span><span class="hl-identifier">gif</span><span class="hl-code">|</span><span class="hl-identifier">svg</span><span class="hl-brackets">)</span><span class="hl-code">$/,
+</span><span class="hl-identifier">loader</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">file</span><span class="hl-quotes">'</span><span class="hl-code">,
+</span><span class="hl-identifier">query</span><span class="hl-code">: </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">name</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">[name].[ext]?[hash]</span><span class="hl-quotes">'</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-brackets">]</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">,
+</span><span class="hl-identifier">resolve</span><span class="hl-code">: </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">alias</span><span class="hl-code">: </span><span class="hl-brackets">{</span><span class="hl-identifier">vue</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">vue/dist/vue.js</span><span class="hl-quotes">'</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">,
+</span><span class="hl-identifier">devServer</span><span class="hl-code">: </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">historyApiFallback</span><span class="hl-code">: </span><span class="hl-reserved">true</span><span class="hl-code">,
+</span><span class="hl-identifier">noInfo</span><span class="hl-code">: </span><span class="hl-reserved">true</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">,
+</span><span class="hl-identifier">devtool</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">#eval-source-map</span><span class="hl-quotes">'</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-reserved">if</span><span class="hl-code"> </span><span class="hl-brackets">(</span><span class="hl-identifier">process</span><span class="hl-code">.</span><span class="hl-identifier">env</span><span class="hl-code">.</span><span class="hl-identifier">NODE_ENV</span><span class="hl-code"> === </span><span class="hl-quotes">'</span><span class="hl-string">production</span><span class="hl-quotes">'</span><span class="hl-brackets">)</span><span class="hl-code"> </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">module</span><span class="hl-code">.</span><span class="hl-identifier">exports</span><span class="hl-code">.</span><span class="hl-identifier">devtool</span><span class="hl-code"> = </span><span class="hl-quotes">'</span><span class="hl-string">#source-map</span><span class="hl-quotes">'</span><span class="hl-code">
+</span><span class="hl-comment">//</span><span class="hl-comment"> </span><span class="hl-url">http://vue-loader.vuejs.org/en/workflow/production.html</span><span class="hl-comment"></span><span class="hl-code">
+</span><span class="hl-identifier">module</span><span class="hl-code">.</span><span class="hl-identifier">exports</span><span class="hl-code">.</span><span class="hl-identifier">plugins</span><span class="hl-code"> = </span><span class="hl-brackets">(</span><span class="hl-identifier">module</span><span class="hl-code">.</span><span class="hl-identifier">exports</span><span class="hl-code">.</span><span class="hl-identifier">plugins</span><span class="hl-code"> || </span><span class="hl-brackets">[</span><span class="hl-brackets">]</span><span class="hl-brackets">)</span><span class="hl-code">.</span><span class="hl-identifier">concat</span><span class="hl-brackets">(</span><span class="hl-brackets">[</span><span class="hl-code">
+</span><span class="hl-reserved">new</span><span class="hl-code"> </span><span class="hl-identifier">webpack</span><span class="hl-code">.</span><span class="hl-identifier">DefinePlugin</span><span class="hl-brackets">(</span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-quotes">'</span><span class="hl-string">process.env</span><span class="hl-quotes">'</span><span class="hl-code">: </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">NODE_ENV</span><span class="hl-code">: </span><span class="hl-quotes">'</span><span class="hl-string">&quot;production&quot;</span><span class="hl-quotes">'</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-brackets">)</span><span class="hl-code">,
+</span><span class="hl-reserved">new</span><span class="hl-code"> </span><span class="hl-identifier">webpack</span><span class="hl-code">.</span><span class="hl-identifier">optimize</span><span class="hl-code">.</span><span class="hl-identifier">UglifyJsPlugin</span><span class="hl-brackets">(</span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">compress</span><span class="hl-code">: </span><span class="hl-brackets">{</span><span class="hl-code">
+</span><span class="hl-identifier">warnings</span><span class="hl-code">: </span><span class="hl-reserved">false</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-code">
+</span><span class="hl-brackets">}</span><span class="hl-brackets">)</span><span class="hl-code">
+</span><span class="hl-brackets">]</span><span class="hl-brackets">)</span><span class="hl-code">
+</span><span class="hl-brackets">}</span></div>
+</div>
+</div>
+<p>给豆瓣的电影列表套个衣服(样式) :</p>
+<div class="example">
+<div class="example_code">
+<div class="hl-main"><span class="hl-brackets">&lt;</span><span class="hl-reserved">el-card</span><span class="hl-code"> </span><span class="hl-var">class</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">box-card</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">div</span><span class="hl-code"> </span><span class="hl-var">slot</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">header</span><span class="hl-quotes">&quot;</span><span class="hl-code"> </span><span class="hl-var">class</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">clearfix</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">h1</span><span class="hl-code"> </span><span class="hl-var">style</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">line-height: 36px; color: #20A0FF</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">&gt;</span><span class="hl-code">豆瓣电影排行榜</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">h2</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">div</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;</span><span class="hl-reserved">div</span><span class="hl-code"> </span><span class="hl-var">v-for</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">article in articles</span><span class="hl-quotes">&quot;</span><span class="hl-code"> </span><span class="hl-var">class</span><span class="hl-code">=</span><span class="hl-quotes">&quot;</span><span class="hl-string">text item</span><span class="hl-quotes">&quot;</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+{{article.title}}
+</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">div</span><span class="hl-brackets">&gt;</span><span class="hl-code">
+</span><span class="hl-brackets">&lt;/</span><span class="hl-reserved">el-card</span><span class="hl-brackets">&gt;</span></div>
+</div>
+</div>
+<p>打开浏览器,输入网址:http://localhost:8080/second</p>
+<p><img src="../wp-content/uploads/2016/10/1476692273-6825-854231-0f8758be535e7ccd.png"></p>
+<p>列表比之前漂亮多了，你还可以参照 ElementUI 的文档使用更多组件样式</p>
+<blockquote><p><a href="http://element.eleme.io/#/component/layout" target="_blank">http://element.eleme.io/#/component/layout</a></p></blockquote>
+h3>编译</h3>
+<pre>npm run build</pre>
+<p>又报错了...orz</p>
+<pre>
+ERROR in build.js from UglifyJs
+SyntaxError: Unexpected token punc &laquo;(&raquo;, expected punc &laquo;:&raquo; [build.js:32001,6]
+把node_modules/.bin/cross-env里的
+require('../dist')(process.argv.slice(2));
+</pre>
+<p>后来发现直接运行 webpack 命令就可以打包了</p>
+<pre>webpack --color --progress</pre>
+<p>接着把 index.html 和整个 dist 目录丢到服务器就可以了。</p> </div>
+</div>
+<div class="previous-next-links">
+<div class="previous-design-link">← <a href="centos-mail-command-sendmail.html" rel="prev"> Linux 使用命令发送邮件</a> </div>
+<div class="next-design-link"><a href="wx-xcx-repo.html" rel="next"> 微信小程序开发资源汇总</a> →</div>
+</div>
+<style>
+.wrapper {
+  /*text-transform: uppercase; */
+  background: #ececec;
+  color: #555;
+  cursor: help;
+  font-family: "Gill Sans", Impact, sans-serif;
+  font-size: 20px;
+  position: relative;
+  text-align: center;
+  width: 200px;
+  -webkit-transform: translateZ(0); /* webkit flicker fix */
+  -webkit-font-smoothing: antialiased; /* webkit text rendering fix */
+}
+
+.wrapper .tooltip {
+  white-space: nowrap;
+  font-size: 14px;
+  text-align: left;
+  background: #96b97d;
+  bottom: 100%;
+  color: #fff;
+  display: block;
+  left: -25px;
+  margin-bottom: 15px;
+  opacity: 0;
+  padding: 14px;
+  pointer-events: none;
+  position: absolute;
+  
+  -webkit-transform: translateY(10px);
+     -moz-transform: translateY(10px);
+      -ms-transform: translateY(10px);
+       -o-transform: translateY(10px);
+          transform: translateY(10px);
+  -webkit-transition: all .25s ease-out;
+     -moz-transition: all .25s ease-out;
+      -ms-transition: all .25s ease-out;
+       -o-transition: all .25s ease-out;
+          transition: all .25s ease-out;
+  -webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+     -moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+      -ms-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+       -o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+          box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.28);
+}
+.tooltip a {
+	color:#fff;
+}
+/* This bridges the gap so you can mouse into the tooltip without it disappearing */
+.wrapper .tooltip:before {
+  bottom: -20px;
+  content: " ";
+  display: block;
+  height: 20px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+}  
+
+/* CSS Triangles - see Trevor's post */
+.wrapper .tooltip:after {
+  border-left: solid transparent 10px;
+  border-right: solid transparent 10px;
+  border-top: solid #96b97d 10px;
+  bottom: -10px;
+  content: " ";
+  height: 0;
+  left: 20%;
+  margin-left: -13px;
+  position: absolute;
+  width: 0;
+}
+.wrapper .tooltip1 {
+	margin-left: 50px;
+	padding-top: 0px;
+}
+.wrapper:hover .tooltip {
+  opacity: 1;
+  pointer-events: auto;
+  -webkit-transform: translateY(0px);
+     -moz-transform: translateY(0px);
+      -ms-transform: translateY(0px);
+       -o-transform: translateY(0px);
+          transform: translateY(0px);
+}
+
+/* IE can just show/hide with no transition */
+.lte8 .wrapper .tooltip {
+  display: none;
+}
+
+.lte8 .wrapper:hover .tooltip {
+  display: block;
+}
+
+</style>
+<div id="respond" class="no_webshot">
+<div class="comment-signarea" style="">
+<h3 class="text-muted" id="share_code" style="color: #799961;"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> 点我分享笔记</h3>
+<p style="font-size:14px;">笔记需要是本篇文章的内容扩展！</p><br>
+</div>
+<form action="http://school.yunwei.edu/wp-content/themes/runoob/option/addnote.php" method="post" id="commentform" style="display:none;">
+<div class="comt">
+<div class="comt-title">
+<i style="font-size:36px;" class="fa fa-user-circle" aria-hidden="true"></i> <p><a id="cancel-comment-reply-link" href="javascript:;">取消</a></p>
+</div>
+<div class="comt-box">
+<div id="mded"></div>
+<div class="comt-ctrl">
+<div class="comt-tips"><input type='hidden' name='comment_post_ID' value='16905' id='comment_post_ID' />
+<input type='hidden' name='comment_parent' id='comment_parent' value='0' />
+</div>
+<button type="submit" name="submit" id="submit" tabindex="5"><i class="fa fa-pencil" aria-hidden="true"></i> 分享笔记</button>
+</div>
+</div>
+<div class="comt-comterinfo">
+<ul id="comment-author-info">
+<li class="form-inline"><label class="hide" for="author">昵称</label><input class="ipt" type="text" name="author" id="author" value="" tabindex="2" placeholder="昵称"><span class="text-muted">昵称 (必填)</span></li>
+<li class="form-inline"><label class="hide" for="email">邮箱</label><input class="ipt" type="text" name="email" id="email" value="" tabindex="3" placeholder="邮箱"><span class="text-muted">邮箱 (必填)</span></li>
+<li class="form-inline"><label class="hide" for="url">引用地址</label><input class="ipt" type="text" name="url" id="url" value="" tabindex="4" placeholder="引用地址"><span class="text-muted">引用地址</span></li>
+</ul>
+</div>
+</div>
+</form>
+</div>
+<script type="text/javascript">
+$(function() {
+	//初始化编辑器
+	
+	var editor = new Simditor({
+	  textarea: $('#mded'),
+	  placeholder: '写笔记...',
+	  upload: {url:'/api/comment_upload_file.php',params: null,fileKey: 'upload_file',connectionCount: 1,leaveConfirm: '文件正在上传，您确定离开?'},
+	  defaultImage: 'http://school.yunwei.edu/images/logo.png',
+	  codeLanguages: '',
+	  toolbar: [  'bold','code','ul','ol','image' ]
+	});
+	editor.on('selectionchanged', function() {
+		$(".code-popover").hide();
+	});
+
+	// 提交数据
+	$("#share_code").click(function() {
+		$(".comment-signarea").hide();
+		$("#commentform").show();
+		
+	});
+
+	// 提交笔记
+	var commentform=$('#commentform');
+	commentform.prepend('<div id="comment-status" ></div>');
+	var statusdiv=$('#comment-status');
+	
+	commentform.submit(function(e){
+		e.preventDefault();
+		var noteContent = editor.getValue();
+		// console.log(noteContent);
+		noteContent = noteContent.replace(/<pre><code>/g,"<pre>");
+		noteContent = noteContent.replace(/<\/code><\/pre>/g,"</pre>");
+		
+		// 系列化表单数据
+		var comment_parent = 0;
+		var is_user_logged_in = $("#is_user_logged_in").val();
+		var comment_post_ID =  16905;
+		var _wp_unfiltered_html_comment = $("#_wp_unfiltered_html_comment").val();
+		var comment = noteContent;
+		var author = $("#author").val();
+		var url = $("#url").val();
+		var email = $("#email").val();
+		if(isBlank(author) && is_user_logged_in==0) {
+			statusdiv.html('<p  class="ajax-error">请输入昵称！</p>');
+		} else if(isBlank(email)  && is_user_logged_in==0) {
+			statusdiv.html('<p  class="ajax-error">请输入邮箱！</p>');
+		} else {
+			// var formdata=commentform.serialize() + "&comment=" + noteContent ;
+			// 添加状态信息
+			statusdiv.html('<p>Processing...</p>');
+			// 获取表单提交地址
+			var formurl=commentform.attr('action');
+			
+			// 异步提交
+			$.ajax({
+					type: 'post',
+					url: formurl,
+					dataType:'json',
+					data: {"comment_parent":comment_parent,"comment_post_ID":comment_post_ID, "_wp_unfiltered_html_comment":_wp_unfiltered_html_comment,"comment":comment,"url":url, "email":email,"author":author},
+					error: function(XMLHttpRequest, textStatus, errorThrown){
+					statusdiv.html('<p class="ajax-error" >数据不完整或表单提交太快了！</p>');
+				},
+				success: function(data, textStatus){
+					if(data.errorno=="0") {
+						$("#submit").prop('disabled', true);
+						statusdiv.html('<p class="ajax-success" >笔记已提交审核，感谢分享笔记！</p>');
+						alert('笔记已提交审核，感谢分享笔记！');
+					}else{
+						statusdiv.html('<p class="ajax-error" >'+data.msg+'</p>');
+					}
+					commentform.find('textarea[name=comment]').val('');
+				}
+			});
+			setTimeout(function(){
+		        $("#submit").prop('disabled', false);
+		    }, 10*1000);
+		}
+		return false;
+
+	});
+	
+});
+function isBlank(str) {
+    return (!str || /^\s*$/.test(str));
+}
+</script>
+<link rel="stylesheet" href="http://school.yunwei.edu/wp-content/themes/runoob/assets/css/qa.css?1.41">
+<link rel="stylesheet" type="text/css" href="http://cdn.bootcss.com/simditor/2.3.6/styles/simditor.min.css" />
+<script type="text/javascript" src="http://static.runoob.com/assets/simditor/2.3.6/scripts/module.js"></script>
+<script type="text/javascript" src="http://static.runoob.com/assets/simditor/2.3.6/scripts/hotkeys.js"></script>
+<script type="text/javascript" src="http://static.runoob.com/assets/simditor/2.3.6/scripts/uploader.js"></script>
+<script type="text/javascript" src="http://cdn.bootcss.com/simditor/2.3.6/lib/simditor.min.js"></script>
+<div class="article-heading-ad" id="w3cnote-ad728">
+<script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<ins class="adsbygoogle" style="display:inline-block;min-width:300px;max-width:970px;width:100%;height:90px" data-ad-client="ca-pub-5751451760833794" data-ad-slot="1691338467" data-ad-format="horizontal"></ins>
+<script>
+			(adsbygoogle = window.adsbygoogle || []).push({});
+			</script>
+</div>
+<style>
+@media screen and (max-width: 768px) {
+	#w3cnote-ad728 {
+		display: none;
+	}
+}
+p.note-author {
+    border-bottom: 1px solid #ddd;
+    font-size: 18px;
+    font-weight: bold;
+    color: #78a15a;
+    padding-bottom: 2px;
+    margin-bottom: 4px;
+}
+</style>
+<script>
+var aid = 16905;
+</script>
+</div>
+</div>
+<div class="listcol last right-column">
+<div class="sidebar-box cate-list">
+<div class="sidebar-box advertise-here list-link">
+<a href="javascript:void(0);" style="font-size: 16px; color:#64854c;font-weight:bold;">笔记分类</a>
+</div>
+<div class="cate-items">
+<a href="http://school.yunwei.edu/w3cnote_genre/android" target="_blank" title="Android 基础入门教程">Android 基础入门教程</a><a href="../w3cnote_genre/android-advance" target="_blank" title="Android 扩展教程">Android 扩展教程</a><a href="../w3cnote_genre/jmr" target="_blank" title="JMR 使用教程">JMR 使用教程</a><a href="../w3cnote_genre/phpsnippets" target="_blank" title="PHP 常用实例">PHP 常用实例</a><a href="../w3cnote_genre/python-常用实例" target="_blank" title="Python 常用实例">Python 常用实例</a><a href="http://school.yunwei.edu/w3cnote_genre/net-2" target="_blank" title="互联网">互联网</a><a href="../w3cnote_genre/blockchain" target="_blank" title="区块链">区块链</a><a href="../w3cnote_genre/disorganized" target="_blank" title="杂乱无章">杂乱无章</a><a href="../w3cnote_genre/tech" target="_blank" title="科技资讯">科技资讯</a><a href="http://school.yunwei.edu/w3cnote_genre/coderlife" target="_blank" title="程序员人生">程序员人生</a><a href="http://school.yunwei.edu/w3cnote_genre/joke" target="_blank" title="程序员笑话">程序员笑话</a><a href="http://school.yunwei.edu/w3cnote_genre/code" target="_blank" title="编程技术">编程技术</a>
+</div>
+</div>
+<div class="sidebar-box cate-list">
+<div class="sidebar-box advertise-here list-link">
+<a href="javascript:void(0);" style="font-size: 16px; color:#64854c;font-weight:bold;">教程列表</a>
+</div>
+<div class="cate-items">
+<a href="../ado" title="ADO，即 ActiveX 数据对象（ActiveX Data Objects），是微软公司提出的应用程序接口，用于访问关系或非关系数据库中的数据。">ADO 教程</a>
+<a href="../ajax.1" title="Ajax，即 Asynchronous JavaScript and XML（异步的 JavaScript 和 XML），是一项在不重新加载整个页面的情况下与服务器交换数据并更新部分网页的技术。">Ajax 教程</a>
+<a href="../android" title="Android是一种基于Linux的自由及开放源代码的操作系统，主要使用于移动设备，如智能手机和平板电脑，由Google公司和开放手机联盟领导及开发。">Android 教程</a>
+<a href="../angularjs2.1" title="AngularJS 2 是一款开源JavaScript库，由Google维护，用来协助单一页面应用程序运行。">Angular2 教程</a>
+<a href="../angularjs.1" title="AngularJS 是 Google 开发的纯客户端 JavaScript 技术的 WEB 框架，用于扩展、增强 HTML 功能，它专为构建强大的 WEB 应用而设计。">AngularJS 教程</a>
+<a href="../appml.1" title="AppML 是一个为 Web 应用程序设计的 HTML 扩展框架。AppML 结合了最新的技术和现代 Web 开发想法，使用了低消耗高速简单的架构，易于学习。">AppML 教程</a>
+<a href="../asp.1" title="ASP，即动态服务器页面（Active Server Pages），是微软公司提出的一项生成动态交互性网页的技术。ASP 是在 IIS 中运行的程序，ASP 文件中的脚本可在服务器上执行。">ASP 教程</a>
+<a href="../aspnet.1" title="ASP.NET 是微软公司提出的一个使用 HTML、CSS、JavaScript 和服务器脚本创建网页和网站的开发框架。ASP.NET 支持三种不同的开发模式：单页面模式、MVC 模式、事件驱动模式。">ASP.NET 教程</a>
+<a href="../bootstrap.1" title="Bootstrap 是 Twitter 推出的一款开源的基于 HTML、CSS、JAVASCRIPT 的前端开发框架，用于快速开发 Web 应用程序和网站。">Bootstrap 教程</a>
+<a href="../bootstrap4.1" title="Bootstrap4 目前是 Bootstrap 的最新版本，是一套用于 HTML、CSS 和 JS 开发的开源工具集。">Bootstrap4 教程</a>
+<a href="../cprogramming" title="C 语言是一种通用的、面向过程式的计算机程序设计语言，广泛用于系统与应用软件的开发。具有高效、灵活、功能丰富、表达力强和较高的可移植性等特点，在程序员中备受青睐。">C 教程</a>
+<a href="../csharp.1" title="C# 是微软公司发布的一种面向对象的、专为公共语言基础结构（CLI）而设计的、运行于 .NET Framework 之上的高级程序设计语言。">C# 教程</a>
+<a href="../cplusplus.1" title="C++ 进一步扩充和完善了 C 语言，是一种面向对象的程序设计语言，可运行于多种平台上。C++ 支持多种编程范式——面向对象编程、泛型编程和过程化编程。">C++ 教程</a>
+<a href="../cssref.1" title="CSS 参考手册提供了完整的 CSS 属性列表，每个属性都配有语法说明及实例演示，另外还讲解了 CSS 选择器、颜色值及浏览器支持等相关内容。">CSS 参考手册</a>
+<a href="../css.1" title="CSS，即级联样式表（Cascading Style Sheets），是一种用于表现 HTML（标准通用标记语言的一个应用）或 XML（标准通用标记语言的一个子集）等文件样式和布局的计算机语言。">CSS 教程</a>
+<a href="../css3.1" title="CSS3 是最新的 CSS 标准。CSS，即级联样式表（Cascading Style Sheets），用于表现 HTML 或 XML 等文件的样式和布局。">CSS3 教程</a>
+<a href="../django.1" title="Django是一个开放源代码的Web应用框架，由Python写成。采用了MVC的软件设计模式，即模型M，视图V和控制器C。">Django 教程</a>
+<a href="../docker.1" title="Docker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中。">Docker 教程</a>
+<a href="../dtd.1" title="DTD，即文档类型定义，用于定义 XML 文档的合法构建模块。DTD 使用一系列合法的元素来定义文档的结构，可被成行地声明于 XML 文档中，也可作为一个外部引用。">DTD 教程</a>
+<a href="../eclipse.1" title="Eclipse 是一个开放源代码的、基于 Java 的可扩展开发平台。">Eclipse 教程</a>
+<a href="../firebug.1" title="Firebug 是 网页浏览器 Mozilla Firefox 下的一款开发类插件，集 HTML 查看和编辑、Javascript 控制台、网络状况监视器于一体，是开发JavaScript、CSS、HTML 和 Ajax 的得力助手。">Firebug 教程</a>
+<a href="../font-awesome.1" title="Font Awesome 是一套绝佳的图标字体库和CSS框架。">Font Awesome 图标</a>
+<a href="../foundation.1" title="Foundation 是一个易用、强大而且灵活的框架,用于构建基于任何设备上的 Web 应用。">Foundation 教程</a>
+<a href="../git.1" title="Git是一款免费、开源的分布式版本控制系统，用于敏捷高效地处理任何或小或大的项目。">Git 教程</a>
+<a href="../go.1" title="Go 是一个开源的编程语言，它能让构造简单、可靠且高效的软件变得容易。">Go 语言教程</a>
+<a href="../googleapi.1" title="Google 地图 API 是 Google 为开发者提供的创建交互式地图的应用程序编程接口。Google  地图 API 是一项免费的服务，任何非盈利性网站均可使用。">Google 地图 API 教程</a>
+<a href="../highcharts.1" title="Highcharts 是一个用纯JavaScript编写的一个图表库">Highcharts 教程</a>
+<a href="../htmldom.1" title="HTML DOM 定义了所有 HTML 元素的对象和属性，以及访问它们的方法。换言之，HTML DOM 是关于如何获取、修改、添加或删除 HTML 元素的标准。">HTML DOM 教程</a>
+<a href="../tags.1" title="HTML 参考手册提供了完整的 HTML 标签、属性、事件列表，并配有具体的实例演示，另外还讲解了拾色器、字符集等相关内容。">HTML 参考手册</a>
+<a href="../charsets.1" title="要正确显示HTML页面，浏览器必须知道页面使用的字符集（字符编码）是什么。">HTML 字符集</a>
+<a href="../html.1" title="HTML，即超文本标记语言（Hyper Text Markup Language），是一种用于描述网页的标记语言，通过标记符号来标记要显示的网页中的各个部分。">HTML 教程</a>
+<a href="../http.1" title="超文本传输协议（HTTP，HyperText Transfer Protocol)是互联网上应用最为广泛的一种网络协议。">HTTP 教程</a>
+<a href="../ionic.1" title="ionic 是一个强大的 HTML5 应用程序开发框架(HTML5 Hybrid Mobile App Framework )。">ionic 教程</a>
+<a href="../ios" title="IOS 是苹果公司研发的一款手机操作系统。IOS 具有简单易用的界面、令人惊叹的功能，以及超强的稳定性，是 iPad、iPhone、iPod touch和 Apple TV 的操作系统。">iOS 教程</a>
+<a href="../java.1" title="Java 是一种跨平台的面向对象的高级程序设计语言，是由 Sun Microsystems 公司推出的 Java 程序设计语言和 Java 平台（即 JavaEE、JavaME、JavaSE）的总称。">Java 教程</a>
+<a href="../jsref.1" title="JavaScript 参考手册提供了完整的 JavaScript 对象、浏览器对象、HTML DOM 对象手册。手册包含了每个对象、属性、方法的实例。">JavaScript 参考手册</a>
+<a href="../js.1" title="JS，即 Javascript，是一种轻量级的编程语言，可插入 HTML 页面，由所有的现代浏览器执行。JS 可用于 HTML 和 web，更可广泛用于服务器、PC、笔记本电脑、平板电脑和智能手机等设备。">Javascript 教程</a>
+<a href="../jeasyui.1" title="jQuery EasyUI 是一个基于 jQuery 的框架，集成了各种用户界面插件。jQuery EasyUI 框架提供了创建网页所需的一切，帮助您轻松建立站点。">jQuery EasyUI 教程</a>
+<a href="../jquerymobile.1" title="jQuery Mobile 是用于创建移动 Web 应用的前端开发框架。jQuery Mobile 使用 HTML5 &amp; CSS3 最小的脚本来布局网页，可以应用于智能手机与平板电脑。">jQuery Mobile 教程</a>
+<a href="../jqueryui.1" title="jQuery UI 是建立在 jQuery JavaScript 库上的一组用户界面交互、特效、小部件及主题，可用于创建高度交互的 Web 应用程序。">jQuery UI 教程</a>
+<a href="../jquery.1" title="jQuery 是目前最流行的一个轻量级的兼容多浏览器的 JavaScript  框架。jQuery 提供了大量的插件，极大地简化了 JavaScript 编程。">jQuery 教程</a>
+<a href="../json.1" title="JSON，即 JavaScript Object Notation（JavaScript 对象表示法），是存储和交换文本信息的语法。JSON 类似 XML，但比 XML 更小、更快，更易解析。">JSON 教程</a>
+<a href="../jsp.1" title="JSP，即 Java Server Pages，是由 Sun Microsystems 公司倡导和许多公司参与共同创建的一种使软件开发者可以响应客户端请求，而动态生成 HTML、XML 或其他格式文档的 Web 网页的技术标准。">JSP 教程</a>
+<a href="../kotlin.1" title="Kotlin 是一个基于 JVM 的新的编程语言，由 JetBrains 开发。Kotlin可以编译成Java字节码，也可以编译成JavaScript，方便在没有JVM的设备上运行。">Kotlin 教程</a>
+<a href="../linux.1" title="Linux是一套免费使用和自由传播的类Unix操作系统，是一个基于POSIX和UNIX的多用户、多任务、支持多线程和多CPU的操作系统。它能运行主要的UNIX工具软件、应用程序和网络协议。">Linux 教程</a>
+<a href="../lua.1" title="Lua 是一种轻量小巧的脚本语言，用标准C语言编写并以源代码形式开放。">Lua 教程</a>
+<a href="../memcached" title="Memcached是一个自由开源的，高性能，分布式内存对象缓存系统。它很普通，却可以用来减轻数据库负载，从而为动态web应用加速。">Memcached 教程</a>
+<a href="../mongodb.1" title="MongoDB 是由 C++ 语言编写的开源数据库系统，是一个基于分布式文件存储的数据库，旨在为 Web 应用提供可扩展的高性能数据存储解决方案。">MongoDB 教程</a>
+<a href="../mysql.1" title="MySQL 是一个开源的小型关系型数据库管理系统。在 Web 应用方面，MySQL是最好的 RDBMS（关系数据库管理系统）应用软件之一。">MySQL 教程</a>
+<a href="../nodejs.1" title="Node.js 是一个基于 Chrome JavaScript 运行时建立的一个平台，是一个基于 Google 的 V8 引擎的事件驱动 I/O 服务端 JavaScript 环境。">Node.js 教程</a>
+<a href="../perl.1" title="Perl，一种功能丰富的计算机程序语言，运行在超过100种计算机平台上，适用广泛，从大型机到便携设备，从快速原型创建到大规模可扩展开发。">Perl 教程</a>
+<a href="../php.1" title="PHP，即 PHP: Hypertext Preprocessor，是一种创建动态交互性站点的强有力的服务器端脚本语言。PHP 是开源的，可免费下载使用。">PHP 教程</a>
+<a href="../python3.1" title="Python的3.0版本，常被称为Python 3000，或简称Py3k。相对于Python的早期版本，这是一个较大的升级。为了不带入过多的累赘，Python 3.0在设计的时候没有考虑向下兼容。">Python 3 教程</a>
+<a href="../python.1" title="Python 是一种解释型、面向对象、动态数据类型的高级程序设计语言。Python 支持从简单的文字处理到 WWW 浏览器再到游戏等应用程序的开发。">Python 基础教程</a>
+<a href="../rdf.1" title="RDF，即资源描述框架（Resource Description Framework），是用于描述网络资源的 W3C 标准，比如网页的标题、作者、修改日期、内容以及版权信息。">RDF 教程</a>
+<a href="../react.1" title="React 是一个用于构建用户界面的 JAVASCRIPT 库。">React 教程</a>
+<a href="../redis.1" title="Redis是一个开源的使用ANSI C语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value数据库，并提供多种语言的API。">Redis 教程</a>
+<a href="../rss.1" title="RSS，即真正简易联合（Really Simple Syndication），是一种使用 XML 编写的描述和同步网站内容的格式，定义了非常简单的方法来共享和查看标题和内容。">RSS 教程</a>
+<a href="../ruby.1" title="Ruby 是一种开源的面向对象程序设计的服务器端脚本语言，在 20 世纪 90 年代中期由日本的松本行弘设计并开发。Ruby 可用于编写通用网关接口（CGI）脚本，可用于开发 Internet 和 Intranet 应用。">Ruby 教程</a>
+<a href="../scala.1" title="Scala 是一门多范式（multi-paradigm）的编程语言，设计初衷是要集成面向对象编程和函数式编程的各种特性。">Scala 教程</a>
+<a href="../servlet.1" title="Servlet（Server Applet），全称 Java Servlet，是用 Java 编写的服务器端程序。其主要功能在于交互式地浏览和修改数据，生成动态 Web 内容。Servlet 运行于支持 Java 的应用服务器中，它最常见的用途是扩展 Web 服务器。">Servlet 教程</a>
+<a href="../soap.1" title="SOAP，即简易对象访问协议，是基于 XML 的简易协议，可使应用程序在 HTTP 之上进行信息交换。简单地说，SOAP 是用于访问网络服务的协议。">SOAP 教程</a>
+<a href="../sql.1" title="SQL，即结构化查询语言（Structured Query Language），是一种 ANSI 标准的计算机语言，用于访问和处理数据库。">SQL 教程</a>
+<a href="../sqlite.1" title="SQLite 是一款轻型的关系型数据库管理系统，实现了自给自足的、无服务器的、零配置的、事务性的 SQL 数据库引擎。SQLite 是在世界上最广泛部署的 SQL 数据库引擎。">SQLite 教程</a>
+<a href="../svg.1" title="SVG，即可缩放矢量图形（Scalable Vector Graphics），是一种使用 XML 来描述二维图形和绘图程序的语言。SVG 是 W3C 推荐标准。">SVG 教程</a>
+<a href="../svn.1" title="SVN是Subversion的简称，是一个开放源代码的版本控制系统，相较于RCS、CVS，它采用了分支管理系统，它的设计目标就是取代CVS。">SVN 教程</a>
+<a href="../swift.1" title="Swift 是一种支持多编程范式和编译式的编程语言,苹果于2014年WWDC（苹果开发者大会）发布，用于开发 iOS，OS X 和 watchOS应用程序。">Swift 教程</a>
+<a href="../tcpip.1" title="TCP/IP 是因特网的通信协议，是对计算机必须遵守的规则的描述，只有遵守这些规则，计算机之间才能进行通信。浏览器与服务器是使用 TCP/IP 协议来链接因特网的。">TCP/IP 教程</a>
+<a href="../vbscript.1" title="VBScript，即 Visual Basic Script，是微软公司开发的一种解析型的服务端（也支持客户端）脚本语言，可以看作是 VB 语言的简化版。">VBScript 教程</a>
+<a href="../vue2.1" title="Vue.js（读音 /vjuː/, 类似于 view） 是一套构建用户界面的渐进式框架。">Vue.js 教程</a>
+<a href="../w3c.1" title="W3C，即万维网联盟，创建于 1994 年，是 Web 技术领域最具权威和影响力的国际中立性技术标准机构。W3C 让每个人都能在互联网上分享资源。">W3C 教程</a>
+<a href="../webservices.1" title="Web Service 是使用开放协议进行通信的可重复使用的应用程序组件。通过使用 Web services，您可以在不同的应用程序与平台之间来交换数据。">Web Service 教程</a>
+<a href="../wsdl.1" title="WSDL，即网络服务描述语言（Web Services Description Language），是一门基于 XML 的语言，用于描述 Web Services 以及如何对它们进行访问。">WSDL 教程</a>
+<a href="../xlink.1" title="XLink 定义在 XML 文档中创建超级链接的标准方法。XPointer 允许这些超级链接指向 XML 文档中的更多具体部分（片断）。XLink 和 XPointer 是 W3C 推荐标准。">XLink 教程</a>
+<a href="../dom.1" title="XML DOM 定义了所有 XML 元素的对象和属性，以及访问它们的方法。换言之，XML DOM 是用于获取、更改、添加或删除 XML 元素的标准。">XML DOM 教程</a>
+<a href="../schema.1" title="XML Schema 是基于 XML（可扩展标记语言），描述了 XML 文档的合法构建模块，可替代 DTD（文档类型定义）。XML Schema 是 W3C 的推荐标准。">XML Schema 教程</a>
+<a href="../xml.1" title="XML，即可扩展标记语言（eXtensible Markup Language），用来传输和存储数据。XML 是一个 W3C 推荐标准。">XML 教程</a>
+<a href="../xpath.1" title="XPath，即 XML 路径语言，是 XSLT 中的主要元素，是一种在 XML 文档中查找信息的语言。XPath 是一个 W3C 推荐标准。">XPath 教程</a>
+<a href="../xquery.1" title="XQuery 是建立在 XPath 表达式之上，用于 XML 数据查询的语言。XQuery 对 XML 的作用类似 SQL 对数据库的作用。XQuery 是一个 W3C 推荐标准。">XQuery 教程</a>
+<a href="../xslfo.1" title="XSL-FO，即可扩展样式表语言格式化对象（Extensible Stylesheet Language Formatting Objects），是用于格式化 XML 数据的语言。XSL-FO 是一个 W3C 推荐标准。">XSLFO 教程</a>
+<a href="../xsl.1" title="XSLT，即 XSL 转换，是一种用于将 XML 文档转换为 XHTML 文档或其他 XML 文档的语言。XSL 指扩展样式表语言，是一种 XML 文档的样式表语言。XSLT 是一个 W3C 推荐标准。">XSLT 教程</a>
+<a href="../regexp.1" title="正则表达式，又称正规表示法、常规表示法，使用单个字符串来描述、匹配一系列符合某个句法规则的字符串，通常被用来检索、替换那些符合某个模式的文本。">正则表达式</a>
+<a href="../quiz.1" title="测验">测验</a>
+<a href="../browsers.1" title="浏览器是用于显示网页服务器或档案系统内的文件，并让用户与这些文件互动的一种软件。目前主流浏览器包括 Internet Explorer、Firefox、Chrome、Safari、Opera 等。">浏览器</a>
+<a href="../quality.1" title="通过学习重要的 Web 标准，根据 Web 标准编写页面，有助于改善网站品质，创建高质量的 Web 网站，让网站更加简易且可读性更强。">网站品质</a>
+<a href="http://school.yunwei.edu/web" title="网站建设指南介绍了一个网站开发人员建设一个专业的网站必须掌握的知识，同时还讲解了网站验证、Web 语义化、搜索引擎优化等相关内容。">网站建设指南</a>
+<a href="../hosting.1" title="Web 服务器可存放网站，只有将存放在服务器上的网站进行发布，用户才能在客户端上浏览网站。网站主机服务通常包括了域名注册、电子邮件等。">网站服务器教程</a>
+<a href="../design-pattern.1" title="设计模式（Design pattern）是一套被反复使用的、多数人知晓的、经过分类编目的、代码设计经验的总结。使用设计模式是为了重用代码、让代码更容易被他人理解、保证代码可靠性。 ">设计模式</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="mar-t50">
+<div class="runoob-block">
+<div class="runoob cf">
+<dl>
+<dt>
+在线实例
+</dt>
+<dd>
+&middot;<a target="_blank" href="http://school.yunwei.edu/html/html-examples.html">HTML 实例</a>
+</dd>
+<dd>
+&middot;<a target="_blank" href="http://school.yunwei.edu/css/css-examples.html">CSS 实例</a>
+</dd>
+<dd>
+&middot;<a target="_blank" href="http://school.yunwei.edu/js/js-examples.html">JavaScript 实例</a>
+</dd>
+<dd>
+&middot;<a target="_blank" href="../ajx/ajax-examples.html">Ajax 实例</a>
+</dd>
+<dd>
+&middot;<a target="_blank" href="http://school.yunwei.edu/jquery/jquery-examples.html">jQuery 实例</a>
+</dd>
+<dd>
+&middot;<a target="_blank" href="http://school.yunwei.edu/xml/xml-examples.html">XML 实例</a>
+</dd>
+<dd>
+&middot;<a target="_blank" href="../html/java-examples.html">Java 实例</a>
+</dd>
+</dl>
+<dl>
+<dt>
+字符集&工具
+</dt>
+<dd>
+&middot; <a target="_blank" href="../charsets.1">HTML 字符集设置</a>
+</dd>
+<dd>
+&middot; <a target="_blank" href="http://school.yunwei.edu/tags/html-ascii.html">HTML ASCII 字符集</a>
+</dd>
+<dd>
+&middot; <a target="_blank" href="http://school.yunwei.edu/tags/ref-entities.html">HTML ISO-8859-1</a>
+</dd>
+<dd>
+&middot; <a target="_blank" href="http://school.yunwei.edu/tags/html-symbols.html">HTML 实体符号</a>
+</dd>
+<dd>
+&middot; <a target="_blank" href="http://school.yunwei.edu/tags/html-colorpicker.html">HTML 拾色器</a>
+</dd>
+<dd>
+&middot; <a target="_blank" href="http://c.runoob.com/front-end/53">JSON 格式化工具</a>
+</dd>
+</dl>
+<dl>
+<dt>
+最新更新
+</dt>
+<dd>
+&middot;
+<a href="http://school.yunwei.edu/w3cnote/php-different-include-and-require.html" title="PHP 中 include 和 require 的区别详解">PHP 中 include ...</a>
+</dd>
+<dd>
+&middot;
+<a href="http://school.yunwei.edu/react/react-lists-and-keys.html" title="React 列表 &#038; Keys">React 列表 &#03...</a>
+</dd>
+<dd>
+&middot;
+<a href="http://school.yunwei.edu/react/react-conditional-rendering.html" title="React 条件渲染">React 条件渲染</a>
+</dd>
+<dd>
+&middot;
+<a href="http://school.yunwei.edu/react/react-event-handle.html" title="React 事件处理">React 事件处理</a>
+</dd>
+<dd>
+&middot;
+<a href="http://school.yunwei.edu/w3cnote/csharp-polymorphism2.html" title="C# 中的多态性">C# 中的多态性</a>
+</dd>
+<dd>
+&middot;
+<a href="http://school.yunwei.edu/react/react-rendering-elements.html" title="React 元素渲染">React 元素渲染</a>
+</dd>
+<dd>
+&middot;
+<a href="http://school.yunwei.edu/w3cnote/python-append-deepcopy.html" title="Python append() 与深拷贝、浅拷贝">Python append()...</a>
+</dd>
+</dl>
+<dl>
+<dt>
+站点信息
+</dt>
+<dd>
+&middot;
+<a target="_blank" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&amp;email=ssbDyoOAgfLU3crf09venNHd3w" rel="external nofollow">意见反馈</a>
+</dd>
+<dd>
+&middot;
+<a target="_blank" href="http://school.yunwei.edu/disclaimer">免责声明</a>
+</dd>
+<dd>
+&middot;
+<a target="_blank" href="http://school.yunwei.edu/aboutus">关于我们</a>
+</dd>
+<dd>
+&middot;
+<a target="_blank" href="http://school.yunwei.edu/archives">文章归档</a>
+</dd>
+</dl>
+<div class="search-share">
+<div class="app-download">
+<div>
+<strong>关注微信</strong>
+</div>
+</div>
+<div class="share">
+<img width="128" height="128" src="http://school.yunwei.edu/wp-content/themes/runoob/assets/images/qrcode.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="w-1000 copyright">
+Copyright &copy; 2013-2018 <strong><a href="http://school.yunwei.edu/" target="_blank">菜鸟教程</a></strong>&nbsp;
+<strong><a href="http://school.yunwei.edu/" target="_blank">runoob.com</a></strong> All Rights Reserved. 备案号：闽ICP备15012807号-1
+</div>
+</div>
+<div class="fixed-btn">
+<a class="go-top" href="javascript:void(0)" title="返回顶部"> <i class="fa fa-angle-up"></i></a>
+<a class="qrcode" href="javascript:void(0)" title="关注我们"><i class="fa fa-qrcode"></i></a>
+<a class="writer" style="display:none" href="javascript:void(0)" title="标记/收藏"><i class="fa fa-star" aria-hidden="true"></i></a>
+<div id="bottom-qrcode" class="modal panel-modal hide fade in">
+<h4>微信关注</h4>
+<div class="panel-body"><img alt="微信关注" width="128" height="128" src="http://school.yunwei.edu/wp-content/themes/runoob/assets/images/qrcode.png"></div>
+</div>
+</div>
+<div class="hide_box"></div>
+<div class="shang_box">
+<a class="shang_close" href="javascript:void(0)" onclick="dashangToggle()" title="关闭"><img src="http://static.runoob.com/images/dashang/close.jpg" alt="取消" /></a>
+<div class="shang_tit">
+<p>感谢您的支持，我会继续努力的!</p>
+</div>
+<div class="shang_payimg">
+<img src="http://static.runoob.com/images/dashang/weipayimg.png" alt="扫码支持" title="扫一扫" />
+</div>
+<div class="pay_explain">扫码打赏，你说多少就多少</div>
+<div class="shang_payselect">
+<div class="pay_item  checked" data-id="weipay">
+<span class="radiobox"></span>
+<span class="pay_logo"><img src="http://static.runoob.com/images/dashang/wechat.jpg" alt="微信" /></span>
+</div>
+<div class="pay_item" data-id="alipay">
+<span class="radiobox"></span>
+<span class="pay_logo"><img src="http://static.runoob.com/images/dashang/alipay.jpg" alt="支付宝" /></span>
+</div>
+</div>
+<div class="shang_info">
+<p>打开<span id="shang_pay_txt">支付宝</span>扫一扫，即可进行扫码打赏哦</p>
+<p><a href="http://c.runoob.com/codedemo/5348" target="_blank"><span style=" font-size: 14px;color: #000;font-weight: bold;">点我查看本站打赏源码！</span></a></p>
+</div>
+</div>
+<div id="testClick"></div>
+<div style="display:none;">
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3eec0b7da6548cf07db3bc477ea905ee";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-84264393-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-84264393-2');
+</script>
+</div>
+<script>
+window.jsui={
+    www: '//wschool.yunwei.edu',
+    uri: '//school.yunwei.edu/wp-content/themes/runoob'
+};
+</script>
+<style>
+ol,ul{list-style:none}.cd-switcher a{text-decoration:none;outline:0}.cd-switcher a:hover{text-decoration:underline}a:focus{outline:0;-moz-outline:0}.main_nav{width:300px;height:60px;margin:60px auto 10px auto}.main_nav li{float:left;width:60px;margin-right:10px;font-size:16px;padding:.6em 1em;border-radius:3em;background:#2f889a;text-align:center}.main_nav li a{color:#fff}.errtip{background-color:#fceaea;color:#db5353;padding:8px 15px;font-size:14px;border:1px solid #fc9797;border-radius:5px}.cd-user-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(52,54,66,0.9);z-index:3;overflow-y:auto;cursor:pointer;visibility:hidden;opacity:0;-webkit-transition:opacity .3s 0,visibility 0 .3s;-moz-transition:opacity .3s 0,visibility 0 .3s;transition:opacity .3s 0,visibility 0 .3s}.cd-user-modal.is-visible{visibility:visible;opacity:1;-webkit-transition:opacity .3s 0,visibility 0 0;-moz-transition:opacity .3s 0,visibility 0 0;transition:opacity .3s 0,visibility 0 0}.cd-user-modal.is-visible .cd-user-modal-container{-webkit-transform:translateY(0);-moz-transform:translateY(0);-ms-transform:translateY(0);-o-transform:translateY(0);transform:translateY(0)}.cd-user-modal-container{position:relative;width:90%;max-width:500px;background:#FFF;margin:3em auto 4em;cursor:auto;border-radius:.25em;-webkit-transform:translateY(-30px);-moz-transform:translateY(-30px);-ms-transform:translateY(-30px);-o-transform:translateY(-30px);transform:translateY(-30px);-webkit-transition-property:-webkit-transform;-moz-transition-property:-moz-transform;transition-property:transform;-webkit-transition-duration:.3s;-moz-transition-duration:.3s;transition-duration:.3s}.cd-user-modal-container .cd-switcher:after{content:"";display:table;clear:both}.cd-user-modal-container .cd-switcher li{width:50%;float:left;text-align:center}.cd-user-modal-container .cd-switcher li:first-child a{border-radius:.25em 0 0 0}.cd-user-modal-container .cd-switcher li:last-child a{border-radius:0 .25em 0 0}.cd-user-modal-container .cd-switcher a{font-size:1.2em;font-weight:bold;display:block;width:100%;height:50px;line-height:50px;background:#e8f1e2;color:#96b880}.cd-user-modal-container .cd-switcher a.selected{background:#FFF;color:#505260}@media only screen and (min-width:600px){.cd-user-modal-container{margin:4em auto}.cd-user-modal-container .cd-switcher a{height:70px;line-height:70px}}.cd-form{padding:1.4em}.cd-form .fieldset{position:relative;margin:1.4em 0}.cd-form .fieldset:first-child{margin-top:0}.cd-form .fieldset:last-child{margin-bottom:0}.cd-form label{font-size:16px;font-size:.875rem}.cd-form label.image-replace{display:inline-block;position:absolute;left:15px;top:50%;bottom:auto;-webkit-transform:translateY(-50%);-moz-transform:translateY(-50%);-ms-transform:translateY(-50%);-o-transform:translateY(-50%);transform:translateY(-50%);height:20px;width:20px;overflow:hidden;text-indent:100%;white-space:nowrap;color:transparent;text-shadow:none;background-repeat:no-repeat;background-position:50% 0}.cd-form label.cd-username{background-image:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-username.svg")}.cd-form label.cd-email{background-image:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-email.svg")}.cd-form label.cd-password{background-image:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-password.svg")}.cd-form input{margin:0;padding:0;border-radius:.25em}.cd-form input.full-width{width:80%}.cd-form input.full-width2{width:94%}.cd-form input.has-padding{padding:12px 20px 12px 50px}.cd-form input.has-border{border:1px solid #d2d8d8;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none;-o-appearance:none;appearance:none}.cd-form input.has-border:focus{border-color:#98b880;box-shadow:0 0 5px rgba(52,54,66,0.1);outline:0}.cd-form input.has-error{border:1px solid #d76666}.cd-form input[type=password]{padding-right:65px}.cd-form input[type=submit]{padding:16px 0;cursor:pointer;background:#96b97d;color:#FFF;font-weight:bold;border:0;-webkit-appearance:none;-moz-appearance:none;-ms-appearance:none;-o-appearance:none;appearance:none;font-size:1.2em;font-weight:bold}.no-touch .cd-form input[type=submit]:hover,.no-touch .cd-form input[type=submit]:focus{background:#3599ae;outline:0}@media only screen and (min-width:600px){.cd-form{padding:2em}.cd-form .fieldset{margin:2em 0}.cd-form .fieldset:first-child{margin-top:0}.cd-form .fieldset:last-child{margin-bottom:0}.cd-form input.has-padding{padding:16px 20px 16px 50px}.cd-form input[type=submit]{padding:16px 0}}.cd-close-form{display:block;position:absolute;width:40px;height:40px;right:0;top:-40px;background:url("http://school.yunwei.edu/wp-content/themes/runoob/assets/img/cd-icon-close.svg") no-repeat center center;text-indent:100%;white-space:nowrap;overflow:hidden}@media only screen and (min-width:1170px){}#cd-login,#cd-signup,#cd-reset-password{display:none}#cd-login.is-selected,#cd-signup.is-selected,#cd-reset-password.is-selected{display:block}
+</style>
+<div class="cd-user-modal">
+<div class="cd-user-modal-container">
+<ul class="cd-switcher">
+<li><a href="javascript:;">用户登录</a></li>
+<li><a href="javascript:;">注册新用户</a></li>
+</ul>
+<div id="cd-login"> 
+<div class="cd-form">
+<p class="fieldset">
+<label class="image-replace cd-username" for="signin-username">用户名</label>
+<input class="full-width has-padding has-border" id="signin-username" name=username type="text" placeholder="输入用户名">
+</p>
+<p class="fieldset">
+<label class="image-replace cd-password" for="signin-password">密码</label>
+<input class="full-width has-padding has-border" id="signin-password" name="password" type="password" placeholder="输入密码">
+</p>
+<p class="fieldset">
+<input type="checkbox" id="remember-me" checked>
+<label for="remember-me">记住登录状态</label>
+<a href="http://school.yunwei.edu/reset-password" style="float: right;padding-right: 20px;" target="_blank">忘记密码？</a>
+</p>
+<input type="hidden" name="action" value="signin">
+<p class="fieldset">
+<input class="full-width2" type="submit" value="登 录">
+</p>
+<div class="err-msg"></div>
+</div>
+</div>
+<div id="cd-signup"> 
+<div class="cd-form">
+<p class="fieldset">
+<label class="image-replace cd-password" for="verifycode">邀请码</label>
+<input class="full-width has-padding has-border" id="signup-verifycode" name="verifycode" type="text" placeholder="输入邀请码">
+</p>
+<p class="fieldset">
+<label class="image-replace cd-username" for="signup-username">用户名</label>
+<input class="full-width has-padding has-border" id="signup-username" name="name" type="text" placeholder="输入用户名">
+</p>
+<p class="fieldset">
+<label class="image-replace cd-email" for="signup-email">邮箱</label>
+<input class="full-width has-padding has-border" name="email" id="signup-email" type="email" placeholder="输入mail">
+</p>
+<p class="fieldset">
+<label class="image-replace cd-password" for="signup-password">密码</label>
+<input class="full-width has-padding has-border" id="signup-password" name="password" type="password" placeholder="输入密码">
+</p>
+<p class="fieldset">
+<label class="image-replace cd-password" for="signup-password2">重复输入密码</label>
+<input class="full-width has-padding has-border" id="signup-password2" name="password2" type="password" placeholder="重复输入密码">
+</p>
+<input type="hidden" name="action" value="signup">
+<p class="fieldset">
+<input class="full-width2" type="submit" value="注册新用户">
+</p>
+<p class="fieldset">
+<a href="http://school.yunwei.edu/w3cnote/runoob-user-test-intro.html#invite" target="_blank">如何获取邀请码？</a>
+</p>
+<div class="err-msg"></div>
+</div>
+</div>
+<a href="javascript:;" class="cd-close-form">关闭</a>
+</div>
+</div>
+<script src="http://school.yunwei.edu/wp-content/themes/runoob/assets/js/main.js?v=1.188"></script>
+<script src="http://static.runoob.com/assets/libs/hl/run_prettify.js"></script>
+</body>
+</html>

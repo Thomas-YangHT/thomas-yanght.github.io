@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>unaccent</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="额外提供的模块" HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html"><LINK REL="PREVIOUS" TITLE="tsearch2" HREF="tsearch2.html"><LINK REL="NEXT" TITLE="uuid-ossp" HREF="uuid-ossp.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/unaccent.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="tsearch2" HREF="tsearch2.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; F. 额外提供的模块</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="uuid-ossp" HREF="uuid-ossp.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="UNACCENT">F.40. unaccent</A></H1><P>
+<TT CLASS="FILENAME">unaccent</TT> 是一个文本搜索字典，它从词汇中去掉重音符号（变音标志符号）。
+这是一个过滤词典，这意味着它的输出总是传递给下一个字典（如果存在的话），而不像常规行为的字典。
+这允许对全文搜索进行重音不敏感的处理。
+</P><P>
+<TT CLASS="FILENAME">unaccent</TT>的当前实现不能用作一个<TT CLASS="FILENAME">thesaurus</TT>字典的规范字典。
+</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN150794">F.40.1. 配置</A></H2><P>
+一个 <TT CLASS="LITERAL">unaccent</TT> 字典接受下面的操作：
+</P><P></P><UL><LI><P>
+<TT CLASS="LITERAL">RULES</TT> 是包含翻译规则列表的文件的基本名称。 这个文件必须存储在
+<TT CLASS="FILENAME">$SHAREDIR/tsearch_data/</TT>文件夹下 (<TT CLASS="LITERAL">$SHAREDIR</TT> 是指
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>安装时的数据共享文件)。
+它的名字必须以<TT CLASS="LITERAL">.rules</TT>为后缀 (这个后缀无须出现在
+<TT CLASS="LITERAL">RULES</TT>参数中)。
+</P></LI></UL><P>
+规则文件的格式如下：
+</P><P></P><UL><LI><P>
+每一个行代表一个字符对，由带重音符号的字符跟着一个不带重音符号的字符组成。第一个字符将被翻译为第二个字符。例如：
+</P><PRE CLASS="PROGRAMLISTING">&Agrave;        A
+&Aacute;        A
+&Acirc;        A
+&Atilde;        A
+&Auml;        A
+&Aring;        A
+&AElig;        A</PRE><P>
+</P></LI></UL><P>
+一个对大多数欧洲语言都直接有用的更完整的例子，可以在 <TT CLASS="FILENAME">unaccent.rules</TT>中找到，这个文件在 <TT CLASS="FILENAME">unaccent</TT>模块被安装时就被置于<TT CLASS="FILENAME">$SHAREDIR/tsearch_data/</TT>文件夹下。
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN150816">F.40.2. 用法</A></H2><P>
+在安装 <TT CLASS="LITERAL">unaccent</TT>扩展的时候，会创建一个<TT CLASS="LITERAL">unaccent</TT>文本搜索模版和一个基于这个模版的字典。
+这个<TT CLASS="LITERAL">unaccent</TT>字典有一个默认的参数设置<TT CLASS="LITERAL">RULES='unaccent'</TT>，这使得标准的<TT CLASS="FILENAME">unaccent.rules</TT>配置可以立即生效。
+如果有需要，你也可以改变这个参数，例如，
+</P><PRE CLASS="PROGRAMLISTING">mydb=# ALTER TEXT SEARCH DICTIONARY unaccent (RULES='my_rules');</PRE><P>
+或者创建基于<TT CLASS="LITERAL">unaccent</TT>模版的新字典。
+</P><P>
+你可以试试下面的sql，来测试这个字典，
+</P><PRE CLASS="PROGRAMLISTING">mydb=# select ts_lexize('unaccent','H&ocirc;tel');
+ ts_lexize
+-----------
+ {Hotel}
+(1 row)</PRE><P>
+</P><P>
+这里有一个例子，演示如何将<TT CLASS="FILENAME">unaccent</TT>字典增加到文本搜索配置中：
+</P><PRE CLASS="PROGRAMLISTING">mydb=# CREATE TEXT SEARCH CONFIGURATION fr ( COPY = french );
+mydb=# ALTER TEXT SEARCH CONFIGURATION fr
+        ALTER MAPPING FOR hword, hword_part, word
+        WITH unaccent, french_stem;
+mydb=# select to_tsvector('fr','H&ocirc;tels de la Mer');
+    to_tsvector
+-------------------
+ 'hotel':1 'mer':4
+(1 row)
+
+mydb=# select to_tsvector('fr','H&ocirc;tel de la Mer') @@ to_tsquery('fr','Hotels');
+ ?column?
+----------
+ t
+(1 row)
+
+mydb=# select ts_headline('fr','H&ocirc;tel de la Mer',to_tsquery('fr','Hotels'));
+      ts_headline
+------------------------
+ &lt;b&gt;H&ocirc;tel&lt;/b&gt; de la Mer
+(1 row)</PRE><P>
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN150831">F.40.3. 函数</A></H2><P>
+<CODE CLASS="FUNCTION">unaccent()</CODE> 函数从一个给定的字符串中去掉重音符号（变音标志符号）。基本上，它是一个<TT CLASS="FILENAME">unaccent</TT>字典的包装，但它可以超出正常文本搜索的上下文使用。
+</P><PRE CLASS="SYNOPSIS">unaccent([<SPAN
+CLASS="OPTIONAL"
+><TT
+CLASS="REPLACEABLE"
+><I
+>dictionary</I
+></TT
+>, </SPAN
+>] <TT
+CLASS="REPLACEABLE"
+><I
+>string</I
+></TT
+>) returns <TT
+CLASS="TYPE"
+>text</TT
+></PRE><P>
+例如，
+</P><PRE CLASS="PROGRAMLISTING">SELECT unaccent('unaccent', 'H&ocirc;tel');
+SELECT unaccent('H&ocirc;tel');</PRE><P>
+</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="tsearch2.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="uuid-ossp.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">tsearch2</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/contrib.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">uuid-ossp</TD></TR></TABLE></DIV></BODY></HTML>

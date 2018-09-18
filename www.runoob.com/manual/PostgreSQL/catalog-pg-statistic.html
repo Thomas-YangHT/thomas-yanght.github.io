@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>pg_statistic</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="系统表" HREF="http://school.yunwei.edu/manual/PostgreSQL/catalogs.html"><LINK REL="PREVIOUS" TITLE="pg_shseclabel" HREF="catalog-pg-shseclabel.html"><LINK REL="NEXT" TITLE="pg_tablespace" HREF="catalog-pg-tablespace.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/catalogs.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="pg_shseclabel" HREF="catalog-pg-shseclabel.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/catalogs.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 47. 系统表</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="pg_tablespace" HREF="catalog-pg-tablespace.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="CATALOG-PG-STATISTIC">47.43. <TT CLASS="STRUCTNAME">pg_statistic</TT></A></H1><P><TT CLASS="STRUCTNAME">pg_statistic</TT>表存储有关该数据库内容的统计数据。
+记录是由<A HREF="sql-analyze.html">ANALYZE</A>创建的，并且随后被查询规划器使用。
+请注意所有统计信息天生都是近似的数值，即使假设它是最新的也如此。</P><P>通常这里对于每个被分析了的表字段有一条<TT CLASS="STRUCTFIELD">stainherit</TT> = <TT CLASS="LITERAL">false</TT>的记录。
+如果该表有继承的子代，那么也会创建一条带有<TT CLASS="STRUCTFIELD">stainherit</TT> = <TT CLASS="LITERAL">true</TT>的记录。
+这个行表示字段在继承树上的状态，也就是，对于这个数据的状态，你应该看到
+<TT CLASS="LITERAL">SELECT <TT CLASS="REPLACEABLE"><I>column</I></TT> FROM <TT CLASS="REPLACEABLE"><I>table</I></TT>*</TT>，
+而<TT CLASS="STRUCTFIELD">stainherit</TT> = <TT CLASS="LITERAL">false</TT>行的结果为
+<TT CLASS="LITERAL">SELECT <TT CLASS="REPLACEABLE"><I>column</I></TT> FROM ONLY <TT CLASS="REPLACEABLE"><I>table</I></TT></TT>。</P><P><TT CLASS="STRUCTNAME">pg_statistic</TT>还存储有关索引表达式数值的统计数据。
+这些是把他们当作实际的数据字段来描述的；特别是，<TT CLASS="STRUCTFIELD">starelid</TT>引用索引。
+不过，普通的非表达式索引字段没有记录，因为会和下层的表字段记录冗余。
+当前，索引表达式的记录总是有<TT CLASS="STRUCTFIELD">stainherit</TT> = <TT CLASS="LITERAL">false</TT>。</P><P>因为不同类型的统计信息适用于不同类型的数据，<TT CLASS="STRUCTNAME">pg_statistic</TT>
+被设计成不太在意自己存储的是什么类型的统计。只有极为常用的统计信息(比如 NULL 的含量)
+才在<TT CLASS="STRUCTNAME">pg_statistic</TT>里给予专用的字段。其它所有东西都存储在
+<SPAN CLASS="QUOTE">"槽位"</SPAN>中，而槽位是一组相关的字段，它们的内容用槽位中的一个字段的代码号码表示。
+更详细的信息请参阅<TT CLASS="FILENAME">src/include/catalog/pg_statistic.h</TT>。</P><P><TT CLASS="STRUCTNAME">pg_statistic</TT>不应该是公众可读的，因为即使是表内容的统计信息也应该认为是敏感的。
+例子：薪水字段的最大最小值肯定是相当让人感兴趣的。<A HREF="view-pg-stats.html"><TT CLASS="STRUCTNAME">pg_stats</TT></A>
+是一个在<TT CLASS="STRUCTNAME">pg_statistic</TT>上的全局可读的视图，它只显示那些表对于当前用户可读的信息。</P><DIV CLASS="TABLE"><A NAME="AEN95414"></A><P><B>&#34920; 47-43. <TT CLASS="STRUCTNAME">pg_statistic</TT> 字段</B></P><TABLE BORDER="1" CLASS="CALSTABLE"><COL><COL><COL><COL><THEAD><TR><TH>名字</TH><TH>类型</TH><TH>引用</TH><TH>描述</TH></TR></THEAD><TBODY><TR><TD><TT CLASS="STRUCTFIELD">starelid</TT></TD><TD><TT CLASS="TYPE">oid</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-class.html"><TT CLASS="STRUCTNAME">pg_class</TT></A>.oid</TT></TD><TD>所描述的字段所属的表或者索引</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">staattnum</TT></TD><TD><TT CLASS="TYPE">int2</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-attribute.html"><TT CLASS="STRUCTNAME">pg_attribute</TT></A>.attnum</TT></TD><TD>所描述的字段的个数</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">stainherit</TT></TD><TD><TT CLASS="TYPE">bool</TT></TD><TD>&nbsp;</TD><TD>如果为真，那么统计数据包含继承子字段，不只是指定关系中的值。</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">stanullfrac</TT></TD><TD><TT CLASS="TYPE">float4</TT></TD><TD>&nbsp;</TD><TD>该字段中为 NULL 的记录的比率</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">stawidth</TT></TD><TD><TT CLASS="TYPE">int4</TT></TD><TD>&nbsp;</TD><TD>非 NULL 记录的平均存储宽度，以字节计</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">stadistinct</TT></TD><TD><TT CLASS="TYPE">float4</TT></TD><TD>&nbsp;</TD><TD>
+字段里唯一的非 NULL 数据值的数目。一个大于零的数值是独立数值的实际数目。
+一个小于零的数值是表中行数的乘数的负数(比如，一个字段的数值平均出现概率为两次，
+那么可以表示为<TT CLASS="STRUCTFIELD">stadistinct</TT> = -0.5)。零值表示独立数值的数目未知。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">stakind<TT CLASS="REPLACEABLE"><I>N</I></TT></TT></TD><TD><TT CLASS="TYPE">int2</TT></TD><TD>&nbsp;</TD><TD>
+一个编码，表示这种类型的统计存储在<TT CLASS="STRUCTNAME">pg_statistic</TT>
+行的第<TT CLASS="REPLACEABLE"><I>N</I></TT>个<SPAN CLASS="QUOTE">"槽位"</SPAN>。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">staop<TT CLASS="REPLACEABLE"><I>N</I></TT></TT></TD><TD><TT CLASS="TYPE">oid</TT></TD><TD><TT CLASS="LITERAL"><A HREF="catalog-pg-operator.html"><TT CLASS="STRUCTNAME">pg_operator</TT></A>.oid</TT></TD><TD>
+一个用于生成这些存储在第<TT CLASS="REPLACEABLE"><I>N</I></TT>个<SPAN CLASS="QUOTE">"槽位"</SPAN>的统计信息的操作符。
+比如，一个柱面图槽位会显示<TT CLASS="LITERAL">&lt;</TT>操作符，该操作符定义了该数据的排序顺序。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">stanumbers<TT CLASS="REPLACEABLE"><I>N</I></TT></TT></TD><TD><TT CLASS="TYPE">float4[]</TT></TD><TD>&nbsp;</TD><TD>
+第<TT CLASS="REPLACEABLE"><I>N</I></TT>个<SPAN CLASS="QUOTE">"槽位"</SPAN>的相关类型的数值统计，
+如果该槽位和数值没有关系，那么就是 NULL 。
+</TD></TR><TR><TD><TT CLASS="STRUCTFIELD">stavalues<TT CLASS="REPLACEABLE"><I>N</I></TT></TT></TD><TD><TT CLASS="TYPE">anyarray</TT></TD><TD>&nbsp;</TD><TD>
+第<TT CLASS="REPLACEABLE"><I>N</I></TT>个<SPAN CLASS="QUOTE">"槽位"</SPAN>相关类型的字段数据值，
+如果该槽位类型不存储任何数据值那么就是 NULL 。
+每个数组的元素值实际上都是指定字段的数据类型，或相关类型如一个数组的元素类型，
+因此，除了把这些字段的类型定义成<TT CLASS="TYPE">anyarray</TT>之外，没有更好的办法。
+</TD></TR></TBODY></TABLE></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="catalog-pg-shseclabel.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="catalog-pg-tablespace.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><TT CLASS="STRUCTNAME">pg_shseclabel</TT></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/catalogs.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><TT CLASS="STRUCTNAME">pg_tablespace</TT></TD></TR></TABLE></DIV></BODY></HTML>

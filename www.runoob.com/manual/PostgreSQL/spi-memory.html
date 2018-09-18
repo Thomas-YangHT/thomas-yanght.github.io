@@ -1,0 +1,32 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>内存管理</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="服务器编程接口" HREF="http://school.yunwei.edu/manual/PostgreSQL/spi.html"><LINK REL="PREVIOUS" TITLE="SPI_getnspname" HREF="spi-spi-getnspname.html"><LINK REL="NEXT" TITLE="SPI_palloc" HREF="spi-spi-palloc.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/spi.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="SPI_getnspname" HREF="spi-spi-getnspname.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/spi.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 44. 服务器编程接口</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="SPI_palloc" HREF="spi-spi-palloc.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="SPI-MEMORY">44.3. 内存管理</A></H1><DIV CLASS="TOC"><DL><DT><B>&#30446;&#24405;</B></DT><DT><A HREF="spi-spi-palloc.html">SPI_palloc</A>&nbsp;--&nbsp;在上层执行器环境里分配内存</DT><DT><A HREF="spi-realloc.html">SPI_repalloc</A>&nbsp;--&nbsp;在上层执行器环境里重新分配内存</DT><DT><A HREF="spi-spi-pfree.html">SPI_pfree</A>&nbsp;--&nbsp;在上层执行器环境里释放内存</DT><DT><A HREF="spi-spi-copytuple.html">SPI_copytuple</A>&nbsp;--&nbsp;在上层执行者环境里制作一个行的拷贝</DT><DT><A HREF="spi-spi-returntuple.html">SPI_returntuple</A>&nbsp;--&nbsp;准备把一个行当作 Datum 返回</DT><DT><A HREF="spi-spi-modifytuple.html">SPI_modifytuple</A>&nbsp;--&nbsp;通过替换一个给出行的选定的字段创建一行</DT><DT><A HREF="spi-spi-freetuple.html">SPI_freetuple</A>&nbsp;--&nbsp;释放在上层执行者环境里分配的一行</DT><DT><A HREF="spi-spi-freetupletable.html">SPI_freetuptable</A>&nbsp;--&nbsp;释放一个由<CODE CLASS="FUNCTION">SPI_execute</CODE>或者类似的函数创建的行集</DT><DT><A HREF="spi-spi-freeplan.html">SPI_freeplan</A>&nbsp;--&nbsp; 释放一个前面保存的预备语句</DT></DL></DIV><P>
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>在<I CLASS="FIRSTTERM">内存环境</I>中分配内存，
+它提供了在许多地方分配的，有着不同的生命期的许多内存块的一个方便的管理方法。
+删除一个环境则释放所有在其内部分配的内存。因此，没必要跟踪独立的对象以避免内存泄漏；
+而是只要管理少量的环境。<CODE CLASS="FUNCTION">palloc</CODE>和相关的函数从<SPAN CLASS="QUOTE">"当前"</SPAN>
+的环境中分配内存。</P><P><CODE CLASS="FUNCTION">SPI_connect</CODE>创建一个新的内存环境并且将其标记为当前的环境。
+<CODE CLASS="FUNCTION">SPI_finish</CODE>恢复前一个内存环境并且删除<CODE CLASS="FUNCTION">SPI_connect</CODE>
+创建的环境。这些动作确保在你的过程中分配的临时内存在过程结尾的时候都被回收，避免内存泄漏。</P><P>不过，如果你的过程需要返回一个已分配的内存对象(比如一个传递引用的数据类型)，
+那么你就不能用<CODE CLASS="FUNCTION">palloc</CODE>分配返回的对象，
+至少是不能在你已经和 SPI 连接上的时候。如果你试图这么做，
+那么该对象将在<CODE CLASS="FUNCTION">SPI_finish</CODE>的时候被释放，
+因而你的过程就不能可靠地工作了!要解决这个问题，使用<CODE CLASS="FUNCTION">SPI_palloc</CODE>
+分配内存给你的返回对象。<CODE CLASS="FUNCTION">SPI_palloc</CODE>从<SPAN CLASS="QUOTE">"上层执行者环境"</SPAN>
+中分配空间，也就是调用<CODE CLASS="FUNCTION">SPI_connect</CODE>时候的当前环境内存环境，
+该环境是从你的过程返回数值的正确环境。</P><P>如果还没有连接到 SPI 的时候调用它，<CODE CLASS="FUNCTION">SPI_palloc</CODE>
+的行为和简单的<CODE CLASS="FUNCTION">palloc</CODE>一样。在一个过程和 SPI 管理器连接之前，
+当前的内存环境是上层执行者环境，因此所有该过程使用<CODE CLASS="FUNCTION">palloc</CODE>
+或者 SPI 工具函数分配的空间都是在这个环境中分配的。</P><P>在调用<CODE CLASS="FUNCTION">SPI_connect</CODE>之后，当前环境是该过程私有的，
+由<CODE CLASS="FUNCTION">SPI_connect</CODE>制作的环境。所有通过<CODE CLASS="FUNCTION">palloc</CODE>、
+<CODE CLASS="FUNCTION">repalloc</CODE>或者 SPI 工具函数(除了<CODE CLASS="FUNCTION">SPI_copytuple</CODE>、
+<CODE CLASS="FUNCTION">SPI_returntuple</CODE>、<CODE CLASS="FUNCTION">SPI_modifytuple</CODE>和
+<CODE CLASS="FUNCTION">SPI_palloc</CODE>)分配的内存都是在这个环境中分配的。
+如果一个过程与 SPI 管理器断开(通过<CODE CLASS="FUNCTION">SPI_finish</CODE>)，
+那么当前环境恢复为上层执行器环境，
+并且所有在该过程的内存环境中分配的内存都释放掉并且不能再次使用！</P><P>所有在本节内描述的函数都可以在已连接的和未连接的过程中使用。
+在未连接的过程中，他们的行为和下层的原始后端函数(<CODE CLASS="FUNCTION">palloc</CODE>等)相同。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="spi-spi-getnspname.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="spi-spi-palloc.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">SPI_getnspname</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/spi.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">SPI_palloc</TD></TR></TABLE></DIV></BODY></HTML>

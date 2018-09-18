@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>版本 7.0.3</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="版本 7.1" HREF="release-7-1.html"><LINK REL="NEXT" TITLE="版本 7.0.2" HREF="release-7-0-2.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-old.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="版本 7.1" HREF="release-7-1.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="版本 7.0.2" HREF="release-7-0-2.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-7-0-3">E.219. 版本 7.0.3</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>2000-11-11</P></BLOCKQUOTE></DIV><P>有一些对7.0.2的修补。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN143454">E.219.1. 迁移到版本 7.0.3</A></H2><P>运行7.0.*的系统<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">不</I></SPAN>需要转储/恢复。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN143458">E.219.2. 修改列表</A></H2><P></P><PRE CLASS="PROGRAMLISTING">Jdbc 修复 (Peter)
+大对象修复 (Tom)
+修复 lean 在 COPY WITH OIDS 时的泄露 (Tom)
+修复 backwards-index-scan (Tom)
+修复 SELECT ... FOR UPDATE，这样它检查重复的键 (Hiroshi)
+添加 --enable-syslog 到配置 (Marc)
+修复极少情况下后端退出时的中止事务 (Tom)
+启用多字节时修复 psql \l+ (Tatsuo)
+允许 PL/pgSQL 接受非ascii标识符 (Tatsuo)
+使 vacuum 总是刷新缓冲区 (Tom) 
+当等待一个锁时允许取消 (Hiroshi)
+修复用户认证代码中的内存分配问题 (Tom)
+删除伪造的 int4out() 的使用 (Tom)
+修复 COALESCE 或 BETWEEN 中的多重子查询 (Tom)
+修复在特定情况下打开的堆中的触发器错误 (Jeroen van Vianen)
+修复错误的不相等的选择性 (Tom)
+修复错误的 strcmp() 的使用 (Tom)
+修复存储管理访问条目超过文件结尾的bug (Tom)
+修复在所有 smgr elog 消息中包括内核错误信息 (Tom)
+修复在建立时 '.' 不在 PATH 中 (SL Baur)
+修复超出文件描述符错误 (Tom)
+修复使 pg_dump 为函数转储 'iscachable' 标记 (Tom)
+修复在附加节点的目标列表中的子查询 (Tom)
+修复合并连接规划 (Tom)
+修复带有索引的关系的 TRUNCATE 失败 (Tom)
+避免写入误差时数据库范围的重启 (Hiroshi)
+修复通过重新计算输出使 nodeMaterial 遵守 chgParam (Tom)
+修复当行版本的出发点和目的地位于同一页面时，更新行版本的移动链条的 VACUUM 问题 (Tom)
+修复 user.c CommandCounterIncrement (Tom)
+修复 AM/PM 在 to_char() 中的边界问题 (Karel Zak)
+修复 TIME 聚集处理 (Tom)
+修复 to_char() 避免 NULL 输入的内核转储 (Tom)
+缓存修复 (Tom)
+修复插入/拷贝更长的多字节字符串到 char() 数据类型 (Tatsuo)
+修复中止时的后端崩溃 (Tom) </PRE><P>
+</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-7-1.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-7-0-2.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">版本 7.1</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">版本 7.0.2</TD></TR></TABLE></DIV></BODY></HTML>

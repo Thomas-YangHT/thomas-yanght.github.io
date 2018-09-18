@@ -1,0 +1,168 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>PL/Perl 函数和参数</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="PL/Perl - Perl 过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/plperl.html"><LINK REL="PREVIOUS" TITLE="PL/Perl - Perl 过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/plperl.html"><LINK REL="NEXT" TITLE="PL/Perl里的数据值" HREF="plperl-data.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/plperl.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="PL/Perl - Perl 过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/plperl.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plperl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 42. PL/Perl - Perl 过程语言</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="PL/Perl里的数据值" HREF="plperl-data.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="PLPERL-FUNCS">42.1. PL/Perl 函数和参数</A></H1><P>要用 PL/Perl 语言创建一个函数，可以使用标准的<A HREF="sql-createfunction.html">CREATE FUNCTION</A>语法：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION <TT
+CLASS="REPLACEABLE"
+><I
+>funcname</I
+></TT
+> (<TT
+CLASS="REPLACEABLE"
+><I
+>argument-types</I
+></TT
+>) RETURNS <TT
+CLASS="REPLACEABLE"
+><I
+>return-type</I
+></TT
+> AS $$
+    # PL/Perl function body
+$$ LANGUAGE plperl;</PRE><P>
+函数体是普通 Perl 代码。实际上，PL/Perl 胶水代码将其封装在一个 Perl 子过程里。
+一个 PL/Perl 函数在一个标量环境中调用，所以不能返回一个列表。
+你可以像下面描述的那样用返回引用的方法返回非标量值（arrays, records, 和 sets）。
+</P><P>PL/Perl也支持<A HREF="sql-do.html">DO</A>语句调用匿名代码块：
+</P><PRE CLASS="PROGRAMLISTING">DO $$
+    # PL/Perl code
+$$ LANGUAGE plperl;</PRE><P>
+一个匿名代码块不接收参数，而且丢弃任何返回值。否则它的行为就像一个函数。
+</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>在 Perl 里使用命名的嵌套子过程是很危险的，特别是它们在闭包里引用了词法变量的时候。
+因为 PL/Perl 是封装在一个子过程里，因此，任何你放进去的命名子过程都将被嵌套。通常，
+创建一个用 coderef 调用的匿名子过程要安全得多。想要获取更多细节，请参阅
+<TT CLASS="LITERAL">Variable "%s" will not stay shared</TT>里的记录或
+<SPAN CLASS="CITEREFENTRY"><SPAN CLASS="REFENTRYTITLE">perldiag</SPAN></SPAN>手册页中的<TT CLASS="LITERAL">Variable "%s" is not available</TT>，
+或在Internet上搜索<SPAN CLASS="QUOTE">"perl 嵌套命名子过程"</SPAN>。</P></BLOCKQUOTE></DIV><P><TT CLASS="COMMAND">CREATE FUNCTION</TT>命令的语法要求把函数体写成字符串常量。
+通常处理字符串文本用美元符界定更方便(参阅<A HREF="sql-syntax-lexical.html#SQL-SYNTAX-DOLLAR-QUOTING">第 4.1.2.4 &#33410;</A>)，
+如果你想使用传统的<TT CLASS="LITERAL">E''</TT>转义语法，必须双写函数体里使用的任何单引号(<TT CLASS="LITERAL">'</TT>)
+和反斜杠(<TT CLASS="LITERAL">\</TT>)(参见<A HREF="sql-syntax-lexical.html#SQL-SYNTAX-STRINGS">第 4.1.2.1 &#33410;</A>)。</P><P>参数和结果都是和任何其它 Perl 子过程里那样处理的：参数是放在<TT CLASS="VARNAME">@_</TT>里传递的，
+结果值是用<TT CLASS="LITERAL">return</TT>返回或者作为函数中最后计算的表达式的值返回。</P><P>比如，一个返回两个整数中较大值的函数可以这么写：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION perl_max (integer, integer) RETURNS integer AS $$
+    if ($_[0] &gt; $_[1]) { return $_[0]; }
+    return $_[1];
+$$ LANGUAGE plperl;</PRE><P>
+</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>为了能够在PL/Perl里使用，参数将从数据库编码转换为UTF-8，然后在返回时从UTF-8回到数据库编码。</P></BLOCKQUOTE></DIV><P>如果给函数传递一个 NULL 那么其参数值将以 Perl 中<SPAN CLASS="QUOTE">"undefined"</SPAN>
+的形式出现。上面的函数定义在输入为 NULL 时的行为不是很正常(实际上，
+它将表现得好像它们都是零一样)。可以给函数定义增加<TT CLASS="LITERAL">STRICT</TT>让
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>做一些更合理的事情：如果传递进来一个 NULL ，
+那么该函数则根本不会被调用，而只是自动返回一个 NULL 结果。另外，
+可以在函数体里检查未定义的输入。比如，假设想收到一个 NULL 和一个非 NULL 参数的
+<CODE CLASS="FUNCTION">perl_max</CODE>返回非 NULL 的参数，而不是 NULL ：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION perl_max (integer, integer) RETURNS integer AS $$
+    my ($x, $y) = @_;
+    if (not defined $x) {
+        return undef if not defined $y;
+        return $y;
+    }
+    return $x if not defined $y;
+    return $x if $x &gt; $y;
+    return $y;
+$$ LANGUAGE plperl;</PRE><P>
+如上所述，要从 PL/Perl 函数中返回一个 NULL ，可以返回一个未定义的数值。
+不管该函数是否严格，都可以这么做。
+</P><P>任何一个不是引用的函数参数是一个字符串，这是相关数据类型在标准<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+外部文本里的表示。普通数字或文本类型的情况下，Perl将只是做正确的事情，程序员不需要担心。
+然而，在其他情况下，需要将参数转换为Perl可用的形式。例如，<CODE CLASS="FUNCTION">decode_bytea</CODE>
+函数可以用来转换类型<TT CLASS="TYPE">bytea</TT>的参数为非转义的二进制。</P><P>相似的，传回<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的值必须是外部文本表示格式。
+例如，<CODE CLASS="FUNCTION">encode_bytea</CODE>函数可以用来为一个类型为<TT CLASS="TYPE">bytea</TT>
+的返回值转义二进制数据。</P><P>Perl 可以用 Perl 数组引用的方式返回<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>数组。
+下面是一个例子：
+</P><PRE CLASS="PROGRAMLISTING">CREATE OR REPLACE function returns_array()
+RETURNS text[][] AS $$
+    return [['a&quot;b','c,d'],['e\\f','g']];
+$$ LANGUAGE plperl;
+
+select returns_array();</PRE><P>
+</P><P>Perl作为一个<TT CLASS="TYPE">PostgreSQL::InServer::ARRAY</TT>对象传递<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+数组。这个对象可以被视为一个数组引用或一个字符串，Perl为<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+低于9.1的版本编写了代码，允许向后兼容。例如：
+</P><PRE CLASS="PROGRAMLISTING">CREATE OR REPLACE FUNCTION concat_array_elements(text[]) RETURNS TEXT AS $$
+    my $arg = shift;
+    my $result = "";
+    return undef if (!defined $arg);
+
+    # as an array reference
+    for (@$arg) {
+        $result .= $_;
+    }
+
+    # also works as a string
+    $result .= $arg;
+
+    return $result;
+$$ LANGUAGE plperl;
+
+SELECT concat_array_elements(ARRAY['PL','/','Perl']);</PRE><P>
+</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B>多维数组的表现就和每个Perl程序员引用低维数组的引用一样。</P></BLOCKQUOTE></DIV><P>
+</P><P>复合类型的参数是当做指向散列的引用传递给函数的。散列的键字是复合类型的属性名。下面是一个例子：
+</P><PRE CLASS="PROGRAMLISTING">CREATE TABLE employee (
+    name text,
+    basesalary integer,
+    bonus integer
+);
+
+CREATE FUNCTION empcomp(employee) RETURNS integer AS $$
+    my ($emp) = @_;
+    return $emp-&gt;{basesalary} + $emp-&gt;{bonus};
+$$ LANGUAGE plperl;
+
+SELECT name, empcomp(employee.*) FROM employee;</PRE><P>
+</P><P>使用同样的办法，一个 PL/Perl 函数可以返回一个复合类型的结果：
+返回一个包含所需要的属性的散列的引用。比如，
+</P><PRE CLASS="PROGRAMLISTING">CREATE TYPE testrowperl AS (f1 integer, f2 text, f3 text);
+
+CREATE OR REPLACE FUNCTION perl_row() RETURNS testrowperl AS $$
+    return {f2 =&gt; 'hello', f1 =&gt; 1, f3 =&gt; 'world'};
+$$ LANGUAGE plperl;
+
+SELECT * FROM perl_row();</PRE><P>
+在声明的结果数据类型里的任何字段如果在散列里面没有出现，那么都会当作 NULL 返回。
+</P><P>PL/Perl 函数也能返回标量或者复合类型的集合。通常你希望一次返回一行，
+一方面加速函数启动时间，另外一方面防止在内存里堆积整个结果集。
+可以用下面说明的函数<CODE CLASS="FUNCTION">return_next</CODE>。请注意在最后的
+<CODE CLASS="FUNCTION">return_next</CODE>，你必须放一个 <TT CLASS="LITERAL">return</TT>
+或者(最好是)<TT CLASS="LITERAL">return undef</TT>。
+</P><PRE CLASS="PROGRAMLISTING">CREATE OR REPLACE FUNCTION perl_set_int(int)
+RETURNS SETOF INTEGER AS $$
+    foreach (0..$_[0]) {
+        return_next($_);
+    }
+    return undef;
+$$ LANGUAGE plperl;
+
+SELECT * FROM perl_set_int(5);
+
+CREATE OR REPLACE FUNCTION perl_set()
+RETURNS SETOF testrowperl AS $$
+    return_next({ f1 =&gt; 1, f2 =&gt; 'Hello', f3 =&gt; 'World' });
+    return_next({ f1 =&gt; 2, f2 =&gt; 'Hello', f3 =&gt; 'PostgreSQL' });
+    return_next({ f1 =&gt; 3, f2 =&gt; 'Hello', f3 =&gt; 'PL/Perl' });
+    return undef;
+$$ LANGUAGE plperl;</PRE><P>
+对于小的结果集，你可以返回一个指向一个数组的引用，这个数组可以包含标量，指向数组的引用，
+或者指向简单类型，数组类型以及复合类型等的散列的引用。这里是一个简单的例子，
+它把整个结果集当作一个数组引用返回：
+</P><PRE CLASS="PROGRAMLISTING">CREATE OR REPLACE FUNCTION perl_set_int(int) RETURNS SETOF INTEGER AS $$
+    return [0..$_[0]];
+$$ LANGUAGE plperl;
+
+SELECT * FROM perl_set_int(5);
+
+CREATE OR REPLACE FUNCTION perl_set() RETURNS SETOF testrowperl AS $$
+    return [
+        { f1 =&gt; 1, f2 =&gt; 'Hello', f3 =&gt; 'World' },
+        { f1 =&gt; 2, f2 =&gt; 'Hello', f3 =&gt; 'PostgreSQL' },
+        { f1 =&gt; 3, f2 =&gt; 'Hello', f3 =&gt; 'PL/Perl' }
+    ];
+$$ LANGUAGE plperl;
+
+SELECT * FROM perl_set();</PRE><P>
+</P><P>如果你想在自己的代码里使用<TT CLASS="LITERAL">strict</TT>用法你有几种选择。对于临时全局使用你可以
+<TT CLASS="COMMAND">SET</TT> <TT CLASS="LITERAL">plperl.use_strict</TT>为真。这个参数影响随后的<SPAN CLASS="APPLICATION">PL/Perl</SPAN>
+函数的编译，但是不影响在当前会话里已经编译了的函数。为了永久全局使用，
+可以在<TT CLASS="FILENAME">postgresql.conf</TT>文件里设置<TT CLASS="LITERAL">plperl.use_strict</TT>为真。</P><P>要在特定的函数中永久使用，只需要简单地在函数体的顶部放置：
+</P><PRE CLASS="PROGRAMLISTING">use strict;</PRE><P></P><P>如果你的Perl是版本5.10.0或更高，那么<TT CLASS="LITERAL">feature</TT>程序也适用于<CODE CLASS="FUNCTION">use</CODE>。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plperl.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="plperl-data.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">PL/Perl - Perl 过程语言</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plperl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">PL/Perl里的数据值</TD></TR></TABLE></DIV></BODY></HTML>

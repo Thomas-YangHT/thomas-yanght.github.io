@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>pg_test_fsync</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="服务器端应用程序" HREF="contrib-prog-server.html"><LINK REL="PREVIOUS" TITLE="pg_standby" HREF="pgstandby.html"><LINK REL="NEXT" TITLE="pg_test_timing" HREF="pgtesttiming.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/pgtestfsync.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="pg_standby" HREF="pgstandby.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="contrib-prog-server.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="pg_test_timing" HREF="pgtesttiming.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="PGTESTFSYNC"></A><SPAN CLASS="APPLICATION">pg_test_fsync</SPAN></H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN152304"></A><H2>&#21517;&#31216;</H2>pg_test_fsync&nbsp;--&nbsp;为<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>定义最快的wal_sync_method</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN152310"></A><H2>&#22823;&#32434;</H2><P><TT CLASS="COMMAND">pg_test_fsync</TT> [<TT CLASS="REPLACEABLE"><I>option</I></TT>...]</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN152315"></A><H2>描述</H2><P>
+<SPAN CLASS="APPLICATION">pg_test_fsync</SPAN>是为了给你一个在你的特定系统上什么是最快的
+<A HREF="runtime-config-wal.html#GUC-WAL-SYNC-METHOD">wal_sync_method</A>的合理想法，同时提供经鉴定的I/O问题的诊断信息。
+不过，<SPAN CLASS="APPLICATION">pg_test_fsync</SPAN>
+显示的不同在实际的数据库吞吐量中可能没什么重要区别，
+特别是自从许多数据库服务器不再速度受限于它们的事务日志之后。
+<SPAN CLASS="APPLICATION">pg_test_fsync</SPAN>为每个<TT CLASS="LITERAL">wal_sync_method</TT>
+报告文件同步操作的平均时间（以微妙计），也可以用于优化<A HREF="runtime-config-wal.html#GUC-COMMIT-DELAY">commit_delay</A>的值。
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN152324"></A><H2>选项</H2><P>
+<SPAN CLASS="APPLICATION">pg_test_fsync</SPAN>接受下列的命令行选项：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="OPTION">-f</TT><BR><TT CLASS="OPTION">--filename</TT></DT><DD><P>
+声明要写入测试数据的文件名。这个文件应该和<TT CLASS="FILENAME">pg_xlog</TT>
+目录在相同的文件系统中或者放置在<TT CLASS="FILENAME">pg_xlog</TT>目录下。
+（<TT CLASS="FILENAME">pg_xlog</TT>包含<ACRONYM CLASS="ACRONYM">WAL</ACRONYM>文件。）
+缺省是<TT CLASS="FILENAME">pg_test_fsync.out</TT>在当前目录中。
+</P></DD><DT><TT CLASS="OPTION">-s</TT><BR><TT CLASS="OPTION">--secs-per-test</TT></DT><DD><P>
+声明每个测试的秒数。每个测试用的时间越多，测试的准确度越高，
+但是花费的时间也越多。缺省是5秒，允许程序在两分钟内完成。
+</P></DD><DT><TT CLASS="OPTION">-V</TT><BR><TT CLASS="OPTION">--version</TT></DT><DD><P>
+输出<SPAN CLASS="APPLICATION">pg_test_fsync</SPAN>的版本并退出。
+</P></DD><DT><TT CLASS="OPTION">-?</TT><BR><TT CLASS="OPTION">--help</TT></DT><DD><P>
+显示关于<SPAN CLASS="APPLICATION">pg_test_fsync</SPAN>命令行参数的帮助信息，然后退出。
+</P></DD></DL></DIV><P>
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN152364"></A><H2>作者</H2><P> Bruce Momjian <CODE CLASS="EMAIL">&#60;<A HREF="mailto:bruce@momjian.us">bruce@momjian.us</A>&#62;</CODE>
+</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN152368"></A><H2>又见</H2><A HREF="app-postgres.html"><SPAN CLASS="APPLICATION">postgres</SPAN></A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="pgstandby.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="pgtesttiming.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><SPAN CLASS="APPLICATION">pg_standby</SPAN></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="contrib-prog-server.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><SPAN CLASS="APPLICATION">pg_test_timing</SPAN></TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>PREPARE</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="NOTIFY" HREF="sql-notify.html"><LINK REL="NEXT" TITLE="PREPARE TRANSACTION" HREF="sql-prepare-transaction.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/prepare.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="NOTIFY" HREF="sql-notify.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="PREPARE TRANSACTION" HREF="sql-prepare-transaction.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-PREPARE"></A>PREPARE</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN78600"></A><H2>&#21517;&#31216;</H2>PREPARE&nbsp;--&nbsp;创建一个预备语句</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN78608"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">PREPARE <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+> [ ( <TT
+CLASS="REPLACEABLE"
+><I
+>data_type</I
+></TT
+> [, ...] ) ] AS <TT
+CLASS="REPLACEABLE"
+><I
+>statement</I
+></TT
+></PRE></DIV><DIV CLASS="REFSECT1"><A NAME="AEN78613"></A><H2>描述</H2><P><TT CLASS="COMMAND">PREPARE</TT>创建一个预备语句。一个预备语句是服务器端的对象，
+可以用于优化性能。在执行<TT CLASS="COMMAND">PREPARE</TT>语句的时候，指定的查询被解析、分析、
+重写。当随后发出<TT CLASS="COMMAND">EXECUTE</TT>语句的时候，预备语句被规划和执行。
+这种分工避免了重复解析分析工作，允许执行计划依赖于所提供的特定的参数值。</P><P>预备语句可以接受参数：在它执行的时候替换到查询中的数值。可以在一个预备语句里按照位置来引用参数，
+比如<TT CLASS="LITERAL">$1</TT>, <TT CLASS="LITERAL">$2</TT>等。可以指定一个相应的参数数据类型列表。
+如果一个参数的数据类型没有被指定或声明为<TT CLASS="LITERAL">unknown</TT>，
+那么其类型将根据该参数所使用的实际上下文环境进行推测(如果有可能的话)。当执行该语句的时候，
+将在<TT CLASS="COMMAND">EXECUTE</TT>语句中为这些参数指定实际值。参见<A HREF="sql-execute.html">EXECUTE</A>获取更多信息。</P><P>预备语句只是在当前数据库会话的过程中存在。如果客户端退出，那么预备语句就会被遗忘，
+因此必须在被重新使用之前重新创建。这也意味着一个预备语句不能被多个数据库客户端同时使用；
+但是，每个客户端可以创建它们自己的预备语句来使用。预备语句可以用
+<A HREF="sql-deallocate.html">DEALLOCATE</A>命令手工清除。</P><P>如果一个会话准备用于执行大量类似的查询，那么预备语句可以获得最大限度的性能优势。
+如果查询非常复杂，需要复杂的规划或者重写，那么性能差距将更加明显。比如，
+如果查询设计许多表的连接，或者有多种规则要求应用。如果查询的规划和重写相对简单，
+而执行起来开销相当大，那么预备语句的性能优势就不那么明显。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN78628"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="REPLACEABLE"><I>name</I></TT></DT><DD><P>给予这个特定的预备语句任意名字。它必须在一个会话中是唯一的，
+并且用于执行或者删除一个预备语句。</P></DD><DT><TT CLASS="REPLACEABLE"><I>data_type</I></TT></DT><DD><P>预备语句的某个参数的数据类型。如果某个参数的数据类型未指定或指定为<TT CLASS="LITERAL">unknown</TT>，
+那么将根据该参数使用的上下文环境进行推断。可以使用<TT CLASS="LITERAL">$1</TT>, <TT CLASS="LITERAL">$2</TT>
+等等在预备语句内部引用这个参数。</P></DD><DT><TT CLASS="REPLACEABLE"><I>statement</I></TT></DT><DD><P><TT CLASS="COMMAND">SELECT</TT>, <TT CLASS="COMMAND">INSERT</TT>, <TT CLASS="COMMAND">UPDATE</TT>, <TT CLASS="COMMAND">DELETE</TT>,
+或 <TT CLASS="COMMAND">VALUES</TT> 语句之一。</P></DD></DL></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="AEN78654"></A><H2>注意</H2><P>如果预备语句执行了足够长的时间，服务器可能最终决定保存并重新使用一个一般的计划，
+而不是每次重新计划。如果预备语句没有参数，那么将立即发生；
+否则只在一般计划看起来不比依赖于特定参数值的计划昂贵时发生。
+典型的，只有查询的性能对提供的特定的参数值相当迟钝时选择一般的计划。</P><P>为了查询<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>用于预备语句的查询计划，使用<A HREF="sql-explain.html">EXPLAIN</A>。
+如果正在使用一个一般的计划，它将包含参数符号<TT CLASS="LITERAL">$<TT CLASS="REPLACEABLE"><I>n</I></TT></TT>，
+此时定制计划将有代入的当前实际参数的值。</P><P>有关查询规划和<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>为查询优化的目的收集统计的更多信息，
+参阅<A HREF="sql-analyze.html">ANALYZE</A>文档。</P><P>尽管预备语句的重点是避免重复分析和规划语句，但<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+在使用它之前强制重复分析和重复计划语句，
+每当在语句中使用的数据库对象自前一次使用预备语句后经历了明确(DDL)的变化时。
+还有，如果<A HREF="runtime-config-client.html#GUC-SEARCH-PATH">search_path</A>的值在到下一个使用时改变了，
+那么语句将使用新的<TT CLASS="VARNAME">search_path</TT>重新分析。（后面的行为是
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN> 9.3新增的。）
+使用预备语句语义的规则几乎等于反复重新提交相同的查询文本，
+但是如果没有对象定义改变那么将有一个性能优势，尤其是保持使用最佳的规划。
+语义等价不完美的一个例子是如果语句引用一个未经限定名字的表，
+然后在一个模式中创建了一个相同名字的表出现在<TT CLASS="VARNAME">search_path</TT>中靠前的地方，
+那么将不会自动重复分析，因为用于语句的对象没有改变。但是，如果其他改变强制了一个重复分析，
+那么新表将在后来的使用中引用。</P><P>可以通过查询<A HREF="view-pg-prepared-statements.html"><TT CLASS="STRUCTNAME">pg_prepared_statements</TT></A>
+系统视图获得某个会话中所有可用的预备语句。</P></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-PREPARE-EXAMPLES"></A><H2>Examples</H2><P>为一个<TT CLASS="COMMAND">INSERT</TT>语句创建一个预备语句然后执行它：
+</P><PRE CLASS="PROGRAMLISTING">PREPARE fooplan (int, text, bool, numeric) AS
+    INSERT INTO foo VALUES($1, $2, $3, $4);
+EXECUTE fooplan(1, 'Hunter Valley', 't', 200.00);</PRE><P></P><P>为一个<TT CLASS="COMMAND">SELECT</TT>语句创建一个预备语句然后执行它：
+</P><PRE CLASS="PROGRAMLISTING">PREPARE usrrptplan (int) AS
+    SELECT * FROM users u, logs l WHERE u.usrid=$1 AND u.usrid=l.usrid
+    AND l.date = $2;
+EXECUTE usrrptplan(1, current_date);</PRE><P>
+注意，第二个参数的数据类型并未指定。所以将从上下文环境推测<TT CLASS="LITERAL">$2</TT>的类型。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN78683"></A><H2>兼容性</H2><P>SQL 标准包含一个<TT CLASS="COMMAND">PREPARE</TT>语句，但是它只用于嵌入式 SQL 。
+PostgreSQL 实现的<TT CLASS="COMMAND">PREPARE</TT>语句的语法也略有不同。</P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN78688"></A><H2>又见</H2><A HREF="sql-deallocate.html">DEALLOCATE</A>, <A HREF="sql-execute.html">EXECUTE</A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-notify.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-prepare-transaction.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">NOTIFY</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">PREPARE TRANSACTION</TD></TR></TABLE></DIV></BODY></HTML>

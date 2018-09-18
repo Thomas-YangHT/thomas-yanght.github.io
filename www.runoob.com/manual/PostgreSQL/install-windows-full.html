@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>用Visual C++或Microsoft Windows SDK编译</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="Windows下用源代码安装" HREF="http://school.yunwei.edu/manual/PostgreSQL/install-windows.html"><LINK REL="PREVIOUS" TITLE="Windows下用源代码安装" HREF="http://school.yunwei.edu/manual/PostgreSQL/install-windows.html"><LINK REL="NEXT" TITLE="用Visual C++或
+  Borland C++编译
+  libpq" HREF="install-windows-libpq.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/install-windows.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="Windows下用源代码安装" HREF="http://school.yunwei.edu/manual/PostgreSQL/install-windows.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/install-windows.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 16. <SPAN CLASS="PRODUCTNAME">Windows</SPAN>下用源代码安装</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="用Visual C++或
+  Borland C++编译
+  libpq" HREF="install-windows-libpq.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="INSTALL-WINDOWS-FULL">16.1. 用<SPAN CLASS="PRODUCTNAME">Visual C++</SPAN>或<SPAN CLASS="PRODUCTNAME">Microsoft Windows SDK</SPAN>编译</A></H1><P> PostgreSQL可以使用微软的Visual C++编译器套件来编译。
+这些编译器可以是<SPAN CLASS="PRODUCTNAME">Visual Studio</SPAN>,
+<SPAN CLASS="PRODUCTNAME">Visual Studio Express</SPAN>或者某些版本的<SPAN CLASS="PRODUCTNAME">Microsoft Windows SDK</SPAN>。
+如果没有安装<SPAN CLASS="PRODUCTNAME">Visual Studio</SPAN>的环境，
+最简单的方法是使用<SPAN CLASS="PRODUCTNAME">Windows SDK 7.1</SPAN>或者<SPAN CLASS="PRODUCTNAME">Visual Studio Express 2012 for Windows Desktop</SPAN>中的编译器,
+它们都可以从微软官网免费下载。
+</P><P> PostgreSQL支持从<SPAN CLASS="PRODUCTNAME">Visual Studio 2005</SPAN>到<SPAN CLASS="PRODUCTNAME">Visual Studio 2012</SPAN>(包括精简版)的编译器,
+以及6.0到7.1版本的独立的Windows SDK编译器。
+64位的PostgreSQL只支持6.0a到7.1版本的<SPAN CLASS="PRODUCTNAME">Microsoft Windows SDK</SPAN>和<SPAN CLASS="PRODUCTNAME">Visual Studio 2008</SPAN>及其以上版本。
+</P><P> 用<SPAN CLASS="PRODUCTNAME">Visual C++</SPAN>或<SPAN CLASS="PRODUCTNAME">Platform SDK</SPAN>编译的工具在<TT CLASS="FILENAME">src/tools/msvc</TT>目录下。
+编译时，确保系统路径下没有包含<SPAN CLASS="PRODUCTNAME">MinGW</SPAN>或<SPAN CLASS="PRODUCTNAME">Cygwin</SPAN>的工具，同时确保需要的Visual C++的所有工具在系统路径中。
+在<SPAN CLASS="PRODUCTNAME">Visual Studio</SPAN>中，启动<SPAN CLASS="APPLICATION">Visual Studio Command Prompt</SPAN>。
+如果需要编译64位的版本，使用64位版本的命令，反之亦然。在<SPAN CLASS="PRODUCTNAME">Microsoft Windows SDK</SPAN>中，
+从开始菜单中SDK下的列表启动<SPAN CLASS="APPLICATION">CMD shell</SPAN>。在最新版的SDK中，
+你可以使用<TT CLASS="COMMAND">setenv</TT>等命令来更改目标的CPU架构，编译类型和操作系统类型等。
+指令<TT CLASS="COMMAND">setenv /x86 /release /xp</TT>用来编译Windows XP或更新的32位版本。
+使用<TT CLASS="COMMAND">/?</TT>命令可以查看<TT CLASS="COMMAND">setenv</TT>的其它选项。
+所有命令都应该在<TT CLASS="FILENAME">src\tools\msvc</TT>目录下运行。
+</P><P> 在编译前，根据需要修改<TT CLASS="FILENAME">config.pl</TT>中相应选项和使用到的第三方库的路径。
+完整的配置由首先读取和解析的<TT CLASS="FILENAME">config_default.pl</TT>决定，然后从<TT CLASS="FILENAME">config.pl</TT>适用所有的变更。
+例如，为了指定<SPAN CLASS="PRODUCTNAME">Python</SPAN>的安装路径，在<TT CLASS="FILENAME">config.pl</TT>文件中添加以下语句:
+</P><PRE CLASS="PROGRAMLISTING">$config-&#62;{python} = 'c:\python26';</PRE><P>
+只需要指定和<TT CLASS="FILENAME">config_default.pl</TT>文件中有差别的参数。
+</P><P> 如果需要指定其它的环境变量，创建一个<TT CLASS="FILENAME">buildenv.pl</TT>文件并写入所需要的命令。
+例如，为了在PATH中添加还不存在的bison的位置，创建一个文件包含以下内容：
+</P><PRE CLASS="PROGRAMLISTING">$ENV{PATH}=$ENV{PATH} . ';c:\some\where\bison\bin';</PRE><P>
+</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN26137">16.1.1. 要求</A></H2><P> 编译<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>还需要以下几个工具。
+使用<TT CLASS="FILENAME">config.pl</TT>文件来指定这些库的路径。
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><SPAN CLASS="PRODUCTNAME">Microsoft Windows SDK</SPAN></DT><DD><P> 如果编译环境不兼容所支持的<SPAN CLASS="PRODUCTNAME">Microsoft Windows SDK</SPAN>版本，
+建议把SDK的版本升级到最新的版本(目前为7.1版本),下载地址为<A HREF="http://www.microsoft.com/downloads/" TARGET="_top">http://www.microsoft.com/downloads/</A>。
+</P><P> 你必需包含SDK的<SPAN CLASS="APPLICATION">Windows头文件和库</SPAN>。
+如果安装的<SPAN CLASS="PRODUCTNAME">Windows SDK</SPAN>中已经包含了<SPAN CLASS="APPLICATION">Visual C++ Compilers</SPAN>，
+就不再需要使用<SPAN CLASS="PRODUCTNAME">Visual Studio</SPAN>进行编译了。
+注意Windows SDK 8.0a之后的版本不再附有完整的命令行编译环境。
+</P></DD><DT><SPAN CLASS="PRODUCTNAME">ActiveState Perl</SPAN></DT><DD><P> 运行编译生成脚本时需要ActiveState Perl。而MinGW或Cygwin的Perl则不起作用。
+同样，它的路径也要添加到系统路径中。二进制文件下载地址为<A HREF="http://www.activestate.com" TARGET="_top">http://www.activestate.com</A> (注意: 必须使用5.8或者更新的版本， 免费的标准版既可）。
+</P></DD></DL></DIV><P>
+</P><P> 下面的工具在开始时是不需要的，但是对于完整的包的编译是必须的。
+使用<TT CLASS="FILENAME">config.pl</TT>文件来指定这些库的路径。
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><SPAN CLASS="PRODUCTNAME">ActiveState TCL</SPAN></DT><DD><P> 用于编译<SPAN CLASS="APPLICATION">PL/TCL</SPAN>(注意:要求8.4版本，
+免费的标准版既可）。
+</P></DD><DT><SPAN CLASS="PRODUCTNAME">Bison</SPAN> 和
+<SPAN CLASS="PRODUCTNAME">Flex</SPAN></DT><DD><P> <SPAN CLASS="PRODUCTNAME">Bison</SPAN> 和 <SPAN CLASS="PRODUCTNAME">Flex</SPAN>用来从GIT进行编译，对于发行版文件的编译是不需要的。
+<SPAN CLASS="PRODUCTNAME">Bison</SPAN>需要1.875或2.2及更新版本。<SPAN CLASS="PRODUCTNAME">Flex</SPAN>需要使用2.5.31或更新版本。
+</P><P> <SPAN CLASS="PRODUCTNAME">Bison</SPAN> 和 <SPAN CLASS="PRODUCTNAME">Flex</SPAN>包含在<SPAN CLASS="PRODUCTNAME">msys</SPAN>工具套件内。
+作为<SPAN CLASS="PRODUCTNAME">MinGW</SPAN>编译器套件的一部分，msys可以从<A HREF="http://www.mingw.org/wiki/MSYS" TARGET="_top">http://www.mingw.org/wiki/MSYS</A>获得。
+同时作为<SPAN CLASS="PRODUCTNAME">msysGit</SPAN>的一部分，<SPAN CLASS="PRODUCTNAME">msys</SPAN>也可以从<A HREF="http://git-scm.com/" TARGET="_top">http://git-scm.com/</A>获得。
+</P><P> 在<TT CLASS="FILENAME">buildenv.pl</TT>中，需要把包含<TT CLASS="FILENAME">flex.exe</TT>和<TT CLASS="FILENAME">bison.exe</TT>的目录添加到系统路径中，
+除非它们已经存在于系统路径中。对于MinGW, 要把MinGW安装目录的子目录路径<TT CLASS="FILENAME">\msys\1.0\bin</TT>添加到系统路径中。
+对于msysGit,要把Git安装目录下的<TT CLASS="FILENAME">bin</TT>目录添加到系统路径中。不要添加MinGW编译工具本身的目录到系统路径中。
+</P><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B> GnuWin32中的Bison存在一个bug，当文件安装的路径中含有空格的时候，会导致Bison出现故障。
+例如，用英文安装时的默认路径<TT CLASS="FILENAME">C:\Program Files\GnuWin32</TT>时会出现上述问题，解决办法是安装在类似<TT CLASS="FILENAME">C:\GnuWin32</TT>这样的目录，
+或者在GnuWin32的环境变量PATH中使用NTFS短名称路径(例如<TT CLASS="FILENAME">C:\PROGRA~1\GnuWin32</TT>)。
+</P></BLOCKQUOTE></DIV><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>&#27880;&#24847;: </B> 在PostgreSQL FTP上的winflex是旧的二进制版本并且引用旧的文档，在64位Windows主机上执行时，
+会报"flex: fatal internal error, exec failed"的错误。可以使用msys中的flex来替代以避免这个问题。
+</P></BLOCKQUOTE></DIV></DD><DT><SPAN CLASS="PRODUCTNAME">Diff</SPAN></DT><DD><P> Diff用于进行回归测试，可以从<A HREF="http://gnuwin32.sourceforge.net" TARGET="_top">http://gnuwin32.sourceforge.net</A>下载。
+</P></DD><DT><SPAN CLASS="PRODUCTNAME">Gettext</SPAN></DT><DD><P> Gettext用于编译NLS支持，可以从<A HREF="http://gnuwin32.sourceforge.net" TARGET="_top">http://gnuwin32.sourceforge.net</A>下载。
+需要注意的是二进制文件，依赖项和开发文件都需要。
+</P></DD><DT><SPAN CLASS="PRODUCTNAME">MIT Kerberos</SPAN></DT><DD><P> MIT Kerberos 用于提供Kerberos认证支持，可以从<A HREF="http://web.mit.edu/Kerberos/dist/index.html" TARGET="_top">http://web.mit.edu/Kerberos/dist/index.html</A>下载。
+</P></DD><DT><SPAN CLASS="PRODUCTNAME">libxml2</SPAN> 和
+<SPAN CLASS="PRODUCTNAME">libxslt</SPAN></DT><DD><P> libxml2和libxslt用于提供XML支持。可以从<A HREF="http://zlatkovic.com/pub/libxml" TARGET="_top">http://zlatkovic.com/pub/libxml</A>下载二进制文件，
+也可以从<A HREF="http://xmlsoft.org" TARGET="_top">http://xmlsoft.org</A>下载源代码。需要注意，libxml2需要iconv，也在上面的地址下载。
+</P></DD><DT><SPAN CLASS="PRODUCTNAME">openssl</SPAN></DT><DD><P> openssl用于提供SSL支持。可以从<A HREF="http://www.slproweb.com/products/Win32OpenSSL.html" TARGET="_top">http://www.slproweb.com/products/Win32OpenSSL.html</A>下载二进制文件，
+或者在<A HREF="http://www.openssl.org" TARGET="_top">http://www.openssl.org</A>下载源代码。
+</P></DD><DT><SPAN CLASS="PRODUCTNAME">ossp-uuid</SPAN></DT><DD><P> ossp-uuid用于提供UUID-OSSP支持(仅用于contrib)。可以从<A HREF="http://www.ossp.org/pkg/lib/uuid/" TARGET="_top">http://www.ossp.org/pkg/lib/uuid/</A>下载源码。
+</P></DD><DT><SPAN CLASS="PRODUCTNAME">Python</SPAN></DT><DD><P> Python用于编译<SPAN CLASS="APPLICATION">PL/Python</SPAN>。可以从<A HREF="http://www.python.org" TARGET="_top">http://www.python.org</A>下载二进制文件。
+</P></DD><DT><SPAN CLASS="PRODUCTNAME">zlib</SPAN></DT><DD><P> zlib用于为<SPAN CLASS="APPLICATION">pg_dump</SPAN>和<SPAN CLASS="APPLICATION">pg_restore</SPAN>提供压缩支持。可以从<A HREF="http://www.zlib.net" TARGET="_top">http://www.zlib.net</A>下载二进制文件。
+</P></DD></DL></DIV><P>
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN26256">16.1.2. 针对64位Windows的注意事项</A></H2><P> 在64位Windows上只能编译x64架构的PostgreSQL，不支持安腾的处理器。
+</P><P> 同一个编译树上不支持32位和64位的混编。编译系统能自动检测平台环境是32位或64位，
+并编译出对应版本。因此，在编译前启动正确的命令行很重要。
+</P><P> 要使用服务器端的第三方库，如<SPAN CLASS="PRODUCTNAME">python</SPAN>或<SPAN CLASS="PRODUCTNAME">openssl</SPAN>，这些库<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">必须</I></SPAN>是64位的。64位服务器上不支持对32位库的加载。
+一些PostgreSQL支持的第三方库只有32位的版本，这种情形下，它们不能被64位的PostgreSQL使用。
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN26264">16.1.3. 编译</A></H2><P>
+使用发行版配置(默认)来编译完整的PostgreSQL，运行命令：
+</P><PRE CLASS="SCREEN"><KBD
+CLASS="USERINPUT"
+>build</KBD
+></PRE><P>
+使用调试配置来编译完整的PostgreSQL，运行命令：
+</P><PRE CLASS="SCREEN"><KBD
+CLASS="USERINPUT"
+>build DEBUG</KBD
+></PRE><P>
+只编译单个项目，例如psql，运行命令：
+</P><PRE CLASS="SCREEN"><KBD
+CLASS="USERINPUT"
+>build psql</KBD
+>
+<KBD
+CLASS="USERINPUT"
+>build DEBUG psql</KBD
+></PRE><P>
+要将默认的编译配置改为调试配置，需要在<TT CLASS="FILENAME">buildenv.pl</TT>文件中加入下面的内容：
+</P><PRE CLASS="PROGRAMLISTING">$ENV{CONFIG}="Debug";</PRE><P>
+</P><P>
+也可以Visual Studio的图形化界面来编译，这时需要在命令行中运行：
+</P><PRE CLASS="SCREEN"><KBD
+CLASS="USERINPUT"
+>perl mkvcbuild.pl</KBD
+></PRE><P>
+然后在Visual Studio中打开生成的<TT CLASS="FILENAME">pgsql.sln</TT>文件(源码树的根目录)。
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN26280">16.1.4. 清除和安装</A></H2><P> 大多数时候，Visual Studio会自动追踪所依赖的文件的改动。但是当有大量改动的的时候，可能需要清除安装。
+要做到这一点，只需简单的运行<TT CLASS="FILENAME">clean.bat</TT>，它将自动的清除生成的所有文件。
+也可以在运行时添加<TT CLASS="PARAMETER">dist</TT>参数，它的行为和<KBD CLASS="USERINPUT">make distclean</KBD>命令比较相似，同时会清除flex/bison的输出文件。
+</P><P> 默认情况下，所有的文件都会写在<TT CLASS="FILENAME">debug</TT>或<TT CLASS="FILENAME">release</TT>目录的一个子目录下面。要使用标准设置安装这些文件，
+初始化这些生成的文件并使用数据库，运行命令：
+</P><PRE CLASS="SCREEN"><KBD
+CLASS="USERINPUT"
+>install c:\destination\directory</KBD
+></PRE><P>
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN26291">16.1.5. 运行回归测试</A></H2><P>
+要运行回归测试，首先确保已经完成所需的部分的编译。同时，确保用来加载系统所有部分(例如程序语言Perl和Python的DLLs)的DLLs已经在系统路径中存在。
+如果没有，通过<TT CLASS="FILENAME">buildenv.pl</TT>文件来设置。要运行测试，在<TT CLASS="FILENAME">src\tools\msvc</TT>目录中运行下面命令中的一个：
+</P><PRE CLASS="SCREEN"><KBD
+CLASS="USERINPUT"
+>vcregress check</KBD
+>
+<KBD
+CLASS="USERINPUT"
+>vcregress installcheck</KBD
+>
+<KBD
+CLASS="USERINPUT"
+>vcregress plcheck</KBD
+>
+<KBD
+CLASS="USERINPUT"
+>vcregress contribcheck</KBD
+></PRE><P>
+要改变调度方式(默认是并行),将它加在命令行后：
+</P><PRE CLASS="SCREEN"><KBD
+CLASS="USERINPUT"
+>vcregress check serial</KBD
+></PRE><P>
+关于回归测试的更多内容，参见<A HREF="http://school.yunwei.edu/manual/PostgreSQL/regress.html">第 30 &#31456;</A>。
+</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN26304">16.1.6. 编译文档</A></H2><P>
+把PostgreSQL文档编译成HTML格式需要一些工具和文件。为所有这些文件创建一个根目录，将它们存储在下列的子目录中。
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT>OpenJade 1.3.1-2</DT><DD><P>
+从 <A HREF="http://sourceforge.net/projects/openjade/files/openjade/1.3.1/openjade-1_3_1-2-bin.zip/download" TARGET="_top">http://sourceforge.net/projects/openjade/files/openjade/1.3.1/openjade-1_3_1-2-bin.zip/download</A>下载并解压到子目录<TT CLASS="FILENAME">openjade-1.3.1</TT>中。
+</P></DD><DT>DocBook DTD 4.2</DT><DD><P>
+从<A HREF="http://www.oasis-open.org/docbook/sgml/4.2/docbook-4.2.zip" TARGET="_top">http://www.oasis-open.org/docbook/sgml/4.2/docbook-4.2.zip</A>下载并解压到子目录<TT CLASS="FILENAME">docbook</TT>中。
+</P></DD><DT>DocBook DSSSL 1.79</DT><DD><P>
+从<A HREF="http://sourceforge.net/projects/docbook/files/docbook-dsssl/1.79/docbook-dsssl-1.79.zip/download" TARGET="_top">http://sourceforge.net/projects/docbook/files/docbook-dsssl/1.79/docbook-dsssl-1.79.zip/download</A>下载并解压到子目录<TT CLASS="FILENAME">docbook-dsssl-1.79</TT>中。
+</P></DD><DT>ISO character entities</DT><DD><P>
+从<A HREF="http://www.oasis-open.org/cover/ISOEnts.zip" TARGET="_top">http://www.oasis-open.org/cover/ISOEnts.zip</A>下载并解压到子目录<TT CLASS="FILENAME">docbook</TT>中。
+</P></DD></DL></DIV><P>
+编辑<TT CLASS="FILENAME">buildenv.pl</TT>文件，为根目录的地址增加一个变量，如：
+</P><PRE CLASS="PROGRAMLISTING">$ENV{DOCROOT}='c:\docbook';</PRE><P>
+要编译文档，运行<TT CLASS="FILENAME">builddoc.bat</TT>文件。注意为了生成索引，
+实际上编译会运行两次。生成的HTML文件存在于<TT CLASS="FILENAME">doc\src\sgml</TT>中。
+</P></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/install-windows.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="install-windows-libpq.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><SPAN CLASS="PRODUCTNAME">Windows</SPAN>下用源代码安装</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/install-windows.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">用<SPAN CLASS="PRODUCTNAME">Visual C++</SPAN>或
+<SPAN CLASS="PRODUCTNAME">Borland C++</SPAN>编译
+<SPAN CLASS="APPLICATION">libpq</SPAN></TD></TR></TABLE></DIV></BODY></HTML>

@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>版本 8.2.17</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="版本说明" HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html"><LINK REL="PREVIOUS" TITLE="版本 8.2.18" HREF="release-8-2-18.html"><LINK REL="NEXT" TITLE="版本 8.2.16" HREF="release-8-2-16.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/release-8.2.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="版本 8.2.18" HREF="release-8-2-18.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#38468;&#24405; E. 版本说明</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="版本 8.2.16" HREF="release-8-2-16.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="RELEASE-8-2-17">E.84. 版本 8.2.17</A></H1><DIV CLASS="NOTE"><BLOCKQUOTE CLASS="NOTE"><P><B>发布日期: </B>2010-05-17</P></BLOCKQUOTE></DIV><P>这个版本包含各种自8.2.16以来的修复。关于8.2主版本的新特性信息，
+请查看<A HREF="release-8-2.html">第 E.101 &#33410;</A>。</P><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN130869">E.84.1. 迁移到版本 8.2.17</A></H2><P>运行8.2.X的用户不需要转储/恢复。不过，如果你是从一个早于8.2.14的版本升级而来，
+那么请查看8.2.14的版本声明。</P></DIV><DIV CLASS="SECT2"><H2 CLASS="SECT2"><A NAME="AEN130872">E.84.2. 修改列表</A></H2><P></P><UL><LI><P>使用一个开放标记而不是使用<TT CLASS="FILENAME">Safe.pm</TT>应用到整个解释器，
+在<TT CLASS="LITERAL">plperl</TT>中实施限制 (Tim Bunce, Andrew Dunstan)</P><P>近期的发展已经向我们证实：<TT CLASS="FILENAME">Safe.pm</TT>不够安全，不能依赖它标记
+<TT CLASS="LITERAL">plperl</TT>是可信任的。这个修改一起删除了对<TT CLASS="FILENAME">Safe.pm</TT>
+的使用，为了支持总是使用一个带有开放代码标记的单独的解释器。
+该修改令人愉快的一面包括：在<TT CLASS="LITERAL">plperl</TT>中以自然的方式使用Perl
+的<TT CLASS="LITERAL">strict</TT>编程现在是可能的了，并且Perl的<TT CLASS="LITERAL">$a</TT>和
+<TT CLASS="LITERAL">$b</TT>变量在短例程中像预期的那样工作了，并且函数的编译显著的更快了。
+(CVE-2010-1169)</P></LI><LI><P>阻止PL/Tcl执行来自<TT CLASS="STRUCTNAME">pltcl_modules</TT>的不可靠的代码 (Tom)</P><P>PL/Tcl从数据库表自动加载Tcl代码的特性会被特洛伊木马攻击利用，
+因为没有限制谁可以创建或插入到那个表。这个修改禁用了该特性，
+除非<TT CLASS="STRUCTNAME">pltcl_modules</TT>属于超级用户。（不过，该表上的权限是没有检查的，
+所以真实需要较少安全模块表的安装仍然可以赋予适当的权限给受信任的非超级用户。）
+另外，阻止加载代码到无限制的<SPAN CLASS="QUOTE">"普通"</SPAN>Tcl解释器，
+除非我们真的想要执行<TT CLASS="LITERAL">pltclu</TT>函数。 (CVE-2010-1170)</P></LI><LI><P>如果在重建relcache项期间接收到一个缓存重置消息，修复可能的崩溃 (Heikki)</P><P>这个错误是在8.2.16中修复相关的失败的时候引入的。</P></LI><LI><P>不允许非特权的用户重置超级用户仅有的参数设置 (Alvaro)</P><P>以前，如果一个非特权的用户为他自己运行<TT CLASS="LITERAL">ALTER USER ... RESET ALL</TT>，
+或为他拥有的一个数据库运行<TT CLASS="LITERAL">ALTER DATABASE ... RESET ALL</TT>，
+将会为该用户或数据库删除所有特殊参数设置，即使是只应该超级用户修改的设置。
+现在，<TT CLASS="COMMAND">ALTER</TT>将只删除该用户有权限修改的参数。</P></LI><LI><P>如果关机发生在<TT CLASS="LITERAL">CONTEXT</TT>添加到日志项时，避免后端关闭期间可能的崩溃 (Tom)</P><P>在某些情况下，内容打印函数将会失败，因为当前事务在它想要打印日志消息时早已回滚了。</P></LI><LI><P>为现代的Perl版本更新pl/perl的<TT CLASS="FILENAME">ppport.h</TT> (Andrew)</P></LI><LI><P>修复pl/python中的各种内存泄露 (Andreas Freund, Tom)</P></LI><LI><P>当扩展一个引用自身的变量时，阻止<SPAN CLASS="APPLICATION">psql</SPAN>中的无限递归 (Tom)</P></LI><LI><P>修复<SPAN CLASS="APPLICATION">psql</SPAN>的<TT CLASS="LITERAL">\copy</TT>，在<TT CLASS="LITERAL">\copy (select ...)</TT>
+的句点周围不添加空格 (Tom)</P><P>在数值文字的小数点周围添加空格会导致语法错误。</P></LI><LI><P>确保<TT CLASS="FILENAME">contrib/pgstattuple</TT>函数迅速响应取消中断 (Tatsuhito Kasahara)</P></LI><LI><P>让服务器启动正确的处理<CODE CLASS="FUNCTION">shmget()</CODE>为一个现有的共享内存段返回
+<TT CLASS="LITERAL">EINVAL</TT>的情况 (Tom)</P><P>这个行为已经在BSD驱动的内核上（包括OS X）观察到了。
+它导致一个完全误导的启动失败抱怨：共享内存请求尺寸过大。</P></LI><LI><P>避免Windows上系统日志处理中可能的崩溃 (Heikki)</P></LI><LI><P>更强劲的处理Windows注册中不完整的时区信息 (Magnus)</P></LI><LI><P>更新一组已知的Windows时区名 (Magnus)</P></LI><LI><P>更新时区数据文件到<SPAN CLASS="APPLICATION">tzdata</SPAN>版本2010j，
+因为DST规律在Argentina、Australian Antarctic、Bangladesh、Mexico、Morocco、
+Pakistan、Palestine、Russia、Syria、Tunisia发生了改变；
+还为Taiwan做了历史纠正。</P><P>另外，添加<TT CLASS="LITERAL">PKST</TT> (Pakistan Summer Time)到缺省的时区缩写集合。</P></LI></UL></DIV></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="release-8-2-18.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="release-8-2-16.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">版本 8.2.18</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/release.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">版本 8.2.16</TD></TR></TABLE></DIV></BODY></HTML>

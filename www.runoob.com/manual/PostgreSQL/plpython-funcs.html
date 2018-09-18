@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>PL/Python 函数</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="PL/Python - Python 过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/plpython.html"><LINK REL="PREVIOUS" TITLE="Python 2 vs. Python 3" HREF="plpython-python23.html"><LINK REL="NEXT" TITLE="数据值" HREF="plpython-data.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/plpython.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="Python 2 vs. Python 3" HREF="plpython-python23.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plpython.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 43. PL/Python - Python 过程语言</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="数据值" HREF="plpython-data.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="PLPYTHON-FUNCS">43.2. PL/Python 函数</A></H1><P>PL/Python中的函数通过标准的<A HREF="sql-createfunction.html">CREATE FUNCTION</A>语法声明：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION <TT
+CLASS="REPLACEABLE"
+><I
+>funcname</I
+></TT
+> (<TT
+CLASS="REPLACEABLE"
+><I
+>argument-list</I
+></TT
+>)
+  RETURNS <TT
+CLASS="REPLACEABLE"
+><I
+>return-type</I
+></TT
+>
+AS $$
+  # PL/Python function body
+$$ LANGUAGE plpythonu;</PRE><P>
+</P><P>函数体是一个简单的Python脚本，当函数被调用的时候，它的参数作为列表<TT CLASS="VARNAME">args</TT>
+的元素传递；命名参数也会被当做普通的变量传递到Python脚本中。命名参数的使用通常更易读。
+结果将使用<TT CLASS="LITERAL">return</TT>或<TT CLASS="LITERAL">yield</TT>（结果集语句的情况）
+照常从Python代码中返回。如果没有提供返回值，Python返回缺省的<TT CLASS="SYMBOL">None</TT>。
+<SPAN CLASS="APPLICATION">PL/Python</SPAN>翻译Python的<TT CLASS="SYMBOL">None</TT>为SQL空值。</P><P>比如，返回两个整数中较大者的函数可以定义为：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION pymax (a integer, b integer)
+  RETURNS integer
+AS $$
+  if a &gt; b:
+    return a
+  return b
+$$ LANGUAGE plpythonu;</PRE><P>
+以函数体定义形式给出的Python代码转换成Python函数。比如，上面的转换成：
+</P><PRE CLASS="PROGRAMLISTING">def __plpython_procedure_pymax_23456():
+  if a &gt; b:
+    return a
+  return b</PRE><P>
+这里假设23456是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>赋予这个函数的OID。
+</P><P>参数设置为全局变量。因为Python的作用域规则，这有些微妙的结果，
+参数变量在函数内部不能分配给包含变量名本身的表达式值，
+除非变量在块中重新定义为全局。例如，以下是行不通的：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION pystrip(x text)
+  RETURNS text
+AS $$
+  x = x.strip()  # error
+  return x
+$$ LANGUAGE plpythonu;</PRE><P>
+因为分配到的<TT CLASS="VARNAME">x</TT>产生整个块的局部变量<TT CLASS="VARNAME">x</TT>，
+所以<TT CLASS="VARNAME">x</TT>在分配的右侧指向一个未被分配的局部变量<TT CLASS="VARNAME">x</TT>，
+不是PL/Python函数参数。使用<TT CLASS="LITERAL">global</TT>声明，这可以使其运行：
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION pystrip(x text)
+  RETURNS text
+AS $$
+  global x
+  x = x.strip()  # ok now
+  return x
+$$ LANGUAGE plpythonu;</PRE><P>
+但最好不要依赖PL/Python的执行细节。最好是把函数参数作为只读的。
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="plpython-python23.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="plpython-data.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">Python 2 vs. Python 3</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/plpython.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">数据值</TD></TR></TABLE></DIV></BODY></HTML>

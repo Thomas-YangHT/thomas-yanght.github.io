@@ -1,0 +1,40 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>日志文件维护</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="日常数据库维护工作" HREF="http://school.yunwei.edu/manual/PostgreSQL/maintenance.html"><LINK REL="PREVIOUS" TITLE="经常重建索引" HREF="routine-reindex.html"><LINK REL="NEXT" TITLE="备份与恢复" HREF="http://school.yunwei.edu/manual/PostgreSQL/backup.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/maintenance.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="经常重建索引" HREF="routine-reindex.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/maintenance.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 23. 日常数据库维护工作</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="备份与恢复" HREF="http://school.yunwei.edu/manual/PostgreSQL/backup.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="LOGFILE-MAINTENANCE">23.3. 日志文件维护</A></H1><P> 把数据库服务器的日志输出保存在一个地方而不是仅仅把它们放到<TT CLASS="FILENAME">/dev/null</TT>里是个好主意。
+在碰到危险的时候，日志输出是非常宝贵的。不过，
+日志输出可能很庞大(特别是在比较高的调试级别上)，
+而且你不会无休止地保存它们。你需要<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">滚动</I></SPAN>日志文件，
+这样生成新的日志文件并且经常抛弃老的。&#13;</P><P> 如果你简单地把<TT CLASS="COMMAND">postgres</TT>的<SPAN CLASS="SYSTEMITEM">stderr</SPAN>重定向到一个文件中，
+你会有日志输出，但是截断日志文件的唯一的方法是停止并重启主服务器。
+这样做对于<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>开发环境中是可以的，
+但是你肯定不想在生产环境中也这么干。</P><P> 一个更好的办法是把主服务器的<SPAN CLASS="SYSTEMITEM">stderr</SPAN>输出发送到某种日志滚动程序里。
+我们有一个内置的日志滚动程序，你可以通过在<TT CLASS="FILENAME">postgresql.conf</TT>
+里设置配置参数<TT CLASS="VARNAME">logging_collector</TT>为<TT CLASS="LITERAL">true</TT>的办法打开它。
+这个程序的控制参数在<A HREF="runtime-config-logging.html#RUNTIME-CONFIG-LOGGING-WHERE">第 18.8.1 &#33410;</A>里描述。
+你也可以使用这个方法捕获机器上可读<ACRONYM CLASS="ACRONYM">CSV</ACRONYM>(逗号分隔值)格式的日志数据。&#13;</P><P>
+另外，如果你准备使用其他服务器软件，你可能更喜欢
+使用一个外部日志滚动程序(比如
+<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>中
+<SPAN CLASS="PRODUCTNAME">Apache</SPAN>附带的<SPAN CLASS="APPLICATION">rotatelogs</SPAN>工具)，为了做到这一点，
+你可以将<SPAN CLASS="SYSTEMITEM">stderr</SPAN>的输出重定向到所需程序。如果你用<TT CLASS="COMMAND">pg_ctl</TT>启动服务器，
+那么<SPAN CLASS="SYSTEMITEM">stderr</SPAN>已经重定向到<SPAN CLASS="SYSTEMITEM">stdout</SPAN>，因此你只需要一个管道命令，比如：
+</P><PRE CLASS="PROGRAMLISTING">pg_ctl start | rotatelogs /var/log/pgsql_log 86400</PRE><P>
+</P><P> 另外一种生产级的管理日志输出的方法就是把它们发送给<SPAN CLASS="APPLICATION">syslog</SPAN>并且让<SPAN CLASS="APPLICATION">syslog</SPAN>
+处理滚动。要利用这个工具，我们需要设置<TT CLASS="FILENAME">postgresql.conf</TT>里的<TT CLASS="VARNAME">log_destination</TT>为
+<TT CLASS="LITERAL">syslog</TT>(记录<SPAN CLASS="APPLICATION">syslog</SPAN>日志)。
+然后在你想强迫<SPAN CLASS="APPLICATION">syslog</SPAN>守护进程开始写入一个新日志文件的时候，
+就可以发送一个<TT CLASS="LITERAL">SIGHUP</TT>信号给它。如果你想自动滚动日志文件，那么我们可以配置
+<SPAN CLASS="APPLICATION">logrotate</SPAN>程序处理<SPAN CLASS="APPLICATION">syslog</SPAN>的日志文件。&#13;</P><P> 不过，在很多系统上，<SPAN CLASS="APPLICATION">syslog</SPAN>不是非常可靠，特别是在大型日志信息的情况下；
+它可能在你最需要那些信息的时候截断或者丢弃它们。还有，在<SPAN CLASS="PRODUCTNAME">Linux</SPAN>上，
+<SPAN CLASS="APPLICATION">syslog</SPAN>会把每个消息刷新到磁盘上，导致很低下的性能。
+你可以在<SPAN CLASS="APPLICATION">syslog</SPAN>配置文件里面的文件名开头使用<SPAN CLASS="QUOTE">"<TT CLASS="LITERAL">-</TT>"</SPAN>来关闭这个行为。</P><P> 请注意上面描述的所有解决方案关注的是在可配置的间隔上开始一个新的日志文件，
+它们并没有删除不再需要的旧日志文件。你可能还需要设置一个批处理，
+周期地删除旧日志文件。另外一个可能的解法是配置日志滚动程序，
+让它周期地覆盖旧的日志文件。</P><P> <A HREF="http://dalibo.github.io/pgbadger/" TARGET="_top"><SPAN CLASS="PRODUCTNAME">pgBadger</SPAN></A>
+是一个外部项目，做复杂的日志文件分析。
+当重要信息出现在日志文件中时，<A HREF="http://bucardo.org/wiki/Check_postgres" TARGET="_top"><SPAN CLASS="PRODUCTNAME">check_postgres</SPAN></A>
+提供了Nagios警告，以及许多其他特殊条件的检测。</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="routine-reindex.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/backup.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">经常重建索引</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/maintenance.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">备份与恢复</TD></TR></TABLE></DIV></BODY></HTML>

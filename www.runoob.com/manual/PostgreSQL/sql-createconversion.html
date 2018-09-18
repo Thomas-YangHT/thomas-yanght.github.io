@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>CREATE CONVERSION</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="SQL 命令" HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html"><LINK REL="PREVIOUS" TITLE="CREATE COLLATION" HREF="sql-createcollation.html"><LINK REL="NEXT" TITLE="CREATE DATABASE" HREF="sql-createdatabase.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="REFENTRY">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/ref/create_conversion.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="CREATE COLLATION" HREF="sql-createcollation.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom"></TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="CREATE DATABASE" HREF="sql-createdatabase.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><H1><A NAME="SQL-CREATECONVERSION"></A>CREATE CONVERSION</H1><DIV CLASS="REFNAMEDIV"><A NAME="AEN69446"></A><H2>&#21517;&#31216;</H2>CREATE CONVERSION&nbsp;--&nbsp;定义一个新的编码转换</DIV><DIV CLASS="REFSYNOPSISDIV"><A NAME="AEN69451"></A><H2>&#22823;&#32434;</H2><PRE CLASS="SYNOPSIS">CREATE [ DEFAULT ] CONVERSION <TT
+CLASS="REPLACEABLE"
+><I
+>name</I
+></TT
+>
+    FOR <TT
+CLASS="REPLACEABLE"
+><I
+>source_encoding</I
+></TT
+> TO <TT
+CLASS="REPLACEABLE"
+><I
+>dest_encoding</I
+></TT
+> FROM <TT
+CLASS="REPLACEABLE"
+><I
+>function_name</I
+></TT
+></PRE></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-CREATECONVERSION-DESCRIPTION"></A><H2>描述</H2><P><TT CLASS="COMMAND">CREATE CONVERSION</TT>定义字符集之间的转换。
+标记为<TT CLASS="LITERAL">DEFAULT</TT>的转换可以用于在前端和后端之间的自动编码转换。
+出于这个原因，一般的转换如从编码 A 到 B<SPAN CLASS="emphasis"><I CLASS="EMPHASIS">和</I></SPAN>从编码B到A，必须定义两种转换。</P><P>为了可以创建转换，你必须有函数的<TT CLASS="LITERAL">EXECUTE</TT>权限并且在目标模式上有<TT CLASS="LITERAL">CREATE</TT>权限。 </P></DIV><DIV CLASS="REFSECT1"><A NAME="AEN69466"></A><H2>参数</H2><P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="LITERAL">DEFAULT</TT></DT><DD><P><TT CLASS="LITERAL">DEFAULT</TT>选项表示这种转换是从这种源编码到目标编码的缺省转换。
+同一个模式里每一对编码应该只有一个缺省编码转换。 </P></DD><DT><TT CLASS="REPLACEABLE"><I>name</I></TT></DT><DD><P>转换的名字。转换名可以用模式修饰。如果没有，那么转换就在当前模式中定义。 转换名在一个模式里必须唯一。 </P></DD><DT><TT CLASS="REPLACEABLE"><I>source_encoding</I></TT></DT><DD><P>源编码名。</P></DD><DT><TT CLASS="REPLACEABLE"><I>dest_encoding</I></TT></DT><DD><P>目标编码名 。</P></DD><DT><TT CLASS="REPLACEABLE"><I>function_name</I></TT></DT><DD><P>用于执行转换的函数。这个函数名可以用模式名修饰。如果没有，那么将从路径中找出这个函数。 </P><P>此函数必须有如下的样子：
+</P><PRE CLASS="PROGRAMLISTING">conv_proc(
+    integer,  -- source encoding ID
+    integer,  -- destination encoding ID
+    cstring,  -- source string (null terminated C string)
+    internal, -- destination (fill with a null terminated C string)
+    integer   -- source string length
+) RETURNS void;</PRE><P></P></DD></DL></DIV></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-CREATECONVERSION-NOTES"></A><H2>注意</H2><P>用<TT CLASS="COMMAND">DROP CONVERSION</TT>删除用户定义的转换。 </P><P>创建转换所需要的权限可能在未来的版本中改变。</P></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-CREATECONVERSION-EXAMPLES"></A><H2>例子</H2><P>用<CODE CLASS="FUNCTION">myfunc</CODE>创建一个从<TT CLASS="LITERAL">UTF8</TT>编码到<TT CLASS="LITERAL">LATIN1</TT>编码的转换：
+</P><PRE CLASS="PROGRAMLISTING">CREATE CONVERSION myconv FOR 'UTF8' TO 'LATIN1' FROM myfunc;</PRE><P></P></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-CREATECONVERSION-COMPAT"></A><H2>兼容性</H2><P><TT CLASS="COMMAND">CREATE CONVERSION</TT>是<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>的扩展。
+在SQL标准里没有<TT CLASS="COMMAND">CREATE CONVERSION</TT>语句。
+但有一个在语法和意义上都很相似的<TT CLASS="COMMAND">CREATE TRANSLATION</TT>语句。 </P></DIV><DIV CLASS="REFSECT1"><A NAME="SQL-CREATECONVERSION-SEEALSO"></A><H2>参见</H2><A HREF="sql-alterconversion.html">ALTER CONVERSION</A>, <A HREF="sql-createfunction.html">CREATE FUNCTION</A>, <A HREF="sql-dropconversion.html">DROP CONVERSION</A></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="sql-createcollation.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="sql-createdatabase.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">CREATE COLLATION</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/sql-commands.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">CREATE DATABASE</TD></TR></TABLE></DIV></BODY></HTML>

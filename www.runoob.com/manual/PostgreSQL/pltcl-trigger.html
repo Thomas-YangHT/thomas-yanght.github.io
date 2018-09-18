@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML><HEAD><TITLE>PL/Tcl里的触发器过程</TITLE><META NAME="GENERATOR" CONTENT="Modular DocBook HTML Stylesheet Version 1.79"><LINK REV="MADE" HREF="mailto:pgsql-docs@postgresql.org"><LINK REL="HOME" TITLE="PostgreSQL 9.3.1 中文手册" HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html"><LINK REL="UP" TITLE="PL/Tcl - Tcl 过程语言" HREF="http://school.yunwei.edu/manual/PostgreSQL/pltcl.html"><LINK REL="PREVIOUS" TITLE="在PL/Tcl里访问数据库" HREF="pltcl-dbaccess.html"><LINK REL="NEXT" TITLE="模块和unknown的命令" HREF="pltcl-unknown.html"><LINK REL="STYLESHEET" TYPE="text/css" HREF="http://school.yunwei.edu/manual/PostgreSQL/stylesheet.css"><META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"><META NAME="creation" CONTENT="2015-07-11T14:00:17"></HEAD><BODY CLASS="SECT1">
+<div style="text-align:right">
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/issues/new" target="_blank" title="在Github上报告问题（请注明问题内容及所在章节）">问题报告</a>
+<a style="margin : 0px 0px 0px 10px;" href="https://github.com/postgres-cn/pgdoc-cn/edit/master/postgresql/doc/src/sgml/pltcl.sgml" target="_blank" title="直接在Github上纠错本页面">纠错本页面</a>
+</div>
+<DIV CLASS="NAVHEADER"><TABLE SUMMARY="Header navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TH COLSPAN="5" ALIGN="center" VALIGN="bottom"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html">PostgreSQL 9.3.1 中文手册</A></TH></TR><TR><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A TITLE="在PL/Tcl里访问数据库" HREF="pltcl-dbaccess.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="10%" ALIGN="left" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/pltcl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="60%" ALIGN="center" VALIGN="bottom">&#31456; 41. PL/Tcl - Tcl 过程语言</TD><TD WIDTH="20%" ALIGN="right" VALIGN="top"><A TITLE="模块和unknown的命令" HREF="pltcl-unknown.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR></TABLE><HR ALIGN="LEFT" WIDTH="100%"></DIV><DIV CLASS="SECT1"><H1 CLASS="SECT1"><A NAME="PLTCL-TRIGGER">41.6. PL/Tcl里的触发器过程</A></H1><P>触发器过程可以用 PL/Tcl 写。<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+要求当做触发器调用的过程必需声明为没有参数并且返回类型为<TT CLASS="LITERAL">trigger</TT>的函数。</P><P> 触发器管理器传递给过程体的信息是通过下面变量传递的：
+<P></P></P><DIV CLASS="VARIABLELIST"><DL><DT><TT CLASS="VARNAME">$TG_name</TT></DT><DD><P><TT CLASS="COMMAND">CREATE TRIGGER</TT>语句里的触发器名称。</P></DD><DT><TT CLASS="VARNAME">$TG_relid</TT></DT><DD><P>导致触发器被调用的表的对象 ID 。</P></DD><DT><TT CLASS="VARNAME">$TG_table_name</TT></DT><DD><P>导致触发器被调用的表的名字。</P></DD><DT><TT CLASS="VARNAME">$TG_table_schema</TT></DT><DD><P>导致触发器被调用的表的模式。</P></DD><DT><TT CLASS="VARNAME">$TG_relatts</TT></DT><DD><P>以一个空表元素为前导的表中字段名称的 Tcl 列表。所以用<SPAN CLASS="APPLICATION">Tcl</SPAN>命令<CODE CLASS="FUNCTION">lsearch</CODE>
+在列表里查找元素名称时，返回的从 1 开始计数的正整数，与<SPAN CLASS="PRODUCTNAME">PostgreSQL</SPAN>
+里字段编号的传统一样。已经被删除掉的字段位置的空的列表元素仍然会出现，这样，
+属性编号与字段的对应就是正确的。</P></DD><DT><TT CLASS="VARNAME">$TG_when</TT></DT><DD><P>由触发器事件类型决定的字符串<TT CLASS="LITERAL">BEFORE</TT>, <TT CLASS="LITERAL">AFTER</TT> 或 <TT CLASS="LITERAL">INSTEAD OF</TT></P></DD><DT><TT CLASS="VARNAME">$TG_level</TT></DT><DD><P>由触发器事件类型决定的字符串<TT CLASS="LITERAL">ROW</TT>或<TT CLASS="LITERAL">STATEMENT</TT></P></DD><DT><TT CLASS="VARNAME">$TG_op</TT></DT><DD><P>由触发器事件类型决定的字符串<TT CLASS="LITERAL">INSERT</TT>, <TT CLASS="LITERAL">UPDATE</TT>, <TT CLASS="LITERAL">DELETE</TT>或<TT CLASS="LITERAL">TRUNCATE</TT></P></DD><DT><TT CLASS="VARNAME">$NEW</TT></DT><DD><P>一个关联数组，包含<TT CLASS="COMMAND">INSERT</TT>或<TT CLASS="COMMAND">UPDATE</TT>动作的新表行值，
+如果是<TT CLASS="COMMAND">DELETE</TT>则为空。该数组是用字段名做索引的。那些为空的字段不会在数组中出现。
+这不是为语句级别的触发器设置的。</P></DD><DT><TT CLASS="VARNAME">$OLD</TT></DT><DD><P>一个关联数组，包含<TT CLASS="COMMAND">UPDATE</TT>或<TT CLASS="COMMAND">DELETE</TT>动作的新表行，
+如果是<TT CLASS="COMMAND">INSERT</TT>则为空。该数组是用字段名做索引的。那些为空的字段不会在数组中出现。
+这不是为语句级别的触发器设置的。</P></DD><DT><TT CLASS="VARNAME">$args</TT></DT><DD><P>如同在<TT CLASS="COMMAND">CREATE TRIGGER</TT>语句里给出的参数一样的 Tcl 程序参数表。
+这些参数在过程体里可以通过<TT CLASS="LITERAL">$1</TT> ... <TT CLASS="LITERAL">$<TT CLASS="REPLACEABLE"><I>n</I></TT></TT>
+来访问。</P></DD></DL></DIV><P>
+</P><P>触发器过程返回的值是字符串<TT CLASS="LITERAL">OK</TT>或<TT CLASS="LITERAL">SKIP</TT>之一，或者一个像<TT CLASS="LITERAL">array get</TT>
+Tcl 命令返回的数组那样的东西。如果返回值是<TT CLASS="LITERAL">OK</TT>，触发触发器的操作
+(<TT CLASS="COMMAND">INSERT</TT>/<TT CLASS="COMMAND">UPDATE</TT>/<TT CLASS="COMMAND">DELETE</TT>)将会正常进行。<TT CLASS="LITERAL">SKIP</TT>
+告诉触发器管理器不声不响地忽略该行的操作。如果返回一个数组，
+那么它告诉 PL/Tcl 返回一个修改后的行给触发器管理器。这仅仅对行级别的<TT CLASS="LITERAL">BEFORE</TT> <TT CLASS="COMMAND">INSERT</TT>
+或 <TT CLASS="COMMAND">UPDATE</TT>触发器有意义，修改的行而不是<TT CLASS="VARNAME">$NEW</TT>里面给出的行被插入；
+或对于行级别的<TT CLASS="LITERAL">INSTEAD OF</TT> <TT CLASS="COMMAND">INSERT</TT> 或 <TT CLASS="COMMAND">UPDATE</TT>触发器，
+返回的行用来提供给<TT CLASS="COMMAND">INSERT RETURNING</TT>或<TT CLASS="COMMAND">UPDATE RETURNING</TT>命令。
+其他触发器类型忽略返回值。</P><P>下面是一个小的触发器过程的例子，它强制表内的一个整数值对行的更新次数进行跟踪。
+对插入的新行，该值初始化为 0 并且在每次更新操作中加一。
+</P><PRE CLASS="PROGRAMLISTING">CREATE FUNCTION trigfunc_modcount() RETURNS trigger AS $$
+    switch $TG_op {
+        INSERT {
+            set NEW($1) 0
+        }
+        UPDATE {
+            set NEW($1) $OLD($1)
+            incr NEW($1)
+        }
+        default {
+            return OK
+        }
+    }
+    return [array get NEW]
+$$ LANGUAGE pltcl;
+
+CREATE TABLE mytab (num integer, description text, modcnt integer);
+
+CREATE TRIGGER trig_mytab_modcount BEFORE INSERT OR UPDATE ON mytab
+    FOR EACH ROW EXECUTE PROCEDURE trigfunc_modcount('modcnt');</PRE><P>
+请注意触发器过程本身并不知道字段名字；那些是从触发器参数中提供的。
+这样就可以让将触发器过程复用于不同的表。
+</P></DIV><DIV CLASS="NAVFOOTER"><HR ALIGN="LEFT" WIDTH="100%"><TABLE SUMMARY="Footer navigation table" WIDTH="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0"><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top"><A HREF="pltcl-dbaccess.html" ACCESSKEY="P">&#19978;&#19968;&#39029;</A></TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/index.html" ACCESSKEY="H">&#36215;&#22987;&#39029;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top"><A HREF="pltcl-unknown.html" ACCESSKEY="N">&#19979;&#19968;&#39029;</A></TD></TR><TR><TD WIDTH="33%" ALIGN="left" VALIGN="top">在PL/Tcl里访问数据库</TD><TD WIDTH="34%" ALIGN="center" VALIGN="top"><A HREF="http://school.yunwei.edu/manual/PostgreSQL/pltcl.html" ACCESSKEY="U">&#19978;&#19968;&#32423;</A></TD><TD WIDTH="33%" ALIGN="right" VALIGN="top">模块和<CODE CLASS="FUNCTION">unknown</CODE>的命令</TD></TR></TABLE></DIV></BODY></HTML>
