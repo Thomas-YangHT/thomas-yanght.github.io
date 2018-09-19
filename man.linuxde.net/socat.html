@@ -1,0 +1,177 @@
+<html>
+<head>
+  <title>Evernote Export</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/307027 (zh-CN, DDL); Windows/10.0.0 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+<a name="4249"/>
+
+<div><span>
+  <div>
+<div style="font-size: 16px; display: inline-block; min-width: 100%;position: relative;"><div style="outline:0px;box-sizing:border-box;"><div style="box-sizing:inherit;outline:0px;font-family:&quot;SF Pro Display&quot;, Roboto, Noto, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, sans-serif;font-size:14px;line-height:1.57143;background-color:rgb(245, 246, 247);color:rgb(51, 51, 51);-webkit-font-smoothing:antialiased;"><div style="outline:0px;box-sizing:border-box;"><span style="box-sizing:inherit;outline:0px;"><div style="box-sizing:inherit;outline:0px;background:rgb(255, 255, 255);box-shadow:rgba(0, 0, 0, 0.05) 0px 2px 4px 0px;">
+	<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;border-bottom:1px solid rgb(224, 224, 224);padding-top:16px;z-index:9;background-color:rgb(255, 255, 255);">
+		<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;">
+			<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;margin-bottom:8px;">
+				<span style="border-radius:50%;display:inline-block;width:26px;height:26px;line-height:26px;text-align:center;font-size:12px;outline:0px;box-sizing:inherit;border:1px solid rgb(244, 206, 208);color:rgb(202, 12, 22);margin-right:8px;margin-top:4px;float:left;">原</span>				<h1 style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;font-size:24px;word-break:break-all;">socat的安装与使用</h1>
+			</div>
+			<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;padding-bottom:14px;position:relative;">
+				<div style="color:rgb(133, 133, 133);width:88%;height:24px;box-sizing:inherit;outline:0px;padding:0px;margin:0px;overflow:hidden;">
+																				<span style="box-sizing:inherit;outline:0px;margin-right:14px;">2016年01月14日 20:24:15</span>
+					<a href="https://me.csdn.net/koozxcv" style="box-sizing:inherit;outline:0px;text-decoration:none;cursor:pointer;color:rgb(120, 165, 241);margin-right:14px;" target="_blank">koozxcv</a>
+						<span style="box-sizing:inherit;outline:0px;margin-right:14px;">阅读数：21327</span><span style="top:0px;margin-right:0px;color:rgb(51, 153, 234);letter-spacing:0px;line-height:20px;cursor:pointer;background-color:rgb(255, 255, 255);font-size:12px;right:101px;width:45px;display:inline-block;box-sizing:inherit;outline:0px;position:static;">更多</span>
+												
+																					<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;font-size:12px;margin-top:6px;margin-bottom:0px;">
+								<span style="box-sizing:inherit;outline:0px;margin-right:14px;color:rgb(77, 77, 77);">个人分类：</span>
+																<a href="https://blog.csdn.net/koozxcv/article/category/6060040" style="box-sizing:inherit;outline:0px;text-decoration:none;cursor:pointer;display:inline-block;margin-right:24px;color:rgb(121, 165, 229);word-break:break-all;" target="_blank">工具使用																</a>
+							</div>
+																								</div>
+				<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;position:absolute;top:0px;right:0px;">
+														</div>
+			</div>
+		</div>
+	</div>
+	<div style="box-sizing:inherit;outline:0px;display:block;position:relative;padding-top:16px;">
+		<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;word-break:break-all;">
+								<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;word-break:break-all;font-size:12px;color:rgb(153, 153, 153);margin-bottom:8px;">
+					版权声明：本文为博主原创文章，未经博主允许不得转载。					https://blog.csdn.net/koozxcv/article/details/50520057				</div>
+								            
+						<div style="box-sizing:inherit;outline:0px;padding:0px;margin:0px;font-family:-apple-system, &quot;SF UI Text&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro Hei&quot;, sans-serif, SimHei, SimSun;word-break:break-all;">
+                
+<span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:18px;">1.socat简介 </span><br style="outline:0px;box-sizing:border-box;word-break:break-all;"/><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:14px;">socat是一个多功能的网络工具，名字来由是” Socket CAT”，可以看作是netcat的N<br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+倍加强版，socat的官方网站：http://www.dest-unreach.org/socat/ 。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat是一个两个独立数据通道之间的双向数据传输的继电器。这些数据通道包含文件、管道、设备（终端或调制解调器等）、插座（Unix，IP4，IP6 - raw，UDP，TCP）、SSL、SOCKS4客户端或代理CONNECT。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+Socat支持广播和多播、抽象Unix sockets、Linux tun/tap、GNU readline 和 PTY。它提供了分叉、记录和进程间通信的不同模式。多个选项可用于调整socat和其渠道，Socat可以作为TCP中继（一次性或守护进程），作为一个守护进程基于socksifier，作为一个shell Unix套接字接口，作为IP6的继电器，或面向TCP的程序重定向到一个串行线。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/></span>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:14px;">socat的主要特点就是在两个数据流之间建立通道；且支持众多协议和链接方式：ip, tcp, udp, ipv6, pipe,exec,system,open,proxy,openssl,socket等。</span></p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:18px;">2.socat的安装</span></p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:14px;">2.1下载软件包 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+下载socat源代码包：http://www.dest-unreach.org/socat/download/ 。 </span></p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:14px;"><br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+2.2 编译安装 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+把下载的软件包解压后按照传统的方式编译安装：</span></p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:14px;"><img height="0" src="" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="0"></img></span></p><pre style="white-space:pre-wrap;color:rgb(0, 0, 0);outline:0px;padding:8px;margin:0px 0px 24px;position:relative;box-sizing:border-box;word-wrap:break-word;overflow-x:auto;font-family:Consolas, Inconsolata, Courier, monospace;font-size:14px;line-height:22px;word-break:break-all;"><code style="line-height:22px;font-family:Consolas, Inconsolata, Courier, monospace, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif;outline:0px;border-radius:4px;display:block;font-size:14px;box-sizing:border-box;overflow-x:auto;white-space:pre;word-wrap:normal;padding:8px;word-break:break-all;">./configure </code></pre><pre style="white-space:pre-wrap;color:rgb(0, 0, 0);outline:0px;padding:8px;margin:0px 0px 24px;position:relative;box-sizing:border-box;word-wrap:break-word;overflow-x:auto;font-family:Consolas, Inconsolata, Courier, monospace;font-size:14px;line-height:22px;word-break:break-all;"><code style="overflow-x:auto;background:rgb(40, 44, 52);outline:0px;color:rgb(171, 178, 191);box-sizing:border-box;font-size:14px;line-height:22px;display:block;white-space:pre;word-wrap:normal;padding:8px;font-family:Consolas, Inconsolata, Courier, monospace, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif;border-radius:4px;word-break:break-all;"><ol style="outline:0px;list-style:none;box-sizing:border-box;border-collapse:collapse;padding:0px;margin:0px;overflow:hidden;word-break:break-all;"><li style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;list-style-type:none;margin-left:0px;margin-top:0px;height:22px;"><div style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;float:left;height:22px;width:24px;border-right:1px solid rgb(197, 197, 197);"><div style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;text-align:right;padding-right:8px;word-break:break-all;"><span style="text-align:right;">1</span></div></div><div style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;margin-left:8px;float:left;height:22px;"><div style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;color:rgb(230, 192, 123);word-break:break-all;"><span style="outline:0px;box-sizing:border-box;color:rgb(230, 192, 123);word-break:break-all;">make</span></span> </div></div></li><li style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;list-style-type:none;margin-left:0px;margin-top:0px;height:22px;"><div style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;float:left;height:22px;width:24px;border-right:1px solid rgb(197, 197, 197);"><div style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;text-align:right;padding-right:8px;word-break:break-all;"><span style="text-align:right;">2</span></div></div><div style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;margin-left:8px;float:left;height:22px;"><div style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;color:rgb(230, 192, 123);word-break:break-all;"><span style="outline:0px;box-sizing:border-box;color:rgb(230, 192, 123);word-break:break-all;">make</span></span> install </div></div></li></ol></code></pre><br style="outline:0px;box-sizing:border-box;word-break:break-all;"/><p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:14px;">具体的细节可以参考安装文档 README 。 在编译的过程中可能遇到如下错误：<img src="socat_files/Center" type="image/png" data-filename="Center" height="24" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="641"/><br style="outline:0px;box-sizing:border-box;word-break:break-all;"/></span></p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:14px;"><img height="0" src="" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="0"></img><br style="outline:0px;box-sizing:border-box;word-break:break-all;"/></span></p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:14px;">解决方法有两种： <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+第一种是禁用fips，使用如下命令配置： <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+./configure --disable-fips <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+第二种是安装fips，首先到网站http://www.openssl.org/source/ 下载openssl-fips安装包，然后解压安装：<br style="outline:0px;box-sizing:border-box;word-break:break-all;"/></span></p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:14px;"><img height="0" src="" style="outline:0px;box-sizing:border-box;margin:0px;word-break:break-all;max-width:100%;cursor:zoom-in;" width="0"></img></span></p><pre style="white-space:pre-wrap;color:rgb(0, 0, 0);outline:0px;padding:8px;margin:0px 0px 24px;position:relative;box-sizing:border-box;word-wrap:break-word;overflow-x:auto;font-family:Consolas, Inconsolata, Courier, monospace;font-size:14px;line-height:22px;word-break:break-all;"><code style="line-height:22px;font-family:Consolas, Inconsolata, Courier, monospace, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif;outline:0px;border-radius:4px;display:block;font-size:14px;box-sizing:border-box;overflow-x:auto;white-space:pre;word-wrap:normal;padding:8px;word-break:break-all;">./config </code></pre><pre style="white-space:pre-wrap;color:rgb(0, 0, 0);outline:0px;padding:8px;margin:0px 0px 24px;position:relative;box-sizing:border-box;word-wrap:break-word;overflow-x:auto;font-family:Consolas, Inconsolata, Courier, monospace;font-size:14px;line-height:22px;word-break:break-all;"><code style="overflow-x:auto;background:rgb(40, 44, 52);outline:0px;color:rgb(171, 178, 191);box-sizing:border-box;font-size:14px;line-height:22px;display:block;white-space:pre;word-wrap:normal;padding:8px;font-family:Consolas, Inconsolata, Courier, monospace, &quot;PingFang SC&quot;, &quot;Microsoft YaHei&quot;, sans-serif;border-radius:4px;word-break:break-all;"><ol style="outline:0px;list-style:none;box-sizing:border-box;border-collapse:collapse;padding:0px;margin:0px;overflow:hidden;word-break:break-all;"><li style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;list-style-type:none;margin-left:0px;margin-top:0px;height:22px;"><div style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;float:left;height:22px;width:24px;border-right:1px solid rgb(197, 197, 197);"><div style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;text-align:right;padding-right:8px;word-break:break-all;"><span style="text-align:right;">1</span></div></div><div style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;margin-left:8px;float:left;height:22px;"><div style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;color:rgb(230, 192, 123);word-break:break-all;"><span style="outline:0px;box-sizing:border-box;color:rgb(230, 192, 123);word-break:break-all;">make</span></span> </div></div></li><li style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;list-style-type:none;margin-left:0px;margin-top:0px;height:22px;"><div style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;float:left;height:22px;width:24px;border-right:1px solid rgb(197, 197, 197);"><div style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;text-align:right;padding-right:8px;word-break:break-all;"><span style="text-align:right;">2</span></div></div><div style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;margin-left:8px;float:left;height:22px;"><div style="outline:0px;padding:0px;margin:0px;box-sizing:border-box;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;color:rgb(230, 192, 123);word-break:break-all;"><span style="outline:0px;box-sizing:border-box;color:rgb(230, 192, 123);word-break:break-all;">make</span></span> install </div></div></li></ol></code></pre><br style="outline:0px;box-sizing:border-box;word-break:break-all;"/><br style="outline:0px;box-sizing:border-box;word-break:break-all;"/><p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:18px;">3.socat的使用</span></p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:18px;">3.1 工作机理 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat的运行有4个阶段: <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+3.1.1 初始化 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+解析命令行以及初始化日志系统。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+3.1.2 打开连接 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+先打开第一个连接，再打开第二个连接。这个单步执行的。 如果第一个连</span></p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:18px;">接失败，则会直接退出。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+3.1.3 数据转发 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+谁有数据就转发到另外一个连接上, read/write互换。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+3.1.4 关闭 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+其中一个连接掉开，执行处理另外一个连接。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+3.2 地址类型 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+参数由2部分组成，第一个连接和第二个连接，最简单的用法就是 socat - - 其效果就是输入什么，回显什么其用法主要在于地址如何描述, 下面介绍几个常用的。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+3.2.1 TCP <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+TCP:&lt;host&gt;:&lt;port&gt; 目标机器host对应端口portTCP-LISTEN:&lt;port&gt; 本机监听端口。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+3.2.2 UDP <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+UDP:&lt;host&gt;:&lt;port&gt; 目标机器host对应端口portUDP-LISTEN:&lt;port&gt; 本机监听端口。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+3.2.3 OPENSSL <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+需要一个证书,否则会失败提示: 2012/04/06 11:29:11 socat[1614] E SSL_connect(): <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+error:14077410:SSL routines:SSL23_GET_SERVER_HELLO:sslv3 alert handshake failureOPENSSL:&lt;host&gt;:&lt;port&gt; 目标机器host<br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+对应端口<br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+portOPENSSL-LISTEN:&lt;port&gt; 本机监听端口。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+3.2.4 TUN <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+TUN[:&lt;if-addr&gt;/&lt;bits&gt;] 建立vpn，双方都需要root权限。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+3.3 典型使用 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+3.3.1 连接目标 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat - tcp:192.168.1.18:80 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+这个命令等同于 nc 192.168.1.18 80。 socat里面，必须有两个流，所以第一个参数-代表标准的输入输出，第二个流连接到192.168.1.18的80端口。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat -d -d READLINE,history=$HOME/.http_history TCP4:www.qq.com:80 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+这个例子支持历史记录查询，类似于bash的历史记录。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+3.3.2 反向连接 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+再看一个反向telnet的例子： on server: <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat tcp-listen:23 exec:cmd,pty,stderr <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+这个命名把cmd绑定到端口23，同时把cmd的Stderr复位向到stdout。 on client: <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat readline tcp:server:23 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+连接到服务器的23端口，即可获得一个cmd shell。readline是gnu的命令行编辑器，具有历史功能。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+3.3.3 向远处端口发数据 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+echo “test” | socat – tcp-connect:127.0.0.1:12345 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+3.3.4 本地开启端口 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat tcp-l:7777,reuseaddr,fork system:bash <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+同nc -l -p 7777 -e bash。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+3.3.5 执行bash的完美用法 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+在目标上 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat tcp-l:8888 system:bash,pty,stderr <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+本地 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat readline tcp:$target:8888 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+用readline替代-，就能支持历史功能了。在这个模式下的客户端有本地一样的效果 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/><br style="outline:0px;box-sizing:border-box;word-break:break-all;"/></span></p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:18px;">3.3.6 文件传递 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+再看文件传递的例子。nc也经常用来传递文件，但是nc有一个缺点，就是不知道文件什么时候传完了，一般要用Ctrl+c来终止，或者估计一个时间，用-w参数来让他自动终止。用socat就不用这么麻烦了： <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+on host 1: <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat -u open:myfile.exe,binary tcp-listen:999 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+on host 2: <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat -u tcp:host1:999 open:myfile.exe,create,binary <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+这个命令把文件myfile.exe用二进制的方式，从host 1 传到host 2。-u 表示数据单向流动，从第一个参数到第二个参数，-U表示从第二个到第一个。文件传完了，自动退出。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/><br style="outline:0px;box-sizing:border-box;word-break:break-all;"/></span></p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:18px;">3.3.7 转发 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/><br style="outline:0px;box-sizing:border-box;word-break:break-all;"/></span></p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:18px;">3.3.7.1 本地端口转向远程主机 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat TCP4-LISTEN:8888 TCP4:www.qq.com:80 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+如果需要使用并发连接，则加一个fork,如下: <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat TCP4-LISTEN:8888,fork TCP4:www.qq.com:80 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+本地监听8888端口，来自8888的连接重定向到目标www.qq.com:80 </span></p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:18px;">3.3.7.2 端口映射 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+再来一个大家喜欢用的例子。在一个NAT环境，如何从外部连接到内部的一个端口呢？只要能够在内部运行socat就可以了。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+外部： <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat tcp-listen:1234 tcp-listen:3389 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+内部： <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat tcp:outerhost:1234 tcp:192.168.12.34:3389 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+这样，你外部机器上的3389就映射在内部网192.168.12.34的3389端口上。 </span></p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:18px;"><br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+3.3.7.3 VPN <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+服务端 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat -d -d TCP-LISTEN:11443,reuseaddr TUN:192.168.255.1/24,up <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+客户端 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat TCP:1.2.3.4:11443 TUN:192.168.255.2/24,up <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/><br style="outline:0px;box-sizing:border-box;word-break:break-all;"/></span></p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:18px;">3.3.8 重定向 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat TCP4-LISTEN:80,reuseaddr,fork TCP4:192.168.123.12:8080 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+TCP4-LISTEN：在本地建立的是一个TCP ipv4协议的监听端口； reuseaddr：绑定本地一个端口； <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+fork：设定多链接模式，即当一个链接被建立后，自动复制一个同样的端口再进行监听 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat启动监听模式会在前端占用一个shell，因此需使其在后台执行。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat -d -d tcp4-listen:8900,reuseaddr,fork tcp4:10.5.5.10:3389 # 端口转发 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+或者 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat -d -d -lf /var/log/socat.log TCP4-LISTEN:15000,reuseaddr,fork,su=nobody TCP4:static.5iops.com:15000 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+“-d -d -lf /var/log/socat.log”是参数，前面两个连续的-d -d代表调试信息的输出级别，-lf则指定输出信息的保存文件。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+“TCP4-LISTEN:15000,reuseaddr,fork,su=nobody”是一号地址，代表在15000端口上进行TCP4协议的监听，复用绑定的IP，每次有连接到来就fork复制一个进程进行处理，同时将执行用户设置为nobody用户。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+“TCP4:static.5iops.com:15000″是二号地址，代表将socat监听到的任何请求，转发到static.5iops.com:15000上去。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/><br style="outline:0px;box-sizing:border-box;word-break:break-all;"/></span></p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:18px;">3.3.9 读写分流 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat还具有一个独特的读写分流功能，比如： <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat open:read.txt!!open:write.txt,create,append tcp-listen:80,reuseaddr,fork <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+这个命令实现一个假的web server，客户端连过来之后，就把read.txt里面的内容发过去，同时把客户的数据保存到write.txt里面。”！！”符号用户合并读写流，前面的用于读，后面的用于写。 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+3.3.10 通过openssl来加密传输过程 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/><br style="outline:0px;box-sizing:border-box;word-break:break-all;"/></span></p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:18px;">3.3.10.1 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+证书生成 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+FILENAME=server openssl genrsa -out $FILENAME.key 1024openssl req -new -key $FILENAME.key -x509 -days 3653 -out <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+$FILENAME.crtcat <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+$FILENAME.key <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+$FILENAME.crt &gt;$FILENAME.pem <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+在当前目录下生成 server.pem server.crt</span></p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:18px;">3.3.10.2 使用 </span></p>
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;word-break:break-all;font-size:18px;">在服务端 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat openssl-listen:4433,reuseaddr,cert=srv.pem,cafile=srv.crt system:bash,pty,stderr <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+在本地 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+socat readline openssl:localhost:4433,cert=srv.pem,cafile=srv.crt <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/></span></p>
+            </div>
+                <span style="display:block;height:0px;visibility:hidden;clear:both;"> </span></div>
+				
+        	</div>
+	
+</div></span></div></div></div></div>
+</div>
+</span>
+</div></body></html> 
