@@ -1,0 +1,222 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+    <meta name="description" content="firewall-cmd:Linux上新用的防火墙软件，跟iptables差不多的工具。 - 最专业的Linux命令大全，内容包含Linux命令手册、详解、学习，值得收藏的Linux命令速查手册。">
+    <meta name="keywords" content="Linux,Command,命令大全,Linux命令手册,firewall-cmd,Linux上新用的防火墙软件，跟iptables差不多的工具。">
+    <title>firewall-cmd 命令，Linux firewall-cmd 命令详解：Linux上新用的防火墙软件，跟iptables差不多的工具。 -  Linux 命令搜索引擎</title>
+    <link rel="shortcut icon" href="../img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="../css/index.css?v=1532764393546">
+</head>
+<body>
+<a href="https://github.com/jaywcjlove/linux-command" target="_blank" class="github-corner">  </a>
+<div class="header header_list">
+    <div class="logo">
+        <a href="/">
+         
+        </a>
+    </div>
+    <div class="search">
+        <ul class="search-list" id="result">
+            <!-- <li><a href="#"><strong>find</strong> - 指定目录下查找文件。</a></li> -->
+        </ul>
+        <input type="text" class="query" id="query" autocomplete="off" autofocus="autofocus" placeholder="Linux 命令搜索"/>
+        <div class="enter-input">
+            <input type="hidden" id="current_path" value="/c/firewall-cmd.html">
+            <button id="search_btn">搜索</button>
+        </div>
+    </div>
+</div>
+
+<div class="markdown-body">
+
+<span class="edit_btn">
+<a target="_blank" href="https://github.com/jaywcjlove/linux-command/edit/master/command/firewall-cmd.md">纠正错误</a> 
+<span class="split"></span>
+<a target="_blank" href="https://github.com/jaywcjlove/linux-command/edit/master/command/firewall-cmd.md">添加实例</a>
+</span>
+
+<h1 id="firewall-cmd">firewall-cmd</h1><p>Linux上新用的防火墙软件，跟iptables差不多的工具。</p>
+<h2 id="补充说明">补充说明</h2><p>firewall-cmd 是 firewalld的字符界面管理工具，firewalld是centos7的一大特性，最大的好处有两个：支持动态更新，不用重启服务；第二个就是加入了防火墙的“zone”概念。</p>
+<p>firewalld跟iptables比起来至少有两大好处：</p>
+<ol>
+<li>firewalld可以动态修改单条规则，而不需要像iptables那样，在修改了规则后必须得全部刷新才可以生效。</li>
+<li>firewalld在使用上要比iptables人性化很多，即使不明白“五张表五条链”而且对TCP/IP协议也不理解也可以实现大部分功能。</li>
+</ol>
+<p>firewalld自身并不具备防火墙的功能，而是和iptables一样需要通过内核的netfilter来实现，也就是说firewalld和 iptables一样，他们的作用都是用于维护规则，而真正使用规则干活的是内核的netfilter，只不过firewalld和iptables的结 构以及使用方法不一样罢了。</p>
+<h3 id="语法">语法</h3><pre><code>finger(选项)(参数)
+</code></pre><h3 id="实例">实例</h3><pre><code class="lang-bash"><span class="hljs-comment"># 安装firewalld</span>
+yum install firewalld firewall-config
+
+
+systemctl start  firewalld <span class="hljs-comment"># 启动</span>
+systemctl status firewalld <span class="hljs-comment"># 或者 firewall-cmd --state 查看状态</span>
+systemctl <span class="hljs-built_in">disable</span> firewalld <span class="hljs-comment"># 停止</span>
+systemctl stop firewalld  <span class="hljs-comment"># 禁用</span>
+
+<span class="hljs-comment"># 关闭服务的方法</span>
+<span class="hljs-comment"># 你也可以关闭目前还不熟悉的FirewallD防火墙，而使用iptables，命令如下：</span>
+
+systemctl stop firewalld
+systemctl <span class="hljs-built_in">disable</span> firewalld
+yum install iptables-services
+systemctl start iptables
+systemctl <span class="hljs-built_in">enable</span> iptables
+</code></pre>
+<p>配置firewalld</p>
+<pre><code class="lang-bash">firewall-cmd --version  <span class="hljs-comment"># 查看版本</span>
+firewall-cmd --help     <span class="hljs-comment"># 查看帮助</span>
+
+<span class="hljs-comment"># 查看设置：</span>
+firewall-cmd --state  <span class="hljs-comment"># 显示状态</span>
+firewall-cmd --get-active-zones  <span class="hljs-comment"># 查看区域信息</span>
+firewall-cmd --get-zone-of-interface=eth0  <span class="hljs-comment"># 查看指定接口所属区域</span>
+firewall-cmd --panic-on  <span class="hljs-comment"># 拒绝所有包</span>
+firewall-cmd --panic-off  <span class="hljs-comment"># 取消拒绝状态</span>
+firewall-cmd --query-panic  <span class="hljs-comment"># 查看是否拒绝</span>
+
+firewall-cmd --reload <span class="hljs-comment"># 更新防火墙规则</span>
+firewall-cmd --complete-reload
+<span class="hljs-comment"># 两者的区别就是第一个无需断开连接，就是firewalld特性之一动态添加规则，第二个需要断开连接，类似重启服务</span>
+
+
+<span class="hljs-comment"># 将接口添加到区域，默认接口都在public</span>
+firewall-cmd --zone=public --add-interface=eth0
+<span class="hljs-comment"># 永久生效再加上 --permanent 然后reload防火墙</span>
+
+<span class="hljs-comment"># 设置默认接口区域，立即生效无需重启</span>
+firewall-cmd --set-default-zone=public
+
+<span class="hljs-comment"># 查看所有打开的端口：</span>
+firewall-cmd --zone=dmz --list-ports
+
+<span class="hljs-comment"># 加入一个端口到区域：</span>
+firewall-cmd --zone=dmz --add-port=8080/tcp
+<span class="hljs-comment"># 若要永久生效方法同上</span>
+
+<span class="hljs-comment"># 打开一个服务，类似于将端口可视化，服务需要在配置文件中添加，/etc/firewalld 目录下有services文件夹，这个不详细说了，详情参考文档</span>
+firewall-cmd --zone=work --add-service=smtp
+
+<span class="hljs-comment"># 移除服务</span>
+firewall-cmd --zone=work --remove-service=smtp
+
+<span class="hljs-comment"># 显示支持的区域列表</span>
+firewall-cmd --get-zones
+
+<span class="hljs-comment"># 设置为家庭区域</span>
+firewall-cmd --set-default-zone=home
+
+<span class="hljs-comment"># 查看当前区域</span>
+firewall-cmd --get-active-zones
+
+<span class="hljs-comment"># 设置当前区域的接口</span>
+firewall-cmd --get-zone-of-interface=enp03s
+
+<span class="hljs-comment"># 显示所有公共区域（public）</span>
+firewall-cmd --zone=public --list-all
+
+<span class="hljs-comment"># 临时修改网络接口（enp0s3）为内部区域（internal）</span>
+firewall-cmd --zone=internal --change-interface=enp03s
+
+<span class="hljs-comment"># 永久修改网络接口enp03s为内部区域（internal）</span>
+firewall-cmd --permanent --zone=internal --change-interface=enp03s
+</code></pre>
+<p>服务管理</p>
+<pre><code class="lang-bash"><span class="hljs-comment"># 显示服务列表  </span>
+Amanda, FTP, Samba和TFTP等最重要的服务已经被FirewallD提供相应的服务，可以使用如下命令查看：
+
+firewall-cmd --get-services
+
+<span class="hljs-comment"># 允许SSH服务通过</span>
+firewall-cmd --enable service=ssh
+
+<span class="hljs-comment"># 禁止SSH服务通过</span>
+firewall-cmd --disable service=ssh
+
+<span class="hljs-comment"># 打开TCP的8080端口</span>
+firewall-cmd --enable ports=8080/tcp
+
+<span class="hljs-comment"># 临时允许Samba服务通过600秒</span>
+firewall-cmd --enable service=samba --timeout=600
+
+<span class="hljs-comment"># 显示当前服务</span>
+firewall-cmd --list-services
+
+<span class="hljs-comment"># 添加HTTP服务到内部区域（internal）</span>
+firewall-cmd --permanent --zone=internal --add-service=http
+firewall-cmd --reload     <span class="hljs-comment"># 在不改变状态的条件下重新加载防火墙</span>
+</code></pre>
+<p>端口管理</p>
+<pre><code class="lang-bash"><span class="hljs-comment"># 打开443/TCP端口</span>
+firewall-cmd --add-port=443/tcp
+
+<span class="hljs-comment"># 永久打开3690/TCP端口</span>
+firewall-cmd --permanent --add-port=3690/tcp
+
+<span class="hljs-comment"># 永久打开端口好像需要reload一下，临时打开好像不用，如果用了reload临时打开的端口就失效了</span>
+<span class="hljs-comment"># 其它服务也可能是这样的，这个没有测试</span>
+firewall-cmd --reload
+
+<span class="hljs-comment"># 查看防火墙，添加的端口也可以看到</span>
+firewall-cmd --list-all
+</code></pre>
+<p>直接模式</p>
+<pre><code class="lang-bash"><span class="hljs-comment"># FirewallD包括一种直接模式，使用它可以完成一些工作，例如打开TCP协议的9999端口</span>
+
+firewall-cmd --direct -add-rule ipv4 filter INPUT 0 -p tcp --dport 9000 -j ACCEPT
+firewall-cmd --reload
+</code></pre>
+<p><strong>控制端口 / 服务</strong></p>
+<p>可以通过两种方式控制端口的开放，一种是指定端口号另一种是指定服务名。虽然开放 http 服务就是开放了 80 端口，但是还是不能通过端口号来关闭，也就是说通过指定服务名开放的就要通过指定服务名关闭；通过指定端口号开放的就要通过指定端口号关闭。还有一个要注意的就是指定端口的时候一定要指定是什么协议，tcp 还是 udp。知道这个之后以后就不用每次先关防火墙了，可以让防火墙真正的生效。</p>
+<pre><code class="lang-bash">firewall-cmd --add-service=mysql        <span class="hljs-comment"># 开放mysql端口</span>
+firewall-cmd --remove-service=http      <span class="hljs-comment"># 阻止http端口</span>
+firewall-cmd --list-services            <span class="hljs-comment"># 查看开放的服务</span>
+firewall-cmd --add-port=3306/tcp        <span class="hljs-comment"># 开放通过tcp访问3306</span>
+firewall-cmd --remove-port=80tcp        <span class="hljs-comment"># 阻止通过tcp访问3306</span>
+firewall-cmd --add-port=233/udp         <span class="hljs-comment"># 开放通过udp访问233</span>
+firewall-cmd --list-ports               <span class="hljs-comment"># 查看开放的端口</span>
+</code></pre>
+<p>伪装 IP</p>
+<pre><code class="lang-bash">firewall-cmd --query-masquerade <span class="hljs-comment"># 检查是否允许伪装IP</span>
+firewall-cmd --add-masquerade   <span class="hljs-comment"># 允许防火墙伪装IP</span>
+firewall-cmd --remove-masquerade<span class="hljs-comment"># 禁止防火墙伪装IP</span>
+</code></pre>
+<p><strong>端口转发</strong></p>
+<p>端口转发可以将指定地址访问指定的端口时，将流量转发至指定地址的指定端口。转发的目的如果不指定 ip 的话就默认为本机，如果指定了 ip 却没指定端口，则默认使用来源端口。
+如果配置好端口转发之后不能用，可以检查下面两个问题：</p>
+<ol>
+<li>比如我将 80 端口转发至 8080 端口，首先检查本地的 80 端口和目标的 8080 端口是否开放监听了</li>
+<li>其次检查是否允许伪装 IP，没允许的话要开启伪装 IP</li>
+</ol>
+<pre><code class="lang-bash">firewall-cmd --add-forward-port=port=80:proto=tcp:toport=8080   <span class="hljs-comment"># 将80端口的流量转发至8080</span>
+firewall-cmd --add-forward-port=port=80:proto=tcp:toaddr=192.168.0.1 <span class="hljs-comment"># 将80端口的流量转发至192.168.0.1</span>
+firewall-cmd --add-forward-port=port=80:proto=tcp:toaddr=192.168.0.1:toport=8080 <span class="hljs-comment"># 将80端口的流量转发至192.168.0.1的8080端口</span>
+</code></pre>
+<ol>
+<li>当我们想把某个端口隐藏起来的时候，就可以在防火墙上阻止那个端口访问，然后再开一个不规则的端口，之后配置防火墙的端口转发，将流量转发过去。</li>
+<li>端口转发还可以做流量分发，一个防火墙拖着好多台运行着不同服务的机器，然后用防火墙将不同端口的流量转发至不同机器。</li>
+</ol>
+
+</div>
+
+<div class="footer ">
+  收藏本站请使用Ctrl+D或者Command+d
+  <br />
+  <a target="_blank" href="https://github.com/jaywcjlove/linux-command/new/master/command">添加命令</a> |
+  <a href="hot.html">命令列表</a> |
+  <a href="https://github.com/jaywcjlove/oscnews">Chrome 插件</a>
+  <br> 共搜集到
+  <span id="commands_info">
+    553
+  </span> 个Linux命令
+</div>
+<script>
+var _hmt = _hmt || []; (function() {var hm = document.createElement("script"); hm.src = "https://hm.baidu.com/hm.js?a542c0213a9aa8ae29fccdc8a18b91ef"; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(hm, s); })(); </script>
+<script type="text/javascript" src="../js/dt.js?v=1532764393547"></script>
+<script type="text/javascript" src="../js/index.js?v=1532764393547"></script>
+</body>
+</html>
