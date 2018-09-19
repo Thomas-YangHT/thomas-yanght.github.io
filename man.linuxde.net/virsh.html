@@ -1,0 +1,223 @@
+<html>
+<head>
+  <title>Evernote Export</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/307027 (zh-CN, DDL); Windows/10.0.0 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+<a name="4261"/>
+
+<div><span>
+  <div>
+<div style="font-size: 16px; display: inline-block; min-width: 100%;position: relative;"><div style="outline:0px;box-sizing:border-box;text-size-adjust:100%;color:rgba(0, 0, 0, 0.75);font-family:Lato, -apple-system, &quot;SF UI Text&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro Hei&quot;, sans-serif;font-variant-ligatures:common-ligatures;line-height:1.67;-webkit-font-smoothing:antialiased;"><div style="box-sizing:inherit;outline:0px;font-family:Lato, -apple-system, &quot;SF UI Text&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro Hei&quot;, sans-serif;font-size:14px;line-height:1.67;background-color:rgb(245, 246, 247);color:rgba(0, 0, 0, 0.75);font-variant-ligatures:common-ligatures;-webkit-font-smoothing:antialiased;"><div style="outline:0px;box-sizing:border-box;"><span style="box-sizing:inherit;outline:0px;"><div style="box-sizing:inherit;outline:0px;background:rgb(255, 255, 255);box-shadow:rgba(0, 0, 0, 0.05) 0px 2px 4px 0px;"><div style="box-sizing:inherit;outline:0px;"><div style="box-sizing:inherit;outline:0px;word-break:break-all;"><div style="box-sizing:inherit;outline:0px;font-family:-apple-system, &quot;SF UI Text&quot;, Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro Hei&quot;, sans-serif;word-break:break-all;">
+							
+							
+							<h1 style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 16px;font-size:28px;color:rgb(79, 79, 79);font-weight:700;line-height:36px;word-break:break-all;"><a name="t0" style="outline:0px;cursor:pointer;background-color:transparent;box-sizing:border-box;color:rgb(78, 161, 219);text-decoration:none;text-decoration-skip:ink;word-break:break-all;"></a>virsh的详细命令解析</h1>
+
+
+
+<h3 style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 16px;font-size:22px;color:rgb(79, 79, 79);font-weight:700;line-height:30px;word-break:break-all;"><a name="t1" style="outline:0px;cursor:pointer;background-color:transparent;box-sizing:border-box;color:rgb(78, 161, 219);text-decoration:none;text-decoration-skip:ink;word-break:break-all;"></a>virsh 有命令模式和交互模式如果直接在vrish后面添加参数是命令模式，如果直接写virsh，就会进入交互模式</h3>
+
+<ul style="outline:0px;list-style:none;box-sizing:border-box;padding:0px;margin:0px 0px 24px;word-break:break-all;">
+<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;">virsh list  <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+    列出所有的虚拟机，虚拟机的状态有（8）种 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+     runing 是运行状态 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+     idel 是空闲状态 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+pause 暂停状态 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+shutdown 关闭状态 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+crash 虚拟机崩坏状态 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+daying 垂死状态 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+shut off 不运行完全关闭 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+pmsuspended客户机被关掉电源中中断</li>
+<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;">连接实例 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+qemu：///session (本地连接到个人实例) <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+qemu+unix：///session (本地连接到个人实例) <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+qemu:///system (本地连接到系统实例) <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+qemu+nuix:///system(本地连接到系统实例) <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+qemu://example.com/system(远程连接，TLS) <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+qemu+tcp://example.com/system(远程登录，SASI) <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+qemu+ssl://example.com/system(远程登录，ssl)</p></li>
+<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;"><p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;">-v <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+是只显示版本号</p></li>
+<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;">-V  <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+使显示版本的详细信息</li>
+<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;">-c - -connect 连接远程的主机</li>
+<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;">-l  - -log 输出日志</li>
+<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;">-q - -quiet避免额外的信息</li>
+<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;">-r - - readonly 只读，一般和connect配合使用</li>
+<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;">-t  - - timing 输出消逝的时间</li>
+<li style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 0px 32px;list-style-type:disc;word-break:break-all;">-e - - escape 设置转意序列</li>
+</ul>
+
+
+
+<h1 style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 16px;font-size:28px;color:rgb(79, 79, 79);font-weight:700;line-height:36px;word-break:break-all;"><a name="t2" style="outline:0px;cursor:pointer;background-color:transparent;box-sizing:border-box;color:rgb(78, 161, 219);text-decoration:none;text-decoration-skip:ink;word-break:break-all;"></a>交互模式</h1>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;">*quit，exit是离开virsh <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*version 是显示版本 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*cd 进入目录 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*pwd 打印当前路径 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*connect URI连接 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+一般有下列几种</p>
+
+
+
+<pre style="margin:0px 0px 24px;margin-bottom:24px;overflow-y:hidden;overflow-x:auto;box-sizing:border-box;outline:0px;color:rgb(0, 0, 0);position:relative;line-height:22px;font-size:14px;font-family:Consolas, Inconsolata, Courier, monospace;word-break:break-all;border:none;background-color:rgb(246, 248, 250);padding:8px 16px 6px 56px;"><code style="font-size:14px;text-size-adjust:none;outline:0px;display:block;font-family:Consolas, Inconsolata, Courier, monospace;border-radius:4px;color:rgb(0, 0, 0);box-sizing:border-box;line-height:22px;overflow-x:auto;white-space:pre;word-wrap:normal;word-break:break-all;background-color:rgb(246, 248, 250);padding:0px;">xen：<span style="outline:0px;box-sizing:border-box;color:rgb(136, 0, 0);font-size:inherit;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;color:rgb(136, 0, 0);font-size:inherit;word-break:break-all;">///</span> 连接当地的xem虚拟机</span>
+qemu：<span style="outline:0px;box-sizing:border-box;color:rgb(136, 0, 0);font-size:inherit;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;color:rgb(136, 0, 0);font-size:inherit;word-break:break-all;">///</span>system （以root的身份）连接当地的qemu和kvm虚拟机</span>
+qemu;<span style="outline:0px;box-sizing:border-box;color:rgb(136, 0, 0);font-size:inherit;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;color:rgb(136, 0, 0);font-size:inherit;word-break:break-all;">///</span>sessoin 以用户的身份连接当地的qemu和kvm</span>
+lxc：<span style="outline:0px;box-sizing:border-box;color:rgb(136, 0, 0);font-size:inherit;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;color:rgb(136, 0, 0);font-size:inherit;word-break:break-all;">///</span>session 连接当地的linux容器</span></code><ul style="position:absolute;font-size:inherit;outline:0px;box-sizing:border-box;word-break:break-all;margin:0px;list-style:none;padding:8px 0px;width:48px;background-color:rgb(238, 240, 244);top:0px;left:0px;text-align:right;"><li style="outline:0px;box-sizing:border-box;font-size:inherit;list-style-type:disc;word-break:break-all;padding:0px 8px;margin:0px;list-style:none;color:rgb(153, 153, 153);">1</li><li style="outline:0px;box-sizing:border-box;font-size:inherit;list-style-type:disc;word-break:break-all;padding:0px 8px;margin:0px;list-style:none;color:rgb(153, 153, 153);">2</li><li style="outline:0px;box-sizing:border-box;font-size:inherit;list-style-type:disc;word-break:break-all;padding:0px 8px;margin:0px;list-style:none;color:rgb(153, 153, 153);">3</li><li style="outline:0px;box-sizing:border-box;font-size:inherit;list-style-type:disc;word-break:break-all;padding:0px 8px;margin:0px;list-style:none;color:rgb(153, 153, 153);">4</li></ul></pre>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;">*hostname 得到主机名字 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*sysinfo 的到虚拟机系统的详细信息，xml打印出来 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*nodeinfo得到电脑详细配置名字 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*nodecpustats 的到虚拟cpu 的状态 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*nodemenstats 的内存的详细信息 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*nodesuspend 延缓打印的时间最大为60 seconds <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*node-memory-tune 允许你设置node的内存参数 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*capablilities 打印虚拟机的特点 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*inject-nmi 给客户机注射nmi（不可屏蔽中断） <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*list列出所有的虚拟机（可以加参数） <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*freecell 打印出虚拟I机中可用的内存 </p>
+
+
+
+<h1 style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 16px;font-size:28px;color:rgb(79, 79, 79);font-weight:700;line-height:36px;word-break:break-all;"><a name="t3" style="outline:0px;cursor:pointer;background-color:transparent;box-sizing:border-box;color:rgb(78, 161, 219);text-decoration:none;text-decoration-skip:ink;word-break:break-all;"></a>DOMAIN Commands</h1>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;">*autostart （domain）：标示自动启动虚拟机 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ *console  （domain）：连接虚拟机的控制台 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ *create （file）：从文件创建虚拟机</p>
+
+
+
+<pre style="margin:0px 0px 24px;margin-bottom:24px;overflow-y:hidden;overflow-x:auto;box-sizing:border-box;outline:0px;color:rgb(0, 0, 0);position:relative;line-height:22px;font-size:14px;font-family:Consolas, Inconsolata, Courier, monospace;word-break:break-all;border:none;background-color:rgb(246, 248, 250);padding:8px 16px 6px 56px;"><code style="font-size:14px;text-size-adjust:none;outline:0px;display:block;font-family:Consolas, Inconsolata, Courier, monospace;border-radius:4px;color:rgb(0, 0, 0);box-sizing:border-box;line-height:22px;overflow-x:auto;white-space:pre;word-wrap:normal;word-break:break-all;background-color:rgb(246, 248, 250);padding:0px;">virsh dumpxml domain.xml
+virsh <span style="outline:0px;box-sizing:border-box;font-size:inherit;word-break:break-all;"><span style="outline:0px;box-sizing:border-box;color:rgb(0, 0, 136);font-size:inherit;word-break:break-all;">create</span> <span style="outline:0px;box-sizing:border-box;color:rgb(0, 0, 136);font-size:inherit;word-break:break-all;">domain</span>.xml</span></code><ul style="position:absolute;font-size:inherit;outline:0px;box-sizing:border-box;word-break:break-all;margin:0px;list-style:none;padding:8px 0px;width:48px;background-color:rgb(238, 240, 244);top:0px;left:0px;text-align:right;"><li style="outline:0px;box-sizing:border-box;font-size:inherit;list-style-type:disc;word-break:break-all;padding:0px 8px;margin:0px;list-style:none;color:rgb(153, 153, 153);">1</li><li style="outline:0px;box-sizing:border-box;font-size:inherit;list-style-type:disc;word-break:break-all;padding:0px 8px;margin:0px;list-style:none;color:rgb(153, 153, 153);">2</li></ul></pre>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;">*define （file）定义一个虚拟机从文件中 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ *desc  （domain）显示虚拟机的描述信息 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ *destory（domain） 销毁虚拟机 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ *dommemstat（domain） 得到虚拟机运行的内存 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ *domblkerror （domain） 显示有错的设备 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ *domblkerror（domian）显示有错 的磁盘 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ *domblklist（domain）显示虚拟机的磁盘 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ *domiflist（domain）显示网卡接口 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ *domifstat（demo vnet0） 显示网卡信息 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ *domdisplay （demo）输出地址 和显卡 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ *dominfo（demo）显示虚拟机的信息 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ *domuuid （demo）显示虚拟机的id <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ *domid（id or name ） 根据名字得到id <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+* domjobabort （demo）种植虚拟机的当前任务 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+* dojobinfo （demo） 显示虚拟机的任务 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+* domstat （demo） 显示虚拟机的状态 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+* domcontrol(demo) 返回虚拟机的状态ok or error <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+* dump （demo file） 把文件配置输出到文件file <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+* dumpxml（demo）直接显示demo的xml文件配置 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+* edit （demo） 编辑主机的配置文件 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+* messagedsave（demo） 虚拟机的信息保存 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+* messagedsave-remove（demo） 移除保存的messagedsave <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*cpu-stats （demo） 虚拟机的cpu状态 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*screenshot （demo） 虚拟机截屏 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*setmen（demo） size 设置虚拟机的内存 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*setmaxmen（demo）设置虚拟机的最大内存 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*memtune（demo） 得到虚拟机分区的信息 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*blkiotune（demo） 得到虚拟机的磁盘信息 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*setvcpus（demo count）设置虚拟机的虚拟cpu个数 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*shutdown（demo） 关闭虚拟机 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*start（name or id） 开启虚拟机 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*suspend （demo） 挂起虚拟机 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*resume（demo） 回复虚拟机的suspend状态 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*dompmwakeup(demo)唤醒挂起的demo <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*ttyconsole （demo） 输出设备用的终端 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*vcpucount （demo） 设置cpu个数 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*vcpuinfo（demo） 得到cpu的信息 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*vncdisplay（demo） 显示虚拟机的ip</p>
+
+
+
+<h1 style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 16px;font-size:28px;color:rgb(79, 79, 79);font-weight:700;line-height:36px;word-break:break-all;"><a name="t4" style="outline:0px;cursor:pointer;background-color:transparent;box-sizing:border-box;color:rgb(78, 161, 219);text-decoration:none;text-decoration-skip:ink;word-break:break-all;"></a>device commands（设备命令）</h1>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;">*attach-device （demo file）添加设备从file文件中 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*attach-interface （demo type source ）添加一个接口 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*update-device（demo file）更新设备根据file</p>
+
+
+
+<h1 style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 16px;font-size:28px;color:rgb(79, 79, 79);font-weight:700;line-height:36px;word-break:break-all;"><a name="t5" style="outline:0px;cursor:pointer;background-color:transparent;box-sizing:border-box;color:rgb(78, 161, 219);text-decoration:none;text-decoration-skip:ink;word-break:break-all;"></a>virtual network commadns</h1>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;">*net-autostart (network) 自动启动网卡（default） <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*net-create （file） 把配置加载到文件 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*net-destory ( network )关闭网卡 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*net-dumpxml（default） 把网卡配置加载到文件 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*net-edit（default） 编辑网卡信息 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*net-info（default） 网卡信息 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*net-list 显示网卡 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*net-uuid （default）得到网卡的id <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*net-name（id）得到网卡的名字 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*net-start （default）开启网卡</p>
+
+
+
+<h1 style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 16px;font-size:28px;color:rgb(79, 79, 79);font-weight:700;line-height:36px;word-break:break-all;"><a name="t6" style="outline:0px;cursor:pointer;background-color:transparent;box-sizing:border-box;color:rgb(78, 161, 219);text-decoration:none;text-decoration-skip:ink;word-break:break-all;"></a>Interface commands</h1>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;">*iface-define（file）定义一个接口从文件里面 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*iface-dumpxml （lo）显示接口I的信息 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*iface-edit（lo） 编辑接口 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*iface-list 列出所有的接口 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*iface-name （mac） 根据mac得到名字 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*iface-mac(lo) 根据名字得到mac <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ *iface-start（lo） 开启接口 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ *iface-unbriged 解绑定 网桥 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+ *iface-undefine（lo） 不定义配置文件 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*iface-begin（lo）创建一个现有的接口设置 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*iface-commit 提交生命所有的改变有效，并且让接口工作 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*iface-rollbak 接口回滚</p>
+
+
+
+<h1 style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 16px;font-size:28px;color:rgb(79, 79, 79);font-weight:700;line-height:36px;word-break:break-all;"><a name="t7" style="outline:0px;cursor:pointer;background-color:transparent;box-sizing:border-box;color:rgb(78, 161, 219);text-decoration:none;text-decoration-skip:ink;word-break:break-all;"></a>STORAGE pppl commands</h1>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;">*pool-auto （pool）标记池自动启动 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*pool-build（pool）建造一个池 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*pool-create（file）根据文件创建池 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*pool-define（file）定义但是不开启 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*pool-destory（pool）销毁池，以后能回复 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*pool-delete（pool）删除池，以后不能恢复 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*pool-dumpxml（pool）查看池的定义文件 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*pool-edit（pool）编辑池的定义文件 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*pool-info池的信息 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*pool-list的列表 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*pool-name（id）根据id得到name <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*pool-id（name）根据name得到id <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*pool-start（poop）开启池 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*pool-uuid （pool） 返回一个池的uuid</p>
+
+
+
+<h1 style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 16px;font-size:28px;color:rgb(79, 79, 79);font-weight:700;line-height:36px;word-break:break-all;"><a name="t8" style="outline:0px;cursor:pointer;background-color:transparent;box-sizing:border-box;color:rgb(78, 161, 219);text-decoration:none;text-decoration-skip:ink;word-break:break-all;"></a>VOLUME commads</h1>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;">*vol-delete（pool）卷的删除 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*vol-upload（pool） 卷的加载 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*vol-list（pool）列出卷 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*vol-info（default）卷的信息 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*vol-name（path）得到卷的名字</p>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;">（快照）（secret）</p>
+
+
+
+<h1 style="outline:0px;padding:0px;box-sizing:border-box;margin:8px 0px 16px;font-size:28px;color:rgb(79, 79, 79);font-weight:700;line-height:36px;word-break:break-all;"><a name="t9" style="outline:0px;cursor:pointer;background-color:transparent;box-sizing:border-box;color:rgb(78, 161, 219);text-decoration:none;text-decoration-skip:ink;word-break:break-all;"></a>NWFILTER commands</h1>
+
+<p style="outline:0px;padding:0px;box-sizing:border-box;margin:0px 0px 16px;font-size:16px;color:rgb(79, 79, 79);font-weight:400;line-height:26px;text-align:justify;word-break:break-all;">*nwfilter-define （file）根据文件生成一个网络过滤器 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*nwfilter-undefine（name） 删除网络过滤 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*nwfilter-list 列出来网络过滤 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*nwfilter-dumpxml（file）生成一个网络过滤的文件 <br style="outline:0px;box-sizing:border-box;word-break:break-all;"/>
+*nwfilter-edit（name） 编辑一个网络过滤器</p>            </div></div></div></div></span></div></div></div></div>
+</div>
+</span>
+</div></body></html> 
