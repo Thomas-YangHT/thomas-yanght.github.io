@@ -1,0 +1,121 @@
+<html>
+<head>
+  <title>Evernote Export</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/307027 (zh-CN, DDL); Windows/10.0.0 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+<a name="3649"/>
+
+<div>
+<span><div style="-evernote-webclip:true"><br/><div style="font-size: 16px; display: inline-block;"><div style="box-sizing:border-box;font-family:sans-serif;line-height:1.15;"><div style="box-sizing:border-box;font-family:-apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;;font-size:1rem;font-weight:400;line-height:1.5;color:rgb(33, 37, 41);text-align:left;background-color:rgb(255, 255, 255);"><div style="box-sizing:border-box;"><div style="box-sizing:border-box;">
+  <div style="box-sizing:border-box;display:block;">
+    <h1 style="box-sizing:border-box;margin-top:0px;margin-bottom:0.5rem;font-family:inherit;font-weight:500;line-height:1.2;color:inherit;font-size:2.5rem;">Docker 使用 Ceph RBD Volume</h1>
+    <div style="box-sizing:border-box;text-align:right;font-size:15px;"><a href="https://blog.opskumu.com/" style="box-sizing:border-box;color:rgb(0, 123, 255);text-decoration:none;background-color:transparent;padding-bottom:2px;margin-right:5px;border-bottom:medium none;">枯木</a> 2016-02-17 </div>
+  </div>
+  <div style="box-sizing:border-box;color:rgb(85, 85, 85);">
+    <h2 style="box-sizing:border-box;font-family:inherit;font-weight:500;line-height:1.2;color:inherit;margin-top:0px;margin-bottom:0.5rem;font-size:26px;margin:25px 0px 20px;padding-bottom:8px;border-bottom:1px dashed rgb(232, 232, 232);">一、环境说明</h2>
+
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:1rem;padding-left:20px;">
+  <li style="box-sizing:border-box;">OS: CentOS 7.1
+    <ul style="box-sizing:border-box;margin-top:0px;padding-left:20px;margin-bottom:0px;">
+      <li style="box-sizing:border-box;">Ubuntu 14.04 下测试也是可行的</li>
+    </ul>
+  </li>
+  <li style="box-sizing:border-box;">ceph-common version: 0.94
+    <ul style="box-sizing:border-box;margin-top:0px;padding-left:20px;margin-bottom:0px;">
+      <li style="box-sizing:border-box;">因为 rbd-docker-plugin 通过 <code style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;font-size:87.5%;color:rgb(232, 62, 140);padding:4px;background-color:rgb(248, 248, 248);border-radius:4px;">nbd map</code> 命令返回值获取 map 设备名，而 <code style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;font-size:87.5%;color:rgb(232, 62, 140);padding:4px;background-color:rgb(248, 248, 248);border-radius:4px;">0.80</code> 不支持，所以如果你是旧版本的 ceph-common 推荐升级至 <code style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;font-size:87.5%;color:rgb(232, 62, 140);padding:4px;background-color:rgb(248, 248, 248);border-radius:4px;">0.94</code>，或者修改 plugin 源码通过 <code style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;font-size:87.5%;color:rgb(232, 62, 140);padding:4px;background-color:rgb(248, 248, 248);border-radius:4px;">nbd showmapped</code> 过滤获取 map 设备名也是同样可行的</li>
+    </ul>
+  </li>
+  <li style="box-sizing:border-box;">Docker version: 1.8.2
+    <ul style="box-sizing:border-box;margin-top:0px;padding-left:20px;margin-bottom:0px;">
+      <li style="box-sizing:border-box;">原则上 <code style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;font-size:87.5%;color:rgb(232, 62, 140);padding:4px;background-color:rgb(248, 248, 248);border-radius:4px;">1.8</code> 版本都支持，<code style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;font-size:87.5%;color:rgb(232, 62, 140);padding:4px;background-color:rgb(248, 248, 248);border-radius:4px;">1.9</code> 没有测试可行性</li>
+    </ul>
+  </li>
+  <li style="box-sizing:border-box;">rbd plugin: <a href="https://github.com/yp-engineering/rbd-docker-plugin" style="box-sizing:border-box;color:rgb(0, 123, 255);text-decoration:none;background-color:transparent;padding-bottom:2px;">rbd-docker-plugin</a></li>
+</ul>
+
+<h2 style="box-sizing:border-box;font-family:inherit;font-weight:500;line-height:1.2;color:inherit;margin-top:0px;margin-bottom:0.5rem;font-size:26px;margin:25px 0px 20px;padding-bottom:8px;border-bottom:1px dashed rgb(232, 232, 232);">二、环境构建</h2>
+
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:16px;font-size:16px;line-height:26px;">rbd-docker-plugin 需要手动编译，Go 的开发环境构建这里不再说明。</p>
+
+<div style="box-sizing:border-box;"><div style="box-sizing:border-box;"><pre style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;font-size:87.5%;overflow:auto;display:block;color:rgb(33, 37, 41);padding:8px;margin:16px 0px;background-color:rgb(248, 248, 248);border-radius:4px;margin-top:0px;margin-bottom:1rem;"><code style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;background-color:rgb(248, 248, 248);border-radius:4px;font-size:inherit;color:inherit;word-break:normal;padding:0px;">go get github.com/yp-engineering/rbd-docker-plugin
+</code></pre></div></div>
+
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:16px;font-size:16px;line-height:26px;">完成之后编译的二进制路径为 <code style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;font-size:87.5%;color:rgb(232, 62, 140);padding:4px;background-color:rgb(248, 248, 248);border-radius:4px;">$GOPATH/bin/rbd-docker-plugin</code>，拷贝到相应测试主机即可。</p>
+
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:16px;font-size:16px;line-height:26px;">安装必要的组件：</p>
+
+<div style="box-sizing:border-box;"><div style="box-sizing:border-box;"><pre style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;font-size:87.5%;overflow:auto;display:block;color:rgb(33, 37, 41);padding:8px;margin:16px 0px;background-color:rgb(248, 248, 248);border-radius:4px;margin-top:0px;margin-bottom:1rem;"><code style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;background-color:rgb(248, 248, 248);border-radius:4px;font-size:inherit;color:inherit;word-break:normal;padding:0px;">yum install librados2-devel librbd1-devel ceph-common xfsprogs -y
+</code></pre></div></div>
+
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:16px;font-size:16px;line-height:26px;">如果你有现成的 ceph 环境直接测试即可，这里我使用 docker 创建本地 ceph 测试环境：</p>
+
+<div style="box-sizing:border-box;"><div style="box-sizing:border-box;"><pre style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;font-size:87.5%;overflow:auto;display:block;color:rgb(33, 37, 41);padding:8px;margin:16px 0px;background-color:rgb(248, 248, 248);border-radius:4px;margin-top:0px;margin-bottom:1rem;"><code style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;background-color:rgb(248, 248, 248);border-radius:4px;font-size:inherit;color:inherit;word-break:normal;padding:0px;">docker run -d --net=host -e MON_IP=当前主机IP -e CEPH_NETWORK=当前主机所在网段 -v /etc/ceph:/etc/ceph -v /var/lib/ceph/:/var/lib/ceph ceph/demo
+</code></pre></div></div>
+
+<blockquote style="box-sizing:border-box;margin:0px 0px 1rem;padding:0px 1em;color:rgb(106, 115, 125);border-left:0.25em solid rgb(223, 226, 229);">
+  <p style="box-sizing:border-box;margin-top:0px;margin-bottom:16px;font-size:16px;line-height:26px;">关于 ceph/demo 镜像的更多说明可以参考 <a href="https://github.com/ceph/ceph-docker/tree/master/demo" style="box-sizing:border-box;color:rgb(0, 123, 255);text-decoration:none;background-color:transparent;padding-bottom:2px;">ceph/ceph-docker/demo</a></p>
+</blockquote>
+
+<h2 style="box-sizing:border-box;font-family:inherit;font-weight:500;line-height:1.2;color:inherit;margin-top:0px;margin-bottom:0.5rem;font-size:26px;margin:25px 0px 20px;padding-bottom:8px;border-bottom:1px dashed rgb(232, 232, 232);">三、运行 rbd docker plugin</h2>
+
+<div style="box-sizing:border-box;"><div style="box-sizing:border-box;"><pre style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;font-size:87.5%;overflow:auto;display:block;color:rgb(33, 37, 41);padding:8px;margin:16px 0px;background-color:rgb(248, 248, 248);border-radius:4px;margin-top:0px;margin-bottom:1rem;"><code style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;background-color:rgb(248, 248, 248);border-radius:4px;font-size:inherit;color:inherit;word-break:normal;padding:0px;"># ceph osd pool create docker 128
+pool 'docker' created
+# ceph auth get-or-create client.docker mon 'allow r' osd 'allow class-read object_prefix rbd_children, allow rwx pool=docker' -o /etc/ceph/ceph.client.docker.keyring
+# RBD_DOCKER_PLUGIN_DEBUG=1 rbd-docker-plugin --create --user=docker --pool=docker
+rbd-volume-plugin: 2016/02/17 10:58:00 main.go:70: INFO: Setting up Ceph Driver for PluginID=rbd, cluster=, user=docker, pool=docker, mount=/var/lib/docker-volumes, config=
+rbd-volume-plugin: 2016/02/17 10:58:00 driver.go:83: INFO: newCephRBDVolumeDriver: setting base mount dir=/var/lib/docker-volumes/rbd
+rbd-volume-plugin: 2016/02/17 10:58:00 driver.go:496: INFO: connecting to Ceph and default pool context
+rbd-volume-plugin: 2016/02/17 10:58:00 main.go:82: INFO: Creating Docker VolumeDriver Handler
+rbd-volume-plugin: 2016/02/17 10:58:00 main.go:86: INFO: Opening Socket for Docker to connect: /run/docker/plugins/rbd.sock
+... ...
+</code></pre></div></div>
+
+<blockquote style="box-sizing:border-box;margin:0px 0px 1rem;padding:0px 1em;color:rgb(106, 115, 125);border-left:0.25em solid rgb(223, 226, 229);">
+  <p style="box-sizing:border-box;margin-top:0px;margin-bottom:16px;font-size:16px;line-height:26px;">也可不创建 docker pool，默认使用 rbd pool，不创建 docker pool 则只需运行如下命令即可</p>
+</blockquote>
+
+<div style="box-sizing:border-box;"><div style="box-sizing:border-box;"><pre style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;font-size:87.5%;overflow:auto;display:block;color:rgb(33, 37, 41);padding:8px;margin:16px 0px;background-color:rgb(248, 248, 248);border-radius:4px;margin-top:0px;margin-bottom:1rem;"><code style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;background-color:rgb(248, 248, 248);border-radius:4px;font-size:inherit;color:inherit;word-break:normal;padding:0px;"># RBD_DOCKER_PLUGIN_DEBUG=1 rbd-docker-plugin --create
+</code></pre></div></div>
+
+<h2 style="box-sizing:border-box;font-family:inherit;font-weight:500;line-height:1.2;color:inherit;margin-top:0px;margin-bottom:0.5rem;font-size:26px;margin:25px 0px 20px;padding-bottom:8px;border-bottom:1px dashed rgb(232, 232, 232);">四、docker 挂载 rbd volume 测试</h2>
+
+<div style="box-sizing:border-box;"><div style="box-sizing:border-box;"><pre style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;font-size:87.5%;overflow:auto;display:block;color:rgb(33, 37, 41);padding:8px;margin:16px 0px;background-color:rgb(248, 248, 248);border-radius:4px;margin-top:0px;margin-bottom:1rem;"><code style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;background-color:rgb(248, 248, 248);border-radius:4px;font-size:inherit;color:inherit;word-break:normal;padding:0px;"># docker run --volume-driver=rbd --volume foo:/mnt/foo -it busybox sh
+/ # df -Th | grep -w '/mnt/foo' # 显示设备 rbd0 挂载在 /mnt/foo 命令下，挂载成功
+/dev/rbd0            xfs            20.0G     32.6M     20.0G   0% /mnt/foo
+</code></pre></div></div>
+
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:16px;font-size:16px;line-height:26px;">rbd docker plugin driver 会做如下操作(前提是当前镜像不存在):</p>
+
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:1rem;padding-left:20px;">
+  <li style="box-sizing:border-box;">1、创建一个 20GB 的镜像</li>
+  <li style="box-sizing:border-box;">2、map image 并格式化为 XFS 文件系统</li>
+  <li style="box-sizing:border-box;">3、挂载到对应容器</li>
+</ul>
+
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:16px;font-size:16px;line-height:26px;">如果容器启动没有添加 <code style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;font-size:87.5%;color:rgb(232, 62, 140);padding:4px;background-color:rgb(248, 248, 248);border-radius:4px;">--rm</code> 选择则容器退出后，镜像依然可以被其它容器复用(除非 docker run 的时候添加了 <code style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;font-size:87.5%;color:rgb(232, 62, 140);padding:4px;background-color:rgb(248, 248, 248);border-radius:4px;">--rm</code> 选项并且 rbd-docker-plugin 添加了 <code style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;font-size:87.5%;color:rgb(232, 62, 140);padding:4px;background-color:rgb(248, 248, 248);border-radius:4px;">--remove</code> 选项才会执行删除操作，否则如果只是添加了 <code style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;font-size:87.5%;color:rgb(232, 62, 140);padding:4px;background-color:rgb(248, 248, 248);border-radius:4px;">--rm</code> 的选项，plugin driver 也只是 rename image 而并不是直接 rm)。</p>
+
+<blockquote style="box-sizing:border-box;margin:0px 0px 1rem;padding:0px 1em;color:rgb(106, 115, 125);border-left:0.25em solid rgb(223, 226, 229);">
+  <p style="box-sizing:border-box;margin-top:0px;margin-bottom:16px;font-size:16px;line-height:26px;">实际测试过程中如果使用的不是默认的 pool rbd，rename 的过程出现错误，应该是 plugin 的 bug，修改代码执行 <code style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;font-size:87.5%;color:rgb(232, 62, 140);padding:4px;background-color:rgb(248, 248, 248);border-radius:4px;">rbd rename</code> 时添加 <code style="box-sizing:border-box;font-family:SFMono-Regular, Menlo, Monaco, Consolas, &quot;Liberation Mono&quot;, &quot;Courier New&quot;, monospace;font-size:87.5%;color:rgb(232, 62, 140);padding:4px;background-color:rgb(248, 248, 248);border-radius:4px;">--dest-pool</code> 选项即可。</p>
+</blockquote>
+
+<h2 style="box-sizing:border-box;font-family:inherit;font-weight:500;line-height:1.2;color:inherit;margin-top:0px;margin-bottom:0.5rem;font-size:26px;margin:25px 0px 20px;padding-bottom:8px;border-bottom:1px dashed rgb(232, 232, 232);">五、参考文档</h2>
+
+<ul style="box-sizing:border-box;margin-top:0px;margin-bottom:1rem;padding-left:20px;">
+  <li style="box-sizing:border-box;"><a href="http://www.sebastien-han.fr/blog/2015/08/17/getting-started-with-the-docker-rbd-volume-plugin/" style="box-sizing:border-box;color:rgb(0, 123, 255);text-decoration:none;background-color:transparent;padding-bottom:2px;">Getting Started With the Docker RBD Volume Plugin</a></li>
+  <li style="box-sizing:border-box;"><a href="https://github.com/yp-engineering/rbd-docker-plugin" style="box-sizing:border-box;color:rgb(0, 123, 255);text-decoration:none;background-color:transparent;padding-bottom:2px;">Ceph Rados Block Device Docker VolumeDriver Plugin</a></li>
+</ul>
+
+<p style="box-sizing:border-box;margin-top:0px;margin-bottom:16px;font-size:16px;line-height:26px;">–EOF–</p>
+
+  </div>
+</div></div></div></div></div><br/></div></span>
+</div></body></html> 

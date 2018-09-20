@@ -1,0 +1,479 @@
+<html>
+<head>
+  <title>Evernote Export</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/307027 (zh-CN, DDL); Windows/10.0.0 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+<a name="3654"/>
+
+<div>
+<span><div style="-evernote-webclip:true"><br/><div style="font-size: 16px; display: inline-block;"><div><div style="font-family:&quot;PingFang SC&quot;, &quot;Helvetica Neue&quot;, &quot;Helvetica&quot;, &quot;Arial&quot;, sans-serif;background-image:url(&quot;images/background.jpg&quot;);background-repeat:no-repeat;background-attachment:fixed;font-size:14px;"><div style="background-color:rgb(255, 255, 255);font-family:Verdana, Arial, Helvetica, sans-serif;font-size:12px;color:rgb(0, 0, 0);overflow-wrap:break-word;box-shadow:black 0px 0px 25px;line-height:1.5;"><div style="overflow:auto;"><div><div><div><div><div><div style="font-size:116%;"><div style="overflow:auto;"><h1 style="padding:0px;display:block;font-size:28px;font-weight:bold;line-height:1.5;margin:10px 0px;">获取Ceph的Docker镜像</h1>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">因为公司对于网络环境的限制，安装ceph时使用ceph-deploy反而很不方便，且ssh免密码方式也不适用，所以使用docker方式安装。</p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">Git地址</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><a href="https://github.com/ceph/ceph-docker/tree/master/ceph-releases/luminous" style="margin:0px;padding:1px 3px;color:green;text-decoration:none;">https://github.com/ceph/ceph-docker/tree/master/ceph-releases/luminous</a></p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">DockerHub地址</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><a href="https://hub.docker.com/r/ceph/daemon/" style="margin:0px;padding:1px 3px;color:green;text-decoration:none;">https://hub.docker.com/r/ceph/daemon/</a></p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">通过DaoCloud加速器后下载的地址</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">docker pull ceph/daemon</p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">指定最新的tag</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">推荐最新的版本：tag-build-master-luminous-centos-7</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">将镜像导入Harbor仓库供使用</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">docker tag  [old]  harborip/ceph/daemon:luminous</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">docker  login -u xxx -p xxx <a href="http://harborip/" style="margin:0px;padding:1px 3px;color:green;text-decoration:none;">http://harborip</a></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">docker push harborip/ceph/daemon:luminous</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<h1 style="padding:0px;display:block;font-size:28px;font-weight:bold;line-height:1.5;margin:10px 0px;">安装前约定</h1>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">主要目录</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">/etc/ceph/                 主要为配置</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">/var/lib/ceph/           主要为数据</p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">对应关系</h2>
+<table border="1" cellpadding="0" cellspacing="0" style="font-size:inherit;font-weight:inherit;font-style:inherit;font-variant:inherit;margin:0px;padding:0px;border-spacing:0px;border:1px solid silver;border-collapse:collapse;display:block;overflow-x:scroll;">
+<tbody style="margin:0px;padding:0px;">
+<tr style="margin:0px;padding:0px;">
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="189">
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+
+
+  </td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="189">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">宿主机</p>
+
+
+  </td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="189">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Docker容器</p>
+
+
+  </td>
+
+
+ </tr>
+<tr style="margin:0px;padding:0px;">
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="189">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">/etc/ceph/</p>
+
+
+  </td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="189">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">/etc/ceph/</p>
+
+
+  </td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="189">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">/etc/ceph/</p>
+
+
+  </td>
+
+
+ </tr>
+<tr style="margin:0px;padding:0px;">
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="189">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">/var/lib/ceph/</p>
+
+
+  </td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="189">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">/var/lib/ceph/</p>
+
+
+  </td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="189">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">/var/lib/ceph/</p>
+
+
+  </td>
+
+
+ </tr>
+
+
+</tbody>
+
+</table>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">机器列表</h2>
+<table border="1" cellpadding="0" cellspacing="0" style="font-size:inherit;font-weight:inherit;font-style:inherit;font-variant:inherit;margin:0px;padding:0px;border-spacing:0px;border:1px solid silver;border-collapse:collapse;display:block;overflow-x:scroll;">
+<tbody style="margin:0px;padding:0px;">
+<tr style="margin:0px;padding:0px;">
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="142">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">机器名</p>
+
+
+  </td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="142">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">IP地址</p>
+
+
+  </td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="142">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">role</p>
+
+
+  </td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="142">
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+
+
+  </td>
+
+
+ </tr>
+<tr style="margin:0px;padding:0px;">
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="142">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">C 381</p>
+
+
+  </td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="142">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">1.2.3.4</p>
+
+
+  </td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="142">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Mon，osd</p>
+
+
+  </td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="142">
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+
+
+  </td>
+
+
+ </tr>
+<tr style="margin:0px;padding:0px;">
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="142">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">C 382</p>
+
+
+  </td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="142">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">1.2.3.5</p>
+
+
+  </td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="142">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Mon，osd,mds</p>
+
+
+  </td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="142">
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+
+
+  </td>
+
+
+ </tr>
+<tr style="margin:0px;padding:0px;">
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="142">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">C 383</p>
+
+
+  </td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="142">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">1.2.3.6</p>
+
+
+  </td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="142">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Mon，osd, rgw</p>
+
+
+  </td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="142">
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+
+
+  </td>
+
+
+ </tr>
+
+
+</tbody>
+
+</table>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<p align="left" style="padding:0px;margin:10px auto;text-indent:0px;"><strong style="margin:0px;padding:0px;"> </strong></p>
+<h1 style="padding:0px;display:block;font-size:28px;font-weight:bold;line-height:1.5;margin:10px 0px;">Ceph Mon多节点安装</h1>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">说明</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Ceph的MON是一个集群映射图的“主副本”，客户端只需通过连接到MON就可以了解Ceph-MON、Ceph的OSD守护进程，和Ceph的元数据服务器的位置。</p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">安装首节点MON</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">docker run \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-d --net=host  \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">--name=mon \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-v /etc/ceph:/etc/ceph \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-v /var/lib/ceph/:/var/lib/ceph \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-e MON_IP=1.2.3.4 \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-e CEPH_PUBLIC_NETWORK=1.2.3.0/24 \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">harborip/ceph/daemon:luminous \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Mon</p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">编辑/etc/ceph.conf配置文件</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">注意调整下表中红色部份的值。</p>
+<table border="1" cellpadding="0" cellspacing="0" style="font-size:inherit;font-weight:inherit;font-style:inherit;font-variant:inherit;margin:0px;padding:0px;border-spacing:0px;border:1px solid silver;border-collapse:collapse;display:block;overflow-x:scroll;">
+<tbody style="margin:0px;padding:0px;">
+<tr style="margin:0px;padding:0px;">
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="568">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">[global]</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">fsid =
+  695b3afb-f560-434f-a90a-f611e1f23638</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">mon initial members = c381</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">mon host = 1.2.3.4</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">auth cluster required =
+  cephx</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">auth service required =
+  cephx</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">auth client required =
+  cephx</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<ul style="margin:0px;padding:0px;margin-left:30px;padding-left:0px;">
+<li style="margin:0px;padding:0px;list-style:outside none none;list-style-type:disc;">osd pool default
+  size = 2</li>
+
+</ul>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">public network =
+  1.2.3.0/24</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">cluster network
+  = 1.2.3.0/24</p>
+<ul style="margin:0px;padding:0px;margin-left:30px;padding-left:0px;">
+<li style="margin:0px;padding:0px;list-style:outside none none;list-style-type:disc;">osd journal size
+  = 100</li>
+
+</ul>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">osd pool default pg num = 100</p>
+<ul style="margin:0px;padding:0px;margin-left:30px;padding-left:0px;">
+<li style="margin:0px;padding:0px;list-style:outside none none;list-style-type:disc;">osd pool default
+  pgp num = 100</li>
+
+</ul>
+
+
+  </td>
+
+
+ </tr>
+
+
+</tbody>
+
+</table>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">将相关ceph目录cp到各个节点</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">按需操作，一种思路：非root帐号先scp到目标机器/tmp下，再挪到指定位置。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">涉及目录：/etc/ceph/和/var/lib/ceph/</p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">安装第二及第三节点</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">docker run \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-d --net=host  \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">--name=mon \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-v /etc/ceph:/etc/ceph \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-v /var/lib/ceph/:/var/lib/ceph \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-e MON_IP=1.2.3.5 \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-e CEPH_PUBLIC_NETWORK=1.2.3.0/24 \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">harborip/ceph/daemon:luminous \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">mon</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">docker run \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-d --net=host  \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">--name=mon \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-v /etc/ceph:/etc/ceph \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-v /var/lib/ceph/:/var/lib/ceph \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-e MON_IP=1.2.3.6 \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-e CEPH_PUBLIC_NETWORK=1.2.3.0/24 \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">harborip/ceph/daemon:luminous \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">mon</p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">检查mon是否成功启动</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">可通过以下命令检查：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">docker ps|grep ceph|grep mon</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">ps aux|grep ceph|grep mon</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">docker logs -f mon</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">docker exec mon ceph –s</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<h1 style="padding:0px;display:block;font-size:28px;font-weight:bold;line-height:1.5;margin:10px 0px;">Ceph OSD节点安装</h1>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">说明</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Ceph OSD:Ceph Object Storage Device 主要功能包括:存储数据,副本数据处理,数据恢复,数据回补,平衡数据分布,并将数据相关的一些儿监控信息提供给至少2个Ceph OSD,才能有效保存两份数据.</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">OSD节点安装有两种方案，一种是在节点上挂载全新的硬盘设备，第二种是将已安装好的系统的指定目录作为OSD。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">我们这里选用第二种方式，只是因为方便。</p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">命令</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">在所有需要提供OSD存储的节点上运行如下命令:</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">docker run \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-d --net=host \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">--name=osd \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">--privileged=true \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">--pid=host \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-v /etc/ceph:/etc/ceph \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-v /var/lib/ceph/:/var/lib/ceph/ \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-v /dev/:/dev/ \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-e OSD_FORCE_ZAP=1 \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-e OSD_TYPE=directory   \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">harborip/ceph/daemon:luminous \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Osd</p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">检查OSD是否启动成功</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">参考MON的检查，相关关键字替换为osd。</p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">注意细节</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">一，可以用<code style="margin:0px;padding:0px;">JOURNAL_DIR</code> 参数将日志目录移出</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">二，OSD_TYPE参数在使用新硬盘时为disk</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">三，OSD_FORCE_ZAP=1强制清空目录，这里为必要</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">四，这种方式生成的OSD指定目录为/var/lib/ceph/osd/</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">五，如果此处安装有问题，可能是不能自动建立相关pool池，可以考虑登陆docker手工执行一次./entrypoint.sh osd命令</p>
+<h1 style="padding:0px;display:block;font-size:28px;font-weight:bold;line-height:1.5;margin:10px 0px;">Ceph RGW节点安装</h1>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">说明</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">RGW为Rados
+Gateway的缩写，ceph通过RGW为互联网云服务提供商提供对象存储服务。RGW在librados之上向应用提供访问ceph集群的RestAPI， 支持Amazon S3和openstack
+swift两种接口。对RGW最直接的理解就是一个协议转换层，把从上层应用符合S3或Swift协议的请求转换成rados的请求， 将数据保存在rados集群中。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">命令</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">在c383上执行如下命令：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">docker run \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-d --net=host \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">--name=rgw \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-v /etc/ceph:/etc/ceph \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-v /var/lib/ceph/:/var/lib/ceph 
+\</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">harborip/ceph/daemon:luminous \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">rgw</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">检查RGW是否成功启动</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">参考MON的检查，相关关键字替换为rgw。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<p align="left" style="padding:0px;margin:10px auto;text-indent:0px;"><strong style="margin:0px;padding:0px;"> </strong></p>
+<h1 style="padding:0px;display:block;font-size:28px;font-weight:bold;line-height:1.5;margin:10px 0px;">Ceph MDS节点安装</h1>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">说明</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Ceph文件系统（CEPH FS）是一个POSIX兼容的文件系统，使用Ceph的存储集群来存储其数据。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">使用Ceph的文件系统，在你的Ceph的存储集群里至少需要存在一个Ceph的元数据服务器。(MDS)</p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">命令</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">在c382节点上运行:</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">docker run \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-d --net=host \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">--name=mds \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-v /etc/ceph:/etc/ceph \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-v /var/lib/ceph/:/var/lib/ceph \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-e CEPHFS_CREATE=1 \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">harborip/ceph/daemon:luminous \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">mds</p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">检查MDS是否成功启动</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">参考MON的检查，相关关键字替换为mds。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<p align="left" style="padding:0px;margin:10px auto;text-indent:0px;"><strong style="margin:0px;padding:0px;"> </strong></p>
+<h1 style="padding:0px;display:block;font-size:28px;font-weight:bold;line-height:1.5;margin:10px 0px;">Ceph Mgr节点安装</h1>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">说明</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">ceph-mgr 作为 Ceph 集群的管理进程，未来会负责整个集群的管理操作和监控。现在的部分 Monitor 功能会迁移到 ceph-mgr 中，使得 Monitor 更专注于集群的数据面控制，降低集群对于 Monitor 的要求。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">在luminous版本上，mgr已成为标配，不安装成功的话，集群状态会WARN。</p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">命令</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">在所有mon安装过的节点上运行以下命令：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">docker run \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-d --net=host  \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">--name=mgr \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-v /etc/ceph:/etc/ceph \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-v /var/lib/ceph/:/var/lib/ceph \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">harborip/ceph/daemon:luminous \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">mgr</p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">检查Mgr是否成功启动</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">参考MON的检查，相关关键字替换为mgr。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">注意细节</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">一，如果这里安装异常，或是7000端口未启用，要启用dashboard组件功能。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">docker exec mon ceph mgr dump</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">docker exec mgr ceph mgr module enable dashboard</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">二，最终系统状态和WEB(7000端口)截图如下</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">         </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<h1 style="padding:0px;display:block;font-size:28px;font-weight:bold;line-height:1.5;margin:10px 0px;">挂载cephfs目录</h1>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">内核支持挂载</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">一，明文挂载</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">mount -t ceph 1.2.3.4:6789:/ /mnt/mycephfs \</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">-o name=admin,secret=3545wgdsgsgfsgf</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">二，文件挂载</p>
+<p align="left" style="padding:0px;margin:10px auto;text-indent:0px;">mount
+-t ceph 192.168.1.111:6789:/ /mnt/mycephfs –o \</p>
+<p align="left" style="padding:0px;margin:10px auto;text-indent:0px;">name=admin,secretfile=/etc/ceph/admin.secret</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">三，卸载目录</p>
+<p align="left" style="padding:0px;margin:10px auto;text-indent:0px;">umount /mnt/mycephfs</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">FUSE挂载</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">在k8s中将cephfs作为volumes挂载</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">一，获取admin的密文</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">docker exec mon ceph-authtool --print-key
+/etc/ceph/ceph.client.admin.keyring</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">二，将之用base64编码</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">echo &quot;sdfdsadfasdfasdf=&quot; | base64</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">三，生成并应用k8s secret文件</p>
+<table border="1" cellpadding="0" cellspacing="0" style="font-size:inherit;font-weight:inherit;font-style:inherit;font-variant:inherit;margin:0px;padding:0px;border-spacing:0px;border:1px solid silver;border-collapse:collapse;display:block;overflow-x:scroll;">
+<tbody style="margin:0px;padding:0px;">
+<tr style="margin:0px;padding:0px;">
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="540">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">apiVersion: v1</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">kind: Secret</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">metadata:</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">   
+  name: ceph-secret</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">data:</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">   
+  key: QVsdfsadfsadfPQo=</p>
+
+
+  </td>
+
+
+ </tr>
+
+
+</tbody>
+
+</table>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">kubectl apply -f ceph-secret</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">四，编辑deploy文件，挂载cephfs</p>
+<table border="1" cellpadding="0" cellspacing="0" style="font-size:inherit;font-weight:inherit;font-style:inherit;font-variant:inherit;margin:0px;padding:0px;border-spacing:0px;border:1px solid silver;border-collapse:collapse;display:block;overflow-x:scroll;">
+<tbody style="margin:0px;padding:0px;">
+<tr style="margin:0px;padding:0px;">
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="568">
+<p style="padding:0px;margin:10px auto;text-indent:0px;">volumes:</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">        - name: applog</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">          hostPath:</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">            path: / apache/applogs</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">        - name: nfs4app</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">          nfs:</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">            server: 1.2.3.181</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">            path: /app/BB</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">        - name: ceph-vol</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">          cephfs:</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">            monitors:</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">            - 1.2.3.4:6789</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">            user: admin</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">            secretRef:</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">              name: ceph-secret</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">            readOnly: false</p>
+
+
+  </td>
+
+
+ </tr>
+
+
+</tbody>
+
+</table>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">五，测试文件生成</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">在POD操作文件，在cephfs中会同步操作相应文件。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">六，未完</p>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">在k8s中将cephfs作为PVC挂载[未完]</h2>
+<h2 style="padding:0px;display:block;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;">将harbor中的镜像目录用cephfs来挂载[未完]</h2></div></div></div></div></div></div></div></div></div></div></div></div><br/></div></span>
+</div></body></html> 

@@ -1,0 +1,187 @@
+<html>
+<head>
+  <title>Evernote Export</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/307027 (zh-CN, DDL); Windows/10.0.0 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+<a name="4291"/>
+
+<div><span>
+  <div>
+<div style="font-size: 16px; display: inline-block; min-width: 100%;position: relative;"><div><div style="font-family:&quot;PingFang SC&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;color:rgb(0, 0, 0);background:rgb(252, 252, 245);font-size:14px;"><div style="min-width:initial;"><div style="min-width:initial;text-align:left;"><div style="text-overflow:ellipsis;overflow:hidden;word-break:break-all;"><div><div><div style="text-overflow:ellipsis;overflow:hidden;word-break:break-all;background:rgb(255, 255, 255);"><div>
+		<h1 style="line-height:1.5em;margin:0px;padding:0px;clear:both;padding-bottom:5px;color:rgb(100, 160, 56);background:url(//images.cnblogs.com/cnblogs_com/emanlee/StarBeforeCaption.JPG) 0% 0% no-repeat scroll transparent;font-weight:bold;border-bottom:0px solid rgb(153, 153, 153);float:left;font-size:120%;width:100%;padding-left:5px;">
+			<a href="https://www.cnblogs.com/me115/p/6366374.html" style="margin:0px;padding:0px;padding-left:30px;text-decoration:none;color:rgb(255, 102, 0);">玩转 Ceph 的正确姿势</a>
+		</h1>
+		<div style="margin:0px;padding:0px;clear:both;"></div>
+		<div style="margin:0px;padding:0px;border-bottom:5px solid rgb(128, 128, 128);margin-bottom:20px;padding-bottom:10px;font-family:&quot;Courier New&quot;, 微软雅黑, Consolas, Arial, 宋体;font-size:14px;"><h3 style="margin:0px;padding:0px;font-size:14px;font-weight:bold;display:block;-webkit-margin-before:1em;-webkit-margin-after:1em;-webkit-margin-start:0px;-webkit-margin-end:0px;">内容目录：</h3><ul style="word-break:break-all;margin:0px 0px 30px;padding:0px 0px 0px 30px;"><li style="list-style:none;margin:0px;padding:3px;"><a href="https://www.cnblogs.com/me115/p/6366374.html#h20" style="margin:0px;padding:0px;color:rgb(255, 102, 0);text-decoration:none;">Ceph 客户端</a></li><li style="list-style:none;margin:0px;padding:3px;"><a href="https://www.cnblogs.com/me115/p/6366374.html#h21" style="margin:0px;padding:0px;color:rgb(255, 102, 0);text-decoration:none;">Ceph 服务端</a></li><li style="list-style:none;margin:0px;padding:3px;"><a href="https://www.cnblogs.com/me115/p/6366374.html#h22" style="margin:0px;padding:0px;color:rgb(255, 102, 0);text-decoration:none;">总结</a></li><li style="list-style:none;margin:0px;padding:3px;"><a href="https://www.cnblogs.com/me115/p/6366374.html#h23" style="margin:0px;padding:0px;color:rgb(255, 102, 0);text-decoration:none;">参考</a></li></ul></div><div style="margin:0px;padding:5px;line-height:2em;color:rgb(0, 0, 0);border-bottom:0px solid black;">
+			<div style="font-variant:normal;margin-bottom:20px;margin:0px;padding:0px;font-style:normal;word-break:break-word;font-weight:normal;font-stretch:normal;font-size:14px;line-height:1.5;font-family:Rosario, &quot;Xin Gothic&quot;, &quot;Hiragino Sans GB&quot;, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro Hei&quot;, Arial, sans-serif-webkit-body;"><p style="padding:0px;margin:10px auto;text-indent:0px;">玩转 Ceph 的正确姿势<br style="margin:0px;padding:0px;"/>
+本文先介绍 Ceph， 然后会聊到一些正确使用 Ceph 的姿势；在集群规模小的时候，Ceph 怎么玩都没问题；但集群大了（到PB级别），这些准则可是保证集群健康运行的不二法门；</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Ceph 最初的目标是做一个分布式文件系统，直到现在这个目标也不能算完美实现；目前官网上对它的文件系统还是谨慎推荐的态度（不建议对线上核心业务部署）；</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">业界使用 Ceph ，大多是用它的对象存储；</p>
+<h2 style="color:white;font-size:16px;line-height:1.5;margin:10px 0px;padding:3px;font-weight:bold;background-color:rgb(165, 165, 165);-webkit-margin-before:1em;-webkit-margin-after:1em;-webkit-margin-start:0px;-webkit-margin-end:0px;">Ceph 客户端</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Ceph 支持三种存储接口：对象存储 RGW(rados gateway)、块存储 RBD(rados block device) 和文件存储 CephFS;</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">这三个接口只是在客户端的封装库不同，到服务端了都是对象存储；<br style="margin:0px;padding:0px;"/>
+<img src="ceph-refer_files/90573-20170204210556245-591968819.jpg" type="image/jpeg" data-filename="90573-20170204210556245-591968819.jpg" height="278" style="margin:0px;padding:0px;border:0px;height:auto;max-width:300px;" width="600"/></p>
+<h3 style="border-bottom:0px;font-size:14px;line-height:1.5;margin:10px 0px;padding:0px;-webkit-margin-start:0px;font-weight:bold;display:block;-webkit-margin-before:1em;-webkit-margin-after:1em;-webkit-margin-end:0px;color:rgb(0, 0, 0);">对象存储（RGW:RADOS gateway）</h3>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Ceph 对象存储服务提供了 REST 风格的 API ，它有与 Amazon S3 和 OpenStack Swift 兼容的接口。也就是通常意义的键值存储，其接口就是简单的GET、PUT、DEL和其他扩展;</p>
+<h3 style="border-bottom:0px;font-size:14px;line-height:1.5;margin:10px 0px;padding:0px;-webkit-margin-start:0px;font-weight:bold;display:block;-webkit-margin-before:1em;-webkit-margin-after:1em;-webkit-margin-end:0px;color:rgb(0, 0, 0);">块存储（RBD：RADOS block device）</h3>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">RBD 是通过librbd库对应用提供块存储，主要面向云平台的虚拟机提供虚拟磁盘；RBD类似传统的SAN存储，提供数据块级别的访问；</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">目前 RBD 提供了两个接口，一种是直接在用户态实现， 通过 QEMU Driver 供 KVM 虚拟机使用。 另一种是在操作系统内核态实现了一个内核模块。通过该模块可以把块设备映射给物理主机，由物理主机直接访问。</p>
+<h3 style="border-bottom:0px;font-size:14px;line-height:1.5;margin:10px 0px;padding:0px;-webkit-margin-start:0px;font-weight:bold;display:block;-webkit-margin-before:1em;-webkit-margin-after:1em;-webkit-margin-end:0px;color:rgb(0, 0, 0);">文件存储</h3>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Ceph 文件系统服务提供了兼容 POSIX 的文件系统，可以直接挂载为用户空间文件系统。它跟传统的文件系统如Ext4是一个类型，区别在于分布式存储提供了并行化的能力；</p>
+<h3 style="border-bottom:0px;font-size:14px;line-height:1.5;margin:10px 0px;padding:0px;-webkit-margin-start:0px;font-weight:bold;display:block;-webkit-margin-before:1em;-webkit-margin-after:1em;-webkit-margin-end:0px;color:rgb(0, 0, 0);">原生接口</h3>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">除了以上3种存储接口， 还可以直接使用 librados 的原生接口，直接和RADOS通信；</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">原生接口的优点是是它直接和和应用代码集成，操作文件很方便；但它的问题是它不会主动为上传的数据分片；一个1G的大对象上传，落到 Ceph 的存储磁盘上就是1G的文件；</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">而以上三个接口是具有分片功能（即:<a href="http://docs.ceph.com/docs/hammer/dev/file-striping/" style="margin:0px;padding:1px 2px;color:rgb(111, 159, 63);text-decoration:none;">条带化 file-striping</a>)</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><strong style="margin:0px;padding:0px;">PS：两个对象的区分</strong></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">需要说明下，这里提到两个对象的概念：一个是 RGW中的对象存储，一个是 Ceph 的后端存储的对象；这两个需要区分：</p>
+<ul style="margin:0px;padding:0px;word-break:break-all;margin-left:30px;padding-left:0px;">
+<li style="margin:0px;padding:0px;list-style:none;margin-bottom:1em;list-style-type:disc;"><p style="padding:0px;margin:10px auto;text-indent:0px;">第一个对象面向用户，是用户接口能访问到的对象；</p></li>
+<li style="margin:0px;padding:0px;list-style:none;margin-bottom:1em;list-style-type:disc;"><p style="padding:0px;margin:10px auto;text-indent:0px;">第二个对象是ceph 服务端操作的对象；</p></li>
+</ul>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">eg：使用RGW接口，存放一个1G的文件，在用户接口看到的就是存放了一个对象（1）；而通过RGW 分片成多个对象（2）后最终存储到磁盘上；</p>
+<h2 style="color:white;font-size:16px;line-height:1.5;margin:10px 0px;padding:3px;font-weight:bold;background-color:rgb(165, 165, 165);-webkit-margin-before:1em;-webkit-margin-after:1em;-webkit-margin-start:0px;-webkit-margin-end:0px;">Ceph 服务端</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img src="ceph-refer_files/90573-20170204210612886-2129622012.png" type="image/png" data-filename="90573-20170204210612886-2129622012.png" height="172" style="margin:0px;padding:0px;border:0px;height:auto;max-width:300px;" width="300"/></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">服务端 RADOS 集群主要由两种节点组成：一种是为数众多的、负责完成数据存储和维护功能的OSD（Object Storage Device），另一种则是若干个负责完成系统状态检测和维护的monitor。</p>
+<h3 style="border-bottom:0px;font-size:14px;line-height:1.5;margin:10px 0px;padding:0px;-webkit-margin-start:0px;font-weight:bold;display:block;-webkit-margin-before:1em;-webkit-margin-after:1em;-webkit-margin-end:0px;color:rgb(0, 0, 0);">Monitor</h3>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Monitor 集群提供了整个存储系统的节点信息等全局的配置信息，通过 Paxos 算法保持数据的一致性。</p>
+<h3 style="border-bottom:0px;font-size:14px;line-height:1.5;margin:10px 0px;padding:0px;-webkit-margin-start:0px;font-weight:bold;display:block;-webkit-margin-before:1em;-webkit-margin-after:1em;-webkit-margin-end:0px;color:rgb(0, 0, 0);">Pool 、PG和OSD</h3>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Pool是存储对象的逻辑分区，它规定了数据冗余的类型和对应的副本分布策略；支持两种类型：副本（replicated）和 纠删码（ Erasure Code）；目前我们公司内部使用的Pool都是副本类型（3副本）；</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">PG（ placement group）是一个放置策略组，它是对象的集合，该集合里的所有对象都具有相同的放置策略；简单点说就是相同PG内的对象都会放到相同的硬盘上； PG是 ceph的核心概念， 服务端数据均衡和恢复的最小粒度就是PG；</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">OSD是负责物理存储的进程，一般配置成和磁盘一一对应，一块磁盘启动一个OSD进程；</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">下面这张图形象的描绘了它们之间的关系：</p>
+<ul style="margin:0px;padding:0px;word-break:break-all;margin-left:30px;padding-left:0px;">
+<li style="margin:0px;padding:0px;list-style:none;margin-bottom:1em;list-style-type:disc;">一个Pool里有很多PG，</li>
+<li style="margin:0px;padding:0px;list-style:none;margin-bottom:1em;list-style-type:disc;">一个PG里包含一堆对象；一个对象只能属于一个PG；</li>
+<li style="margin:0px;padding:0px;list-style:none;margin-bottom:1em;list-style-type:disc;">PG有主从之分，一个PG分布在不同的OSD上（针对三副本类型）</li>
+</ul>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img src="ceph-refer_files/90573-20170204210624729-1766568078.jpg" type="image/jpeg" data-filename="90573-20170204210624729-1766568078.jpg" height="325" style="margin:0px;padding:0px;border:0px;height:auto;max-width:300px;" width="462"/></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><strong style="margin:0px;padding:0px;">讲究的PG</strong></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">一个Pool里设置的PG数量是预先设置的，PG的数量不是随意设置，需要根据OSD的个数及副本策略来确定：</p>
+<pre style="padding:10px;margin-top:10px;white-space:pre-wrap;word-wrap:break-word;margin:0px;margin-bottom:10px;border:1px solid rgb(204, 204, 204);background:white;line-height:1.5;font-size:12px;font-family:Menlo, &quot;Bitstream Vera Sans Mono&quot;, &quot;DejaVu Sans Mono&quot;, Monaco, Consolas, monospace;"><code style="border:1px solid rgb(204, 204, 204);height:auto;vertical-align:middle;margin:auto;display:block;overflow-x:auto;background:rgb(255, 255, 255);color:rgb(0, 0, 0);background-color:rgb(245, 245, 245);border-radius:3px;font-family:&quot;Courier New&quot;, sans-serif;font-size:12px;padding:5px;line-height:1.5;"><span style="margin:0px;padding:0px;color:rgb(66, 113, 174);">Total</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> </span><span style="margin:0px;padding:0px;color:rgb(66, 113, 174);">PGs</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> </span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">=</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> </span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">((</span><span style="margin:0px;padding:0px;color:rgb(66, 113, 174);">Total_number_of_OSD</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> </span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">*</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> </span><span style="margin:0px;padding:0px;color:rgb(245, 135, 31);">100</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">)</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> </span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">/</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> max_replication_count</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">)</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> </span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">/</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> pool_count</span></code></pre>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">线上尽量不要更改PG的数量，PG的数量的变更将导致整个集群动起来（各个OSD之间copy数据），大量数据均衡期间读写性能下降严重；</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><strong style="margin:0px;padding:0px;">良好的工程实践建议（掉坑后的教训）</strong>：<br style="margin:0px;padding:0px;"/>
+预先规划Pool的规模，设置PG数量；一旦设置之后就不再变更；后续需要扩容就以 Pool 为维度为扩容，通过新增Pool来实现（Pool通过 crushmap实现故障域隔离）；</p>
+<h3 style="border-bottom:0px;font-size:14px;line-height:1.5;margin:10px 0px;padding:0px;-webkit-margin-start:0px;font-weight:bold;display:block;-webkit-margin-before:1em;-webkit-margin-after:1em;-webkit-margin-end:0px;color:rgb(0, 0, 0);">对象的寻址过程</h3>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">查找对象在集群中的存储的位置，具体分为两步：<br style="margin:0px;padding:0px;"/>
+第一步，对象到PG的映射；将对象的id 通过hash映射，然后用PG总数对hash值取模得到pg id：</p>
+<pre style="padding:10px;margin-top:10px;white-space:pre-wrap;word-wrap:break-word;margin:0px;margin-bottom:10px;border:1px solid rgb(204, 204, 204);background:white;line-height:1.5;font-size:12px;font-family:Menlo, &quot;Bitstream Vera Sans Mono&quot;, &quot;DejaVu Sans Mono&quot;, Monaco, Consolas, monospace;"><code style="border:1px solid rgb(204, 204, 204);height:auto;vertical-align:middle;margin:auto;display:block;overflow-x:auto;background:rgb(255, 255, 255);color:rgb(0, 0, 0);background-color:rgb(245, 245, 245);border-radius:3px;font-family:&quot;Courier New&quot;, sans-serif;font-size:12px;padding:5px;line-height:1.5;"><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">pg_ id </span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">=</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> hash</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">(</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> object_ id </span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">)</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> </span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">%</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> pg_num</span></code></pre>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">第二步，PG到osd列表映射; 通过crush算法计算PG 上的对象分布到哪些OSD硬盘上；</p>
+<pre style="padding:10px;margin-top:10px;white-space:pre-wrap;word-wrap:break-word;margin:0px;margin-bottom:10px;border:1px solid rgb(204, 204, 204);background:white;line-height:1.5;font-size:12px;font-family:Menlo, &quot;Bitstream Vera Sans Mono&quot;, &quot;DejaVu Sans Mono&quot;, Monaco, Consolas, monospace;"><code style="border:1px solid rgb(204, 204, 204);height:auto;vertical-align:middle;margin:auto;display:block;overflow-x:auto;background:rgb(255, 255, 255);color:rgb(0, 0, 0);background-color:rgb(245, 245, 245);border-radius:3px;font-family:&quot;Courier New&quot;, sans-serif;font-size:12px;padding:5px;line-height:1.5;"><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">CRUSH</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">(</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">PG_ID</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">)</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> </span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">=⇒</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> OSD</span></code></pre>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">CRUSH算法是 ceph的精华所在；</p>
+<h4 style="padding:0px;font-size:14px;font-weight:bold;margin:10px 0px;color:rgb(0, 0, 0);border-bottom:0px;">crush的目标</h4>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">先看看crush算法的希望达成的目标：</p>
+<ol style="margin:0px;padding:0px;padding-left:40px;">
+<li style="margin:0px;padding:0px;list-style:none;margin-bottom:1em;list-style-type:decimal;">数据均匀的分布到集群中；</li>
+<li style="margin:0px;padding:0px;list-style:none;margin-bottom:1em;list-style-type:decimal;">需要考虑各个OSD权重的不同（根据读写性能的差异，磁盘的容量的大小差异等设置不同的权重）</li>
+<li style="margin:0px;padding:0px;list-style:none;margin-bottom:1em;list-style-type:decimal;">当有OSD损坏需要数据迁移时，数据的迁移量尽可能的少；</li>
+</ol>
+<h4 style="padding:0px;font-size:14px;font-weight:bold;margin:10px 0px;color:rgb(0, 0, 0);border-bottom:0px;">crush算法</h4>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">简单说下crush算法的过程：<br style="margin:0px;padding:0px;"/>
+第一步输入PG id、可供选择的OSD id 列表，和一个常量，通过一个伪随机算法，得到一个随机数，伪随机算法保证了同一个key总是得到相同的随机数，从而保证每次计算的存储位置不会改变；</p>
+<pre style="padding:10px;margin-top:10px;white-space:pre-wrap;word-wrap:break-word;margin:0px;margin-bottom:10px;border:1px solid rgb(204, 204, 204);background:white;line-height:1.5;font-size:12px;font-family:Menlo, &quot;Bitstream Vera Sans Mono&quot;, &quot;DejaVu Sans Mono&quot;, Monaco, Consolas, monospace;"><code style="border:1px solid rgb(204, 204, 204);height:auto;vertical-align:middle;margin:auto;display:block;overflow-x:auto;background:rgb(255, 255, 255);color:rgb(0, 0, 0);background-color:rgb(245, 245, 245);border-radius:3px;font-family:&quot;Courier New&quot;, sans-serif;font-size:12px;padding:5px;line-height:1.5;"><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">CRUSH_HASH</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">(</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> PG_ID</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">,</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> OSD_ID</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">,</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> r </span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">)</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> </span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">=</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> draw</span></code></pre>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">第二步将上面得到的随机数和每个OSD的权重相乘，然后挑出乘积最大的那个OSD；</p>
+<pre style="padding:10px;margin-top:10px;white-space:pre-wrap;word-wrap:break-word;margin:0px;margin-bottom:10px;border:1px solid rgb(204, 204, 204);background:white;line-height:1.5;font-size:12px;font-family:Menlo, &quot;Bitstream Vera Sans Mono&quot;, &quot;DejaVu Sans Mono&quot;, Monaco, Consolas, monospace;"><code style="border:1px solid rgb(204, 204, 204);height:auto;vertical-align:middle;margin:auto;display:block;overflow-x:auto;background:rgb(255, 255, 255);color:rgb(0, 0, 0);background-color:rgb(245, 245, 245);border-radius:3px;font-family:&quot;Courier New&quot;, sans-serif;font-size:12px;padding:5px;line-height:1.5;"><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> </span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">(</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> draw </span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">&amp;</span><span style="margin:0px;padding:0px;color:rgb(245, 135, 31);">0xffff</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> </span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">)</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> </span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">*</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> osd_weight </span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);">=</span><span style="margin:0px;padding:0px;color:rgb(77, 77, 76);"> osd_straw</span></code></pre>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">在样本容量足够大之后，这个随机数对挑中的结果不再有影响，起决定性影响的是OSD的权重，也就是说，OSD的权重越大，被挑中的概率越大。<br style="margin:0px;padding:0px;"/>
+到这里了我们再看看crush算法如何达成的目标：<br style="margin:0px;padding:0px;"/>
+通过随机算法让数据均衡分布，乘以权重让挑选的结果考虑了权重；而如果出现故障OSD，只需要恢复这个OSD上的数据，不在这个节点上的数据不需移动；</p>
+<h4 style="padding:0px;font-size:14px;font-weight:bold;margin:10px 0px;color:rgb(0, 0, 0);border-bottom:0px;">crush优缺点</h4>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">聊到这里，crush算法的优缺点就明显了：<br style="margin:0px;padding:0px;"/>
+优点如下：</p>
+<ul style="margin:0px;padding:0px;word-break:break-all;margin-left:30px;padding-left:0px;">
+<li style="margin:0px;padding:0px;list-style:none;margin-bottom:1em;list-style-type:disc;">输入元数据（ cluster map、 placement rule） 较少， 可以应对大规模集群。</li>
+<li style="margin:0px;padding:0px;list-style:none;margin-bottom:1em;list-style-type:disc;">可以应对集群的扩容和缩容。</li>
+<li style="margin:0px;padding:0px;list-style:none;margin-bottom:1em;list-style-type:disc;">采用以概率为基础的统计上的均衡，在大规模集群中可以实现数据均衡。</li>
+</ul>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">缺点呢：</p>
+<ul style="margin:0px;padding:0px;word-break:break-all;margin-left:30px;padding-left:0px;">
+<li style="margin:0px;padding:0px;list-style:none;margin-bottom:1em;list-style-type:disc;">在小规模集群中， 会有一定的数据不均衡现象（权重的影响低，主要起作用的是伪随机算法）。</li>
+</ul>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">看清楚了寻址的过程，就明白为啥PG不能轻易变更了；PG是寻址第一步中的取模参数，变更PG会导致对象的PG id 都发生变化，从而导致整个集群的数据迁移；</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">这里只是做个引子，关于crush算法，这篇文章讲的通俗直白，有兴趣的移步：<a href="http://mp.weixin.qq.com/s/Q6aWSIuOJOaC9m1ZTOR_Zg" style="margin:0px;padding:1px 2px;color:rgb(111, 159, 63);text-decoration:none;">大话Ceph--CRUSH那点事儿</a></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Ceph 是Sega本人的博士论文作品, 其博士论文被整理成三篇短论文，其中一篇就是 CRUSH，<br style="margin:0px;padding:0px;"/>
+CRUSH论文标题为<a href="http://ceph.com/papers/weil-crush-sc06.pdf" style="margin:0px;padding:1px 2px;color:rgb(111, 159, 63);text-decoration:none;">《CRUSH: Controlled, Scalable, Decentralized Placement of Replicated Data》</a>，介绍了CRUSH的设计与实现细节。<br style="margin:0px;padding:0px;"/>
+（PS：另外两篇是 <a href="http://ceph.com/papers/weil-rados-pdsw07.pdf" style="margin:0px;padding:1px 2px;color:rgb(111, 159, 63);text-decoration:none;">RADOS</a>和 <a href="http://ceph.com/papers/weil-ceph-osdi06.pdf" style="margin:0px;padding:1px 2px;color:rgb(111, 159, 63);text-decoration:none;">CephFS</a>, 分别讲 Ceph 的服务器实现和 Ceph 文件系统的细节实现）</p>
+<h3 style="border-bottom:0px;font-size:14px;line-height:1.5;margin:10px 0px;padding:0px;-webkit-margin-start:0px;font-weight:bold;display:block;-webkit-margin-before:1em;-webkit-margin-after:1em;-webkit-margin-end:0px;color:rgb(0, 0, 0);">故障域的划分</h3>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">刚开始接触 Ceph，通常会忽略 <a href="http://docs.ceph.org.cn/rados/operations/crush-map" style="margin:0px;padding:1px 2px;color:rgb(111, 159, 63);text-decoration:none;">crushmap</a>，因为即使对它不做任何设置，也不影响我们的正常使用；<br style="margin:0px;padding:0px;"/>
+一旦集群大了，没有它集群就处于一个危险的运行状态中；<br style="margin:0px;padding:0px;"/>
+没有故障域的划分，整个集群就处于一个未隔离的资源池中；<br style="margin:0px;padding:0px;"/>
+一个对象存过去，可能落在 500个OSD硬盘的任意三个上；<br style="margin:0px;padding:0px;"/>
+如果一块硬盘坏了，可能带来的是全局影响（副本copy，这个硬盘上丢失的PG副本可能分布在全局各个硬盘上）；</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">使用crushmap 将整个集群的OSD 划分为一个个故障域，类似将一个集群按业务划分成为了多个小集群；每个Pool 只会用到特定的 OSD，这样，一旦某个OSD 损坏，影响的只是某个业务的某个Pool，将故障的范围控制在一个很小的范围内。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><strong style="margin:0px;padding:0px;">良好的工程实践建议</strong>：<br style="margin:0px;padding:0px;"/>
+使用crushmap 划分故障域，将pool限制在特定的osd list上，osd的损坏只会引起这个pool内的数据均衡，不会造成全局影响；</p>
+<h3 style="border-bottom:0px;font-size:14px;line-height:1.5;margin:10px 0px;padding:0px;-webkit-margin-start:0px;font-weight:bold;display:block;-webkit-margin-before:1em;-webkit-margin-after:1em;-webkit-margin-end:0px;color:rgb(0, 0, 0);">服务端对象的存储</h3>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">对象是数据存储的基本单元， 一般默认 4MB 大小（这里指的是RADOS的底层存储的对象，非RGW接口的对象）。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">对象的组成分为3部分：key 、value、元数据；</p>
+<ul style="margin:0px;padding:0px;word-break:break-all;margin-left:30px;padding-left:0px;">
+<li style="margin:0px;padding:0px;list-style:none;margin-bottom:1em;list-style-type:disc;">元数据可直接存在文件的扩展属性中（必须是标准的文件属性），也可存到levelDb中；</li>
+<li style="margin:0px;padding:0px;list-style:none;margin-bottom:1em;list-style-type:disc;">value 就是对象数据，在本地文件系统中用一个文件存储；</li>
+</ul>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">对于大文件的存储，Ceph 提供的客户端接口会对大文件分片（条带化）后存储到服务端；这个条带化操作是在客户端接口程序完成的，在 Ceph 存储集群内存储的那些对象是没条带化的。客户端通过 librados 直接写入 Ceph 存储的数据不会分片。</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><strong style="margin:0px;padding:0px;">良好的工程实践建议</strong>：<br style="margin:0px;padding:0px;"/>
+对于对象存储，只使用 Ceph 提供的 RGW 接口， 不使用 librados原生接口；不仅有分片功能，扩展也更容易（RGW是无状态的，可水平扩展）；大量大对象直接存放到 Ceph中会影响 Ceph 稳定性（存储容量达到60%后）；</p>
+<h2 style="color:white;font-size:16px;line-height:1.5;margin:10px 0px;padding:3px;font-weight:bold;background-color:rgb(165, 165, 165);-webkit-margin-before:1em;-webkit-margin-after:1em;-webkit-margin-start:0px;-webkit-margin-end:0px;">总结</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">上线 Ceph 前，先规划未来一年的预期使用量，为每个 pool 一次性设置 PG之后不再变更； 使用crushmap 设置故障域隔离，将磁盘故障后带来的数据平衡控制在一个小的范围之内。接口方面推荐只使用Ceph 提供的RGW 接口，不使用 librados原生接口。做好这些， 你的 Ceph 用起来会省心很多。</p>
+<h2 style="color:white;font-size:16px;line-height:1.5;margin:10px 0px;padding:3px;font-weight:bold;background-color:rgb(165, 165, 165);-webkit-margin-before:1em;-webkit-margin-after:1em;-webkit-margin-start:0px;-webkit-margin-end:0px;">参考</h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><a href="http://docs.ceph.com/docs/master/" style="margin:0px;padding:1px 2px;color:rgb(111, 159, 63);text-decoration:none;">Ceph官网</a><br style="margin:0px;padding:0px;"/>
+<a href="http://docs.ceph.org.cn/start/intro/" style="margin:0px;padding:1px 2px;color:rgb(111, 159, 63);text-decoration:none;">Ceph 中文文档</a><br style="margin:0px;padding:0px;"/>
+《Ceph源码剖析》</p>
+</div>
+<div style="margin:0px;padding:0px;clear:both;"></div>
+<div style="margin:0px;padding:0px;margin-top:20px;">
+<div style="margin:0px;padding:0px;margin-bottom:10px;">分类: <a href="https://www.cnblogs.com/me115/category/267414.html" style="margin:0px;padding:0px;color:rgb(255, 102, 0);text-decoration:none;" target="_blank">Linux&amp;Unix</a>,<a href="https://www.cnblogs.com/me115/category/943000.html" style="margin:0px;padding:0px;color:rgb(255, 102, 0);text-decoration:none;" target="_blank">Ceph</a></div>
+<div style="margin:0px;padding:0px;font-size:9pt;color:rgb(102, 102, 102);float:right;margin-top:0px;"></div>
+<div style="margin:0px;padding:0px;"><div style="margin:0px;padding:10px 0px;margin-bottom:10px;margin-top:10px;border:1px dashed silver;font-size:12px;width:320px;text-align:center;">
+        <a href="#" style="margin-right:10px;margin:0px;border-radius:10px;padding:3px 8px;text-decoration:none;font-weight:bold;cursor:pointer;display:inline-block;vertical-align:middle;box-shadow:rgba(0, 0, 0, 0.5) 0px 1px 3px;text-shadow:rgba(0, 0, 0, 0.25) 0px -1px 1px;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAkCAYAAABIdFAMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHhJREFUeNo8zjsOxCAMBFB/KEAUFFR0Cbng3nQPw68ArZdAlOZppPFIBhH5EAB8b+Tlt9MYQ6i1BuqFaq1CKSVcxZ2Acs6406KUgpt5/LCKuVgz5BDCSb13ZO99ZOdcZGvt4mJjzMVKqcha68iIePB86GAiOv8CDADlIUQBs7MD3wAAAABJRU5ErkJggg%3D%3D) repeat-x;background-color:rgb(45, 174, 191);color:rgb(255, 255, 255);border:none;">好文要顶</a>
+            <a href="#" style="margin-right:10px;margin:0px;border-radius:10px;padding:3px 8px;text-decoration:none;font-weight:bold;cursor:pointer;display:inline-block;vertical-align:middle;box-shadow:rgba(0, 0, 0, 0.5) 0px 1px 3px;text-shadow:rgba(0, 0, 0, 0.25) 0px -1px 1px;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAkCAYAAABIdFAMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHhJREFUeNo8zjsOxCAMBFB/KEAUFFR0Cbng3nQPw68ArZdAlOZppPFIBhH5EAB8b+Tlt9MYQ6i1BuqFaq1CKSVcxZ2Acs6406KUgpt5/LCKuVgz5BDCSb13ZO99ZOdcZGvt4mJjzMVKqcha68iIePB86GAiOv8CDADlIUQBs7MD3wAAAABJRU5ErkJggg%3D%3D) repeat-x;background-color:rgb(227, 49, 0);color:rgb(255, 255, 255);border:none;">关注我</a>
+    <a href="#" style="margin-right:10px;margin:0px;border-radius:10px;padding:3px 8px;text-decoration:none;font-weight:bold;cursor:pointer;display:inline-block;vertical-align:middle;box-shadow:rgba(0, 0, 0, 0.5) 0px 1px 3px;text-shadow:rgba(0, 0, 0, 0.25) 0px -1px 1px;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAkCAYAAABIdFAMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHhJREFUeNo8zjsOxCAMBFB/KEAUFFR0Cbng3nQPw68ArZdAlOZppPFIBhH5EAB8b+Tlt9MYQ6i1BuqFaq1CKSVcxZ2Acs6406KUgpt5/LCKuVgz5BDCSb13ZO99ZOdcZGvt4mJjzMVKqcha68iIePB86GAiOv8CDADlIUQBs7MD3wAAAABJRU5ErkJggg%3D%3D) repeat-x;background-color:rgb(255, 181, 21);color:rgb(255, 255, 255);border:none;">收藏该文</a>
+    <a href="#" style="margin-right:10px;margin:0px;border-radius:10px;padding:3px 2px;text-decoration:none;font-weight:bold;cursor:pointer;display:inline-block;vertical-align:middle;box-shadow:none;text-shadow:none;background:none;color:rgb(255, 255, 255);border:none;" title="分享至新浪微博"><img src="ceph-refer_files/icon_weibo_24.png" type="image/png" data-filename="icon_weibo_24.png" height="24" style="margin:0px;padding:0px;height:auto;border:none;vertical-align:middle;margin-left:5px;box-shadow:none;max-width:300px;" width="24"/></a>
+    <a href="#" style="margin-right:10px;margin:0px;border-radius:10px;padding:3px 2px;text-decoration:none;font-weight:bold;cursor:pointer;display:inline-block;vertical-align:middle;box-shadow:none;text-shadow:none;background:none;color:rgb(255, 255, 255);border:none;" title="分享至微信"><img src="ceph-refer_files/wechat.png" type="image/png" data-filename="wechat.png" height="24" style="margin:0px;padding:0px;border:medium none;width:24px;height:24px;box-shadow:none;margin-left:5px;vertical-align:middle;max-width:300px;" width="24"/></a>
+</div>
+<div style="margin:0px;padding:0px;float:left;width:280px;margin-top:0px;margin-bottom:10px;color:rgb(0, 0, 0);margin-left:0px;font-size:12px;">
+    <div style="margin:0px;padding:0px;float:left;line-height:18px;">
+            <a href="http://home.cnblogs.com/u/me115/" style="margin:0px;padding:0px;color:rgb(255, 102, 0);text-decoration:none;" target="_blank"><img src="ceph-refer_files/u90573.jpg" type="image/jpeg" data-filename="u90573.jpg" height="48" style="margin:0px;padding:0px;height:auto;border:0px;vertical-align:top;float:left;margin-right:5px;padding-top:5px;padding-left:2px;max-width:300px;" width="48"/></a>
+        <div style="margin:0px;padding:0px;float:left;line-height:18px;">
+            <a href="http://home.cnblogs.com/u/me115/" style="margin:0px;padding:0px;color:rgb(255, 102, 0);text-decoration:none;">大CC</a><br style="margin:0px;padding:0px;"/>
+            <a href="http://home.cnblogs.com/u/me115/followees" style="margin:0px;padding:0px;color:rgb(255, 102, 0);text-decoration:none;">关注 - 3</a><br style="margin:0px;padding:0px;"/>
+            <a href="http://home.cnblogs.com/u/me115/followers" style="margin:0px;padding:0px;color:rgb(255, 102, 0);text-decoration:none;">粉丝 - 543</a>
+        </div>
+    </div>
+    <div style="margin:0px;padding:0px;clear:both;"></div>
+    <div style="margin:0px;padding:0px;"></div>
+    <div style="margin:0px;padding:0px;">
+                <a href="#" style="margin:0px;padding:0px;color:rgb(255, 102, 0);text-decoration:none;">+加关注</a>
+    </div>
+</div>
+<div style="margin:0px;padding:0px;float:right;margin-bottom:10px;margin-right:30px;font-size:12px;width:125px;text-align:center;margin-top:10px;">
+    <div style="margin:0px;padding:0px;float:left;width:46px;height:52px;background:url(//static.cnblogs.com/images/upup.gif) no-repeat;text-align:center;cursor:pointer;margin-top:2px;padding-top:5px;">
+        <span style="margin:0px;padding:0px;font-size:14px;color:rgb(7, 93, 179);font-family:Verdana;line-height:1.5em;">0</span>
+    </div>
+    <div style="text-align:center;padding:0px;margin:0px;height:52px;background:url(//static.cnblogs.com/images/downdown.gif) no-repeat;margin-left:20px;cursor:pointer;margin-top:2px;padding-top:5px;width:46px;float:right;">
+        <span style="margin:0px;padding:0px;font-size:14px;color:rgb(7, 93, 179);font-family:Verdana;line-height:1.5em;">0</span>
+    </div>
+    <div style="margin:0px;padding:0px;clear:both;"></div>
+    <div style="margin:0px;padding:0px;margin-top:5px;margin-left:0px;font-size:12px;color:gray;">
+    </div>
+</div>
+</div>
+<div style="margin:0px;padding:0px;clear:both;"></div>
+<div style="margin:0px;padding:0px;line-height:1.8;font-size:12px;"><a href="https://www.cnblogs.com/me115/p/5698787.html" style="margin:0px;padding:0px;color:rgb(255, 102, 0);text-decoration:none;">« </a> 上一篇：<a href="https://www.cnblogs.com/me115/p/5698787.html" style="margin:0px;padding:0px;color:rgb(255, 102, 0);text-decoration:none;" title="发布于2016-07-23 15:31">nginx缓冲区优化</a><br style="margin:0px;padding:0px;"/><a href="https://www.cnblogs.com/me115/p/6366391.html" style="margin:0px;padding:0px;color:rgb(255, 102, 0);text-decoration:none;">» </a> 下一篇：<a href="https://www.cnblogs.com/me115/p/6366391.html" style="margin:0px;padding:0px;color:rgb(255, 102, 0);text-decoration:none;" title="发布于2017-02-05 16:46">Docker 1.13 管理命令</a><br style="margin:0px;padding:0px;"/></div>
+</div>
+
+
+		</div>
+		<div style="padding-right:5px;margin:0px;padding:0px;clear:both;border-top:1px dashed rgb(232, 231, 208);margin-right:20px;padding-top:8px;width:98%;text-align:right;float:right;color:rgb(102, 102, 102);margin-top:5px;">posted @ <span style="margin:0px;padding:0px;">2017-02-04 21:22</span> <a href="https://www.cnblogs.com/me115/" style="margin:0px;padding:0px;text-decoration:none;color:rgb(102, 102, 102);">大CC</a> 阅读(<span style="margin:0px;padding:0px;">15153</span>) 评论(<span style="margin:0px;padding:0px;">0</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=6366374" rel="nofollow" style="margin:0px;padding:0px;text-decoration:none;color:rgb(102, 102, 102);">编辑</a> <a href="https://www.cnblogs.com/me115/p/6366374.html#" style="margin:0px;padding:0px;text-decoration:none;color:rgb(102, 102, 102);">收藏</a></div>
+	</div></div></div></div></div></div></div></div></div></div>
+</div>
+</span>
+</div></body></html> 
