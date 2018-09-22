@@ -1,0 +1,149 @@
+<html>
+<head>
+  <title>Evernote Export</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/307027 (zh-CN, DDL); Windows/10.0.0 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+<a name="3377"/>
+
+<div><span>
+  <div>
+<div style="font-size: 16px; display: inline-block; min-width: 100%;position: relative;"><div><div style="font-family:&quot;PingFang SC&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;color:rgb(0, 0, 0);background:url(/Skins/coffee/images/bg_body.gif) left top;line-height:1.5;font-size:14px;"><div style="min-width:auto;"><div style="min-width:auto;text-align:left;"><div style="background:transparent;text-align:left;overflow-x:hidden;"><div style="background:url(/Skins/coffee/images/bg_left.gif) left top repeat-x rgb(254, 254, 242);"><div><div style="text-overflow:ellipsis;overflow:hidden;word-break:break-all;"><div>
+		<h1 style="margin:0px;padding:0px;width:100%;clear:both;font-weight:bold;float:left;line-height:1.5;font-size:14px;padding-left:5px;">
+			<a href="https://www.cnblogs.com/zhaoyanjun/p/5882784.html" style="margin:0px;padding:0px;text-decoration:none;color:rgb(7, 93, 179);">GitHub 实现多人协同提交代码并且权限分组管理</a>
+		</h1>
+		<div style="margin:0px;padding:0px;clear:both;"></div>
+		<div style="margin:0px;padding:5px 2px 5px 5px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin-top:5px;">
+			<div style="margin:0px;padding:0px;margin-bottom:20px;word-break:break-word;"><blockquote style="margin:0px;background:none;border:2px solid rgb(239, 239, 239);padding:5px 10px;margin-top:10px;margin-bottom:10px;line-height:1.6em;color:rgb(51, 51, 51);margin-left:0px;">
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">转载请标明出处： </span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;"><a href="http://www.cnblogs.com/zhaoyanjun/p/5882784.html" style="margin:0px;padding:0px;text-decoration:underline;color:rgb(7, 93, 179);" target="_blank" title="view: GitHub 实现多人协同提交代码并且权限分组管理">http://www.cnblogs.com/zhaoyanjun/p/5882784.html</a> </span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">出自[<a href="http://www.cnblogs.com/zhaoyanjun" style="margin:0px;padding:0px;text-decoration:underline;color:rgb(7, 93, 179);" target="_blank" title="http://www.cnblogs.com/zhaoyanjun">赵彦军博客</a>] 2016-09-19</span></p>
+</blockquote>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"> </p>
+<h2 style="padding:0px;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">前言：</span></h2>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">在上一篇文章中<a href="http://www.cnblogs.com/zhaoyanjun/p/5829142.html" style="margin:0px;padding:0px;text-decoration:underline;color:rgb(7, 93, 179);">Android github 快速实现多人协作</a> (http://www.cnblogs.com/zhaoyanjun/p/5829142.html)介绍了如何快速的实现多人协作的功能。</span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">其优点是：操作简单，快速上手。缺点是：没有办法实现权限控制。为啥要权限控制？这是一个蛋疼的问题，因为我们为了项目的安全考虑，需要对一部分人开放只读权限(只能 read、clone) ; 或者对一部分人开放写权限(只能 read、clone、push) ; 或者对一部分人开放管理者权限(只能 read、clone、push、给仓库添加成员 )。事实上github对权限的管理只有4种，前三种权限分别是 Admin(管理者)、Write(只写) 、Read(只读) 。最后一种权限比较特殊，它是该组织的创建者，拥有至高无上的的权利。</span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"> </p>
+<h2 style="padding:0px;font-size:21px;font-weight:bold;line-height:1.5;margin:10px 0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">正文：</span></h2>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">要想弄清楚github权限管理，需要了解几个概念。<strong style="margin:0px;padding:0px;"> </strong><strong style="margin:0px;padding:0px;">organization（<strong style="margin:0px;padding:0px;">组织</strong>） 、</strong><strong style="margin:0px;padding:0px;">repository（仓库）、</strong><strong style="margin:0px;padding:0px;">Team（<strong style="margin:0px;padding:0px;">团队</strong>）</strong>。</span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">在了解这些概念之前，先听我讲一个小故事。话说从前有个生意人，由于他聪明又能干，他开了水果摊、奶茶店、还有一个网吧。转眼10年过去了，他积累了很多钱，也有了很牛逼的权利，总的来说就是有钱有势有人，于是乎有一天他带领100个兄弟成立一个黑帮组织：青帮。组织成立后，他把100个兄弟分成4个team, 每个team 25个人。团队成立后，兄弟们总不能坐着饿死吧，于是乎他有开了一个ktv 、一个超市、一个足浴大保健。那么问题就来了，怎么让4个team接手这3个项目，要有明确的权限控制，如果权限控制不得当，就会出现自家兄弟互相抢地盘的问题。一个项目可以让多个team管理，一个team可以管多个项目，所以team和项目之间是多对多的关系。</span></p>
+<ul style="margin:0px;padding:0px;word-break:break-all;margin-left:30px;padding-left:0px;">
+<li style="margin:0px;padding:0px;list-style:none;margin-bottom:1em;list-style-type:disc;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">小故事的中的角色资产分析</span></li>
+</ul>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">生意人所拥有的资产：3个项目：水果摊、奶菜店、网吧。</span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">                           1个组织：青帮</span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">青帮组织所拥有的资产：3个项目：Ktv、超市、足浴大保健</span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">                              4个team</span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">注意：水果摊、奶菜店、网吧 这三个项目只属于生意人的资产，不归任何组织所拥有。那延伸一下，生意人是可以再次创建一个新的项目，比如一个4s店；同时他也可以再创建一个新的组织，比如一个洪帮组织。同样在洪帮组织里面可以创建多个team。</span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">现在可以把思路转换到github中，对应关系</span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"> </p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">生意人   --&gt;   <strong style="margin:0px;padding:0px;">你注册的github账户</strong></span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">水果摊   --&gt;   <strong style="margin:0px;padding:0px;">repository（仓库）</strong></span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">青帮      --&gt;   <strong style="margin:0px;padding:0px;">organization（<strong style="margin:0px;padding:0px;">组织</strong>）</strong></span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">团队      --&gt;<strong style="margin:0px;padding:0px;">     <strong style="margin:0px;padding:0px;">Team（<strong style="margin:0px;padding:0px;">团队</strong>）</strong></strong></span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"> </p>
+<h3 style="padding:0px;font-size:16px;font-weight:bold;line-height:1.5;margin:10px 0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;"><br style="margin:0px;padding:0px;"/>1、github实战--创建组织</span></h3>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;">在故事中，生意人可以创建项目和组织。对应到github上的用户可以创建仓库和组织。</p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><img src="GitHub_files/605655-20160919134451262-1641512058.png" type="image/png" data-filename="605655-20160919134451262-1641512058.png" height="333" style="margin:0px;padding:0px;border:0px;height:auto;max-width:300px;" width="504"/></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"> </p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><img src="GitHub_files/605655-20160919135811152-676430683.png" type="image/png" data-filename="605655-20160919135811152-676430683.png" height="662" style="margin:0px;padding:0px;border:0px;height:auto;max-width:300px;" width="900"/></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;">完整的实例</p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><img src="GitHub_files/605655-20160919135831887-796744077.gif" type="image/gif" data-filename="605655-20160919135831887-796744077.gif" height="737" style="margin:0px;padding:0px;border:0px;height:auto;max-width:300px;" width="900"/></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"> </p>
+<h3 style="padding:0px;font-size:16px;font-weight:bold;line-height:1.5;margin:10px 0px;">2、github实战--在组织中创建仓库</h3>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;">  当创建完组织后，来看看组织的结构</p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><img src="GitHub_files/605655-20160919140654590-1651498572.png" type="image/png" data-filename="605655-20160919140654590-1651498572.png" height="410" style="margin:0px;padding:0px;border:0px;height:auto;max-width:300px;" width="900"/></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;">在Organ-Name 组织下，创建一个仓库</p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><img src="GitHub_files/605655-20160919141042527-1718710011.gif" type="image/gif" data-filename="605655-20160919141042527-1718710011.gif" height="664" style="margin:0px;padding:0px;border:0px;height:auto;max-width:300px;" width="667"/></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"> </p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"> </p>
+<h3 style="padding:0px;font-size:16px;font-weight:bold;line-height:1.5;margin:10px 0px;">3、github实战--在组织中创建team</h3>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><img src="GitHub_files/605655-20160919141552606-1805098616.gif" type="image/gif" data-filename="605655-20160919141552606-1805098616.gif" height="675" style="margin:0px;padding:0px;border:0px;height:auto;max-width:300px;" width="900"/></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;"> 团队创建完成后，默认这个团队的成员只有一个人，就是该账号。下面就开始给这个team添加其他成员。</span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><img src="GitHub_files/605655-20160919143047918-225222184.gif" type="image/gif" data-filename="605655-20160919143047918-225222184.gif" height="456" style="margin:0px;padding:0px;border:0px;height:auto;max-width:300px;" width="900"/></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;color:#ff0000;">邀请成功以后，需要被邀请人去自己的邮箱点击一下，确认邀请</span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"> </p>
+<h3 style="padding:0px;font-size:16px;font-weight:bold;line-height:1.5;margin:10px 0px;">4、github实战--在组织中给仓库添加team并且设置权限。</h3>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><img src="GitHub_files/605655-20160919145301793-2066352342.gif" type="image/gif" data-filename="605655-20160919145301793-2066352342.gif" height="490" style="margin:0px;padding:0px;border:0px;height:auto;max-width:300px;" width="900"/></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"> </p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"> 可以看到，仓库对team的权限控制有三种</p>
+<ul style="margin:0px;padding:0px;word-break:break-all;margin-left:30px;padding-left:0px;">
+<li style="margin:0px;padding:0px;list-style:none;margin-bottom:1em;list-style-type:disc;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">Admin 管理者权限(只能 read、clone、push、给仓库添加成员 )</span></li>
+<li style="margin:0px;padding:0px;list-style:none;margin-bottom:1em;list-style-type:disc;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">Write 写权限(只能 read、clone、push)</span></li>
+<li style="margin:0px;padding:0px;list-style:none;margin-bottom:1em;list-style-type:disc;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">Read 读权限(只能 read、clone) </span></li>
+
+
+
+
+
+</ul>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"> </p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;">另外任意一个Team可以供多个组织使用，<span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">到这里权限添加已经全部完成了。</span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"> </p>
+<h3 style="padding:0px;font-size:16px;font-weight:bold;line-height:1.5;margin:10px 0px;">总结</h3>
+<ul style="margin:0px;padding:0px;word-break:break-all;margin-left:30px;padding-left:0px;">
+<li style="margin:0px;padding:0px;list-style:none;margin-bottom:1em;list-style-type:disc;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">通过这篇文章可以在github愉快的使用权限管理了，但是github不能免费的创建私有仓库，这是一个很严重的问题。如果是开源项目，用github完全没有问题。如果是私有项目，可以有以下几个途径达到要求</span></li>
+
+
+</ul>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;">      <span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">  1、在github花钱购买私有仓库。</span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">       2、使用国内比较出名的开源中国git托管服务：<a href="https://git.oschina.net/" style="margin:0px;padding:0px;text-decoration:underline;color:rgb(7, 93, 179);" target="_blank" title="https://git.oschina.net/">https://git.oschina.net/</a>   </span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;line-height:1.5;font-size:16px;">       3、使用GitLab,这需要在自己的服务器上部署。传送门：<a href="https://about.gitlab.com/gitlab-com/" style="margin:0px;padding:0px;text-decoration:underline;color:rgb(7, 93, 179);" target="_blank" title="https://about.gitlab.com/gitlab-com/">https://about.gitlab.com/gitlab-com/</a></span></p>
+<p style="padding:0px;line-height:1.5;color:rgb(0, 0, 0);font-size:13px;margin:10px auto;text-indent:0px;"> </p></div>
+<div style="margin:0px;padding:0px;clear:both;"></div>
+<div style="margin:0px;padding:0px;margin-top:20px;">
+<div style="margin:0px;padding:0px;margin-bottom:10px;">分类: <a href="http://www.cnblogs.com/zhaoyanjun/category/684868.html" style="margin:0px;padding:0px;text-decoration:underline;color:rgb(7, 93, 179);" target="_blank">Android</a>,<a href="http://www.cnblogs.com/zhaoyanjun/category/701886.html" style="margin:0px;padding:0px;text-decoration:underline;color:rgb(7, 93, 179);" target="_blank">Android Studio</a>,<a href="http://www.cnblogs.com/zhaoyanjun/category/702303.html" style="margin:0px;padding:0px;text-decoration:underline;color:rgb(7, 93, 179);" target="_blank">CVS ( SVN 和 Git )</a></div>
+<div style="margin:0px;padding:0px;font-size:9pt;color:rgb(102, 102, 102);margin-top:0px;">标签: <a href="http://www.cnblogs.com/zhaoyanjun/tag/%E8%B5%B5%E5%BD%A6%E5%86%9B/" style="margin:0px;padding:0px;text-decoration:underline;margin-left:5px;color:rgb(102, 102, 102);">赵彦军</a>, <a href="http://www.cnblogs.com/zhaoyanjun/tag/cvs/" style="margin:0px;padding:0px;text-decoration:underline;margin-left:5px;color:rgb(102, 102, 102);">cvs</a>, <a href="http://www.cnblogs.com/zhaoyanjun/tag/github%E6%9D%83%E9%99%90%E7%AE%A1%E7%90%86/" style="margin:0px;padding:0px;text-decoration:underline;margin-left:5px;color:rgb(102, 102, 102);">github权限管理</a></div>
+<div style="margin:0px;padding:0px;"><div style="margin:0px;padding:10px 0px;margin-bottom:10px;margin-top:10px;border:1px dashed silver;font-size:12px;width:320px;text-align:center;">
+        <a href="#" style="margin-right:10px;margin:0px;border-radius:10px;padding:3px 8px;text-decoration:none;font-weight:bold;cursor:pointer;display:inline-block;vertical-align:middle;box-shadow:rgba(0, 0, 0, 0.5) 0px 1px 3px;text-shadow:rgba(0, 0, 0, 0.25) 0px -1px 1px;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAkCAYAAABIdFAMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHhJREFUeNo8zjsOxCAMBFB/KEAUFFR0Cbng3nQPw68ArZdAlOZppPFIBhH5EAB8b+Tlt9MYQ6i1BuqFaq1CKSVcxZ2Acs6406KUgpt5/LCKuVgz5BDCSb13ZO99ZOdcZGvt4mJjzMVKqcha68iIePB86GAiOv8CDADlIUQBs7MD3wAAAABJRU5ErkJggg%3D%3D) repeat-x;background-color:rgb(45, 174, 191);color:rgb(255, 255, 255);border:none;">好文要顶</a>
+            <a href="#" style="margin-right:10px;margin:0px;border-radius:10px;padding:3px 8px;text-decoration:none;font-weight:bold;cursor:pointer;display:inline-block;vertical-align:middle;box-shadow:rgba(0, 0, 0, 0.5) 0px 1px 3px;text-shadow:rgba(0, 0, 0, 0.25) 0px -1px 1px;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAkCAYAAABIdFAMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHhJREFUeNo8zjsOxCAMBFB/KEAUFFR0Cbng3nQPw68ArZdAlOZppPFIBhH5EAB8b+Tlt9MYQ6i1BuqFaq1CKSVcxZ2Acs6406KUgpt5/LCKuVgz5BDCSb13ZO99ZOdcZGvt4mJjzMVKqcha68iIePB86GAiOv8CDADlIUQBs7MD3wAAAABJRU5ErkJggg%3D%3D) repeat-x;background-color:rgb(227, 49, 0);color:rgb(255, 255, 255);border:none;">关注我</a>
+    <a href="#" style="margin-right:10px;margin:0px;border-radius:10px;padding:3px 8px;text-decoration:none;font-weight:bold;cursor:pointer;display:inline-block;vertical-align:middle;box-shadow:rgba(0, 0, 0, 0.5) 0px 1px 3px;text-shadow:rgba(0, 0, 0, 0.25) 0px -1px 1px;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAkCAYAAABIdFAMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHhJREFUeNo8zjsOxCAMBFB/KEAUFFR0Cbng3nQPw68ArZdAlOZppPFIBhH5EAB8b+Tlt9MYQ6i1BuqFaq1CKSVcxZ2Acs6406KUgpt5/LCKuVgz5BDCSb13ZO99ZOdcZGvt4mJjzMVKqcha68iIePB86GAiOv8CDADlIUQBs7MD3wAAAABJRU5ErkJggg%3D%3D) repeat-x;background-color:rgb(255, 181, 21);color:rgb(255, 255, 255);border:none;">收藏该文</a>
+    <a href="#" style="margin-right:10px;margin:0px;border-radius:10px;padding:3px 2px;text-decoration:none;font-weight:bold;cursor:pointer;display:inline-block;vertical-align:middle;box-shadow:none;text-shadow:none;background:none;color:rgb(255, 255, 255);border:none;" title="分享至新浪微博"><img src="GitHub_files/icon_weibo_24.png" type="image/png" data-filename="icon_weibo_24.png" height="24" style="margin:0px;padding:0px;height:auto;border:none;vertical-align:middle;margin-left:5px;box-shadow:none;max-width:300px;" width="24"/></a>
+    <a href="#" style="margin-right:10px;margin:0px;border-radius:10px;padding:3px 2px;text-decoration:none;font-weight:bold;cursor:pointer;display:inline-block;vertical-align:middle;box-shadow:none;text-shadow:none;background:none;color:rgb(255, 255, 255);border:none;" title="分享至微信"><img src="GitHub_files/wechat.png" type="image/png" data-filename="wechat.png" height="24" style="margin:0px;padding:0px;border:medium none;width:24px;height:24px;box-shadow:none;margin-left:5px;vertical-align:middle;max-width:300px;" width="24"/></a>
+</div>
+<div style="margin:0px;padding:0px;float:left;width:280px;margin-top:0px;margin-bottom:10px;color:rgb(0, 0, 0);margin-left:0px;font-size:12px;">
+    <div style="margin:0px;padding:0px;float:left;line-height:18px;">
+            <a href="http://home.cnblogs.com/u/zhaoyanjun/" style="margin:0px;padding:0px;text-decoration:underline;color:rgb(7, 93, 179);" target="_blank"><img src="GitHub_files/20160531101705.png" type="image/jpeg" data-filename="20160531101705.png" height="48" style="margin:0px;padding:0px;height:auto;border:0px;vertical-align:top;float:left;margin-right:5px;padding-top:5px;padding-left:2px;max-width:300px;" width="48"/></a>
+        <div style="margin:0px;padding:0px;float:left;line-height:18px;">
+            <a href="http://home.cnblogs.com/u/zhaoyanjun/" style="margin:0px;padding:0px;text-decoration:underline;color:rgb(7, 93, 179);">赵彦军</a><br style="margin:0px;padding:0px;"/>
+            <a href="http://home.cnblogs.com/u/zhaoyanjun/followees" style="margin:0px;padding:0px;text-decoration:underline;color:rgb(7, 93, 179);">关注 - 10</a><br style="margin:0px;padding:0px;"/>
+            <a href="http://home.cnblogs.com/u/zhaoyanjun/followers" style="margin:0px;padding:0px;text-decoration:underline;color:rgb(7, 93, 179);">粉丝 - 199</a>
+        </div>
+    </div>
+    <div style="margin:0px;padding:0px;clear:both;"></div>
+    <div style="margin:0px;padding:0px;"></div>
+    <div style="margin:0px;padding:0px;">
+                <a href="#" style="margin:0px;padding:0px;text-decoration:underline;color:rgb(7, 93, 179);">+加关注</a>
+    </div>
+</div>
+<div style="margin:0px;padding:0px;float:right;margin-bottom:10px;margin-right:30px;font-size:12px;width:125px;text-align:center;margin-top:10px;">
+    <div style="margin:0px;padding:0px;float:left;width:46px;height:52px;background:url(//static.cnblogs.com/images/upup.gif) no-repeat;text-align:center;cursor:pointer;margin-top:2px;padding-top:5px;">
+        <span style="margin:0px;padding:0px;font-size:14px;color:rgb(7, 93, 179);font-family:Verdana;line-height:1.5em;">3</span>
+    </div>
+    <div style="text-align:center;padding:0px;margin:0px;height:52px;background:url(//static.cnblogs.com/images/downdown.gif) no-repeat;margin-left:20px;cursor:pointer;margin-top:2px;padding-top:5px;width:46px;float:right;">
+        <span style="margin:0px;padding:0px;font-size:14px;color:rgb(7, 93, 179);font-family:Verdana;line-height:1.5em;">0</span>
+    </div>
+    <div style="margin:0px;padding:0px;clear:both;"></div>
+    <div style="margin:0px;padding:0px;margin-top:5px;margin-left:0px;font-size:12px;color:gray;">
+    </div>
+</div>
+</div>
+<div style="margin:0px;padding:0px;clear:both;"></div>
+<div style="margin:0px;padding:0px;line-height:1.8;font-size:12px;"><a href="http://www.cnblogs.com/zhaoyanjun/p/5872193.html" style="margin:0px;padding:0px;color:rgb(7, 93, 179);text-decoration:none;">« </a> 上一篇：<a href="http://www.cnblogs.com/zhaoyanjun/p/5872193.html" style="margin:0px;padding:0px;text-decoration:underline;color:rgb(7, 93, 179);" title="发布于2016-09-14 14:40">Android 6.0 权限管理最佳实践</a><br style="margin:0px;padding:0px;"/><a href="http://www.cnblogs.com/zhaoyanjun/p/5942616.html" style="margin:0px;padding:0px;color:rgb(7, 93, 179);text-decoration:none;">» </a> 下一篇：<a href="http://www.cnblogs.com/zhaoyanjun/p/5942616.html" style="margin:0px;padding:0px;text-decoration:underline;color:rgb(7, 93, 179);" title="发布于2016-10-09 17:01">Android  急速发布项目到 JitPack</a><br style="margin:0px;padding:0px;"/></div>
+</div>
+
+
+		</div>
+		<div style="margin:0px;padding:0px;clear:both;font-size:12px;float:right;width:100%;text-align:right;padding-right:5px;color:rgb(102, 102, 102);margin-top:5px;">posted @ <span style="margin:0px;padding:0px;">2016-09-19 15:00</span> <a href="http://www.cnblogs.com/zhaoyanjun/" style="margin:0px;padding:0px;text-decoration:none;color:rgb(7, 93, 179);">赵彦军</a> 阅读(<span style="margin:0px;padding:0px;">23255</span>) 评论(<span style="margin:0px;padding:0px;">1</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=5882784" rel="nofollow" style="margin:0px;padding:0px;text-decoration:none;color:rgb(7, 93, 179);">编辑</a> <a href="https://www.cnblogs.com/zhaoyanjun/p/5882784.html#" style="margin:0px;padding:0px;text-decoration:none;color:rgb(7, 93, 179);">收藏</a></div>
+	</div></div></div></div></div></div></div></div></div></div>
+</div>
+</span>
+</div></body></html> 
