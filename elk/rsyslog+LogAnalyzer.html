@@ -1,0 +1,182 @@
+<html>
+<head>
+  <title>Evernote Export</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/307027 (zh-CN, DDL); Windows/10.0.0 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+<a name="2721"/>
+
+<div><span>
+  <div>
+<div style="font-size: 16px; display: inline-block; min-width: 100%;position: relative;"><div><div style="font-family:&quot;PingFang SC&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;font-size:14px;"><table style="font-size:inherit;font-weight:inherit;font-style:inherit;font-variant:inherit;"><tbody><tr style="flex-flow:column;"><td style="background-color:rgb(255, 255, 255);vertical-align:top;order:1;"><div><div><div style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13px;font-family:verdana, sans-serif;line-height:1.5;"><div style="word-break:break-word;"><p style="margin:10px auto;text-indent:0px;">一、LogAnalyzer介绍<br/>　　LogAnalyzer工具提供了一个易于使用，功能强大的前端，用于搜索，查看和分析网络活动数据，包括系统日志，事件日志和其他许多日志源。由于它只是将数据展示到我们用户的面前，所以数据本身需要由另一个程序收集，比如syslogd，rsyslog（现在是发行版的默认的syslogd），WinSyslog或MonitorWare代理。LogAnalyzer同样适用于Linux和Windows。它主要是用PHP编写的自由软件，基于GPL的开源应用程序。数据可以从数据库，也可以从纯文本文件而获得。</p>
+<p style="margin:10px auto;text-indent:0px;">本案例规划图：</p>
+<p style="margin:10px auto;text-indent:0px;"><img src="rsyslog+LogAnalyzer_files/790056-20160510191501530-2031567118.jpg" type="image/jpeg" data-filename="790056-20160510191501530-2031567118.jpg" height="585" style="border:0px;height:auto;max-width:300px;" width="602"/></p>
+<p style="margin:10px auto;text-indent:0px;">二、在rsyslog服务器上部署 LAMP环境。</p>
+<p style="margin:10px auto;text-indent:0px;">1.安装httpd</p>
+<div>
+<pre style="margin-top:0px;margin-bottom:0px;white-space:pre-wrap;word-wrap:break-word;">[root@rsyslog ~]# yum install httpd -y
+[root@rsyslog ~]# systemctl start httpd
+[root@rsyslog ~]# systemctl enable httpd</pre>
+</div>
+<p style="margin:10px auto;text-indent:0px;">2.安装mysql</p>
+<div>
+<pre style="margin-top:0px;margin-bottom:0px;white-space:pre-wrap;word-wrap:break-word;">[root@rsyslog ~]# yum install mysql mysql-server -y
+[root@rsyslog ~]# systemctl start mariadb
+[root@rsyslog ~]# systemctl enable mariadb
+Created symlink from /etc/systemd/system/multi-user.target.wants/mariadb.service to /usr/lib/systemd/system/mariadb.service.
+[root@rsyslog ~]# mysqladmin -u root password 'rsyslog.ppp'</pre>
+</div>
+<p style="margin:10px auto;text-indent:0px;">测试下登陆，无问题后，安装php</p>
+<p style="margin:10px auto;text-indent:0px;">3.安装php</p>
+<div>
+<pre style="margin-top:0px;margin-bottom:0px;white-space:pre-wrap;word-wrap:break-word;">[root@rsyslog ~]# yum install php php-mysql php-gd -y
+[root@rsyslog ~]# cat /var/www/html/test.php 
+&lt;?php
+phpinfo();
+?&gt;</pre>
+</div>
+<p style="margin:10px auto;text-indent:0px;">打开客户端浏览器，进行访问测试http://192.168.30.67/test.php</p>
+<p style="margin:10px auto;text-indent:0px;">4.安装rsyslog,并加入开机启动</p>
+<div>
+<pre style="margin-top:0px;margin-bottom:0px;white-space:pre-wrap;word-wrap:break-word;">[root@rsyslog ~]# wget -O /etc/yum.repos.d/rsyslog.repo http://rpms.adiscon.com/v8-stable/rsyslog.repoc
+[root@rsyslog ~]# yum install rsyslog-* --skip-broken -y
+[root@rsyslog ~]# systemctl enable rsyslog</pre>
+</div>
+<p style="margin:10px auto;text-indent:0px;">5.rsyslog建库脚本，路径在/usr/share/doc/rsyslog-mysql-8.18.0/createDB.sql，现在我们登陆数据库创建个rsyslogdb库，并导入建库脚本</p>
+<div>
+<pre style="margin-top:0px;margin-bottom:0px;white-space:pre-wrap;word-wrap:break-word;">[root@rsyslog ~]# more /usr/share/doc/rsyslog-mysql-8.18.0/createDB.sql 
+CREATE DATABASE rsyslogdb;
+USE rsyslogdb;
+
+[root@rsyslog ~]# mysql -uroot -p &lt; /usr/share/doc/rsyslog-mysql-8.18.0/createDB.sql 
+Enter password: </pre>
+</div>
+<p style="margin:10px auto;text-indent:0px;">登陆测试一下库建好了没</p>
+<div>
+<div><a title="复制代码"><img src="rsyslog+LogAnalyzer_files/copycode.gif" type="image/gif" data-filename="copycode.gif" height="20" style="border:0px;height:auto;max-width:300px;" width="20"/></a></div>
+<pre style="margin-top:0px;margin-bottom:0px;white-space:pre-wrap;word-wrap:break-word;">[root@rsyslog ~]# mysql -uroot -p rsyslogdb
+Enter password: 
+....
+MariaDB [rsyslogdb]&gt; show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| rsyslogdb          |
++--------------------+
+4 rows in set (0.00 sec)
+
+创建用户并授权
+MariaDB [rsyslogdb]&gt; GRANT ALL ON rsyslogdb.* TO rsyslogdbadmin@localhost IDENTIFIED BY 'rsyslog.ppp';
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [rsyslogdb]&gt; flush privileges;
+Query OK, 0 rows affected (0.00 sec)
+
+MariaDB [rsyslogdb]&gt; exit
+
+最后测试下该用户的登陆
+[root@rsyslog ~]# mysql -ursyslogdbadmin -p rsyslogdb</pre>
+<div><a title="复制代码"><img src="rsyslog+LogAnalyzer_files/copycode [1].gif" type="image/gif" data-filename="copycode.gif" height="20" style="border:0px;height:auto;max-width:300px;" width="20"/></a></div>
+</div>
+<p style="margin:10px auto;text-indent:0px;">6.修改rsyslog.conf文件，修改后如下：</p>
+<div><img src="rsyslog+LogAnalyzer_files/ContractedBlock.gif" type="image/gif" data-filename="ContractedBlock.gif" height="16" style="border:0px;height:auto;max-width:300px;" width="11"/> View Code</div>
+<p style="margin:10px auto;text-indent:0px;">重启rsyslog 服务，现在登陆mysql 进行验证。</p>
+<div>
+<div><a title="复制代码"><img src="rsyslog+LogAnalyzer_files/copycode [2].gif" type="image/gif" data-filename="copycode.gif" height="20" style="border:0px;height:auto;max-width:300px;" width="20"/></a></div>
+<pre style="margin-top:0px;margin-bottom:0px;white-space:pre-wrap;word-wrap:break-word;">MariaDB [rsyslogdb]&gt; use rsyslogdb
+Database changed
+MariaDB [rsyslogdb]&gt; select count(*) from SystemEvents;
++----------+
+| count(*) |
++----------+
+|       44 |
++----------+
+1 row in set (0.00 sec)
+
+MariaDB [rsyslogdb]&gt; select * from SystemEvents where ID=1\G;
+*************************** 1. row ***************************
+                ID: 1
+        CustomerID: NULL
+        ReceivedAt: 2016-05-10 15:11:19
+DeviceReportedTime: 2016-05-10 15:11:19
+          Facility: 5
+          Priority: 6
+          FromHost: rsyslog
+           Message:  [origin software=&quot;rsyslogd&quot; swVersion=&quot;8.18.0&quot; x-pid=&quot;3902&quot; x-info=&quot;http://www.rsyslog.com&quot;] start
+        NTSeverity: NULL
+        Importance: NULL
+       EventSource: NULL
+         EventUser: NULL
+     EventCategory: NULL
+           EventID: NULL
+   EventBinaryData: NULL
+      MaxAvailable: NULL
+         CurrUsage: NULL
+          MinUsage: NULL
+          MaxUsage: NULL
+        InfoUnitID: 1
+         SysLogTag: rsyslogd:
+      EventLogType: NULL
+   GenericFileName: NULL
+          SystemID: NULL
+1 row in set (0.00 sec)
+
+ERROR: No query specified</pre>
+<div><a title="复制代码"><img src="rsyslog+LogAnalyzer_files/copycode [3].gif" type="image/gif" data-filename="copycode.gif" height="20" style="border:0px;height:auto;max-width:300px;" width="20"/></a></div>
+</div>
+<p style="margin:10px auto;text-indent:0px;">三、部署LogAnalyzer</p>
+<p style="margin:10px auto;text-indent:0px;">1.下载</p>
+<div>
+<div><a title="复制代码"><img src="rsyslog+LogAnalyzer_files/copycode [4].gif" type="image/gif" data-filename="copycode.gif" height="20" style="border:0px;height:auto;max-width:300px;" width="20"/></a></div>
+<pre style="margin-top:0px;margin-bottom:0px;white-space:pre-wrap;word-wrap:break-word;">[root@rsyslog ~]# wget -c http://download.adiscon.com/loganalyzer/loganalyzer-3.6.6.tar.gz
+解压
+[root@rsyslog ~]# tar zxvf loganalyzer-3.6.6.tar.gz 
+复制文件到
+[root@rsyslog ~]# cp -r loganalyzer-3.6.6/src/ /var/www/html/loganalyzer
+[root@rsyslog ~]# cp -r loganalyzer-3.6.6/contrib/* /var/www/html/loganalyzer/
+进入到loganalyzer 程序中，将以下脚本赋予执行权限
+[root@rsyslog ~]# cd /var/www/html/loganalyzer/
+[root@rsyslog loganalyzer]# chmod +x configure.sh secure.sh 
+运行configure.sh，将创建一个空白的config.php配置文件
+[root@rsyslog loganalyzer]# ./configure.sh </pre>
+<div><a title="复制代码"><img src="rsyslog+LogAnalyzer_files/copycode [5].gif" type="image/gif" data-filename="copycode.gif" height="20" style="border:0px;height:auto;max-width:300px;" width="20"/></a></div>
+</div>
+<p style="margin:10px auto;text-indent:0px;"> 2.打开浏览器访问 http://192.168.30.67/loganalyzer 安装界面，如下，会有一个error，选择here<img src="rsyslog+LogAnalyzer_files/790056-20160510180012687-851553154.jpg" type="image/jpeg" data-filename="790056-20160510180012687-851553154.jpg" height="150" style="border:0px;height:auto;max-width:300px;" width="900"/></p>
+<p style="margin:10px auto;text-indent:0px;">选择here进行安装</p>
+<p style="margin:10px auto;text-indent:0px;"><img src="rsyslog+LogAnalyzer_files/790056-20160510180036171-412359808.jpg" type="image/jpeg" data-filename="790056-20160510180036171-412359808.jpg" height="111" style="border:0px;height:auto;max-width:300px;" width="571"/></p>
+<p style="margin:10px auto;text-indent:0px;">选择next<img src="rsyslog+LogAnalyzer_files/790056-20160510180122046-1540203281.jpg" type="image/jpeg" data-filename="790056-20160510180122046-1540203281.jpg" height="256" style="border:0px;height:auto;max-width:300px;" width="900"/></p>
+<p style="margin:10px auto;text-indent:0px;">验证config文件，就是我们上一不运行configure.sh 生成的文件</p>
+<p style="margin:10px auto;text-indent:0px;"><img src="rsyslog+LogAnalyzer_files/790056-20160510180616921-966086604.jpg" type="image/jpeg" data-filename="790056-20160510180616921-966086604.jpg" height="214" style="border:0px;height:auto;max-width:300px;" width="900"/></p>
+<p style="margin:10px auto;text-indent:0px;">基本配置里，填写数据库连接信息</p>
+<p style="margin:10px auto;text-indent:0px;"><img src="rsyslog+LogAnalyzer_files/790056-20160510180134234-1667966909.jpg" type="image/jpeg" data-filename="790056-20160510180134234-1667966909.jpg" height="442" style="border:0px;height:auto;max-width:300px;" width="900"/></p>
+<p style="margin:10px auto;text-indent:0px;">创建表，直接选择next</p>
+<p style="margin:10px auto;text-indent:0px;"><img src="rsyslog+LogAnalyzer_files/790056-20160510180249827-779111975.jpg" type="image/jpeg" data-filename="790056-20160510180249827-779111975.jpg" height="267" style="border:0px;height:auto;max-width:300px;" width="900"/></p>
+<p style="margin:10px auto;text-indent:0px;">检查没有失败的状态。继续下一步</p>
+<p style="margin:10px auto;text-indent:0px;"><img src="rsyslog+LogAnalyzer_files/790056-20160510180514655-510106669.jpg" type="image/jpeg" data-filename="790056-20160510180514655-510106669.jpg" height="231" style="border:0px;height:auto;max-width:300px;" width="900"/></p>
+<p style="margin:10px auto;text-indent:0px;">创建一个rsyslog的web管理用户，名字叫rsyslog</p>
+<p style="margin:10px auto;text-indent:0px;"><img src="rsyslog+LogAnalyzer_files/790056-20160510181515218-153865777.jpg" type="image/jpeg" data-filename="790056-20160510181515218-153865777.jpg" height="279" style="border:0px;height:auto;max-width:300px;" width="900"/></p>
+<p style="margin:10px auto;text-indent:0px;">检查详细信息</p>
+<p style="margin:10px auto;text-indent:0px;"><img src="rsyslog+LogAnalyzer_files/790056-20160510181555874-1677892938.jpg" type="image/jpeg" data-filename="790056-20160510181555874-1677892938.jpg" height="307" style="border:0px;height:auto;max-width:300px;" width="900"/></p>
+<p style="margin:10px auto;text-indent:0px;">此处，source type 需要修改成mysql native 源，随后填写mysql相关信息，注意（Database Tablename 处我写填写错误，正确应该是SystemEvents）</p>
+<p style="margin:10px auto;text-indent:0px;"><img src="rsyslog+LogAnalyzer_files/790056-20160510181651343-988891395.jpg" type="image/jpeg" data-filename="790056-20160510181651343-988891395.jpg" height="402" style="border:0px;height:auto;max-width:300px;" width="900"/></p>
+<p style="margin:10px auto;text-indent:0px;">完成后，下一步就是登陆loganalyzer了。</p>
+<p style="margin:10px auto;text-indent:0px;"><img src="rsyslog+LogAnalyzer_files/790056-20160510181918921-1178509656.jpg" type="image/jpeg" data-filename="790056-20160510181918921-1178509656.jpg" height="229" style="border:0px;height:auto;max-width:300px;" width="900"/></p>
+<p style="margin:10px auto;text-indent:0px;">输入rsyslog，及设定的密码。</p>
+<p style="margin:10px auto;text-indent:0px;"><img src="rsyslog+LogAnalyzer_files/790056-20160510181939780-1618777681.jpg" type="image/jpeg" data-filename="790056-20160510181939780-1618777681.jpg" height="229" style="border:0px;height:auto;max-width:300px;" width="900"/></p>
+<p style="margin:10px auto;text-indent:0px;">在这里，可以看到最后rsyslog server 收集到的日志，已经展示在首页了。</p>
+<p style="margin:10px auto;text-indent:0px;"><img src="rsyslog+LogAnalyzer_files/790056-20160510182006109-491882187.jpg" type="image/jpeg" data-filename="790056-20160510182006109-491882187.jpg" height="370" style="border:0px;height:auto;max-width:300px;" width="900"/></p>
+<p style="margin:10px auto;text-indent:0px;"> </p></div></div></div></div></td></tr></tbody></table></div></div></div>
+</div>
+</span>
+</div></body></html> 
