@@ -1,0 +1,701 @@
+<html>
+<head>
+  <title>Evernote Export</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/307027 (zh-CN, DDL); Windows/10.0.0 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+<a name="4489"/>
+
+<div><span>
+  <div>
+<div style="font-size: 16px; display: inline-block; min-width: 100%;position: relative;"><div><div style="font-family:&quot;PingFang SC&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;background:url(//images.cnblogs.com/cnblogs_com/lgeng/1059422/o_body_bg.jpg) 0px 0px repeat-x scroll rgb(240, 238, 245);color:rgb(125, 139, 141);line-height:25px;font-size:14px;"><div><div><div style="background:none;overflow:visible;text-overflow:ellipsis;word-break:break-all;"><div><div><div style="background:rgb(255, 255, 255);overflow:hidden;"><div>
+		<h1 style="margin:0px;padding:0px;font-size:28px;font-weight:400;margin-bottom:20px;line-height:1.8;color:rgb(51, 51, 51);">
+			<a href="https://www.cnblogs.com/lgeng/p/6567424.html" style="margin:0px;padding:0px;text-decoration:none;color:rgb(51, 51, 51);">Saltstack 安装配置详解</a>
+		</h1>
+		<div style="margin:0px;padding:0px;clear:both;"></div>
+		<div style="margin:0px;padding:0px;">
+			<div style="margin:0px;padding:0px;margin-bottom:20px;word-break:break-word;color:rgb(51, 51, 51);line-height:1.8;"><p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"> </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"> </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">下面这篇文章主要介绍另外一个运维自动化工具 Saltstack 。<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/>一、简介</p>
+<hr style="margin:0px;padding:0px;"/>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">Saltstack 比 Puppet 出来晚几年，是基于Python 开发的，也是基于 C/S 架构，服务端 master 和客户端 minions ；Saltstack 和 Puppet 很像，可以说 Saltstatck 整合了 Puppet 和 Chef 的功能，更加强大，更适合大规模批量管理服务器，并且它比 Puppet 更容易配置。<br style="margin:0px;padding:0px;"/>三大功能： 远程命令执行，配置管理（服务，文件，cron，用户，组），云管理。<br style="margin:0px;padding:0px;"/>支持系统：大多数都支持，windows 上不支持安装 master。<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/>二、安装配置</p>
+<hr style="margin:0px;padding:0px;"/>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">1、准备工作<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/>准备两台机器，这两台机器都关闭 selinux，清空 iptables 规则并保存。<br style="margin:0px;padding:0px;"/>master：192.168.0.109<br style="margin:0px;padding:0px;"/>slaver：192.168.0.110<br style="margin:0px;padding:0px;"/>2、编辑 hosts 文件<br style="margin:0px;padding:0px;"/>两台都设置，若机器太多，可以通过搭建 DNS，则不用在每台机器上设置这个</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;"># vim /etc/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">hosts
+</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">192.168</span>.<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">0.109</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">  master.test.com
+</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">192.168</span>.<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">0.110</span>  slaver.test.com</pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"> 3、设置 hostname<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/>在 master 上</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# vim /etc/sysconfig/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">network
+HOSTNAME</span>=master.test.com</pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"> </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">在 slaver 上</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@slaver ~]# vim /etc/sysconfig/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">network
+HOSTNAME</span>=slaver.test.com</pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"> </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">4、安装<br style="margin:0px;padding:0px;"/>1）服务端安装</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">yum</span> <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">install</span> -y epel-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">release
+[iyunv@master </span>~]# <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">yum</span> <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">install</span> -y salt-master salt-minion</pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">2）客户端安装</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@slaver ~]# <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">yum</span> <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">install</span> -y epel-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">release
+[iyunv@slaver </span>~]# <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">yum</span> <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">install</span> -y salt-minion</pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"> </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">5、配置<br style="margin:0px;padding:0px;"/>服务端和客户端都要配置 master</p>
+<div style="margin:0px;padding:0px;">
+<div style="margin:0px;padding:0px;"><div style="padding:0px;width:100%;margin:1em 0px;position:relative;overflow:auto;font-size:1em;background-color:rgb(255, 255, 255);"><table border="0" cellpadding="0" cellspacing="0" style="padding:0px;overflow-x:scroll;display:block;font-variant:inherit;max-width:850px;border-spacing:0px;word-break:break-word;border-collapse:collapse;top:auto;float:none;left:auto;line-height:1.1em;margin:0px;outline:0px;overflow:visible;font-weight:normal;position:static;right:auto;text-align:left;height:auto;vertical-align:baseline;width:100%;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;min-height:auto;bottom:auto;border:0px;background:none;border-radius:0px;font-style:normal;font-size:12px;"><tbody style="position:static;border-radius:0px;border:0px;bottom:auto;float:none;height:auto;left:auto;line-height:1.1em;margin:0px;outline:0px;overflow:visible;padding:0px;background:none;right:auto;text-align:left;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;"><tr style="position:static;border-radius:0px;border:0px;bottom:auto;float:none;height:auto;left:auto;line-height:1.1em;margin:0px;outline:0px;overflow:visible;padding:0px;background:none;right:auto;text-align:left;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;"><td style="right:auto;white-space:nowrap;border-collapse:collapse;text-align:left;bottom:auto;height:auto;left:auto;line-height:1.1em;margin:0px;outline:0px;overflow:visible;padding:0px;position:static;background:none;float:none;top:auto;vertical-align:baseline;border:0px;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;border-radius:0px;width:auto;"><div style="position:relative;border-radius:0px;border:0px;bottom:auto;float:none;height:auto;left:auto;line-height:1.1em;margin:0px;outline:0px;overflow:visible;padding:0px;background:none;right:auto;text-align:left;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;"><div style="right:auto;border-radius:0px;border:0px;bottom:auto;float:none;height:auto;left:auto;min-height:auto;margin:0px;outline:0px;overflow:visible;font-size:12px;position:static;background:none;text-align:left;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;line-height:1.8em;white-space:normal;background-color:rgb(244, 244, 244);padding:0px 1em;padding-left:0px;"><code style="right:auto;white-space:pre-wrap;text-align:left;border:0px;float:none;height:auto;left:auto;line-height:1.8em;margin:0px;outline:0px;overflow:visible;padding:0px;position:static;background:none;bottom:auto;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;border-radius:0px;color:rgb(0, 130, 0);"># vim /etc/salt/minion                   //在第16行添加，冒号后有一个空格</code></div><div style="right:auto;border-radius:0px;border:0px;bottom:auto;float:none;height:auto;left:auto;min-height:auto;margin:0px;outline:0px;overflow:visible;font-size:12px;position:static;background:none;text-align:left;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;line-height:1.8em;white-space:normal;background-color:rgb(255, 255, 255);padding:0px 1em;padding-left:0px;"><code style="right:auto;white-space:pre-wrap;text-align:left;border:0px;float:none;height:auto;left:auto;line-height:1.8em;margin:0px;outline:0px;overflow:visible;padding:0px;position:static;background:none;bottom:auto;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;border-radius:0px;color:rgb(0, 0, 0);">master: 192.168.0.109</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"> </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">6、启动服务<br style="margin:0px;padding:0px;"/>1）服务端</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# /etc/init.d/salt-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">master start
+Starting salt</span>-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">master daemon:                               [确定]
+[iyunv@master </span>~]# /etc/init.d/salt-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">minion start
+Starting salt</span>-minion daemon:                               [确定]</pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"> </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">2）客户端</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@slaver ~]# /etc/init.d/salt-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">minion start
+Starting salt</span>-minion daemon:                               [确定]</pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><br style="margin:0px;padding:0px;"/>三、配置认证<br style="margin:0px;padding:0px;"/>1）在服务端上操作</p>
+<div style="margin:0px;padding:0px;">
+<div style="margin:0px;padding:0px;"><div style="padding:0px;width:100%;margin:1em 0px;position:relative;overflow:auto;font-size:1em;background-color:rgb(255, 255, 255);"><table border="0" cellpadding="0" cellspacing="0" style="padding:0px;overflow-x:scroll;display:block;font-variant:inherit;max-width:850px;border-spacing:0px;word-break:break-word;border-collapse:collapse;top:auto;float:none;left:auto;line-height:1.1em;margin:0px;outline:0px;overflow:visible;font-weight:normal;position:static;right:auto;text-align:left;height:auto;vertical-align:baseline;width:100%;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;min-height:auto;bottom:auto;border:0px;background:none;border-radius:0px;font-style:normal;font-size:12px;"><tbody style="position:static;border-radius:0px;border:0px;bottom:auto;float:none;height:auto;left:auto;line-height:1.1em;margin:0px;outline:0px;overflow:visible;padding:0px;background:none;right:auto;text-align:left;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;"><tr style="position:static;border-radius:0px;border:0px;bottom:auto;float:none;height:auto;left:auto;line-height:1.1em;margin:0px;outline:0px;overflow:visible;padding:0px;background:none;right:auto;text-align:left;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;"><td style="right:auto;white-space:nowrap;border-collapse:collapse;text-align:left;bottom:auto;height:auto;left:auto;line-height:1.1em;margin:0px;outline:0px;overflow:visible;padding:0px;position:static;background:none;float:none;top:auto;vertical-align:baseline;border:0px;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;border-radius:0px;width:auto;"><div style="position:relative;border-radius:0px;border:0px;bottom:auto;float:none;height:auto;left:auto;line-height:1.1em;margin:0px;outline:0px;overflow:visible;padding:0px;background:none;right:auto;text-align:left;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;"><div style="right:auto;border-radius:0px;border:0px;bottom:auto;float:none;height:auto;left:auto;min-height:auto;margin:0px;outline:0px;overflow:visible;font-size:12px;position:static;background:none;text-align:left;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;line-height:1.8em;white-space:normal;background-color:rgb(244, 244, 244);padding:0px 1em;padding-left:0px;"><code style="right:auto;white-space:pre-wrap;text-align:left;border:0px;float:none;height:auto;left:auto;line-height:1.8em;margin:0px;outline:0px;overflow:visible;padding:0px;position:static;background:none;bottom:auto;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;border-radius:0px;color:rgb(0, 0, 0);">[iyunv@master ~]</code><code style="right:auto;white-space:pre-wrap;text-align:left;border:0px;float:none;height:auto;left:auto;line-height:1.8em;margin:0px;outline:0px;overflow:visible;padding:0px;position:static;background:none;bottom:auto;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;border-radius:0px;color:rgb(0, 130, 0);"># salt-key -a  slaver.test.com</code></div><div style="right:auto;border-radius:0px;border:0px;bottom:auto;float:none;height:auto;left:auto;min-height:auto;margin:0px;outline:0px;overflow:visible;font-size:12px;position:static;background:none;text-align:left;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;line-height:1.8em;white-space:normal;background-color:rgb(255, 255, 255);padding:0px 1em;padding-left:0px;"><code style="right:auto;white-space:pre-wrap;text-align:left;border:0px;float:none;height:auto;left:auto;line-height:1.8em;margin:0px;outline:0px;overflow:visible;padding:0px;position:static;background:none;bottom:auto;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;border-radius:0px;color:rgb(0, 0, 0);">[iyunv@master ~]</code><code style="right:auto;white-space:pre-wrap;text-align:left;border:0px;float:none;height:auto;left:auto;line-height:1.8em;margin:0px;outline:0px;overflow:visible;padding:0px;position:static;background:none;bottom:auto;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;border-radius:0px;color:rgb(0, 130, 0);"># salt-key -a  master.test.com</code></div><div style="right:auto;border-radius:0px;border:0px;bottom:auto;float:none;height:auto;left:auto;min-height:auto;margin:0px;outline:0px;overflow:visible;font-size:12px;position:static;background:none;text-align:left;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;line-height:1.8em;white-space:normal;background-color:rgb(244, 244, 244);padding:0px 1em;padding-left:0px;"><code style="right:auto;white-space:pre-wrap;text-align:left;border:0px;float:none;height:auto;left:auto;line-height:1.8em;margin:0px;outline:0px;overflow:visible;padding:0px;position:static;background:none;bottom:auto;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;border-radius:0px;color:rgb(0, 0, 0);">[iyunv@master ~]</code><code style="right:auto;white-space:pre-wrap;text-align:left;border:0px;float:none;height:auto;left:auto;line-height:1.8em;margin:0px;outline:0px;overflow:visible;padding:0px;position:static;background:none;bottom:auto;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;border-radius:0px;color:rgb(0, 130, 0);"># salt-key</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><img src="Saltstack_files/690015-20170317172336901-1106154894.png" type="image/png" data-filename="690015-20170317172336901-1106154894.png" height="132" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="419"/><br style="margin:0px;padding:0px;"/>说明：-a ：accept ，-A：accept-all，-d：delete，-D：delete-all。可以使用 salt-key 命令查看到已经签名的客户端。此时我们在客户端的 /etc/salt/pki/minion 目录下面会多出一个minion_master.pub 文件。<br style="margin:0px;padding:0px;"/>2）测试验证<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/>示例1： salt '*' test.ping                  //检测通讯是否正常，也可以指定其中一个 'slaver.test.com'</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><img src="Saltstack_files/690015-20170317172356682-763711272.png" type="image/png" data-filename="690015-20170317172356682-763711272.png" height="123" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="467"/></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><br style="margin:0px;padding:0px;"/>示例2:  salt '*' cmd.run   'df -h'        //远程执行命令</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><img src="Saltstack_files/690015-20170317172417588-1472489595.png" type="image/png" data-filename="690015-20170317172417588-1472489595.png" height="160" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="475"/></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">说明： 这里的 * 必须是在 master 上已经被接受过的客户端，可以通过 salt-key 查到，通常是我们已经设定的 id 值。关于这部分内容，它支持通配、列表以及正则。 比如两台客户端 web10、web11， 那我们可以写成  salt 'web*'    salt 'web1[02]'  salt -L 'web10,web11'   salt -E 'web(10|11)' 等形式，使用列表，即多个机器用逗号分隔，而且需要加-L，使用正则必须要带-E选项。 它还支持 grains 和 pillar，分别加 -G 和 -I 选项，下面会介绍到。<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/>四、grains 和 pillar</p>
+<hr style="margin:0px;padding:0px;"/>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">下面来介绍 grains 和 pillar<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/>1、grains<br style="margin:0px;padding:0px;"/>grains 是在 minion（客户端）启动时收集到的一些信息，比如操作系统类型、网卡ip等。 <br style="margin:0px;padding:0px;"/>使用命令：</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> grains.<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">ls</span>            <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">列出所有的 grains 项目名字</span>
+[iyunv@master ~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> grains.items      <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">列出所有的 grains 项目名以及值</span></pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">grains的信息并不是动态的，并不会时时变更，它只是在 minion 启动时收集到的。grains 也可以做配置管理。<br style="margin:0px;padding:0px;"/>下面我们来自定义 grains<br style="margin:0px;padding:0px;"/>1）客户端上配置</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@slaver ~]# vim /etc/salt/grains               <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">添加如下，注意冒号后有空格</span>
+<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">role: nginx
+</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">env</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">: test
+myname: tpp</span></pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">或者</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;"><div style="margin:0px;padding:0px;margin-top:5px;background-color:rgb(245, 245, 245);"><span style="margin:0px;padding:0px;padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:underline;background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="Saltstack_files/copycode.gif" type="image/gif" data-filename="copycode.gif" height="20" style="margin:0px;padding:0px;height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div>
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@slaver ~]# vim /etc/salt/minion            <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">在最下面添加或更改</span>
+<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">grains:
+  role:
+    </span>-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;"> nginx
+  </span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">env</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">:
+    </span>-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;"> test
+  myname:
+    </span>- tpp</pre>
+<div style="margin:0px;padding:0px;margin-top:5px;background-color:rgb(245, 245, 245);"><span style="margin:0px;padding:0px;padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:underline;background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="Saltstack_files/copycode [1].gif" type="image/gif" data-filename="copycode.gif" height="20" style="margin:0px;padding:0px;height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div></div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">重启minion服务<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/></p>
+<div style="margin:0px;padding:0px;">
+<div style="margin:0px;padding:0px;"><div style="padding:0px;width:100%;margin:1em 0px;position:relative;overflow:auto;font-size:1em;background-color:rgb(255, 255, 255);"><table border="0" cellpadding="0" cellspacing="0" style="padding:0px;overflow-x:scroll;display:block;font-variant:inherit;max-width:850px;border-spacing:0px;word-break:break-word;border-collapse:collapse;top:auto;float:none;left:auto;line-height:1.1em;margin:0px;outline:0px;overflow:visible;font-weight:normal;position:static;right:auto;text-align:left;height:auto;vertical-align:baseline;width:100%;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;min-height:auto;bottom:auto;border:0px;background:none;border-radius:0px;font-style:normal;font-size:12px;"><tbody style="position:static;border-radius:0px;border:0px;bottom:auto;float:none;height:auto;left:auto;line-height:1.1em;margin:0px;outline:0px;overflow:visible;padding:0px;background:none;right:auto;text-align:left;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;"><tr style="position:static;border-radius:0px;border:0px;bottom:auto;float:none;height:auto;left:auto;line-height:1.1em;margin:0px;outline:0px;overflow:visible;padding:0px;background:none;right:auto;text-align:left;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;"><td style="right:auto;white-space:nowrap;border-collapse:collapse;text-align:left;bottom:auto;height:auto;left:auto;line-height:1.1em;margin:0px;outline:0px;overflow:visible;padding:0px;position:static;background:none;float:none;top:auto;vertical-align:baseline;border:0px;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;border-radius:0px;width:auto;"><div style="position:relative;border-radius:0px;border:0px;bottom:auto;float:none;height:auto;left:auto;line-height:1.1em;margin:0px;outline:0px;overflow:visible;padding:0px;background:none;right:auto;text-align:left;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;"><div style="right:auto;border-radius:0px;border:0px;bottom:auto;float:none;height:auto;left:auto;min-height:auto;margin:0px;outline:0px;overflow:visible;font-size:12px;position:static;background:none;text-align:left;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;line-height:1.8em;white-space:normal;background-color:rgb(244, 244, 244);padding:0px 1em;padding-left:0px;"><code style="right:auto;white-space:pre-wrap;text-align:left;border:0px;float:none;height:auto;left:auto;line-height:1.8em;margin:0px;outline:0px;overflow:visible;padding:0px;position:static;background:none;bottom:auto;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;border-radius:0px;color:rgb(0, 0, 0);">[iyunv@slaver ~]</code><code style="right:auto;white-space:pre-wrap;text-align:left;border:0px;float:none;height:auto;left:auto;line-height:1.8em;margin:0px;outline:0px;overflow:visible;padding:0px;position:static;background:none;bottom:auto;top:auto;vertical-align:baseline;width:auto;box-sizing:content-box;font-family:Consolas, &quot;Bitstream Vera Sans Mono&quot;, &quot;Courier New&quot;, Courier, monospace;font-weight:normal;font-style:normal;font-size:12px;min-height:auto;border-radius:0px;color:rgb(0, 130, 0);"># /etc/init.d/salt-minion restart</code></div></div></td></tr></tbody></table></div></div>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">2）服务端获取 grains</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> grains.item role <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">env</span> myname       <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">列出多个</span></pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><img src="Saltstack_files/690015-20170317172507885-1259034935.png" type="image/png" data-filename="690015-20170317172507885-1259034935.png" height="131" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="551"/></p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> grains.get myname                    <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">列出单个</span></pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><img src="Saltstack_files/690015-20170317172538713-1042545731.png" type="image/png" data-filename="690015-20170317172538713-1042545731.png" height="136" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="486"/></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">注意：grains 在远程执行命令时很方便。我们可以按照 grains 的一些指标来操作。比如把所有的 web 服务器的 grains 的 role 设置为 nginx，那这样我们就可以批量对 nginx 的服务器进行操作了：<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/></p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt -G role:nginx cmd.run <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">hostname</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">
+[iyunv@master </span>~]# salt -G os:CentOS cmd.run <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">hostname</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span></pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><img src="Saltstack_files/690015-20170317172600198-724836447.png" type="image/png" data-filename="690015-20170317172600198-724836447.png" height="119" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="484"/></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">2、pillar<br style="margin:0px;padding:0px;"/>pillar 和 grains 不一样，是在 master 上定义的，并且是针对 minion 定义的一些信息。像一些比较重要的数据（密码）可以存在 pillar 里，还可以定义变量等。<br style="margin:0px;padding:0px;"/>查看指定minion的 pillar 值：</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> pillar.items</pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><br style="margin:0px;padding:0px;"/>1）服务端自定义配置 pillar</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;"><div style="margin:0px;padding:0px;margin-top:5px;background-color:rgb(245, 245, 245);"><span style="margin:0px;padding:0px;padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:underline;background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="Saltstack_files/copycode [2].gif" type="image/gif" data-filename="copycode.gif" height="20" style="margin:0px;padding:0px;height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div>
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# vim /etc/salt/master                    <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">找到如下内容，去掉#号</span>
+<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">pillar_roots:
+  base:
+    </span>- /srv/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">pillar
+[iyunv@master </span>~]# <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">mkdir</span> /srv/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">pillar
+[iyunv@master </span>~]# vim /srv/pillar/test.sls                   <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">自定义配置文件，内容如下</span>
+conf: /etc/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">123</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">.conf
+myname: tpp
+[iyunv@master </span>~]# vim /srv/pillar/top.sls                   <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">总入口文件，内容如下</span>
+<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">base:
+  </span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">:
+    </span>- test</pre>
+<div style="margin:0px;padding:0px;margin-top:5px;background-color:rgb(245, 245, 245);"><span style="margin:0px;padding:0px;padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:underline;background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="Saltstack_files/copycode [3].gif" type="image/gif" data-filename="copycode.gif" height="20" style="margin:0px;padding:0px;height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div></div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">重启master</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# /etc/init.d/salt-master restart</pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">注意：当更改完 pillar 配置文件后，我们可以通过刷新 pillar 配置来获取新的 pillar 状态：</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">*</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> saltutil.refresh_pillar</pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">2）验证：</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> pillar.items</pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><img src="Saltstack_files/690015-20170317172718182-379133270.png" type="image/png" data-filename="690015-20170317172718182-379133270.png" height="124" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="508"/></p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;"> pillar.item conf
+[iyunv@master </span>~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> pillar.item myname</pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><img src="Saltstack_files/690015-20170317172748651-413398602.png" type="image/png" data-filename="690015-20170317172748651-413398602.png" height="153" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="503"/></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">pillar 同样可以用来作为 salt 的匹配对象。比如：<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/></p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt -I <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">conf:/etc/123.conf</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> test.<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">ping</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">
+[iyunv@master </span>~]# salt -I <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">conf:/etc/123.conf</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> cmd.run <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">w</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span></pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><img src="Saltstack_files/690015-20170317172817401-1350655643.png" type="image/png" data-filename="690015-20170317172817401-1350655643.png" height="125" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="539"/></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><br style="margin:0px;padding:0px;"/>五、配置管理安装Apache</p>
+<hr style="margin:0px;padding:0px;"/>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">下面进行的演示是远程通过 yum 方式安装 Apache。步骤如下：<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/>1、配置</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# vim /etc/salt/master        <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">打开如下内容的注释</span>
+<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">
+file_roots:
+  base:
+    </span>- /srv/salt</pre>
+</div>
+<div align="left" style="margin:0px;padding:0px;">注意：环境： base、dev(开发环境）、test（测试环境）、prod（生产环境）。<br style="margin:0px;padding:0px;"/>
+<div align="left" style="margin:0px;padding:0px;">
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">mkdir</span> /srv/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">salt
+[iyunv@master </span>~]# vim /srv/salt/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">top.sls
+base:
+  </span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">:
+    </span>- apache</pre>
+</div>
+注意：若换成 '*'，则表示在所有的客户端执行 apache 模块。<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/>
+<div align="left" style="margin:0px;padding:0px;">
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;"><div style="margin:0px;padding:0px;margin-top:5px;background-color:rgb(245, 245, 245);"><span style="margin:0px;padding:0px;padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:underline;background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="Saltstack_files/copycode [4].gif" type="image/gif" data-filename="copycode.gif" height="20" style="margin:0px;padding:0px;height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div>
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# vim /srv/salt/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">apache.sls
+apache</span>-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">service:
+  pkg.installed:
+    </span>- names:                <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">如果只有一个服务，那么就可以写成 –name: httpd 不用再换一行</span>
+      -<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;"> httpd
+      </span>- httpd-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">devel
+  service.running:
+    </span>-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;"> name: httpd
+    </span>- enable: True</pre>
+<div style="margin:0px;padding:0px;margin-top:5px;background-color:rgb(245, 245, 245);"><span style="margin:0px;padding:0px;padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:underline;background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="Saltstack_files/copycode [5].gif" type="image/gif" data-filename="copycode.gif" height="20" style="margin:0px;padding:0px;height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div></div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"> </p>
+注意：apache-service 是自定义的 id 名。pkg.installed 为包安装函数，下面是要安装的包的名字。service.running 也是一个函数，来保证指定的服务启动，enable 表示开机启动。<br style="margin:0px;padding:0px;"/>2、重启服务<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# /etc/init.d/salt-master restart</pre>
+</div>
+3、执行命令<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> state.highstate         <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">执行时间比较长，因为要安装httpd</span></pre>
+</div>
+<br style="margin:0px;padding:0px;"/><img src="Saltstack_files/690015-20170317172938541-1227988908.png" type="image/png" data-filename="690015-20170317172938541-1227988908.png" height="534" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="800"/>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><img src="Saltstack_files/690015-20170317173001120-255323139.png" type="image/png" data-filename="690015-20170317173001120-255323139.png" height="522" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="800"/></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><img src="Saltstack_files/690015-20170317173031588-1743950964.png" type="image/png" data-filename="690015-20170317173031588-1743950964.png" height="350" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="789"/></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">如上图所示，说明 Apache 远程安装已成功。<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/>六、文件目录管理</p>
+<hr style="margin:0px;padding:0px;"/>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">1、文件管理<br style="margin:0px;padding:0px;"/>1）服务端配置<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/>接着编辑之前的 top.sls 文件</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# vim /srv/salt/top.sls              <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">修改为如下</span>
+<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">base:
+  </span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">:
+    </span>- filetest</pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><br style="margin:0px;padding:0px;"/>新建 filetest.sls 文件<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/></p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;"><div style="margin:0px;padding:0px;margin-top:5px;background-color:rgb(245, 245, 245);"><span style="margin:0px;padding:0px;padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:underline;background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="Saltstack_files/copycode [6].gif" type="image/gif" data-filename="copycode.gif" height="20" style="margin:0px;padding:0px;height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div>
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# vim /srv/salt/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">filetest.sls
+</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">file</span>-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">test:
+  </span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">file</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">.managed:
+    </span>- name: /tmp/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">filetest.txt
+    </span>- source: salt:<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">test/123/1.txt</span>
+    -<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;"> user: root
+    </span>-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;"> group: root
+    </span>- mode: <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">644</span></pre>
+<div style="margin:0px;padding:0px;margin-top:5px;background-color:rgb(245, 245, 245);"><span style="margin:0px;padding:0px;padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:underline;background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="Saltstack_files/copycode [7].gif" type="image/gif" data-filename="copycode.gif" height="20" style="margin:0px;padding:0px;height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div></div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><br style="margin:0px;padding:0px;"/>注意：第一行的 file-test 为自定的名字，表示该配置段的名字，可以在别的配置段中引用它；source指定文件从哪里拷贝，这里的 test 目录相当于是 /srv/salt/test 目录；name指定远程客户端要生成的文件。<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/>新建所要测试的源文件<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/></p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">mkdir</span> -p /srv/salt/test/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">123</span>/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">
+[iyunv@master </span>~]# vim /srv/salt/test/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">123</span>/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">1</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">.txt
+msiyuetian.blog.iyunv.com</span></pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">执行命令：<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/></p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> state.highstate</pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><img src="Saltstack_files/690015-20170317173154229-1962799029.png" type="image/png" data-filename="690015-20170317173154229-1962799029.png" height="225" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="485"/></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">2）客户端验证<br style="margin:0px;padding:0px;"/><img src="Saltstack_files/690015-20170317173212338-1767840694.png" type="image/png" data-filename="690015-20170317173212338-1767840694.png" height="179" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="491"/></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">2、目录管理<br style="margin:0px;padding:0px;"/>1）服务端配置</p>
+<div align="left" style="margin:0px;padding:0px;">接着编辑之前的 top.sls 文件</div>
+<div align="left" style="margin:0px;padding:0px;">
+<div align="left" style="margin:0px;padding:0px;">
+<div align="left" style="margin:0px;padding:0px;">
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# vim /srv/salt/top.sls              <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">修改为如下</span>
+<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">base:
+  </span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">:
+    </span>- filedir</pre>
+</div>
+新建 filedir.sls 文件</div>
+<div align="left" style="margin:0px;padding:0px;">
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;"><div style="margin:0px;padding:0px;margin-top:5px;background-color:rgb(245, 245, 245);"><span style="margin:0px;padding:0px;padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:underline;background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="Saltstack_files/copycode [8].gif" type="image/gif" data-filename="copycode.gif" height="20" style="margin:0px;padding:0px;height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div>
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# vim /srv/salt/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">filedir.sls
+</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">file</span>-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">dir</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">:
+  </span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">file</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">.recurse:
+    </span>- name: /tmp/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">testdir
+    </span>- source: salt:<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">test1/234</span>
+    -<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;"> user: root
+    </span>- file_mode: <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">644</span>
+    - dir_mode: <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">755</span>
+    - <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">mkdir</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">: True
+    </span>- clean: True</pre>
+<div style="margin:0px;padding:0px;margin-top:5px;background-color:rgb(245, 245, 245);"><span style="margin:0px;padding:0px;padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:underline;background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="Saltstack_files/copycode [9].gif" type="image/gif" data-filename="copycode.gif" height="20" style="margin:0px;padding:0px;height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div></div>
+注意：clean: True 源删除文件或目录，目标也会跟着删除，否则不会删除。可以默认设置为 False。<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/>新建所要测试的源目录<br style="margin:0px;padding:0px;"/>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">mkdir</span> -p /srv/salt/test1/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">234</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">
+[iyunv@master </span>~]# vim /srv/salt/test1/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">234</span>/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">2</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">.txt
+msiyuetian.blog.iyunv.com</span></pre>
+</div>
+<div align="left" style="margin:0px;padding:0px;">执行命令：</div>
+<div align="left" style="margin:0px;padding:0px;">
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> state.highstate</pre>
+</div>
+<img src="Saltstack_files/690015-20170317173318260-1872612553.png" type="image/png" data-filename="690015-20170317173318260-1872612553.png" height="221" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="426"/>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">2）客户端验证<br style="margin:0px;padding:0px;"/><img src="Saltstack_files/690015-20170317173336104-951950069.png" type="image/png" data-filename="690015-20170317173336104-951950069.png" height="190" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="482"/></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">3）测试增删功能<br style="margin:0px;padding:0px;"/>在服务端新建 mydir 目录以及 testdir.add 文件，删除 2.txt 文件：</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">mkdir</span> /srv/salt/test1/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">234</span>/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">mydir
+[iyunv@master </span>~]# <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">touch</span> /srv/salt/test1/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">234</span>/mydir/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">111</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">.txt
+[iyunv@master </span>~]# <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">touch</span> /srv/salt/test1/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">234</span>/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">testdir.add
+[iyunv@master </span>~]# <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">rm</span> -rf /srv/salt/test1/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">234</span>/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">2</span>.txt</pre>
+</div>
+<div align="left" style="margin:0px;padding:0px;">执行命令：</div>
+<div align="left" style="margin:0px;padding:0px;">
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> state.highstate</pre>
+</div>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"> 客户端验证<br style="margin:0px;padding:0px;"/><img src="Saltstack_files/690015-20170317173405120-310169032.png" type="image/png" data-filename="690015-20170317173405120-310169032.png" height="157" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="475"/></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">注意：由上图可知，成功在客户端 /tmp/testdir/ 目录下创建了 mydir 目录以及 testdir.add 文件，并删除 2.txt 文件。这里值得注意的是要成功创建 mydir 目录，前提是 mydir 目录下要有文件，如这里的111.txt 文件，如若没有，客户端是不会创建 mydir 目录的。<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/>七、远程执行</p>
+<hr style="margin:0px;padding:0px;"/>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">前面提到远程执行命令 test.ping，cmd.run，点前面的是模块，点后面的是函数；这样总归是不太规范化，下面详细介绍怎么远程执行命令和脚本。</p>
+<div align="left" style="margin:0px;padding:0px;">1、远程执行命令</div>
+<div align="left" style="margin:0px;padding:0px;">1）服务端配置</div>
+<div align="left" style="margin:0px;padding:0px;">接着编辑之前的 top.sls 文件</div>
+<div align="left" style="margin:0px;padding:0px;">
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# vim /srv/salt/top.sls              <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">修改为如下</span>
+<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">base:
+  </span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">:
+    </span>- cmdtest</pre>
+</div>
+<div align="left" style="margin:0px;padding:0px;">新建 cmdtest.sls 文件</div>
+<div align="left" style="margin:0px;padding:0px;">
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;"><div style="margin:0px;padding:0px;margin-top:5px;background-color:rgb(245, 245, 245);"><span style="margin:0px;padding:0px;padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:underline;background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="Saltstack_files/copycode [10].gif" type="image/gif" data-filename="copycode.gif" height="20" style="margin:0px;padding:0px;height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div>
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# vim /srv/salt/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">cmdtest.sls
+cmd</span>-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">test:  <br style="margin:0px;padding:0px;"/>  cmd.run:
+    </span>- onlyif: test -f /tmp/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">123</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">.txt
+    </span>-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;"> names:
+      </span>- <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">touch</span> /tmp/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">cmdtest.txt
+      </span>- <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">mkdir</span> /tmp/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">cmdtest
+    </span>- user: root</pre>
+<div style="margin:0px;padding:0px;margin-top:5px;background-color:rgb(245, 245, 245);"><span style="margin:0px;padding:0px;padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:underline;background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="Saltstack_files/copycode [11].gif" type="image/gif" data-filename="copycode.gif" height="20" style="margin:0px;padding:0px;height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div></div>
+注意：条件 onlyif 表示若 /tmp/123.txt 文件存在，则执行后面的命令；可以使用 unless，两者正好相反。<br style="margin:0px;padding:0px;"/>执行命令：<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/>
+<div align="left" style="margin:0px;padding:0px;">
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> state.highstate</pre>
+</div>
+</div>
+<div align="left" style="margin:0px;padding:0px;">2）客户端验证<br style="margin:0px;padding:0px;"/><img src="Saltstack_files/690015-20170317173455010-2082690850.png" type="image/png" data-filename="690015-20170317173455010-2082690850.png" height="171" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="490"/>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">2、远程执行脚本<br style="margin:0px;padding:0px;"/>1）服务端配置</p>
+<div align="left" style="margin:0px;padding:0px;">接着编辑之前的 top.sls 文件</div>
+<div align="left" style="margin:0px;padding:0px;">
+<div align="left" style="margin:0px;padding:0px;">
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# vim /srv/salt/top.sls              <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">修改为如下</span>
+<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">base:
+  </span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">:
+    </span>- shelltest</pre>
+</div>
+<div align="left" style="margin:0px;padding:0px;">新建 shelltest.sls 文件</div>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# vim /srv/salt/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">shelltest.sls
+shell</span>-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">test:
+  cmd.script:
+    </span>- source: salt:<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">test/1.sh</span>
+    - user: root</pre>
+</div>
+新建 1.sh 脚本文件<br style="margin:0px;padding:0px;"/>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;"><div style="margin:0px;padding:0px;margin-top:5px;background-color:rgb(245, 245, 245);"><span style="margin:0px;padding:0px;padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:underline;background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="Saltstack_files/copycode [12].gif" type="image/gif" data-filename="copycode.gif" height="20" style="margin:0px;padding:0px;height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div>
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# vim /srv/salt/test/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">1</span>.<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">sh</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">
+#</span>!/bin/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">bash
+</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">touch</span> /tmp/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">shelltest.txt
+</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">if</span> [ -d /tmp/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">shelltest ]
+</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">then</span>
+    <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">rm</span> -rf /tmp/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">shelltest
+</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">else</span>
+    <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">mkdir</span> /tmp/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">shelltest
+</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">fi</span></pre>
+<div style="margin:0px;padding:0px;margin-top:5px;background-color:rgb(245, 245, 245);"><span style="margin:0px;padding:0px;padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:underline;background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="Saltstack_files/copycode [13].gif" type="image/gif" data-filename="copycode.gif" height="20" style="margin:0px;padding:0px;height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div></div>
+<div align="left" style="margin:0px;padding:0px;">执行命令：</div>
+<div align="left" style="margin:0px;padding:0px;">
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> state.highstate</pre>
+</div>
+2）客户端验证</div>
+<div align="left" style="margin:0px;padding:0px;"><img src="Saltstack_files/690015-20170317173659791-1104010491.png" type="image/png" data-filename="690015-20170317173659791-1104010491.png" height="221" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="508"/>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">注意：通过上面的例子，我们实现了远程执行脚本；如果我们想一键远程安装 LAMP 或者 LNMP，那么只需把本例中的 1.sh 脚本替换成 一键安装的脚本就行。<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/>八、管理任务计划</p>
+<hr style="margin:0px;padding:0px;"/>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">1、建立 cron<br style="margin:0px;padding:0px;"/>1）服务端配置<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/>编辑 top.sls 文件</p>
+<div align="left" style="margin:0px;padding:0px;">
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# vim /srv/salt/top.sls              <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">修改为如下</span>
+<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">base:
+  </span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">:
+    </span>- crontest</pre>
+</div>
+<div align="left" style="margin:0px;padding:0px;">编辑 crontest.sls 文件</div>
+<div align="left" style="margin:0px;padding:0px;">
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;"><div style="margin:0px;padding:0px;margin-top:5px;background-color:rgb(245, 245, 245);"><span style="margin:0px;padding:0px;padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:underline;background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="Saltstack_files/copycode [14].gif" type="image/gif" data-filename="copycode.gif" height="20" style="margin:0px;padding:0px;height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div>
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# vim /srv/salt/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">crontest.sls
+cron</span>-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">test:
+  cron.present:
+    </span>- name: /bin/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">touch</span> /tmp/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">111</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">.txt
+    </span>-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;"> user: root
+    </span>- minute: <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">*</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span>
+    - hour: <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">20</span>
+    - daymonth: <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">1</span>-<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">10</span>
+    - month: <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">3,5</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span>
+    - dayweek: <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">*</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span></pre>
+<div style="margin:0px;padding:0px;margin-top:5px;background-color:rgb(245, 245, 245);"><span style="margin:0px;padding:0px;padding-right:5px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;"><a href="#" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:underline;background-color:rgb(245, 245, 245);border:none;" title="复制代码"><img src="Saltstack_files/copycode [15].gif" type="image/gif" data-filename="copycode.gif" height="20" style="margin:0px;padding:0px;height:auto;max-width:300px;border:none;background-color:rgb(245, 245, 245);" width="20"/></a></span></div></div>
+<div align="left" style="margin:0px;padding:0px;">注意，*需要用单引号引起来。当然我们还可以使用 file.managed 模块来管理 cron，因为系统的 cron都是以配置文件的形式存在的。</div>
+执行命令：<br style="margin:0px;padding:0px;"/>
+<div align="left" style="margin:0px;padding:0px;">
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> state.highstate</pre>
+</div>
+</div>
+<div align="left" style="margin:0px;padding:0px;">2）客户端验证<br style="margin:0px;padding:0px;"/><img src="Saltstack_files/690015-20170317173744260-921117941.png" type="image/png" data-filename="690015-20170317173744260-921117941.png" height="150" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="431"/>
+<div align="left" style="margin:0px;padding:0px;">2、删除 cron</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">1）服务端配置<br style="margin:0px;padding:0px;"/>我们只需修改 crontest.sls 文件</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# vim /srv/salt/crontest.sls</pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">把 cron.present: 改成 cron.absent:<br style="margin:0px;padding:0px;"/>注意：两者不能共存，要想删除一个 cron，那之前的 present 就得替换掉或者删除掉。<br style="margin:0px;padding:0px;"/>执行命令：</p>
+<div align="left" style="margin:0px;padding:0px;">
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> state.highstate</pre>
+</div>
+<img src="Saltstack_files/690015-20170317173812510-638217284.png" type="image/png" data-filename="690015-20170317173812510-638217284.png" height="251" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="523"/>
+<div align="left" style="margin:0px;padding:0px;">2）客户端验证</div>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@slaver ~]# crontab -l           <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">可查看到该任务计划已删除</span></pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">九、Saltstack 常用命令<br style="margin:0px;padding:0px;"/>1、拷贝文件到客户端</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">cp</span>.get_file salt:<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">apache.sls /tmp/cp.txt</span>
+<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">slaver.test.com:
+    </span>/tmp/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">cp</span>.txt</pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">2、拷贝目录到客户端<br style="margin:0px;padding:0px;"/><br style="margin:0px;padding:0px;"/></p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">cp</span>.get_dir salt:<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">test /tmp</span>
+<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">slaver.test.com:
+    </span>- /tmp/test/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">1</span>.<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">sh</span>
+    - /tmp/test/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">123</span>/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800080;">1</span>.txt</pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><img src="Saltstack_files/690015-20170317173907573-1447476060.png" type="image/png" data-filename="690015-20170317173907573-1447476060.png" height="117" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="539"/></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">3、显示存活的客户端</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# salt-run manage.up</pre>
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"><img src="Saltstack_files/690015-20170317173925854-1847323637.png" type="image/png" data-filename="690015-20170317173925854-1847323637.png" height="67" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="399"/></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;">4、命令下执行服务端的脚本</p>
+<div style="background-color:rgb(245, 245, 245);border:1px solid rgb(204, 204, 204);padding:5px;overflow:auto;margin:5px 0px;color:rgb(0, 0, 0);font-family:&quot;Courier New&quot;;font-size:12px;">
+<pre style="margin:0px;padding:0px;margin-top:0px;margin-bottom:0px;word-wrap:break-word;white-space:pre-wrap;font-family:&quot;Courier New&quot;;font-size:12px;">[iyunv@master ~]# vim /srv/salt/test/shell.<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">sh</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">
+
+#</span>! /bin/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">bash
+</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#0000ff;">echo</span> <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">msiyuetian.blog.iyunv.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">&quot;</span> &gt; /tmp/<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#000000;">shell.txt
+[iyunv@master </span>~]# salt <span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">slaver.test.com</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#800000;">'</span> cmd.script salt:<span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">//</span><span style="margin:0px;padding:0px;font-family:&quot;Courier New&quot;;font-size:12px;line-height:1.5;color:#008000;">test/shell.sh</span></pre>
+</div>
+<div align="left" style="margin:0px;padding:0px;">客户端查看<br style="margin:0px;padding:0px;"/><img src="Saltstack_files/690015-20170317174000698-2133425863.png" type="image/png" data-filename="690015-20170317174000698-2133425863.png" height="59" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="396"/>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"> </p>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+</div>
+<p style="padding:0px;margin:10px auto;text-indent:0px;margin-left:0px;"> 版权声明：本文为博主原创文章，未经博主允许不得转载<br style="margin:0px;padding:0px;"/>本文转自:<a href="http://www.cnblogs.com/lgeng/p/6567424.html" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:underline;" target="_blank" title="view: Saltstack 安装配置详解">http://www.cnblogs.com/lgeng/p/6567424.html</a> </p></div>
+<div style="margin:0px;padding:0px;clear:both;"></div>
+<div style="margin:0px;padding:0px;margin-top:20px;">
+<div style="margin:0px;padding:0px;margin-bottom:10px;"></div>
+<div style="margin:0px;padding:0px;font-size:14px;color:rgb(126, 140, 141);font-weight:bold;margin-top:0px;"></div>
+<div style="margin:0px;padding:0px;"><div style="margin:0px;padding:10px 0px;margin-bottom:10px;margin-top:10px;border:1px dashed silver;font-size:12px;width:320px;text-align:center;">
+        <a href="#" style="margin-right:10px;margin:0px;border-radius:10px;padding:3px 8px;text-decoration:none;font-weight:bold;cursor:pointer;display:inline-block;vertical-align:middle;box-shadow:rgba(0, 0, 0, 0.5) 0px 1px 3px;text-shadow:rgba(0, 0, 0, 0.25) 0px -1px 1px;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAkCAYAAABIdFAMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHhJREFUeNo8zjsOxCAMBFB/KEAUFFR0Cbng3nQPw68ArZdAlOZppPFIBhH5EAB8b+Tlt9MYQ6i1BuqFaq1CKSVcxZ2Acs6406KUgpt5/LCKuVgz5BDCSb13ZO99ZOdcZGvt4mJjzMVKqcha68iIePB86GAiOv8CDADlIUQBs7MD3wAAAABJRU5ErkJggg%3D%3D) repeat-x;background-color:rgb(45, 174, 191);color:rgb(255, 255, 255);border:none;">好文要顶</a>
+            <a href="#" style="margin-right:10px;margin:0px;border-radius:10px;padding:3px 8px;text-decoration:none;font-weight:bold;cursor:pointer;display:inline-block;vertical-align:middle;box-shadow:rgba(0, 0, 0, 0.5) 0px 1px 3px;text-shadow:rgba(0, 0, 0, 0.25) 0px -1px 1px;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAkCAYAAABIdFAMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHhJREFUeNo8zjsOxCAMBFB/KEAUFFR0Cbng3nQPw68ArZdAlOZppPFIBhH5EAB8b+Tlt9MYQ6i1BuqFaq1CKSVcxZ2Acs6406KUgpt5/LCKuVgz5BDCSb13ZO99ZOdcZGvt4mJjzMVKqcha68iIePB86GAiOv8CDADlIUQBs7MD3wAAAABJRU5ErkJggg%3D%3D) repeat-x;background-color:rgb(227, 49, 0);color:rgb(255, 255, 255);border:none;">关注我</a>
+    <a href="#" style="margin-right:10px;margin:0px;border-radius:10px;padding:3px 8px;text-decoration:none;font-weight:bold;cursor:pointer;display:inline-block;vertical-align:middle;box-shadow:rgba(0, 0, 0, 0.5) 0px 1px 3px;text-shadow:rgba(0, 0, 0, 0.25) 0px -1px 1px;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAkCAYAAABIdFAMAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHhJREFUeNo8zjsOxCAMBFB/KEAUFFR0Cbng3nQPw68ArZdAlOZppPFIBhH5EAB8b+Tlt9MYQ6i1BuqFaq1CKSVcxZ2Acs6406KUgpt5/LCKuVgz5BDCSb13ZO99ZOdcZGvt4mJjzMVKqcha68iIePB86GAiOv8CDADlIUQBs7MD3wAAAABJRU5ErkJggg%3D%3D) repeat-x;background-color:rgb(255, 181, 21);color:rgb(255, 255, 255);border:none;">收藏该文</a>
+    <a href="#" style="margin-right:10px;margin:0px;border-radius:10px;padding:3px 2px;text-decoration:none;font-weight:bold;cursor:pointer;display:inline-block;vertical-align:middle;box-shadow:none;text-shadow:none;background:none;color:rgb(255, 255, 255);border:none;" title="分享至新浪微博"><img src="Saltstack_files/icon_weibo_24.png" type="image/png" data-filename="icon_weibo_24.png" height="24" style="margin:0px;padding:0px;height:auto;border:none;vertical-align:middle;margin-left:5px;box-shadow:none;max-width:300px;" width="24"/></a>
+    <a href="#" style="margin-right:10px;margin:0px;border-radius:10px;padding:3px 2px;text-decoration:none;font-weight:bold;cursor:pointer;display:inline-block;vertical-align:middle;box-shadow:none;text-shadow:none;background:none;color:rgb(255, 255, 255);border:none;" title="分享至微信"><img src="Saltstack_files/wechat.png" type="image/png" data-filename="wechat.png" height="24" style="margin:0px;padding:0px;border:medium none;width:24px;height:24px;box-shadow:none;margin-left:5px;vertical-align:middle;max-width:300px;" width="24"/></a>
+</div>
+<div style="margin:0px;padding:0px;float:left;width:280px;margin-top:0px;margin-bottom:10px;color:rgb(0, 0, 0);margin-left:0px;font-size:12px;">
+    <div style="margin:0px;padding:0px;float:left;line-height:18px;">
+            <a href="http://home.cnblogs.com/u/lgeng/" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:none;" target="_blank"><img src="Saltstack_files/sample_face.gif" type="image/gif" data-filename="sample_face.gif" height="48" style="margin:0px;padding:0px;height:auto;border:0px;vertical-align:top;float:left;margin-right:5px;padding-top:5px;padding-left:2px;max-width:300px;" width="48"/></a>
+        <div style="margin:0px;padding:0px;float:left;line-height:18px;">
+            <a href="http://home.cnblogs.com/u/lgeng/" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:none;">老耿博客</a><br style="margin:0px;padding:0px;"/>
+            <a href="http://home.cnblogs.com/u/lgeng/followees" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:none;">关注 - 1</a><br style="margin:0px;padding:0px;"/>
+            <a href="http://home.cnblogs.com/u/lgeng/followers" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:none;">粉丝 - 6</a>
+        </div>
+    </div>
+    <div style="margin:0px;padding:0px;clear:both;"></div>
+    <div style="margin:0px;padding:0px;"></div>
+    <div style="margin:0px;padding:0px;">
+                <a href="#" style="margin:0px;padding:0px;color:cornflowerblue;text-decoration:none;">+加关注</a>
+    </div>
+</div>
+<div style="margin:0px;padding:0px;float:right;margin-bottom:10px;margin-right:30px;font-size:12px;width:125px;text-align:center;margin-top:10px;">
+    <div style="margin:0px;padding:0px;float:left;width:46px;height:52px;background:url(//static.cnblogs.com/images/upup.gif) no-repeat;text-align:center;cursor:pointer;margin-top:2px;padding-top:5px;">
+        <span style="margin:0px;padding:0px;font-size:14px;color:rgb(7, 93, 179);font-family:Verdana;line-height:1.5em;">2</span>
+    </div>
+    <div style="text-align:center;padding:0px;margin:0px;height:52px;background:url(//static.cnblogs.com/images/downdown.gif) no-repeat;margin-left:20px;cursor:pointer;margin-top:2px;padding-top:5px;width:46px;float:right;">
+        <span style="margin:0px;padding:0px;font-size:14px;color:rgb(7, 93, 179);font-family:Verdana;line-height:1.5em;">0</span>
+    </div>
+    <div style="margin:0px;padding:0px;clear:both;"></div>
+    <div style="margin:0px;padding:0px;margin-top:5px;margin-left:0px;font-size:12px;color:gray;">
+    </div>
+</div>
+</div>
+<div style="margin:0px;padding:0px;clear:both;"></div>
+<div style="padding:0px;line-height:200%;font-size:14px;margin:10px 0px;"><a href="https://www.cnblogs.com/lgeng/p/6183240.html" style="margin:0px;padding:0px;color:rgb(51, 51, 51);text-decoration:none;">« </a> 上一篇：<a href="https://www.cnblogs.com/lgeng/p/6183240.html" style="margin:0px;padding:0px;text-decoration:none;color:rgb(51, 51, 51);" title="发布于2016-12-15 14:48">利用Python中SocketServer 实现客户端与服务器间非阻塞通信</a><br style="margin:0px;padding:0px;"/><a href="https://www.cnblogs.com/lgeng/p/6623336.html" style="margin:0px;padding:0px;color:rgb(51, 51, 51);text-decoration:none;">» </a> 下一篇：<a href="https://www.cnblogs.com/lgeng/p/6623336.html" style="margin:0px;padding:0px;text-decoration:none;color:rgb(51, 51, 51);" title="发布于2017-03-26 19:13">Redis单机配置多实例，实现主从同步</a><br style="margin:0px;padding:0px;"/></div>
+</div>
+
+
+		</div>
+		<div style="padding:0px;clear:both;float:none;text-align:left;margin:10px 0px;color:rgb(119, 119, 119);line-height:200%;font-size:14px;">posted @ <span style="margin:0px;padding:0px;">2017-03-17 17:41</span> <a href="https://www.cnblogs.com/lgeng/" style="padding:0px;color:cornflowerblue;text-decoration:none;margin:0px 0.5em;">老耿博客</a> 阅读(<span style="margin:0px;padding:0px;">17567</span>) 评论(<span style="margin:0px;padding:0px;">4</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=6567424" rel="nofollow" style="padding:0px;color:cornflowerblue;text-decoration:none;margin:0px 0.5em;">编辑</a> <a href="https://www.cnblogs.com/lgeng/p/6567424.html#" style="padding:0px;color:cornflowerblue;text-decoration:none;margin:0px 0.5em;">收藏</a></div>
+	</div></div></div></div></div></div></div></div></div></div>
+</div>
+</span>
+</div></body></html> 

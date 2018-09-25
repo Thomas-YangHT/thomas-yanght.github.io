@@ -1,0 +1,349 @@
+<html>
+<head>
+  <title>Evernote Export</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/307027 (zh-CN, DDL); Windows/10.0.0 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+<a name="4428"/>
+
+<div><span>
+  <div>
+<div style="font-size: 16px; display: inline-block; min-width: 100%;position: relative;"><div><div style="font-family:&quot;PingFang SC&quot;, &quot;Helvetica Neue&quot;, Helvetica, Arial, sans-serif;background:url(images/body_bg.png) 0px 0px repeat-x scroll rgb(240, 238, 245);color:rgb(125, 139, 141);line-height:25px;font-size:14px;"><div><div><div style="background:none;overflow:visible;text-overflow:ellipsis;word-break:break-all;"><div><div><div style="background:rgb(255, 255, 255);overflow:hidden;"><div><div><div style="word-break:break-word;color:black;line-height:1.5em;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:微软雅黑, PTSans, Arial, sans-serif;font-size:15px;"><a name="_labelTop" style="margin:0px;padding:0px;"></a><div style="margin:0px;padding:0px;color:#152e97;"><p style="padding:0px;margin:10px auto;text-indent:0px;font-size:18px;"><b style="margin:0px;padding:0px;">目录</b></p><ul style="margin:0px 0px 1em 40px;padding:0px;"><li style="margin:0px;padding:0px;list-style-type:disc;"><a href="https://www.cnblogs.com/brianzhu/p/6404081.html?utm_source=itdadao&amp;utm_medium=referral#_label0" style="margin:0px;padding:0px;color:rgb(0, 0, 0);text-decoration:underline;">1、 案例概述</a></li><li style="margin:0px;padding:0px;list-style-type:disc;"><a href="https://www.cnblogs.com/brianzhu/p/6404081.html?utm_source=itdadao&amp;utm_medium=referral#_label1" style="margin:0px;padding:0px;color:rgb(0, 0, 0);text-decoration:underline;">2、 Puppet的工作原理</a></li><li style="margin:0px;padding:0px;list-style-type:disc;"><a href="https://www.cnblogs.com/brianzhu/p/6404081.html?utm_source=itdadao&amp;utm_medium=referral#_label2" style="margin:0px;padding:0px;color:rgb(0, 0, 0);text-decoration:underline;">3、 项目环境</a></li><li style="margin:0px;padding:0px;list-style-type:disc;"><a href="https://www.cnblogs.com/brianzhu/p/6404081.html?utm_source=itdadao&amp;utm_medium=referral#_label3" style="margin:0px;padding:0px;color:rgb(0, 0, 0);text-decoration:underline;">4、 项目实施</a></li><li style="margin:0px;padding:0px;list-style-type:disc;"><a href="https://www.cnblogs.com/brianzhu/p/6404081.html?utm_source=itdadao&amp;utm_medium=referral#_label4" style="margin:0px;padding:0px;color:rgb(0, 0, 0);text-decoration:underline;">5、 注意说明</a></li></ul></div><p style="padding:0px;margin:10px auto;text-indent:0px;"> </p><hr style="margin:0px;padding:0px;height:1px;border:none;border-top:1px dashed #0066CC;"/><h1 style="padding:0px;font-size:28px;font-weight:bold;line-height:1.5;margin:10px 0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:xx-large;">Puppet</span><span style="margin:0px;padding:0px;font-family:等线;font-size:xx-large;">的部署与应用</span></h1>
+<div style="margin:0px;padding:0px;text-align:right;"><a href="https://www.cnblogs.com/brianzhu/p/6404081.html?utm_source=itdadao&amp;utm_medium=referral#_labelTop" style="margin:0px;padding:0px;color:#f68a33;text-decoration:underline;">回到顶部</a><a name="_label0" style="margin:0px;padding:0px;"></a></div><h2 style="border-radius:6px;font-size:20px;line-height:25px;padding:8px 0px 5px 5px;background:rgb(0, 142, 183);font-weight:bold;box-shadow:rgb(95, 90, 75) 0px 0px 0px 1px, rgba(10, 10, 0, 0.5) 1px 1px 6px 1px;color:rgb(235, 235, 235);font-family:微软雅黑, 宋体, 黑体, Arial;text-shadow:rgb(34, 34, 34) 2px 2px 3px;margin:18px 0px;"><span style="margin:0px;padding:0px;font-family:等线 Light;font-size:x-large;">1、</span> <span style="margin:0px;padding:0px;font-family:等线 Light;font-size:x-large;">案例概述</span></h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">作为一名系统管理员，维护服务器正常运行是最基本的职责，在管理几台到几十台服务器时，大部分管理员喜欢自己写小工具来维护，但随着服务器的数量曾多，任务量也逐渐增多，这时就需要简洁的、强大的框架来完成系统管理的任务，为了实现这一目的，我们引入了一些工具，这些工具是可编程的，系统管理员只需要为这个工具写上几行代码，它便会自动的完成所有的工作，这批工具就是运维自动化puppet，它可以针对多台服务器进行统一操作，如部署统一的软件、进行统一上线维护等，而且能快速完成上线部署，减少人力及人力误操作风险。</p>
+<div style="margin:0px;padding:0px;text-align:right;"><a href="https://www.cnblogs.com/brianzhu/p/6404081.html?utm_source=itdadao&amp;utm_medium=referral#_labelTop" style="margin:0px;padding:0px;color:#f68a33;text-decoration:underline;">回到顶部</a><a name="_label1" style="margin:0px;padding:0px;"></a></div><h2 style="border-radius:6px;font-size:20px;line-height:25px;padding:8px 0px 5px 5px;background:rgb(0, 142, 183);font-weight:bold;box-shadow:rgb(95, 90, 75) 0px 0px 0px 1px, rgba(10, 10, 0, 0.5) 1px 1px 6px 1px;color:rgb(235, 235, 235);font-family:微软雅黑, 宋体, 黑体, Arial;text-shadow:rgb(34, 34, 34) 2px 2px 3px;margin:18px 0px;"><span style="margin:0px;padding:0px;font-family:等线 Light;font-size:x-large;">2、</span> <span style="margin:0px;padding:0px;font-family:等线 Light;font-size:x-large;">Puppet</span><span style="margin:0px;padding:0px;font-family:等线 Light;font-size:x-large;">的工作原理</span></h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Puppet的目录是让管理员只集中于要管理的目标，而忽略实现的细节。Puppet即可以运行在单机上，也可以以C/S结构使用。在大规模使用puppet的情况下，通常使用C/S结构，在这种结构中puppet客户端只运行puppeclient，puppet服务端只运行puppemaster。</p>
+<h3 style="border-radius:6px;font-size:18px;line-height:25px;padding:8px 0px 5px 5px;background:rgb(57, 154, 178);font-weight:bold;box-shadow:rgb(95, 90, 75) 0px 0px 0px 1px, rgba(10, 10, 0, 0.5) 1px 1px 6px 1px;color:rgb(235, 235, 235);font-family:微软雅黑, 宋体, 黑体, Arial;text-shadow:rgb(34, 34, 34) 2px 2px 3px;margin:18px 0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:x-large;">1</span><span style="margin:0px;padding:0px;font-family:等线;font-size:x-large;">、</span><span style="margin:0px;padding:0px;font-family:等线;font-size:x-large;">puppet</span><span style="margin:0px;padding:0px;font-family:等线;font-size:x-large;">具体的工作原理</span></h3>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img src="Puppet_files/1072166-20170216011949597-1927072344.png" type="image/png" data-filename="1072166-20170216011949597-1927072344.png" height="281" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="554"/></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">      </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">1)      客户端puppet调用fast探测出主机的一些变量，如主机名、内存大小、IP地址等。Puppet把这些信息使用SSL连接发送给服务器端</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">2)      服务器端的puppetmaster通过fast工具分析检测客户端的主机名，然后找到项目的主配置文件manifest里面对应的node配置，并对该部分内容进行解析，fast发送过来的信息可以作为变量处理，node牵扯到的代码才被解析，没牵扯到的不解析，解析分为语法检查，如果语法没错，继续解析，解析结果生成一个结果‘伪代码’，然后把‘伪代码’发给客户端</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">3)      客户端收到‘伪代码’并且执行，客户端把执行结果发给服务器</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">4)      服务器端把客户端的执行结果写入日志</p>
+<h3 style="border-radius:6px;font-size:18px;line-height:25px;padding:8px 0px 5px 5px;background:rgb(57, 154, 178);font-weight:bold;box-shadow:rgb(95, 90, 75) 0px 0px 0px 1px, rgba(10, 10, 0, 0.5) 1px 1px 6px 1px;color:rgb(235, 235, 235);font-family:微软雅黑, 宋体, 黑体, Arial;text-shadow:rgb(34, 34, 34) 2px 2px 3px;margin:18px 0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:x-large;">2</span><span style="margin:0px;padding:0px;font-family:等线;font-size:x-large;">、</span><span style="margin:0px;padding:0px;font-family:等线;font-size:x-large;">puppet</span><span style="margin:0px;padding:0px;font-family:等线;font-size:x-large;">工作过程中的注意事项</span></h3>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">1)      为了保证安全，Client和Master之间是基于SSL和证书的，只有经Master证书认证的Client可以与Master通信</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">2)      Puppet会让系统保持在人们所期望的某种状态并一直维持下去，如检测某个文件并保证其一直存在，保证SSH服务始终开启，如果文件被删除了或者ssh服务关闭了，puppet下次执行时（默认30分钟）会重新创建该文件或者启动SSH服务</p>
+<div style="margin:0px;padding:0px;text-align:right;"><a href="https://www.cnblogs.com/brianzhu/p/6404081.html?utm_source=itdadao&amp;utm_medium=referral#_labelTop" style="margin:0px;padding:0px;color:#f68a33;text-decoration:underline;">回到顶部</a><a name="_label2" style="margin:0px;padding:0px;"></a></div><h2 style="border-radius:6px;font-size:20px;line-height:25px;padding:8px 0px 5px 5px;background:rgb(0, 142, 183);font-weight:bold;box-shadow:rgb(95, 90, 75) 0px 0px 0px 1px, rgba(10, 10, 0, 0.5) 1px 1px 6px 1px;color:rgb(235, 235, 235);font-family:微软雅黑, 宋体, 黑体, Arial;text-shadow:rgb(34, 34, 34) 2px 2px 3px;margin:18px 0px;"><span style="margin:0px;padding:0px;font-family:等线 Light;font-size:x-large;">3、</span> <span style="margin:0px;padding:0px;font-family:等线 Light;font-size:x-large;">项目环境</span></h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> <img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;margin-right:auto;margin-left:auto;display:block;" width="800"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> </p>
+<table border="1" cellpadding="0" cellspacing="0" style="margin:0px;font-size:inherit;font-style:inherit;font-variant:inherit;width:604px;padding:0px;font-weight:inherit;border-spacing:0px;max-width:850px;word-break:break-word;border-collapse:collapse;border:1px solid silver;display:block;overflow-x:scroll;height:auto;">
+<tbody style="margin:0px;padding:0px;">
+<tr style="margin:0px;padding:0px;">
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="138">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">主机</span></p>
+</td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="138">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">操作系统</span></p>
+</td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="138">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">IP</span><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">地址</span></p>
+</td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="190">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">主要软件</span></p>
+</td>
+</tr>
+<tr style="margin:0px;padding:0px;">
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="138">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Puppetmaster</span></p>
+</td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="138">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Centos6.5</span></p>
+</td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="138">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">192.168.31.83</span></p>
+</td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="190">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Ruby-rdoc-1.8.7.352</span></p>
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Ruby-libs-1.8.7.352</span></p>
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Ruby-irb-1.8.7.352</span></p>
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Ruby-1.8.7.352</span></p>
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Puppet-2.7.21.tar.gz</span></p>
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Facter-1.7.1.tar.gz</span></p>
+</td>
+</tr>
+<tr style="margin:0px;padding:0px;">
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="138">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Puppetclient1</span></p>
+</td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="138">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Centos6.5</span></p>
+</td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="138">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">192.168.31.184</span></p>
+</td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="190">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Ruby-rdoc-1.8.7.352</span></p>
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Ruby-libs-1.8.7.352</span></p>
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Ruby-irb-1.8.7.352</span></p>
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Ruby-1.8.7.352</span></p>
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Puppet-2.7.21.tar.gz</span></p>
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Facter-1.7.1.tar.gz</span></p>
+</td>
+</tr>
+<tr style="margin:0px;padding:0px;">
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="138">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Puppetclient2</span></p>
+</td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="138">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Centos6.5</span></p>
+</td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="138">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">192.168.31.79</span></p>
+</td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="190">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Ruby-rdoc-1.8.7.352</span></p>
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Ruby-libs-1.8.7.352</span></p>
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Ruby-irb-1.8.7.352</span></p>
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Ruby-1.8.7.352</span></p>
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Puppet-2.7.21.tar.gz</span></p>
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Facter-1.7.1.tar.gz</span></p>
+</td>
+</tr>
+<tr style="margin:0px;padding:0px;">
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="138">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">NTP server</span></p>
+</td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="138">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">Centos6.5</span></p>
+</td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="138">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;">192.168.31.224</span></p>
+</td>
+<td style="margin:0px;border:1px solid silver;border-collapse:collapse;padding:3px;white-space:nowrap;" valign="top" width="190">
+<p align="center" style="padding:0px;margin:10px auto;text-indent:0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:medium;"> </span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div style="margin:0px;padding:0px;text-align:right;"><a href="https://www.cnblogs.com/brianzhu/p/6404081.html?utm_source=itdadao&amp;utm_medium=referral#_labelTop" style="margin:0px;padding:0px;color:#f68a33;text-decoration:underline;">回到顶部</a><a name="_label3" style="margin:0px;padding:0px;"></a></div><h2 style="border-radius:6px;font-size:20px;line-height:25px;padding:8px 0px 5px 5px;background:rgb(0, 142, 183);font-weight:bold;box-shadow:rgb(95, 90, 75) 0px 0px 0px 1px, rgba(10, 10, 0, 0.5) 1px 1px 6px 1px;color:rgb(235, 235, 235);font-family:微软雅黑, 宋体, 黑体, Arial;text-shadow:rgb(34, 34, 34) 2px 2px 3px;margin:18px 0px;"><span style="margin:0px;padding:0px;font-family:等线 Light;font-size:x-large;">4、</span> <span style="margin:0px;padding:0px;font-family:等线 Light;font-size:x-large;">项目实施</span></h2>
+<h3 style="border-radius:6px;font-size:18px;line-height:25px;padding:8px 0px 5px 5px;background:rgb(57, 154, 178);font-weight:bold;box-shadow:rgb(95, 90, 75) 0px 0px 0px 1px, rgba(10, 10, 0, 0.5) 1px 1px 6px 1px;color:rgb(235, 235, 235);font-family:微软雅黑, 宋体, 黑体, Arial;text-shadow:rgb(34, 34, 34) 2px 2px 3px;margin:18px 0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:x-large;">1、</span>        <span style="margin:0px;padding:0px;font-family:等线;font-size:x-large;">搭建</span><span style="margin:0px;padding:0px;font-family:等线;font-size:x-large;">puppetmaster </span></h3>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">1)      规划服务器主机名</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">在小的规模puppet环境下，一般修改/etc/hosts文件，然而在上千台服务器的环境中，我们要搭建自己的DNS服务器来实现服务通过主机名来进行通信，此项目我们通过修改/etc/hosts文件来实现</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img src="Puppet_files/1072166-20170216012022285-1404485428.png" type="image/png" data-filename="1072166-20170216012022285-1404485428.png" height="21" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="352"/></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">              修改HOSTNAME=master.zjz.cn</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img src="Puppet_files/1072166-20170216012038488-818956102.png" type="image/png" data-filename="1072166-20170216012038488-818956102.png" height="76" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="364"/></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img src="Puppet_files/1072166-20170216012057175-1256592307.png" type="image/png" data-filename="1072166-20170216012057175-1256592307.png" height="40" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="263"/>    </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">              添加一下几行：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">              还有一种方式来修改主机名，不用重启系统的方式</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">2)      时间同步服务器</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">由于facter使用SSL证书，依赖时间同步，所以需要搭建NTP服务器</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">一、搭建NTP Server</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">打开ntp的配置文件添加下面两行</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">其作用是当/etc/ntp.conf中定义的server都不可用时，将使用local时间作为NTP服务提供给NTP客户端</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">启动NTP服务，并设置为开机自启</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> <img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">二、Puppetmaster 作为NTP客户端配置</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">三、安装ruby</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">一定按照一下先后顺序安装，先安装compat-readline5，也可以一并安装</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">首先新建一个挂载系统盘的目录（因为我们安装的包，在系统盘中有，使用rpm直接安装）</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">挂载系统盘</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">切换到挂载目录的Packages目录中</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">开始安装</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">       安装完成后，查看版本</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">四、Puppet、facter安装</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">通过facter工具分析检测客户端传输过来的信息</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">安装facter</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">a)      解压源码包</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">新建一个存放安装包的目录，下载源码包</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">b)      编译安装源码包</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">安装puppet：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">(一)  解压源码包</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">先下载源码包</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">(二)  编译安装</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">(三)  复制配置文件</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">(四)  修改文件属性</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">(五)  创建puppet主目录</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">注意：这两个目录的名称是固定的</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">五、Puppet服务证书请求与签名</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">生产环境中iptables默认是关闭的</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Master端配置</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">(一)  修改配置文件</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">在【main】标题下添加以下一行：配置服务器模块的路径</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">(二)  启动puppet主程序</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<h3 style="border-radius:6px;font-size:18px;line-height:25px;padding:8px 0px 5px 5px;background:rgb(57, 154, 178);font-weight:bold;box-shadow:rgb(95, 90, 75) 0px 0px 0px 1px, rgba(10, 10, 0, 0.5) 1px 1px 6px 1px;color:rgb(235, 235, 235);font-family:微软雅黑, 宋体, 黑体, Arial;text-shadow:rgb(34, 34, 34) 2px 2px 3px;margin:18px 0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:x-large;">2、</span>        <span style="margin:0px;padding:0px;font-family:等线;font-size:x-large;">搭建</span><span style="margin:0px;padding:0px;font-family:等线;font-size:x-large;">puppetclient</span></h3>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">首先配置puppetclient1，步骤如下：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">1)      规划服务器主机名</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">添加一下几行</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">确保可以通过域名ping同puppetmaster，即ping master.zjz.cn</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">2)      服务器时间同步</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">3)      安装ruby</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">一定按照一下顺序安装，先安装compat-readline5，也可以一起安装</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> <img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">安装同master安装步骤</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">安装完成后检查版本</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">4)      Puppet、facter安装</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">通过facter工具分析检测客户端传输过来的信息</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">安装facter：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">一、解压源码包</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"> <img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">二、编译安装源码包</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">安装puppet：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">一、解压源码包</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">二、编译安装源码包</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">三、复制配置文件</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">四、修改文件属性</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">五、Puppet服务证书请求与签名</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">生产环境中iptebles默认是全部关闭的</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Puppetclient1和puppetclient2一样，如下操作</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">修改client配置文件</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">在【main】标题下加上一行，设置服务器的域名</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Puppetclient2和puppetclient1配置过程类似，注意将主机名修改为client2</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">申请和注册</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Client端：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">分别在puppetclient1和puppetclient2上进行注册</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">此时可以按Ctrl+C结束，因为puppet一直在等待任务，但是已经从server查看到了申请信息</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Master端</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">查看申请注册的客户端：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">将未注册的客户端进行注册</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">可以通过目录查看已注册的客户端</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">此时客户端已经完成了证书的请求和签名</p>
+<h3 style="border-radius:6px;font-size:18px;line-height:25px;padding:8px 0px 5px 5px;background:rgb(57, 154, 178);font-weight:bold;box-shadow:rgb(95, 90, 75) 0px 0px 0px 1px, rgba(10, 10, 0, 0.5) 1px 1px 6px 1px;color:rgb(235, 235, 235);font-family:微软雅黑, 宋体, 黑体, Arial;text-shadow:rgb(34, 34, 34) 2px 2px 3px;margin:18px 0px;"><span style="margin:0px;padding:0px;font-family:等线;font-size:x-large;">3、</span>        <span style="margin:0px;padding:0px;font-family:等线;font-size:x-large;">配置实例</span></h3>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">1.      配置一个测试节点</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">节点信息：/etc/puppet/manifests/nodes</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">模块信息：/etc/puppet/modules</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">为了保护Linux的ssh端口爆破，批量修改客户端sshd端口，将端口22修改为9922，并实现重启工作</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">创建ssh模块，模块目录为ssh，模块下面有三个文件：mainfests、templates和files</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Mainfests里面必须要包含一个init.pp文件，这是该模块的初始文件，导入一个模块的时候，会从init.pp开始执行。可以把所以的代码写到init.pp文件里面，也可以分成多个pp文件，init再去包含其他文件，定义class类名的时候必须是ssh，这样能实现调用</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Files目录是该模块的文件发布目录，puppet提供一个文件的分发机制，类似rsync的模块</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Templates目录包含erb模型文件，这个和file资源的template属性有关（很少用）</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Master端：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">1)      创建需要的必要的目录</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">此时/etc/puppet/modules/ssh/目录下结构：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">2)      创建模块配置文件install.pp</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">输入一下信息：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">3)      创建模块配置文件config.pp</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">输入一下信息：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">4)      创建模块配置文件service.pp</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">输入一下信息：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">5)      创建模块主配置文件init.pp</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">输入一下信息：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">此时/etc/puppet/modules/ssh/manifests目录下有四个文件：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">6)      建立服务器端ssh统一维护文件</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">由于服务器端和客户端的sshd_config文件默认一样，此时将服务器端/etc/ssh/sshd_config复制到模块默认路径</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">7)      创建测试节点配置文件，并将ssh加载进去</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img> </p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">输入一下信息：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">8)      将测试节点载入puppet，即修改site.pp</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">输入一下信息：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">9)      修改服务端维护的sshd_config配置文件</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">10)   重新启动puppet</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">2.      客户端主动拉取</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">一般在小规模自动化集群中，如代码上线需要重启服务时，为了防止网站暂时性的无法访问的问题，每台客户端运行一次puppet agent –t命令，选择模式根据客户端集群规模的大小，根据经验，一般运维工程师puppet服务器到各客户端会建立ssh信任，然后自定义shell脚本，ssh批量让客户端执行puppet同步命令</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Client端：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">192.168.31.184（puppetclient1）端执行命令如下：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">此时在Client端已经执行成功，验证如下：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">查看服务器ssh服务是否重启，端口是否生效：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">3.      服务器推送同步</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">当大规模部署时采用服务器推送模式</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Client端：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">192.168.31.79（puppetclient2）端修改：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">1)      修改配置文件：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">最后一行添加如下：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">修改auth.conf</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">最后一行添加如下：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">2)      启动puppet客户端</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">查看/etc/ssh/sshd_config的内容如下：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">确认启动ssh服务：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">Master端：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">3)      开始往客户端推送</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">4)      校验结果：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">此时Client端已经执行成功，验证如下：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">查看服务器ssh服务是否重启，端口是否生效：</p>
+<p style="padding:0px;margin:10px auto;text-indent:0px;"><img height="0" src="" style="border:none;margin:0px;padding:0px;height:auto;max-width:300px;" width="0"></img></p>
+<div style="margin:0px;padding:0px;text-align:right;"><a href="https://www.cnblogs.com/brianzhu/p/6404081.html?utm_source=itdadao&amp;utm_medium=referral#_labelTop" style="margin:0px;padding:0px;color:#f68a33;text-decoration:underline;">回到顶部</a><a name="_label4" style="margin:0px;padding:0px;"></a></div><h2 style="border-radius:6px;font-size:20px;line-height:25px;padding:8px 0px 5px 5px;background:rgb(0, 142, 183);font-weight:bold;box-shadow:rgb(95, 90, 75) 0px 0px 0px 1px, rgba(10, 10, 0, 0.5) 1px 1px 6px 1px;color:rgb(235, 235, 235);font-family:微软雅黑, 宋体, 黑体, Arial;text-shadow:rgb(34, 34, 34) 2px 2px 3px;margin:18px 0px;"><span style="margin:0px;padding:0px;font-family:等线 Light;font-size:x-large;">5、</span> <span style="margin:0px;padding:0px;font-family:等线 Light;font-size:x-large;">注意说明</span></h2>
+<p style="padding:0px;margin:10px auto;text-indent:0px;">如果分不清在那一台主机上做的操作，我们可以根据主机名来进行判断，其中puppetclient2上一开始安装的操作因为和puppetclient1上类似就是修改主机名不一样，所以安装步骤省略掉了，不会影响整体的操作，本文中也介绍了一写原理的问题，希望对大家有帮助，有什么不明白的可以联系我，在我的博客左上角有我的qq联系方式</p></div></div></div></div></div></div></div></div></div></div></div></div>
+</div>
+</span>
+</div></body></html> 
