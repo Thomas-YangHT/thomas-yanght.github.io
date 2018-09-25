@@ -1,0 +1,150 @@
+<html>
+<head>
+  <title>Evernote Export</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/307027 (zh-CN, DDL); Windows/10.0.0 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+<a name="524"/>
+
+<div><span><div style="-evernote-webclip:true"><br/><div style="font-size: 16px; display: inline-block;"><div><div style="font-size:12px;font-family:宋体;background:rgb(255, 255, 255);"><div style="list-style:none;overflow:hidden;"><div style="list-style:none;overflow:hidden;background:rgb(249, 249, 249);"><dl style="list-style:none;font-size:14px;color:rgb(51, 51, 51);line-height:28px;"><dd style="list-style:none;">
+		<h1><strong>前言</strong></h1>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">elasticsearch，logstash随着kibana的命名升级直接从2.4跳跃到了5.0，5.x版本的elk在版本对应上要求相对较高，不再支持5.x和2.x的混搭，同时elastic做了一个package，对原本的watch，alert做了一个封装，形成了x-pack，也就是下面我们要讨论的内容</p>
+<hr/>
+<h1><strong>简介</strong></h1>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">x-pack是elasticsearch的一个扩展包，将安全，警告，监视，图形和报告功能捆绑在一个易于安装的软件包中，虽然x-pack被设计为一个无缝的工作，但是你可以轻松的启用或者关闭一些功能</p>
+<hr/>
+<h1><strong>安装</strong></h1>
+<blockquote>
+	<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">Elasticsearh：bin/elasticsearch-plugin install x-pack<br/>
+	（es如果是一个集群，在每一个节点上安装）<br/>
+	Kibana：bin/kibana-plugin install x-pack</p>
+</blockquote>
+<hr/>
+<h1><strong>用户管理</strong></h1>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">x-pack安装之后有一个超级用户elastic ，其默认的密码是changeme，拥有对所有索引和数据的控制权，可以使用该用户创建和修改其他用户，当然这里可以通过kibana的web界面进行用户和用户组的管理</p>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;"><img src="x-pack_files/Image.png" type="image/png" data-filename="Image.png" alt="这里写图片描述" height="198" style="border-width:0px;padding:0px;list-style:none;margin:0px auto;display:block;width:630px;height:197.868px;" title="\" width="630"/></p>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">也可以使用shell 终端进行管理：<br/>
+修改elastic用户的密码：</p>
+<pre style="font-family:'Courier New', monospace;font-size:12px;margin:0px 0px 1em;width:630px;overflow:auto;padding:10px 0px;">curl -XPUT -u elastic 'localhost:9200/_xpack/security/user/elastic/_password' -d '{
+  &quot;password&quot; : &quot;123456&quot;
+}'</pre>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">修改kibana用户的密码：</p>
+<pre style="font-family:'Courier New', monospace;font-size:12px;margin:0px 0px 1em;width:630px;overflow:auto;padding:10px 0px;">curl -XPUT -u elastic 'localhost:9200/_xpack/security/user/kibana/_password' -d '{
+  &quot;password&quot; : &quot;123456&quot;
+}'</pre>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">创建用户组和角色，创建所属用户<br/>
+eg：创建beats_admin用户组，该用户组对filebeat*有all权限，对.kibana*有manage，read，index权限</p>
+<pre style="font-family:'Courier New', monospace;font-size:12px;margin:0px 0px 1em;width:630px;overflow:auto;padding:10px 0px;">curl -XPOST -u elastic 'localhost:9200/_xpack/security/role/beats_admin' -d '{
+  &quot;indices&quot; : [
+    {
+      &quot;names&quot; : [ &quot;filebeat*&quot; ],
+      &quot;privileges&quot; : [ &quot;all&quot; ]
+    },
+    {
+      &quot;names&quot; : [ &quot;.kibana*&quot; ],
+      &quot;privileges&quot; : [ &quot;manage&quot;, &quot;read&quot;, &quot;index&quot; ]
+    }
+  ]
+}'</pre>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">创建jockbeat用户，密码是jockbeat</p>
+<pre style="font-family:'Courier New', monospace;font-size:12px;margin:0px 0px 1em;width:630px;overflow:auto;padding:10px 0px;">curl -XPOST -u elastic 'localhost:9200/_xpack/security/user/jockbeat' -d '{
+  &quot;password&quot; : &quot;jockbeat&quot;,
+  &quot;full_name&quot; : &quot;jock beat&quot;,
+  &quot;email&quot; : &quot;john.doe@anony.mous&quot;,
+  &quot;roles&quot; : [ &quot;beats_admin&quot; ]
+}'</pre>
+<hr/>
+<h1><strong>保护级别</strong></h1>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">X-pack提供以下几个级别保护elastic集群</p>
+用户验证授权和基于角色的访问控制节点/客户端认证和信道<a href="http://www.2cto.com/article/jiami/" style="text-decoration:none;color:rgb(51, 51, 51);font-size:14px;" target="_blank">加密</a>审计
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">1：启动消息身份验证，验证消息在传输的过程中未被篡改或者修改</p>
+<blockquote>
+	<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">bin/x-pack/syskeygen</p>
+</blockquote>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">如果es是一个集群，请将生成的密钥复制到集群的其他节点<br/>
+2：启动审核以跟踪与您的elasticsearch集群的尝试与成功的交互</p>
+<blockquote>
+	<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">vim config/elasticsearch.yml<br/>
+	xpack.security.audit.enabled: true</p>
+</blockquote>
+<hr/>
+<h1><strong>x-pack的权限保护</strong></h1>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">安装完x-pack，登录elasticsearch和kibana会让你输入密码</p>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;"><img src="x-pack_files/Image [1].png" type="image/png" data-filename="Image.png" alt="这里写图片描述" height="456" style="border-width:0px;padding:0px;list-style:none;margin:0px auto;display:block;width:570px;height:456px;" title="\" width="570"/></p>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;"><img src="x-pack_files/Image [2].png" type="image/png" data-filename="Image.png" alt="这里写图片描述" height="198" style="border-width:0px;padding:0px;list-style:none;margin:0px auto;display:block;width:630px;height:198.24px;" title="\" width="630"/></p>
+<hr/>
+<h1><strong>X-pack的elk之间的数据传递保护</strong></h1>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">安装完x-pack之后，我们就可以用我们所创建的用户来保护elk之间的数据传递</p>
+<h3 style="border-width:0px;padding:0px;margin:0px;list-style:none;">1：kibana&lt;——&gt;elasticsearch</h3>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">在kibana.yml文件中配置：</p>
+<blockquote>
+	<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">elasticsearch.username: “elastic”<br/>
+	elasticsearch.password: “changeme”</p>
+</blockquote>
+<h3 style="border-width:0px;padding:0px;margin:0px;list-style:none;">2：logstash&lt;——&gt;elasticsearch</h3>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">在自己写的配置文件中定义</p>
+<pre style="font-family:'Courier New', monospace;font-size:12px;margin:0px 0px 1em;width:630px;overflow:auto;padding:10px 0px;">input {
+  stdin{}
+  beats{
+     port =&gt; 5044
+  }
+}
+output {
+    elasticsearch {
+       hosts =&gt; [&quot;http://localhost:9200&quot;]
+       user =&gt; elastic
+       password =&gt; changeme
+}
+   stdout{
+       codec=&gt;rubydebug
+   }
+}</pre>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">这里如果不进行相关配置的话，elk之间的数据传递就会出现问题</p>
+<hr/>
+<h1><strong>x-pack的监控功能</strong></h1>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">取消X-Pack监控<a href="http://www.2cto.com/kf/all/zujian/" style="text-decoration:none;color:rgb(51, 51, 51);font-size:14px;" target="_blank">组件</a>使您能够通过Kibana轻松监控Elasticsearch。 您可以实时查看集群运行状况和性能，以及分析过去的集群，索引和节点指标。 此外，您可以监控Kibana本身的性能。<br/>
+在群集上安装X-Pack时，监视代理会在每个节点上运行，以从Elasticsearch收集索引指标。 通过在Kibana中安装X-Pack，您可以通过一组专用仪表板查看监视数据</p>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;"><img src="x-pack_files/Image [3].png" type="image/png" data-filename="Image.png" alt="这里写图片描述" height="198" style="border-width:0px;padding:0px;list-style:none;margin:0px auto;display:block;width:630px;height:198.394px;" title="\" width="630"/></p>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">elasticsearch：<br/>
+<img src="x-pack_files/Image [4].png" type="image/png" data-filename="Image.png" alt="这里写图片描述" height="306" style="border-width:0px;padding:0px;list-style:none;margin:0px auto;display:block;width:630px;height:305.917px;" title="\" width="630"/></p>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">kibana：<br/>
+<img src="x-pack_files/Image [5].png" type="image/png" data-filename="Image.png" alt="这里写图片描述" height="170" style="border-width:0px;padding:0px;list-style:none;margin:0px auto;display:block;width:630px;height:170.368px;" title="\" width="630"/></p>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">配置监控的索引：<br/>
+编辑elasticsearch.yml，假设监控logstash-*，index1,test2索引<br/>
+xpack.monitZ喎&quot;http://www.2cto.com/kf/ware/vc/&quot; target=&quot;_blank&quot; class=&quot;keylink&quot;&gt;vcmluZy5jb2xsZWN0aW9uLmluZGljZXM6IGxvZ3N0YXNoLSosIGluZGV4MSwgdGVzdDI8YnIgLz4NCsT6v8nS1NTax7DD5rzTyc8ru/IgLSDAtM/Uyr2w/Lqsu/LFxbP9y/fS/cP7s8a78sSjyr2hoyDA/cjno6zSqrD8wKjS1HRlc3S/qs23tcTL+dPQy/fS/aOodGVzdDOz/c3io6mjrL/J0tTWuLaoKyB0ZXh0ICqjrCAtIHRlc3QzoaM8L3A+DQo8cD7J6NbDtaW2wLXEvK/Iurzgv9ijujxiciAvPg0KaHR0cHM6Ly93d3cuZWxhc3RpYy5jby9ndWlkZS9lbi94LXBhY2svY3VycmVudC9tb25pdG9yaW5nLWNsdXN0ZXIuaHRtbDwvcD4NCjxociAvPg0KPGgxIGlkPQ==&quot;x-pack的alert&quot;&gt;<strong>x-pack的alert</strong>
+</p><p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">总体上来将和之前的单独产品watch并没有什么太大的区别，这里我们只是简单的看下x-pack的alert功能，更多详细内容参考官网<br/>
+https://www.elastic.co/guide/en/x-pack/current/xpack-alerting.html</p>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">当watch被触发的时候，数据将会被加载到执行的context中，watch支持四种输入：</p>
+Simple：加载静态的数据到execution context中 Search：加载搜索的结果到execution context中 Http：将Http请求的结果加载到execution context中 chain：使用一系列输入将数据加载到execution context中
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">每个watch必须有一个触发器触发watch的执行开始，watch旨在支持不同类型的的触发器，但只有基于时间戳的计划触发器目前可用，watch提供了以下几种类型的时间过滤器</p>
+Hourly Daily Weekly Monthly Yearly Cron Interval
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">例如创建一个每小时的watch监控（每半个小时启动一次）</p>
+<pre style="font-family:'Courier New', monospace;font-size:12px;margin:0px 0px 1em;width:630px;overflow:auto;padding:10px 0px;">{ 
+   &quot;trigger&quot; : {
+           &quot;schedule&quot; : { 
+                   &quot;hourly&quot; : {   &quot;minute&quot; : 30 }
+               }
+    }
+ }</pre>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">配置一个每小时多时间的watch（每15分钟启动一次）</p>
+<pre style="font-family:'Courier New', monospace;font-size:12px;margin:0px 0px 1em;width:630px;overflow:auto;padding:10px 0px;">{
+  &quot;trigger&quot; : {
+    &quot;schedule&quot; : {
+      &quot;hourly&quot; : { &quot;minute&quot; : [ 0, 15, 30, 45 ] }
+    }
+  }
+}</pre>
+<hr/>
+<h1><strong>x-pack的Graph</strong></h1>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;">https://www.elastic.co/guide/en/x-pack/current/graph-getting-started.html</p>
+<p style="border-width:0px;padding:0px;margin:0px;list-style:none;text-indent:2em;margin-bottom:8px;"><img src="x-pack_files/Image [6].png" type="image/png" data-filename="Image.png" alt="这里写图片描述" height="432" style="border-width:0px;padding:0px;list-style:none;margin:0px auto;display:block;width:630px;height:432.332px;" title="" width="630"/></p>
+						</dd></dl></div></div></div></div></div><br/></div></span>
+</div></body></html> 

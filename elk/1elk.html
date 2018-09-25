@@ -1,0 +1,187 @@
+<html>
+<head>
+  <title>Evernote Export</title>
+  <basefont face="微软雅黑" size="2" />
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+  <meta name="exporter-version" content="Evernote Windows/307027 (zh-CN, DDL); Windows/10.0.0 (Win64);"/>
+  <style>
+    body, td {
+      font-family: 微软雅黑;
+      font-size: 10pt;
+    }
+  </style>
+</head>
+<body>
+<a name="519"/>
+
+<div><span><div style="-evernote-webclip:true"><br/><div style="font-size: 16px; display: inline-block;"><div style="font-size:14px;background-color:rgb(244, 246, 248);"><div style="font-family:'Helvetica Neue', Helvetica, Tahoma, Arial, STXihei, 'Microsoft YaHei', 微软雅黑, sans-serif;font-size:1em;line-height:1.5em;color:rgb(51, 51, 51);background-color:rgb(244, 246, 248);box-shadow:none;"><div><div><div style="box-shadow:rgba(0, 0, 0, 0.0980392) 0px 4px 10px;background:white;box-sizing:border-box;background-color:rgb(254, 254, 254);"><div style="overflow-x:hidden;word-wrap:break-word;word-break:break-all;font-size:16px;line-height:1.7em;"><div style="font-size:16px;line-height:1.7em;"> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">ELK是指elastic提供的一整套数据收集，存储，搜索，及展示方案。 由于部署及扩容方便，非常适合小团队快速搭建数据分析平台。ELK分别代指 Elasticsearch，Logstash，Kibana三个产品。</p> 
+ <ul style="padding:0px;margin:0px 0px 0.75em 25px;list-style-type:none;padding-left:0px;font-size:16px;line-height:1.7em;"> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;"> <a href="https://www.elastic.co/products/elasticsearch" rel="nofollow,noindex" style="transition:0.25s;outline:none 0px;color:rgb(148, 148, 148);text-decoration:none;border-bottom-width:1px;border-bottom-style:dashed;border-bottom-color:rgb(148, 148, 148);font-style:italic;font-weight:bold;" target="_blank"> <strong style="font-weight:bold;text-indent:0px;">E</strong> lasticsearch </a> : 分布式，实时，全文搜索引擎，最核心的部分，也是接下来主要介绍的内容 </li> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;"> <a href="https://www.elastic.co/products/logstash" rel="nofollow,noindex" style="transition:0.25s;outline:none 0px;color:rgb(148, 148, 148);text-decoration:none;border-bottom-width:1px;border-bottom-style:dashed;border-bottom-color:rgb(148, 148, 148);font-style:italic;font-weight:bold;" target="_blank"> <strong style="font-weight:bold;text-indent:0px;">L</strong> ogstash </a> : 非常灵活的日志收集工具，不局限于向 Elasticsearch 导入数据，可以定制多种输入，输出，及过滤转换规则 </li> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;"> <a href="https://www.elastic.co/products/kibana" rel="nofollow,noindex" style="transition:0.25s;outline:none 0px;color:rgb(148, 148, 148);text-decoration:none;border-bottom-width:1px;border-bottom-style:dashed;border-bottom-color:rgb(148, 148, 148);font-style:italic;font-weight:bold;" target="_blank"> <strong style="font-weight:bold;text-indent:0px;">K</strong> ibana </a> : 提供对于 Elasticsearch 数据的搜索及可视化功能。并且支持开发人员自己按需开发插件。 </li> 
+ </ul> 
+ <h2 style="margin:0px 0px 0.5em;font-family:inherit;color:inherit;text-rendering:optimizeLegibility;font-weight:bold;line-height:1.6em;font-size:18px;text-indent:1em;">ELK在广告系统监控中的应用</h2> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">广告系统对于请求的响应时间非常敏感，此外，对于并发请求数要求也很高。因此，我们需要从请求响应时间，以及QPS两个指标，来检测系统的性能; 同时，为了定位瓶颈，我们需要把这两个指标，分拆到请求处理过程中的每个组件去看。</p> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">此外，为了优化全球用户访问的速度，我们在全球部署了多个节点。因此，整个系统不是在一个内网环境，对监控数据的实时收集提出了考验。</p> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">因此，我们需要一套灵活的监控统计库，能够非侵入的注册到业务代码中; 并且在一个统一的入口，实时监控每个节点的运行情况。</p> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;"> <img src="elk1_files/IVZRNbj.png!web.png" type="image/png" data-filename="IVZRNbj.png!web.png" height="222" style="height:auto;max-width:96%;vertical-align:middle;border:0px none;margin:0px auto;text-align:center;display:block;margin-bottom:10px;" width="550"/> </p> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">我们采用方案是:</p> 
+ <ul style="padding:0px;margin:0px 0px 0.75em 25px;list-style-type:none;padding-left:0px;font-size:16px;line-height:1.7em;"> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;">每个节点，有一个 Collector，负责收集监控数据，按照节点/服务/时间维度做聚合，实时写入 Kinesis 队列</li> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;">Logstash 将 Kinesis 中的监控数据，实时导入到 Elasticsearch</li> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;">Kibana 后台上，通过定制查询图表，可以统计对比每个节点/服务/组件的监控数据</li> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;"> 我们采用默认的 Logstash 日志导入策略，按天索引，使用 <a href="https://www.elastic.co/guide/en/elasticsearch/client/curator/current/index.html" rel="nofollow,noindex" style="transition:0.25s;outline:none 0px;color:rgb(148, 148, 148);text-decoration:none;border-bottom-width:1px;border-bottom-style:dashed;border-bottom-color:rgb(148, 148, 148);font-style:italic;font-weight:bold;" target="_blank">curator</a> 工具，定期对历史数据删除/优化。 </li> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;"> 此外，通过 <a href="https://www.elastic.co/products/watcher" rel="nofollow,noindex" style="transition:0.25s;outline:none 0px;color:rgb(148, 148, 148);text-decoration:none;border-bottom-width:1px;border-bottom-style:dashed;border-bottom-color:rgb(148, 148, 148);font-style:italic;font-weight:bold;" target="_blank">Watcher</a> 插件，定制告警信息，从而在系统出现问题时及时处理。 </li> 
+ </ul> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">这套机制，很好地满足了我们对于系统监控的需求，帮助我们分析，定位优化系统瓶颈。</p> 
+ <h2 style="margin:0px 0px 0.5em;font-family:inherit;color:inherit;text-rendering:optimizeLegibility;font-weight:bold;line-height:1.6em;font-size:18px;text-indent:1em;">Elasticsearch简介</h2> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">Elasticsearch 是一个分布式，实时，全文搜索引擎。所有操作都是通过 RESTful 接口实现; 其底层实现是基于 Lucene 全文搜索引擎。数据以JSON文档的格式存储索引，不需要预先规定范式。</p> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">和传统数据库的术语对比一下，也许能够帮助我们对 Elasticsearch 有一个更加感性的认识</p> 
+ <table style="margin-bottom:1.5em;font-size:14px;font-style:inherit;font-variant:inherit;max-width:100%;border-collapse:separate;border-spacing:0px;background-color:transparent;width:100%;font-weight:inherit;border-width:1px 1px 1px 0px;border-top-style:solid;border-right-style:solid;border-bottom-style:solid;border-top-color:rgb(221, 221, 221);border-right-color:rgb(221, 221, 221);border-bottom-color:rgb(221, 221, 221);border-radius:4px;line-height:1.3em;"> 
+  <thead> 
+   <tr style="font-size:14px;line-height:1.3em;"> 
+    <th style="border-top-color:rgb(221, 221, 221);padding:8px;text-align:left;border-left-color:rgb(221, 221, 221);border-left-style:solid;border-top-style:solid;line-height:1.5em;font-weight:bold;border-left-width:1px;vertical-align:bottom;border-top-width:0px;border-top-left-radius:4px;" width="28%">RDS</th> 
+    <th style="border-top-style:solid;padding:8px;text-align:left;border-left-style:solid;border-left-width:1px;line-height:1.5em;border-top-color:rgb(221, 221, 221);font-weight:bold;border-left-color:rgb(221, 221, 221);vertical-align:bottom;border-top-width:0px;" width="26%">Elasticsearch</th> 
+    <th style="border-top-color:rgb(221, 221, 221);padding:8px;text-align:left;border-left-color:rgb(221, 221, 221);border-left-style:solid;border-top-style:solid;line-height:1.5em;font-weight:bold;border-left-width:1px;vertical-align:bottom;border-top-width:0px;border-top-right-radius:4px;" width="46%">说明</th> 
+   </tr> 
+  </thead> 
+  <tbody> 
+   <tr style="font-size:14px;line-height:1.3em;"> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;">database</td> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;">index</td> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;"></td> 
+   </tr> 
+   <tr style="font-size:14px;line-height:1.3em;"> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;">table</td> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;">type</td> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;"></td> 
+   </tr> 
+   <tr style="font-size:14px;line-height:1.3em;"> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;">primary key</td> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;">id</td> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;"></td> 
+   </tr> 
+   <tr style="font-size:14px;line-height:1.3em;"> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;">row</td> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;">JSON document</td> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;">文档是最基本的数据存储单元，因此也可以称 Elasticsearch 为文档型 NoSQL 数据库</td> 
+   </tr> 
+   <tr style="font-size:14px;line-height:1.3em;"> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;">column</td> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;">field</td> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;"></td> 
+   </tr> 
+   <tr style="font-size:14px;line-height:1.3em;"> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;">schema</td> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;">mapping</td> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;">可以支持动态范式，也可以将范式指定下来，从而优化对数据索引和查询</td> 
+   </tr> 
+   <tr style="font-size:14px;line-height:1.3em;"> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;">index</td> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;">(all)</td> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;">所有的字段都是被索引的，因此不需要手动指定索引</td> 
+   </tr> 
+   <tr style="font-size:14px;line-height:1.3em;"> 
+    <td style="border-top-color:rgb(221, 221, 221);padding:8px;text-align:left;vertical-align:top;border-top-width:1px;border-top-style:solid;line-height:1.3em;border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;border-bottom-left-radius:4px;">SQL</td> 
+    <td style="border-top-style:solid;padding:8px;text-align:left;vertical-align:top;border-top-width:1px;line-height:1.3em;border-top-color:rgb(221, 221, 221);border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;">query DSL</td> 
+    <td style="border-top-color:rgb(221, 221, 221);padding:8px;text-align:left;vertical-align:top;border-top-width:1px;border-top-style:solid;line-height:1.3em;border-left-width:1px;border-left-style:solid;border-left-color:rgb(221, 221, 221);font-size:14px;border-bottom-right-radius:4px;">不同于我们习惯的SQL语句，需要构造繁冗的JSON参数来实现复杂的数据统计查询功能</td> 
+   </tr> 
+  </tbody> 
+ </table> 
+ <h2 style="margin:0px 0px 0.5em;font-family:inherit;color:inherit;text-rendering:optimizeLegibility;font-weight:bold;line-height:1.6em;font-size:18px;text-indent:1em;">使用简介</h2> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">所有操作都是通过RESTfull接口完成。请求URI指定了文档的&quot;路径&quot;。 注意到语义通过请求的HTTP方法不同区分开来:</p> 
+ <ul style="padding:0px;margin:0px 0px 0.75em 25px;list-style-type:none;padding-left:0px;font-size:16px;line-height:1.7em;"> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;"> 创建 <code style="padding:2px 4px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;border-radius:3px;border:none;white-space:normal;background-color:rgb(247, 247, 249);font-weight:600;font-size:14px;color:rgb(51, 51, 51);">POST /{index}/{type} {&quot;field&quot;: &quot;value&quot;, ...}</code> </li> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;"> 创建/更新 <code style="padding:2px 4px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;border-radius:3px;border:none;white-space:normal;background-color:rgb(247, 247, 249);font-weight:600;font-size:14px;color:rgb(51, 51, 51);">PUT /{index}/{type}/{id} {&quot;field&quot;: &quot;value&quot;, ...}</code> </li> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;"> 判断一个文档是否存在 <code style="padding:2px 4px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;border-radius:3px;border:none;white-space:normal;background-color:rgb(247, 247, 249);font-weight:600;font-size:14px;color:rgb(51, 51, 51);">HEAD /{index}/{type}/{id}</code> </li> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;"> 获取一个文档 <code style="padding:2px 4px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;border-radius:3px;border:none;white-space:normal;background-color:rgb(247, 247, 249);font-weight:600;font-size:14px;color:rgb(51, 51, 51);">GET /{index}/{type}/{id}</code> </li> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;"> 删除 <code style="padding:2px 4px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;border-radius:3px;border:none;white-space:normal;background-color:rgb(247, 247, 249);font-weight:600;font-size:14px;color:rgb(51, 51, 51);">DELETE /{index}/{type}/{id}</code> </li> 
+ </ul> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;"> 说明一下 <code style="padding:2px 4px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;border-radius:3px;border:none;white-space:normal;background-color:rgb(247, 247, 249);font-weight:600;font-size:14px;color:rgb(51, 51, 51);">POST</code> 和 <code style="padding:2px 4px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;border-radius:3px;border:none;white-space:normal;background-color:rgb(247, 247, 249);font-weight:600;font-size:14px;color:rgb(51, 51, 51);">PUT</code> 的 <a href="http://stackoverflow.com/questions/630453/put-vs-post-in-rest" rel="nofollow,noindex" style="transition:0.25s;outline:none 0px;color:rgb(148, 148, 148);text-decoration:none;border-bottom-width:1px;border-bottom-style:dashed;border-bottom-color:rgb(148, 148, 148);font-style:italic;font-weight:bold;" target="_blank">区别</a> : <code style="padding:2px 4px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;border-radius:3px;border:none;white-space:normal;background-color:rgb(247, 247, 249);font-weight:600;font-size:14px;color:rgb(51, 51, 51);">POST</code> 永远是创建新的。 <code style="padding:2px 4px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;border-radius:3px;border:none;white-space:normal;background-color:rgb(247, 247, 249);font-weight:600;font-size:14px;color:rgb(51, 51, 51);">PUT</code> 可以表示创建，但是如果指定的URI存在，则含义为更新。换句话说，一个 <code style="padding:2px 4px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;border-radius:3px;border:none;white-space:normal;background-color:rgb(247, 247, 249);font-weight:600;font-size:14px;color:rgb(51, 51, 51);">PUT</code> 请求，重复执行，结果应该是一样的。因此，在 Elasticsearch 的API， <code style="padding:2px 4px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;border-radius:3px;border:none;white-space:normal;background-color:rgb(247, 247, 249);font-weight:600;font-size:14px;color:rgb(51, 51, 51);">POST</code> 表示创建新的文档，并由 Elasticsearch 自动生成 <code style="padding:2px 4px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;border-radius:3px;border:none;white-space:normal;background-color:rgb(247, 247, 249);font-weight:600;font-size:14px;color:rgb(51, 51, 51);">id</code> ; 而 <code style="padding:2px 4px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;border-radius:3px;border:none;white-space:normal;background-color:rgb(247, 247, 249);font-weight:600;font-size:14px;color:rgb(51, 51, 51);">PUT</code> 方法需要指定文档 <code style="padding:2px 4px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;border-radius:3px;border:none;white-space:normal;background-color:rgb(247, 247, 249);font-weight:600;font-size:14px;color:rgb(51, 51, 51);">id</code> ，含义为&quot;创建，若存在则更新&quot;。 </p> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">另外，需要提一下版本的概念。因为 Elasticsearch 中的文档是不可变的(immutable)，所以每个文档会有一个 版本号(version)字段，每次更新，实际上是将旧的版本标记未删除，并创建了一个新版本(版本号+1)。这个开销是很大的。因此，在实际使用中，需要尽量避免频繁的更新操作。</p> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">为了满足一些复杂的数据统计，仅仅上述的增删改查是不够的，为了充分使用 Elasticsearch的搜索功能，还需要学习 query DSL 的使用。query DSL 写起来比较复杂，这里仅仅列举一下和SQL关键字的对应。具体使用还得参考文档。</p> 
+ <pre style="line-height:1.5em;padding:0.5em;background-color:rgb(246, 246, 246);border-radius:4px;border:none;margin:0px 0px 0.75em;font-size:14px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;word-break:break-all;word-wrap:break-word;display:block;color:rgb(68, 68, 68);overflow-x:auto;white-space:pre;margin-bottom:1.5em;"><code style="font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;border-radius:3px;font-weight:600;font-size:14px;padding:0px;border:0px;white-space:pre-wrap;background-color:transparent;color:rgb(51, 51, 51);">SQL            | query DSL
+-------        | --------
+=              | {<span><span style="color:rgb(136, 0, 0);">&quot;term&quot;</span></span>: {field: val}
+IN             | {<span><span style="color:rgb(136, 0, 0);">&quot;terms&quot;</span></span>: {field: [val, ...]}
+LIKE           | {<span><span style="color:rgb(136, 0, 0);">&quot;wildcard:&quot;</span></span> {field: pattern}}
+BETWEEN AND    | {<span><span style="color:rgb(136, 0, 0);">&quot;range&quot;</span></span>: {field: {<span><span style="color:rgb(136, 0, 0);">&quot;gt&quot;</span></span>: val, <span><span style="color:rgb(136, 0, 0);">&quot;lt&quot;</span></span>: val}}}
+AND / OR / NOT | {<span><span style="color:rgb(136, 0, 0);">&quot;bool&quot;</span></span>: {<span><span style="color:rgb(136, 0, 0);">&quot;must&quot;</span></span>/<span><span style="color:rgb(136, 0, 0);">&quot;should&quot;</span></span>/<span><span style="color:rgb(136, 0, 0);">&quot;must_not&quot;</span></span>: ...}
+Aggregations   | {<span><span style="color:rgb(136, 0, 0);">&quot;aggs&quot;</span></span>: ...}
+JOIN           | {<span><span style="color:rgb(136, 0, 0);">&quot;nestted&quot;</span></span>/<span><span style="color:rgb(136, 0, 0);">&quot;has_child&quot;</span></span>/<span><span style="color:rgb(136, 0, 0);">&quot;has_parent&quot;</span></span>: ...}
+</code></pre> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">随便列两个查询语句，感受一下:</p> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">SELECT * FROM megacorp.employee WHERE age &amp;gt; 30 AND last_name = &amp;quot;smith&amp;quot;</p> 
+ <pre style="line-height:1.5em;padding:0.5em;background-color:rgb(246, 246, 246);border-radius:4px;border:none;margin:0px 0px 0.75em;font-size:14px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;word-break:break-all;word-wrap:break-word;display:block;color:rgb(68, 68, 68);overflow-x:auto;white-space:pre;margin-bottom:1.5em;"><code style="font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;border-radius:3px;font-weight:600;font-size:14px;padding:0px;border:0px;white-space:pre-wrap;background-color:transparent;color:rgb(51, 51, 51);">GET /megacorp/employee/_search
+{
+  <span><span style="color:rgb(136, 0, 0);">&quot;query&quot;</span></span>: {
+    <span><span style="color:rgb(136, 0, 0);">&quot;filtered&quot;</span></span>: {
+      <span><span style="color:rgb(136, 0, 0);">&quot;filter&quot;</span></span>: {
+        <span><span style="color:rgb(136, 0, 0);">&quot;range&quot;</span></span>: { <span><span style="color:rgb(136, 0, 0);">&quot;age&quot;</span></span>: { <span><span style="color:rgb(136, 0, 0);">&quot;gt&quot;</span></span>: <span><span style="color:rgb(136, 0, 0);">30</span></span> } }
+      },
+      <span><span style="color:rgb(136, 0, 0);">&quot;query&quot;</span></span>: {
+        <span><span style="color:rgb(136, 0, 0);">&quot;match&quot;</span></span>: {
+          <span><span style="color:rgb(136, 0, 0);">&quot;last_name&quot;</span></span>: <span><span style="color:rgb(136, 0, 0);">&quot;smith&quot;</span></span>
+        }
+      }
+    }
+  }
+}
+</code></pre> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">SELECT interests，avg(age) FROM megacorp.employee GROUP BY interests</p> 
+ <pre style="line-height:1.5em;padding:0.5em;background-color:rgb(246, 246, 246);border-radius:4px;border:none;margin:0px 0px 0.75em;font-size:14px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;word-break:break-all;word-wrap:break-word;display:block;color:rgb(68, 68, 68);overflow-x:auto;white-space:pre;margin-bottom:1.5em;"><code style="font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;border-radius:3px;font-weight:600;font-size:14px;padding:0px;border:0px;white-space:pre-wrap;background-color:transparent;color:rgb(51, 51, 51);">GET /megacorp/employee/_search
+{
+  <span><span style="color:rgb(136, 0, 0);">&quot;aggs&quot;</span></span>: {
+    <span><span style="color:rgb(136, 0, 0);">&quot;all_interests&quot;</span></span>: {
+      <span><span style="color:rgb(136, 0, 0);">&quot;terms&quot;</span></span>: { <span><span style="color:rgb(136, 0, 0);">&quot;field&quot;</span></span>: <span><span style="color:rgb(136, 0, 0);">&quot;interests&quot;</span></span> },
+      <span><span style="color:rgb(136, 0, 0);">&quot;aggs&quot;</span></span>: {
+        <span><span style="color:rgb(136, 0, 0);">&quot;avg_age&quot;</span></span>: {
+          <span><span style="color:rgb(136, 0, 0);">&quot;avg&quot;</span></span>: {
+            <span><span style="color:rgb(136, 0, 0);">&quot;field&quot;</span></span>: <span><span style="color:rgb(136, 0, 0);">&quot;age&quot;</span></span>
+          }
+        }
+      }
+    }
+  }
+}
+</code></pre> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;"> 从个人的使用经验来说，熟练掌握 query DSL 的难度还是不小的 (毕竟大家都习惯的SQL的简洁直接)。此外，由于输入输出都是嵌套很深的JSON，解析起来也比较麻烦。为了降低使用门槛，一般都会有从SQL翻译的组件。比如Hive之于Hadoop，SparkSQL 之于 Spark。 <a href="http://github.com/NLPchina/elasticsearch-sql" rel="nofollow,noindex" style="transition:0.25s;outline:none 0px;color:rgb(148, 148, 148);text-decoration:none;border-bottom-width:1px;border-bottom-style:dashed;border-bottom-color:rgb(148, 148, 148);font-style:italic;font-weight:bold;" target="_blank">elasticsearch-sql</a> 这个项目，提供了类似了SQL翻译功能。 </p> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">当然，Elasticsearch 最突出的地方在于对于全文搜索的支持。全文搜索的原理，以及在 Elasticsearch中具体如何全文搜索，这里略去不表。下面介绍下 Elasticsearch 集群的实现。</p> 
+ <h2 style="margin:0px 0px 0.5em;font-family:inherit;color:inherit;text-rendering:optimizeLegibility;font-weight:bold;line-height:1.6em;font-size:18px;text-indent:1em;">Elasticsearch 集群</h2> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">Elasticsearch 是分布式的架构，可以通过新增节点的方式水平扩容，并提供一定的容错性。那么，它是怎么做到的呢? 我们一个一个概念，细细道来:</p> 
+ <ul style="padding:0px;margin:0px 0px 0.75em 25px;list-style-type:none;padding-left:0px;font-size:16px;line-height:1.7em;"> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;"> <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:0px;"> 节点(node): 是一个独立的 Elasticsearch 运行实例。可以是一台机器上多个实例，当然更常见的选择是部署在不同的机器上。多个互通节点在一起组成了一个 <strong style="font-weight:bold;text-indent:0px;">集群 (cluster)</strong> 。不同于常见的master/slave集群架构，Elasticsearch 集群中的节点是同构的，每个节点都可以处理请求，并将自己不能处理的请求&quot;重定向&quot;到目标节点。 </p> </li> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;"> <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:0px;"> 索引(index): 一个索引，分成了多个分片。当将文档写入一个索引时，根据id做切割，交由某个具体的分片去完成写入操作。因此越多的分片数，提供了更好的并发写入性能。分片数目在索引创建就不能更改。 </p> </li> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;"> <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:0px;"> 分片(shard): 即一个 Lucene 实例，从数据库的角度来理解，可以视为一个分区(partition)。 </p> </li> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;"> <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:0px;"> 镜像分片(replica): 分片由一个 主分片 (primary shard)，和可配置数目的多个镜像分片组成。 </p> 
+   <ul style="padding:0px;margin:0px 0px 0.75em 25px;list-style-type:none;margin-bottom:0px;padding-left:0px;font-size:16px;line-height:1.7em;"> 
+    <li style="line-height:1.7em;list-style-type:disc;font-size:16px;">顾名思义，镜像分片 的数据内容和 主分片 保持数据同步。数据写入请求在主分片被完成，并由主分片将写入数据推送(push)到其镜像分片去。</li> 
+    <li style="line-height:1.7em;list-style-type:disc;font-size:16px;">在多节点集群里，同一分片的主分片和镜像分片被分散到了不同的节点。同一个分片里文档的查询请求，既可以在主分片所在节点完成，也可以在镜像分片节点完成。</li> 
+    <li style="line-height:1.7em;list-style-type:disc;font-size:16px;">此外，当主分片所在节点失效时，会将其中一个镜像分片提升为主分片。</li> 
+    <li style="line-height:1.7em;list-style-type:disc;font-size:16px;">因此，更高的分片镜像数目，提供了更好的查询效率，以及更好的容错机制。</li> 
+   </ul> </li> 
+ </ul> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;"> <img src="elk1_files/AvM3ArU.png!web.png" type="image/png" data-filename="AvM3ArU.png!web.png" height="327" style="height:auto;max-width:96%;vertical-align:middle;border:0px none;margin:0px auto;text-align:center;display:block;margin-bottom:10px;" width="550"/> </p> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">如图，三个节点构成的集群。有两个索引(A，B)。每个索引设置为3个分片，每个分片镜像数为1:</p> 
+ <ul style="padding:0px;margin:0px 0px 0.75em 25px;list-style-type:none;padding-left:0px;font-size:16px;line-height:1.7em;"> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;">由于镜像分片会在节点间充分平衡，因此，当任意一个节点失效时，都不会导致数据丢失</li> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;">由于索引个分片均匀分布到三个节点，因此，写入时，总体上可以实现三倍每个节点的写入吞吐</li> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;">对于每个索引的查询，都可以利用到每台节点的计算能力</li> 
+ </ul> 
+ <h2 style="margin:0px 0px 0.5em;font-family:inherit;color:inherit;text-rendering:optimizeLegibility;font-weight:bold;line-height:1.6em;font-size:18px;text-indent:1em;">Lucene 是怎么工作的?</h2> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">前面我们提到，Elasticsearch 是构建在 Lucene 之上的。那么，Lucene (也就是每个分片) 是如何实现数据的实时写入和查询的呢?</p> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">一个 Lucene 由多个 segment 构成。每个 segment 自构建索引信息。在查询的时候，先由分发到每个 segment 执行，然后将结果汇总。数据写入时，是按照 segment 来组织的。为了提高写入速度，数据先写入内存，然后在定期刷回磁盘(commit)。</p> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">每个 segment 数据是不可变的，因此删除的时候仅仅标记为删除，相应的数据并没有彻底清除。在写入的过程中，会定期将 segment 的数据合并，在这个合并的过程中删除的数据才真正被清理掉。这也是为什么频繁更新会对性能不好的原因。最优的情况下，每个 Lucene 只有一个 segment，从而所有查询都不需要经过再次聚合。我们也可以手动触发 segment 合并，从而提高单个 Lucene 的查询性能。</p> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">写入以及合并的示意图:</p> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;"> <img src="elk1_files/fyIbmmr.png!web.png" type="image/png" data-filename="fyIbmmr.png!web.png" height="270" style="height:auto;max-width:96%;vertical-align:middle;border:0px none;margin:0px auto;text-align:center;display:block;margin-bottom:10px;" width="550"/> <img src="elk1_files/IFrmam.png!web.png" type="image/png" data-filename="IFrmam.png!web.png" height="270" style="height:auto;max-width:96%;vertical-align:middle;border:0px none;margin:0px auto;text-align:center;display:block;margin-bottom:10px;" width="550"/> </p> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;">如果要做类比的话，我们可以将写入理解为数据库系统 Write-Ahead-Logging (WAL) 的过程。只不过，这里写入的数据都是不变的，因此可以在写入的时候被非常高效地索引，并直接基于这些&quot;日志&quot;(即segments)查询。</p> 
+ <h2 style="margin:0px 0px 0.5em;font-family:inherit;color:inherit;text-rendering:optimizeLegibility;font-weight:bold;line-height:1.6em;font-size:18px;text-indent:1em;">索引维度的切割</h2> 
+ <p style="margin:0px 0px 0.75em;font-size:16px;line-height:1.7em;text-indent:1em;"> 由于每个索引是固定分片数的，为了优化查询，每个分片 (记得是 Lucene 实例) 索引的数据不能够无限增长。很多时候，我们的写入的是按天分的日志数据。一般的做法是，按天索引。在时间维度上利用索引进行分区，Logstash 默认为 <code style="padding:2px 4px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;border-radius:3px;border:none;white-space:normal;background-color:rgb(247, 247, 249);font-weight:600;font-size:14px;color:rgb(51, 51, 51);">logstash-2016-02-01，logstash-2016-02-02，...</code> 这样按天分表。在查询的时候，可以指定多个索引查询，如 <code style="padding:2px 4px;font-family:Menlo, Monaco, Consolas, 'Courier New', monospace;border-radius:3px;border:none;white-space:normal;background-color:rgb(247, 247, 249);font-weight:600;font-size:14px;color:rgb(51, 51, 51);">logstash-*</code> 索引匹配。在有时间范围限定查询的时候，可以提前对于潜在索引过滤，从而减少执行查询所涉及的索引数目。这也是常见的数据库分区查询优化的一个手段。 </p> 
+ <h2 style="margin:0px 0px 0.5em;font-family:inherit;color:inherit;text-rendering:optimizeLegibility;font-weight:bold;line-height:1.6em;font-size:18px;text-indent:1em;">参考</h2> 
+ <ul style="padding:0px;margin:0px 0px 0.75em 25px;list-style-type:none;padding-left:0px;font-size:16px;line-height:1.7em;"> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;"> <a href="https://www.elastic.co/guide/en/elasticsearch/guide/master/" rel="nofollow,noindex" style="transition:0.25s;outline:none 0px;color:rgb(148, 148, 148);text-decoration:none;border-bottom-width:1px;border-bottom-style:dashed;border-bottom-color:rgb(148, 148, 148);font-style:italic;font-weight:bold;" target="_blank">Elasticsearch: The Definitive Guide</a> 官方文档，啃透了 Elasticsearch 也就熟悉了 </li> 
+  <li style="line-height:1.7em;list-style-type:disc;font-size:16px;"> <a href="http://www.slideshare.net/gugod/elasticsearch-19877436" rel="nofollow,noindex" style="transition:0.25s;outline:none 0px;color:rgb(148, 148, 148);text-decoration:none;border-bottom-width:1px;border-bottom-style:dashed;border-bottom-color:rgb(148, 148, 148);font-style:italic;font-weight:bold;" target="_blank">Elasticsearch 實戰介紹</a> 以及其后宝贵的引用 </li> 
+ </ul> 
+</div></div></div></div></div></div></div></div><br/></div></span>
+</div></body></html> 
